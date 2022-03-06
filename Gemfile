@@ -59,3 +59,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Replaces Rails form helpers with bootstrap-specific form helpers
 gem "bootstrap_form", "~> 4.0"
+
+# Handles authentication for user accounts
+gem 'devise'
+
+# Do I need to declare this gem?
+gem 'mail'
