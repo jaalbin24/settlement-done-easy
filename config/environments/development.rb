@@ -86,7 +86,8 @@ Rails.application.configure do
     enable_starttls_auto: true,
     open_timeout:         5,
     read_timeout:         5 }
+
+  # Required for Devise to work
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end
 
-# Required for Devise to work
-config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
