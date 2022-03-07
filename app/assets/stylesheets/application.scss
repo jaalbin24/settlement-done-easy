@@ -18,7 +18,13 @@
 
 // Go to https://bootswatch.com to browse themes.
 
+
+
 @import "rails_bootstrap_forms";
 @import "bootswatch/dist/superhero/variables";
-@import "bootstrap";
+@import "bootstrap/scss/bootstrap";
 @import "bootswatch/dist/superhero/bootswatch";
+.nav-link:hover, .navbar-brand:hover{
+    background-color: transparent;
+}
+
