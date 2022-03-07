@@ -60,6 +60,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Replaces Rails form helpers with bootstrap-specific form helpers
 gem "bootstrap_form", "~> 4.0"
 
+# Adds custom css themes
+gem 'bootswatch-rails'
+gem 'bootstrap'
+
 # Handles authentication for user accounts
 gem 'devise'
 

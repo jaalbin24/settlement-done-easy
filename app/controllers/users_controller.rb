@@ -25,13 +25,11 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        # Tell the UserMailer to send a welcome email after save
+        format.html { redirect_to user_url(@user), notice: "User was successfully created." }
+        format.json { render :show, status: :created, location: @user }
         UserMailer.with(user: @user).welcome_email.deliver_now
-
-        format.html { redirect_to(@user, notice: 'User was successfully created.') }
-        format.json { render json: @user, status: :created, location: @user }
       else
-        format.html { render action: 'new' }
+        format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
@@ -68,6 +66,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :email, :login)
+      params.require(:user).permit(:email, :password, :name)
     end
 end

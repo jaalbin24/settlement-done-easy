@@ -14,7 +14,11 @@
  *= require_self
  */
 
+
+
+// Go to https://bootswatch.com to browse themes.
+
 @import "rails_bootstrap_forms";
-@import "bootswatch/dist/yeti/variables";
-@import "bootstrap/scss/bootstrap";
-@import "bootswatch/dist/yeti/bootswatch";
+@import "bootswatch/dist/superhero/variables";
+@import "bootstrap";
+@import "bootswatch/dist/superhero/bootswatch";
