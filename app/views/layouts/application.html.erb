@@ -43,10 +43,22 @@
           </ul>
         </div>
       </div>
-    </nav>   
+    </nav>
+
+    <%if alert != nil%>
+      <div class="alert alert-dismissible alert-danger" style="float: right;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <%=alert%>
+      </div>
+    <%end%>
+    <%if notice != nil%>
+      <div class="alert alert-dismissible alert-success" style="float: right;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <%=notice%>
+      </div>
+    <%end%>
+
     <main role="main" class="container">
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
       <%= yield %>
     </main>
   </body>
