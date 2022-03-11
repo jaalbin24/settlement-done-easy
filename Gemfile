@@ -69,3 +69,9 @@ gem 'devise'
 
 # Do I need to declare this gem?
 gem 'mail'
+
+# Prawn PDF generation
+gem 'prawn'
+
+# Humanize spells out large numbers with a simple method .humanize() like this: 152.humanize will evaluate to "one hundred and fifty two"
+gem 'humanize'

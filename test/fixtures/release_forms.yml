@@ -1,0 +1,28 @@
+# == Schema Information
+#
+# Table name: release_forms
+#
+#  id                     :integer          not null, primary key
+#  claim_number           :string
+#  date_of_incident       :date
+#  defendant_name         :string
+#  incident_description   :string
+#  insurance_company_name :string
+#  law_firm_name          :string
+#  place_of_incident      :string
+#  plaintiff_name         :string
+#  policy_number          :string
+#  settlement_amount      :float
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value

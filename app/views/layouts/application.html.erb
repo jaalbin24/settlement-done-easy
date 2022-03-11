@@ -13,7 +13,7 @@
   <body>
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Settlement Done Easy</a>
+        <%= link_to "Settlement Done Easy", home_path, class: 'navbar-brand'%>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -21,11 +21,17 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <%= link_to "Home", home_path, class: 'nav-link'%>
+              <%= link_to "Documents", nil, class: 'nav-link'%>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Make a Payment", nil, class: 'nav-link'%>
             </li>
           </ul>
           <ul class="navbar-nav ms-sm-auto">
             <% if user_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Inbox", nil, class: 'nav-link'%>
+              </li>
               <li class="nav-item <%= active_class(edit_user_registration_path) %>">
                 <%= link_to "Hi, #{current_user.email}", edit_user_registration_path, class: 'nav-link' %>
               </li>

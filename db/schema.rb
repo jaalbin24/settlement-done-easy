@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_08_150449) do
+ActiveRecord::Schema.define(version: 2022_03_11_204434) do
+
+  create_table "release_forms", force: :cascade do |t|
+    t.string "law_firm_name"
+    t.string "insurance_company_name"
+    t.string "claim_number"
+    t.string "policy_number"
+    t.string "plaintiff_name"
+    t.string "defendant_name"
+    t.string "place_of_incident"
+    t.string "incident_description"
+    t.date "date_of_incident"
+    t.float "settlement_amount"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
