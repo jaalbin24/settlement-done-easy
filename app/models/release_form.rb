@@ -64,7 +64,7 @@ class ReleaseForm < ApplicationRecord
 
 
     def init_pdf
-        pdf = Prawn::Document.new(:margin => [30,90,30,90] ) # top, right, bottom, left
+        pdf = Prawn::Document.new(:margin => [30,90,30,90], filename: self.pdf_file_name) # top, right, bottom, left
         pdf.font_size(11)
         pdf.font "Times-Roman"
         pdf.text "#{self.claim_number}", align: :right

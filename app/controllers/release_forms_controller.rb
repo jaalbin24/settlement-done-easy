@@ -46,7 +46,7 @@ class ReleaseFormsController < ApplicationController
         respond_to do |format|
             format.html
             format.pdf do
-                send_file @release_form.pdf.render
+                send_data @release_form.pdf.download, filename: @release_form.pdf_file_name
             end
         end
     end
