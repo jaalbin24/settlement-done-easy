@@ -20,3 +20,13 @@ ReleaseForm.create!(
     policy_number:          "PO12345",
     settlement_amount:      2400.48    
 )
+
+Counselor.create!(
+    email: 'counselor@example.com',
+    password: 'password123'
+)
+
+InsuranceAgent.create!(
+    email: 'insurance_agent@example.com',
+    password: 'password123'
+)

@@ -17,10 +17,12 @@
 #  updated_at             :datetime         not null
 #
 class ReleaseForm < ApplicationRecord
-    include ActionView::Helpers::NumberHelper
+    include ActionView::Helpers::NumberHelper 
+    # This^ is included for the number_to_currency method in the settlement_amount_formatted method
     has_one_attached :pdf
     validates :settlement_amount, numericality: true
-    validates_presence_of attribute_names.reject { |attr| attr =~ /id|created_at|updated_at/i } # All attributes must be non-null
+    validates_presence_of attribute_names.reject { |attr| attr =~ /id|created_at|updated_at/i }
+    # This^ means all attributes must be non-null
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
 
     def settlement_amount_less_than_one_million

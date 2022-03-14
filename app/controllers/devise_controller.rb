@@ -204,4 +204,5 @@ class DeviseController < Devise.parent_controller.constantize
     end
   
     ActiveSupport.run_load_hooks(:devise_controller, self)
+  end
 end

@@ -4,4 +4,8 @@ class PagesController < ApplicationController
         render :home
     end
 
+    def user_type_select
+        render :user_type_select
+    end
+
 end

@@ -28,22 +28,32 @@
             </li>
           </ul>
           <ul class="navbar-nav ms-sm-auto">
-            <% if user_signed_in? %>
+            <% if counselor_signed_in? %>
               <li class="nav-item">
                 <%= link_to "Inbox", nil, class: 'nav-link'%>
               </li>
-              <li class="nav-item <%= active_class(edit_user_registration_path) %>">
-                <%= link_to "Hi, #{current_user.email}", edit_user_registration_path, class: 'nav-link' %>
+              <li class="nav-item">
+                <%= link_to "Hi, #{current_counselor.email}", edit_counselor_registration_path, class: 'nav-link' %>
               </li>
               <li class="nav-item">
-                <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' %>
+                <%= link_to 'Sign Out', destroy_counselor_session_path, method: :delete, class: 'nav-link' %>
               </li>
-              <% else %>
-                <li class="nav-item <%= active_class(new_user_session_path) %>">
-                <%= link_to 'Sign In', new_user_session_path, class: 'nav-link' %>
+            <% elsif insurance_agent_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Inbox", nil, class: 'nav-link'%>
               </li>
-              <li class="nav-item <%= active_class(new_user_registration_path) %>">
-                <%= link_to 'Sign Up', new_user_registration_path, class: 'nav-link' %>
+              <li class="nav-item">
+                <%= link_to "Hi, #{current_insurance_agent.email}", edit_insurance_agent_registration_path, class: 'nav-link' %>
+              </li>
+              <li class="nav-item">
+                <%= link_to 'Sign Out', destroy_insurance_agent_session_path, method: :delete, class: 'nav-link' %>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to 'Sign In', nil, class: 'nav-link' %>
+              </li>
+              <li class="nav-item">
+                <%= link_to 'Sign Up', user_type_select_path, class: 'nav-link' %>
               </li>
             <% end %>
           </ul>
