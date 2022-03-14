@@ -1,0 +1,22 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Claim #</th>
+            <th>Settlement</th>
+            <th>Description</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    <%@release_forms.each do |rf|%>
+        <tr class="hover-highlight">
+            <td><%=link_to rf.claim_number, release_form_show_path(rf)%></td>
+            <td><%=rf.settlement_amount%></td>
+            <td><%=rf.incident_description%></td>
+            <td><%=link_to 'Edit', release_form_edit_path(rf)%></td>
+            <td><%=link_to 'Delete', release_form_delete_path(rf), method: :delete, :data => {:confirm => 'Delete? Are you sure?'}%></td>
+        </tr>
+    <%end%>
+    </tbody>
+</table>

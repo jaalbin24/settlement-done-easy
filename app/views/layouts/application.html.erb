@@ -21,7 +21,7 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <%= link_to "Documents", nil, class: 'nav-link'%>
+              <%= link_to "Documents", release_form_index_path, class: 'nav-link'%>
             </li>
             <li class="nav-item">
               <%= link_to "Make a Payment", nil, class: 'nav-link'%>
@@ -65,7 +65,9 @@
     <%end%>
 
     <main role="main" class="container">
+      <br>
       <%= yield %>
+      <br>
     </main>
   </body>
 </html>

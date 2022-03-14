@@ -29,7 +29,7 @@ class DeviseController < Devise.parent_controller.constantize
         ["#{devise_mapping.scoped_path}/#{controller_name}"] + super
       else
         super
-      end
+      ends
     end
   
     protected

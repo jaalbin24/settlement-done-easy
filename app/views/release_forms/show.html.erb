@@ -1,0 +1,12 @@
+
+
+<h1 class="mb-2 text-center">This is the Release Form show page!</h1>
+<div class="mb-4 text-center">
+    <%=link_to "Download (PDF)", release_form_show_path(@release_form, format: "pdf")%>
+</div>
+
+<embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="595" height="770" style="border: none; float: right;">
+
+<div class="w-50 float-left">
+    <%=render "form", path: release_form_update_path%>
+</div>
