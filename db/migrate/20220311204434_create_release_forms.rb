@@ -11,6 +11,7 @@ class CreateReleaseForms < ActiveRecord::Migration[6.1]
       t.string :incident_description,     null: false, default: "an incident"
       t.date :date_of_incident,           null: false, default: "1-1-1900"
       t.float :settlement_amount,         null: false, default: 0
+      t.string :status,                   null: false, default: "unknown"
 
       t.timestamps
     end
