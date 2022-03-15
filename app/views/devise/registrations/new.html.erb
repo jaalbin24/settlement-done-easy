@@ -4,7 +4,7 @@
 
     <div class="form-group">
       <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
-      <input class="form-control" autofocus="autofocus" autocomplete="email" type="email" value="" name="user[email]" id="user_email" placeholder="Email">
+      <input class="form-control" autofocus="autofocus" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email">
       <%#<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone.</small>%>
     </div>
 
@@ -21,8 +21,13 @@
     <div class="form-group">
       <label for="user_role" class="form-label mb-0 mt-2">Role</label>
       <select class="form-select" id="user_role" name="user[role]">
-          <option>Insurance Agent</option>
+        <%if @role == "Insurance Agent"%>
+          <option selected>Insurance Agent</option>
           <option>Counselor</option>
+        <%else%>
+          <option>Insurance Agent</option>
+          <option selected>Counselor</option>
+        <%end%>
       </select>
     </div>
 
