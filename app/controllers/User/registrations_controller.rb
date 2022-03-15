@@ -6,13 +6,14 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/sign_up
   def new
+    @role = params[:role]
     super
   end
 
   # POST /resource
   def create
     build_resource(sign_up_params)
-
+  
     resource.save
     yield resource if block_given?
     if resource.persisted?

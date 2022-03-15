@@ -24,11 +24,11 @@ ReleaseForm.create!(
 User.create!(
     email: 'counselor@example.com',
     password: 'password123',
-    role: "counselor"
+    role: "Counselor"
 )
 
 User.create!(
     email: 'insurance_agent@example.com',
     password: 'password123',
-    role: "insurance_agent"
+    role: "Insurance Agent"
 )
