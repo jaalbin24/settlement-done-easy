@@ -75,6 +75,3 @@ gem 'prawn'
 
 # Humanize spells out large numbers with a simple method .humanize() like this: 152.humanize will evaluate to "one hundred and fifty two"
 gem 'humanize'
-
-# For icons. This gem works kind of like bootstrap.
-gem "font-awesome-rails"
