@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_14_201617) do
+ActiveRecord::Schema.define(version: 2022_03_12_180032) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -40,41 +40,17 @@ ActiveRecord::Schema.define(version: 2022_03_14_201617) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "counselors", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["email"], name: "index_counselors_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_counselors_on_reset_password_token", unique: true
-  end
-
-  create_table "insurance_agents", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["email"], name: "index_insurance_agents_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_insurance_agents_on_reset_password_token", unique: true
-  end
-
   create_table "release_forms", force: :cascade do |t|
-    t.string "law_firm_name"
-    t.string "insurance_company_name"
-    t.string "claim_number"
-    t.string "policy_number"
-    t.string "plaintiff_name"
-    t.string "defendant_name"
-    t.string "place_of_incident"
-    t.string "incident_description"
-    t.date "date_of_incident"
-    t.float "settlement_amount"
+    t.string "law_firm_name", default: "Fake Law Firm", null: false
+    t.string "insurance_company_name", default: "Fake Insurance Co.", null: false
+    t.string "claim_number", default: "XXXXCLAIMXXXX", null: false
+    t.string "policy_number", default: "XXXPOLICYXXX", null: false
+    t.string "plaintiff_name", default: "Peter Pretend Plaintiff", null: false
+    t.string "defendant_name", default: "David Default Defendant", null: false
+    t.string "place_of_incident", default: "Gotham City", null: false
+    t.string "incident_description", default: "an incident", null: false
+    t.date "date_of_incident", default: "1900-01-01", null: false
+    t.float "settlement_amount", default: 0.0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -85,6 +61,7 @@ ActiveRecord::Schema.define(version: 2022_03_14_201617) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "role"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true

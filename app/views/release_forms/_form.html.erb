@@ -1,19 +1,12 @@
 <%= bootstrap_form_with model: @release_form, url: path, local: true do |form| %>
   <div>
     <%= form.text_field :claim_number%>
-    <br>
     <%= form.text_field :policy_number%>
-    <br>
     <%= form.text_field :plaintiff_name%>
-    <br>
     <%= form.text_field :defendant_name%>
-    <br>
     <%= form.date_field :date_of_incident%>
-    <br>
     <%= form.text_field :place_of_incident%>
-    <br>
     <%= form.text_field :incident_description%>
-    <br>
     <%= form.text_field :settlement_amount, step: :any%>
     <br>
     <%= form.submit("Generate")%>

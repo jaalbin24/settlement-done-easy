@@ -1,28 +1,33 @@
 <h2>Sign up</h2>
+<div class="w-25">
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do%>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <div class="form-group">
+      <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
+      <input class="form-control" autofocus="autofocus" autocomplete="email" type="email" value="" name="user[email]" id="user_email" placeholder="Email">
+      <%#<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone.</small>%>
+    </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-  <br>
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-  <br>
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-  <br>
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
+    <div class="form-group">
+      <label for="user_password" class="form-label mb-0 mt-2">Password</label>
+      <input type="password" class="form-control" id="user_password" placeholder="Password" name="user[password]">
+    </div>
 
+    <div class="form-group">
+      <label for="user_password_confirmation" class="form-label mb-0 mt-2">Confirm Password</label>
+      <input type="password" class="form-control" id="user_password_confirmation" placeholder="Confirm password" name="user[password_confirmation]">
+    </div>
+
+    <div class="form-group">
+      <label for="user_role" class="form-label mb-0 mt-2">Role</label>
+      <select class="form-select" id="user_role" name="user[role]">
+          <option>Insurance Agent</option>
+          <option>Counselor</option>
+      </select>
+    </div>
+
+    <button type="submit" name="commit" class="btn btn-primary mt-4" data-disable-with="Sign up">Sign up</button>
+  <% end %>
+</div>
+<br>
 <%= render "devise/shared/links" %>
