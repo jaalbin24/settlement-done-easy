@@ -8,7 +8,7 @@
 
 
 
-ReleaseForm.create!(
+GeneratedReleaseForm.create!(
     claim_number:           "123456789",
     date_of_incident:       "9-10-2021",
     defendant_name:         "Danny Defendant",
@@ -18,8 +18,15 @@ ReleaseForm.create!(
     place_of_incident:      "Memphis, TN",
     plaintiff_name:         "Patty Plaintiff",
     policy_number:          "PO12345",
-    settlement_amount:      2400.48    
+    settlement_amount:      2400.4
 )
+
+ReleaseForm.create!(
+    claim_number:           "123456789",
+    policy_number:          "PO12345",
+    settlement_amount:      2400.4,                
+)
+
 
 User.create!(
     email: 'counselor@example.com',

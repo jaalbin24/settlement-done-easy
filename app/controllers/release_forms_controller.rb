@@ -10,7 +10,7 @@ class ReleaseFormsController < ApplicationController
             flash[:success] = "Release form created!"
             redirect_to release_form_show_url(@release_form)
         else
-            flash.now[:error] = "ERROR: Failed to create release form!"
+            flash.now[:error] = "Failed to create release form!"
             render :new
         end
     end
@@ -31,8 +31,7 @@ class ReleaseFormsController < ApplicationController
         else
             flash[:error] = "Failed to update release form!"
             render :show
-        end
-        
+        end 
     end
 
     def destroy
@@ -42,9 +41,10 @@ class ReleaseFormsController < ApplicationController
 
     def show
         @release_form = ReleaseForm.find(params[:id])
-
         respond_to do |format|
-            format.html
+            format.html do
+                render :show
+            end
             format.pdf do
                 send_data @release_form.pdf.download, filename: @release_form.pdf_file_name
             end
@@ -56,17 +56,9 @@ class ReleaseFormsController < ApplicationController
         render :index
     end
 
+    # Defines what parameters can be accepted from a browser. This is for security. Without defining the data expected from the browser,
+    # potentially malicious data can be accepted as valid.
     def release_form_params
-        params.require(:release_form).permit(
-            :claim_number, 
-            :date_of_incident, 
-            :defendant_name, 
-            :insurance_company_name, 
-            :law_firm_name, 
-            :place_of_incident,
-            :plaintiff_name,
-            :policy_number,
-            :settlement_amount,
-            :incident_description)
+        params.require(:release_form).permit(:claim_number, :policy_number, :pdf)
     end
 end
