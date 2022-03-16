@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_12_180032) do
+ActiveRecord::Schema.define(version: 2022_03_16_012649) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -41,18 +41,20 @@ ActiveRecord::Schema.define(version: 2022_03_12_180032) do
   end
 
   create_table "release_forms", force: :cascade do |t|
-    t.string "law_firm_name", default: "Fake Law Firm", null: false
-    t.string "insurance_company_name", default: "Fake Insurance Co.", null: false
-    t.string "claim_number", default: "XXXXCLAIMXXXX", null: false
-    t.string "policy_number", default: "XXXPOLICYXXX", null: false
-    t.string "plaintiff_name", default: "Peter Pretend Plaintiff", null: false
-    t.string "defendant_name", default: "David Default Defendant", null: false
-    t.string "place_of_incident", default: "Gotham City", null: false
-    t.string "incident_description", default: "an incident", null: false
-    t.date "date_of_incident", default: "1900-01-01", null: false
+    t.string "law_firm_name", default: "Default Law Firm (FAKE! USED FOR TESTING PURPOSES!)", null: false
+    t.string "insurance_company_name", default: "Default Insurance Co. (FAKE! USED FOR TESTING PURPOSES!)", null: false
+    t.string "claim_number"
+    t.string "policy_number"
+    t.string "plaintiff_name"
+    t.string "defendant_name"
+    t.string "place_of_incident"
+    t.string "incident_description"
+    t.date "date_of_incident"
     t.float "settlement_amount", default: 0.0, null: false
+    t.string "status", default: "Default status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "type"
   end
 
   create_table "users", force: :cascade do |t|
