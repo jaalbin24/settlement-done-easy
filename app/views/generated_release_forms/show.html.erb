@@ -2,6 +2,5 @@
 <div class="mb-4 text-center">
     <%=link_to "Download (PDF)", rails_blob_path(@release_form.pdf, disposition: "attachment")%>
 </div>
-<div class="mx-auto w-50">
-    <embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="595" height="770" style="border: none;">
-</div>
+
+<embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="595" height="770" style="border: none;" class="mx-auto w-50">

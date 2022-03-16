@@ -3,8 +3,9 @@
         <tr>
             <th>Status</th>
             <th>Claim #</th>
-            <th>Settlement</th>
-            <th>Description</th>
+            <th>Policy #</th>
+            <th>Type</th>
+            <th>Date Created</th>
             <th></th>
             <th></th>
         </tr>
@@ -12,10 +13,15 @@
     <tbody>
     <%@release_forms.each do |rf|%>
         <tr class="hover-highlight">
-            <td></td>
+            <td><%=rf.status%></td>
             <td><%=link_to rf.claim_number, release_form_show_path(rf)%></td>
-            <td><%=rf.settlement_amount%></td>
-            <td><%=rf.incident_description%></td>
+            <td><%=rf.policy_number%></td>
+            <%if rf.type == "GeneratedReleaseForm"%>
+                <td>Generated</td>
+            <%else%>
+                <td>Uploaded</td>
+            <%end%>
+            <td><%=rf.created_at%></td>
             <td><%=link_to 'Edit', release_form_edit_path(rf)%></td>
             <td><%=link_to 'Delete', release_form_delete_path(rf), method: :delete, :data => {:confirm => 'Delete? Are you sure?'}%></td>
         </tr>
