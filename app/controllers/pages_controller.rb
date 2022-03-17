@@ -8,4 +8,8 @@ class PagesController < ApplicationController
         render :user_type_select
     end
 
+    def generate_or_upload
+        render :generate_or_upload
+    end
+
 end
