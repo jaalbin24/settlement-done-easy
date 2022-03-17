@@ -1,4 +1,10 @@
-<h1>Edit Release Form</h1>
+<h1 class="mb-2 text-center">This is the Release Form edit page!</h1>
+<div class="mb-4 text-center">
+    <%=link_to "Download (PDF)", rails_blob_path(@release_form.pdf, disposition: "attachment")%>
+</div>
 
+<embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="595" height="770" style="border: none; float: right;">
 
-<%=render "form"%>
+<div class="float-left" style="width: 40%;">
+    <%=render "form", path: release_form_update_path%>
+</div>

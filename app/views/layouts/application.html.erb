@@ -21,7 +21,10 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <%= link_to "Documents", release_form_index_path, class: 'nav-link'%>
+              <%= link_to "Release Forms", release_form_index_path, class: 'nav-link'%>
+            </li>
+            <li class="nav-item">
+              <%= link_to "New", generate_or_upload_path, class: 'nav-link'%>
             </li>
             <li class="nav-item">
               <%= link_to "Make a Payment", nil, class: 'nav-link'%>
@@ -50,20 +53,14 @@
         </div>
       </div>
     </nav>
-
-    <%if alert != nil%>
-      <div class="alert alert-dismissible alert-danger" style="float: right;">
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <%=alert%>
-      </div>
-    <%end%>
-    <%if notice != nil%>
-      <div class="alert alert-dismissible alert-success" style="float: right;">
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <%=notice%>
-      </div>
-    <%end%>
-
+    <div class="d-flex justify-content-end">
+      <% flash.each do |key, message| %>
+        <div class="alert alert-dismissible <%=flash_class(key)%> position-absolute">
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <%=message%>
+        </div>
+      <% end %>
+    </div>
     <main role="main" class="container">
       <br>
       <%= yield %>
