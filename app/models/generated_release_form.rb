@@ -3,6 +3,7 @@
 # Table name: release_forms
 #
 #  id                     :integer          not null, primary key
+#  approved_by_lawyer     :boolean          default(FALSE), not null
 #  claim_number           :string
 #  date_of_incident       :date
 #  defendant_name         :string
@@ -13,7 +14,7 @@
 #  plaintiff_name         :string
 #  policy_number          :string
 #  settlement_amount      :float            default(0.0), not null
-#  status                 :string           default("Default status"), not null
+#  status                 :string           default("Incomplete"), not null
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
