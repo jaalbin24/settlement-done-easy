@@ -1,0 +1,8 @@
+<%@release_form.comments.each do |comment|%>
+    <div class="card text-white bg-secondary mb-3" style="max-width: 30rem;">
+        <div class="card-header">[Name of lawyer] said on <%=comment.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y at %l:%M%P")%></div>
+        <div class="card-body">
+            <p class="card-text"><%=comment.content%></p>
+        </div>
+    </div>
+<%end%>
