@@ -1,0 +1,21 @@
+<h1 class="text-center">This is the Approve/Reject page</h1>
+<p class="text-center">Only the lawyers will see this page. Insurance agents will never need to see this page.</p>
+<div class="w-25 float-left position-absolute">
+    <div class="d-grid gap-2">
+        <button class="btn btn-lg btn-success" type="button">Approve</button>
+        <h4 class="text-center mt-4">OR</h4>
+    </div>
+    <%= bootstrap_form_with model: @comment, url: comment_create_path(@release_form), local: true do |form| %>
+    <div>
+        <%= form.text_area :content, class: "form-control", placeholder: "Add reason for rejection here."%>
+        <br>
+        <%=form.submit("Reject")%>
+    </div>
+    <% end %>
+    <br>
+    <%=render "comments"%>
+</div>
+<div style="width: 50%; float: right;">
+    <embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="595" height="770" style="border: none;">
+</div>
+
