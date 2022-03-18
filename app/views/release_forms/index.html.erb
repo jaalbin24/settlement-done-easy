@@ -8,6 +8,7 @@
             <th>Date Created</th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -21,7 +22,8 @@
             <%else%>
                 <td>Uploaded</td>
             <%end%>
-            <td><%=rf.created_at%></td>
+            <td><%=rf.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y at %l:%M%P")%></td>
+            <td class="btn-primary"><%=link_to 'Approve/Reject', approve_or_reject_path(rf)%></td>
             <td><%=link_to 'Edit', release_form_edit_path(rf)%></td>
             <td><%=link_to 'Delete', release_form_delete_path(rf), method: :delete, :data => {:confirm => 'Delete? Are you sure?'}%></td>
         </tr>
