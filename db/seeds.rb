@@ -21,12 +21,11 @@ GeneratedReleaseForm.create!(
     settlement_amount:      2400.4
 )
 
-ReleaseForm.create!(
+rf = ReleaseForm.create!(
     claim_number:           "123456789",
     policy_number:          "PO12345",
     settlement_amount:      2400.4,                
 )
-
 
 User.create!(
     email: 'counselor@example.com',
@@ -38,4 +37,9 @@ User.create!(
     email: 'insurance_agent@example.com',
     password: 'password123',
     role: "Insurance Agent"
+)
+
+Comment.create!(
+    content: "This is the worst release form I have ever seen! Rejected!",
+    release_form: rf
 )
