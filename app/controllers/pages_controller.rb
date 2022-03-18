@@ -12,4 +12,9 @@ class PagesController < ApplicationController
         render :generate_or_upload
     end
 
+    def approve_or_reject
+        @release_form = ReleaseForm.find(params[:id])
+        @comment = Comment.new
+        render :approve_or_reject
+    end
 end
