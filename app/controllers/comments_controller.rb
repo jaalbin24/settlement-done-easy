@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+    before_action :authenticate_user!
+
     def create
         release_form = ReleaseForm.find(params[:release_form_id])
         comment = release_form.comments.build(comment_params)

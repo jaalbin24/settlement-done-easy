@@ -23,6 +23,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  # validates :role, inclusion: {in: ["Insurance Agent", "Counselor"]}
+  # validates :role, inclusion: {in: ["Insurance Agent", "Lawyer"]}
 
 end

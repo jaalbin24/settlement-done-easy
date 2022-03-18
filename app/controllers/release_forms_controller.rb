@@ -1,4 +1,6 @@
 class ReleaseFormsController < ApplicationController
+    before_action :authenticate_user!
+
     def new
         @release_form = ReleaseForm.new
         render :new
