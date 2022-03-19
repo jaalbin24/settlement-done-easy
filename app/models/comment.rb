@@ -23,6 +23,5 @@ class Comment < ApplicationRecord
         foreign_key: 'release_form_id',
         inverse_of: :comments
       )
-
     validates :content, presence: true
 end
