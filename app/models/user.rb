@@ -25,4 +25,18 @@ class User < ApplicationRecord
 
   # validates :role, inclusion: {in: ["Insurance Agent", "Lawyer"]}
 
+has_many(
+  :lawyer_owned_release_forms,
+  class_name: 'ReleaseForm',
+  foreign_key: 'lawyer_id',
+  inverse_of: :lawyer
+)
+
+has_many(
+  :insurance_agent_owned_release_forms,
+  class_name: 'ReleaseForm',
+  foreign_key: 'insurance_agent_id',
+  inverse_of: :insurance_agent
+)
+
 end
