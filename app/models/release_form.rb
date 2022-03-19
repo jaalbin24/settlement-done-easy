@@ -18,6 +18,13 @@
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  insurance_agent_id     :integer
+#  lawyer_id              :integer
+#
+# Indexes
+#
+#  index_release_forms_on_insurance_agent_id  (insurance_agent_id)
+#  index_release_forms_on_lawyer_id           (lawyer_id)
 #
 class ReleaseForm < ApplicationRecord
     include ActionView::Helpers::NumberHelper 
@@ -30,7 +37,21 @@ class ReleaseForm < ApplicationRecord
         foreign_key: 'release_form_id',
         inverse_of: :release_form,
         dependent: :destroy
-      )
+    )
+
+    belongs_to(
+        :lawyer,
+        class_name: 'User',
+        foreign_key: 'lawyer_id',
+        inverse_of: :lawyer_owned_release_forms
+    )
+
+    belongs_to(
+        :insurance_agent,
+        class_name: 'User',
+        foreign_key: 'insurance_agent_id',
+        inverse_of: :insurance_agent_owned_release_forms
+    )
 
     validates :settlement_amount, numericality: true
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
