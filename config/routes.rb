@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'what_type_of_user',                    to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                   to: 'pages#generate_or_upload',           as: 'generate_or_upload'    
   get 'approve_or_reject/:id',                to: 'pages#approve_or_reject',            as: 'approve_or_reject'
+  get 'ds_test_page',                          to: 'pages#ds_test_page',                 as: 'ds_test_page'
 
   get 'release_forms',                        to: 'release_forms#index',                as: 'release_form_index'
   get 'release_forms/new',                    to: 'release_forms#new',                  as: 'release_form_new'
