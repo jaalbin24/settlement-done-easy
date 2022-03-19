@@ -10,13 +10,13 @@ class UserMailer < ApplicationMailer
     end
 
     def insurance_new_notification
-        @document = params[:generated_release_form]
-        mail(to: @document.lawyer.email, subject: 'A New Document is Ready For Review.')
+        @user = params[:user]
+        mail(to: @user.email, subject: 'A New Document is Ready For Review.')
     end
 
     def insurance_edit_notification
-        @document = params[:generated_release_form]
-        mail(to: @document.lawyer.email, subject: 'A Revised Document is Ready For Review.')
+        @user = params[:user]
+        mail(to: @user.email, subject: 'A Revised Document is Ready For Review.')
     end
 
 
