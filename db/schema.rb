@@ -61,9 +61,13 @@ ActiveRecord::Schema.define(version: 2022_03_18_013152) do
     t.float "settlement_amount", default: 0.0, null: false
     t.string "status", default: "Incomplete", null: false
     t.boolean "approved_by_lawyer", default: false, null: false
+    t.integer "lawyer_id"
+    t.integer "insurance_agent_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "type"
+    t.index ["insurance_agent_id"], name: "index_release_forms_on_insurance_agent_id"
+    t.index ["lawyer_id"], name: "index_release_forms_on_lawyer_id"
   end
 
   create_table "users", force: :cascade do |t|

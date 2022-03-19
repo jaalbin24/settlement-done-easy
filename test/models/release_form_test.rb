@@ -18,6 +18,13 @@
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  insurance_agent_id     :integer
+#  lawyer_id              :integer
+#
+# Indexes
+#
+#  index_release_forms_on_insurance_agent_id  (insurance_agent_id)
+#  index_release_forms_on_lawyer_id           (lawyer_id)
 #
 require "test_helper"
 
