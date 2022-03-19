@@ -54,7 +54,16 @@ class ReleaseFormsController < ApplicationController
     end
 
     def index
-        @release_forms = ReleaseForm.all
+        @user = current_user
+
+        if @user.role = "Lawyer"
+            @release_forms = @user.lawyer_owned_release_forms
+        end
+
+        if @user.role = "Insurance Agent"
+            @release_forms = @user.insurance_agent_owned_release_forms
+        end
+        
         render :index
     end
 
