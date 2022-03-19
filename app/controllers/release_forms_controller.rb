@@ -9,6 +9,7 @@ class ReleaseFormsController < ApplicationController
     def create
         @release_form = ReleaseForm.create(release_form_params)
         if @release_form.save
+            UserMailer.with(document: @release_form).insurance_new_notification.deliver_later
             flash[:success] = "Release form created!"
             redirect_to release_form_show_url(@release_form)
         else
@@ -25,6 +26,7 @@ class ReleaseFormsController < ApplicationController
     def update
         @release_form = ReleaseForm.find(params[:id])
         if @release_form.update(release_form_params)
+            UserMailer.with(document: @release_form).insurance_edit_notification.deliver_later
             flash[:success] = "Release form updated!"
             @release_form.update_pdf
             # This^ should be moved to the release_form.rb file.
