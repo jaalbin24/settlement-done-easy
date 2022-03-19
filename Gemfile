@@ -75,3 +75,9 @@ gem 'prawn'
 
 # Humanize spells out large numbers with a simple method .humanize() like this: 152.humanize will evaluate to "one hundred and fifty two"
 gem 'humanize'
+
+# For interacting with the DocuSign API
+gem 'docusign_esign'
+
+# For authenticating with the DocuSign API
+gem 'jwt'
