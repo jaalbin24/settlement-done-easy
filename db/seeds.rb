@@ -28,9 +28,9 @@ rf = ReleaseForm.create!(
 )
 
 User.create!(
-    email: 'counselor@example.com',
+    email: 'lawyer@example.com',
     password: 'password123',
-    role: "Counselor"
+    role: "Lawyer"
 )
 
 User.create!(
