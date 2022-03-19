@@ -6,7 +6,17 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+user1 = User.create!(
+    email: 'lawyer@example.com',
+    password: 'password123',
+    role: "Lawyer"
+)
 
+user2 = User.create!(
+    email: 'insurance_agent@example.com',
+    password: 'password123',
+    role: "Insurance Agent"
+)
 
 GeneratedReleaseForm.create!(
     claim_number:           "123456789",
@@ -18,25 +28,17 @@ GeneratedReleaseForm.create!(
     place_of_incident:      "Memphis, TN",
     plaintiff_name:         "Patty Plaintiff",
     policy_number:          "PO12345",
-    settlement_amount:      2400.4
+    settlement_amount:      2400.4,
+    lawyer: user1,
+    insurance_agent: user2
 )
 
 rf = ReleaseForm.create!(
     claim_number:           "123456789",
     policy_number:          "PO12345",
-    settlement_amount:      2400.4,                
-)
-
-User.create!(
-    email: 'lawyer@example.com',
-    password: 'password123',
-    role: "Lawyer"
-)
-
-User.create!(
-    email: 'insurance_agent@example.com',
-    password: 'password123',
-    role: "Insurance Agent"
+    settlement_amount:      2400.4,
+    lawyer: user1,
+    insurance_agent: user2              
 )
 
 Comment.create!(
