@@ -10,12 +10,12 @@ class UserMailer < ApplicationMailer
     end
 
     def lawyer_approve_notification
-        @document= params[:release_form]
-        mail(to: @document.insurance_agent.email, subject: 'A document has been approved.')
+        @user = params[:user]
+        mail(to: @user.email, subject: 'A document has been approved.')
     end
 
     def lawyer_reject_notification
-        @comment = params[:comment]
-        mail(to: @comment.rf.insurance_agent.email, subject: 'A document has been rejected.')
+        @user = params[:user]
+        mail(to: @user.email, subject: 'A document has been rejected.')
     end
 end
