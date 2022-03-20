@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-    before_action :authenticate_user!, except: [:home, :user_type_select]
+    # before_action :authenticate_user!, except: [:home, :user_type_select]
 
     def home
         render :home
@@ -17,5 +17,9 @@ class PagesController < ApplicationController
         @release_form = ReleaseForm.find(params[:id])
         @comment = Comment.new
         render :approve_or_reject
+    end
+
+    def ds_test_page
+        render :ds_test_page
     end
 end
