@@ -4,10 +4,12 @@ class CommentsController < ApplicationController
     def create
         release_form = ReleaseForm.find(params[:release_form_id])
         comment = release_form.comments.build(comment_params)
-        release_form.update_attribute(:status, "Rejected")
+        comment.author = current_user
         if comment.save
-            UserMailer.with(user: @release_form.insurance_agent).lawyer_reject_notification.deliver_later
-            redirect_to(release_form_index_path) 
+            redirect_back(fallback_location: root_path)
+        else
+            flash[:error] = "Failed to post comment! #{comment.errors.full_messages.inspect}"
+            redirect_back(fallback_location: root_path)
         end
     end
 

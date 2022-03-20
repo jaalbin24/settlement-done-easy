@@ -34,6 +34,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
 
       # Custom attributes
       t.string :role
+      t.string :first_name
+      t.string :last_name
 
       t.timestamps null: false
     end
