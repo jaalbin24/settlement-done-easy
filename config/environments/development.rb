@@ -74,20 +74,23 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  # Config for Gmail login
+  # Config for Gmail login with ActionMailer
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'smtp.gmail.com',
     port:                 587,
     domain:               'example.com',
-    user_name:            'John.Smith29324@gmail.com',
-    password:             'tdikbduttkzwzybo', # app-specific password
+    user_name:            'john.smith29324@gmail.com',
+    password:             'tdikbduttkzwzybo', # app-specific password. Actual password is 'BigBlueSky24' This is a throwaway email. Do what you want with it.
     authentication:       'plain',
     enable_starttls_auto: true,
     open_timeout:         5,
     read_timeout:         5 }
 
-  # Required for Devise to work
+  # Required for the Devise mailer to work
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+
+  
 end
 
