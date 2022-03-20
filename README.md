@@ -16,3 +16,16 @@ To run SDE, follow these instructions...
 3. In your URL, type "localhost:3000" and press enter. The page should load for a while then show the application.
 
 4. You're set up!
+
+Before taking to production...
+delete this section of code from release_form.rb 
+    ```before_validation do
+        if !self.pdf.attached?
+            self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'dummy_file.pdf')
+        end 
+    end```
+
+Ideas for improvement:
+```
+-Adding support for assistive technologies (screen-readers for the blind, etc.)
+```

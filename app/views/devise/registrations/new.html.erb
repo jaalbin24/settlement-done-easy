@@ -1,10 +1,21 @@
-<h2>Sign up</h2>
-<div class="w-25">
+<h2 class="text-center">Sign up</h2>
+<div class="mx-auto w-50">
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do%>
-
+    <div class="container">
+      <div class="row">
+        <div class="col form-group px-0" style="padding-left: 0rem; padding-right: 0.5rem;">
+          <label for="user_first_name" class="form-label mb-0 mt-2">First name</label>
+          <input type="text" autofocus="autofocus" class="form-control" id="user_first_name" placeholder="First name" name="user[first_name]">
+        </div>
+        <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
+          <label for="user_last_name" class="form-label mb-0 mt-2">Last name</label>
+          <input type="text" class="form-control" id="user_last_name" placeholder="Last name" name="user[last_name]">
+        </div>
+      </div>
+    </div>
     <div class="form-group">
       <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
-      <input class="form-control" autofocus="autofocus" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email">
+      <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email">
       <%#<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone.</small>%>
     </div>
 

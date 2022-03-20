@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ApiCreator
+module DsApi
   def initialize_api_client
     configuration = DocuSign_eSign::Configuration.new
     configuration.debugging = false
@@ -20,18 +20,21 @@ module ApiCreator
     api_client = DocuSign_eSign::ApiClient.new configuration
 
     api_client.default_headers['Authorization'] = "Bearer #{token.access_token}"
-    # Step 2 end
+
     return DocuSign_eSign::EnvelopesApi.new api_client
   end
 
   def request_new_access_token
     rsa_pk = docusign_rsa_private_key_file
     begin
+      # DocuSign_eSign::ApiClient.request_jwt_user_token() generates a JWT and sends it to DS. DS sends back an access token that is
+      # returned by the method. The access token is used to authenticate all future API calls. It must be set to expire after 1 hour
+      # or it will not be granted in the first place.
       access_token = @api_client.request_jwt_user_token(
-            Rails.configuration.DOCUSIGN_INTEGRATION_KEY, 
-            Rails.configuration.DOCUSIGN_USER_ID, 
-            rsa_pk, 
-            expires_in=3600, 
+            Rails.configuration.DOCUSIGN_INTEGRATION_KEY,
+            Rails.configuration.DOCUSIGN_USER_ID,
+            rsa_pk,
+            expires_in=3600,
             Rails.configuration.DOCUSIGN_SCOPE)
     rescue DocuSign_eSign::ApiError => exception
       Rails.logger.warn exception.inspect
@@ -48,15 +51,11 @@ module ApiCreator
   end
 
   def create_envelope_api(args)
-    # Obtain your OAuth token
-    # Step 2 start
     token = Rails.cache.fetch('access_token')
     configuration = DocuSign_eSign::Configuration.new
     configuration.host = args[:base_path]
     api_client = DocuSign_eSign::ApiClient.new configuration
-
     api_client.default_headers['Authorization'] = "Bearer #{args[:access_token]}"
-    # Step 2 end
     DocuSign_eSign::EnvelopesApi.new api_client
   end
 
