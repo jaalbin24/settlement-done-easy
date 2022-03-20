@@ -1,8 +1,8 @@
 module DsEnvelope
-    include ApiCreator
+    include DsApi
 
     def create_and_send(document, envelope_args)
-  
+      Rails.logger.info "==> Begin envelope creation"
       envelope_definition = DocuSign_eSign::EnvelopeDefinition.new
   
       envelope_definition.email_subject = envelope_args[:email_subject]
@@ -39,8 +39,7 @@ module DsEnvelope
       # We're using anchor (autoPlace) positioning
       #
       # The DocuSign platform searches throughout your envelope's documents for matching
-      # anchor strings. So the sign_here_2 tab will be used in both document 2 and 3
-      # since they use the same anchor string for their "signer 1" tabs.
+      # anchor strings.
       sign_here1 = DocuSign_eSign::SignHere.new(
         anchorString: '**signature_1**',
         anchorYOffset: '10',
@@ -73,10 +72,10 @@ module DsEnvelope
       envelope_definition.status = 'sent'
   
       envelope_api = initialize_api_client
-  
+      
+      # create_envelope also sends the envelope since status is set to 'sent'
       results = envelope_api.create_envelope Rails.cache.fetch('account_id'), envelope_definition
-      envelope_id = results.envelope_id
-      { 'envelope_id' => envelope_id }
+      Rails.logger.info "==> Results from envelope creation: #{results}"
     end
   
     # Small defence against code injection
