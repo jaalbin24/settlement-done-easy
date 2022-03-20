@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_18_013152) do
+ActiveRecord::Schema.define(version: 2022_03_20_154344) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -45,7 +45,9 @@ ActiveRecord::Schema.define(version: 2022_03_18_013152) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "release_form_id"
+    t.integer "user_id"
     t.index ["release_form_id"], name: "index_comments_on_release_form_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "release_forms", force: :cascade do |t|
@@ -77,6 +79,8 @@ ActiveRecord::Schema.define(version: 2022_03_18_013152) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.string "role"
+    t.string "first_name"
+    t.string "last_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -86,4 +90,5 @@ ActiveRecord::Schema.define(version: 2022_03_18_013152) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "release_forms"
+  add_foreign_key "comments", "users"
 end

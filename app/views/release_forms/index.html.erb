@@ -4,10 +4,7 @@
             <th>Status</th>
             <th>Claim #</th>
             <th>Policy #</th>
-            <th>Type</th>
             <th>Date Created</th>
-            <th></th>
-            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -17,18 +14,14 @@
             <td><%=rf.status%></td>
             <td><%=link_to rf.claim_number, release_form_show_path(rf)%></td>
             <td><%=rf.policy_number%></td>
-            <%if rf.type == "GeneratedReleaseForm"%>
-                <td>Generated</td>
-            <%else%>
-                <td>Uploaded</td>
-            <%end%>
             <td><%=rf.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y at %l:%M%P")%></td>
-            <td class="btn-primary"><%=link_to 'Approve/Reject', approve_or_reject_path(rf)%></td>
-            <td><%=link_to 'Edit', release_form_edit_path(rf)%></td>
-            <td><%=link_to 'Delete', release_form_delete_path(rf), method: :delete, :data => {:confirm => 'Delete? Are you sure?'}%></td>
+            <td class="text-nowrap" style="width: 1%;">
+                <%=link_to 'Review', approve_or_reject_path(rf), class: "badge rounded-pill bg-primary", style: "text-decoration: none;"%> 
+                <%=link_to 'Edit', release_form_edit_path(rf), class: "badge rounded-pill bg-primary mx-1", style: "text-decoration: none;"%> 
+                <%=link_to 'Delete', release_form_delete_path(rf), method: :delete, class: "badge rounded-pill bg-danger", style: "text-decoration: none;",:data => {:confirm => 'Delete? Are you sure?'}%></td>
         </tr>
     <%end%>
     </tbody>
 </table>
 
-<%=link_to "New", nil%>
+<p>Click <%=link_to "here", nil%> to request a new release form!</p>

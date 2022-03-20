@@ -1,53 +1,72 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+puts "Beginning DB seed..."
 
-user1 = User.create!(
-    email: 'lawyer@example.com',
-    password: 'password123',
-    role: "Lawyer"
-)
+top_100_first_names = ["Michael", "Christopher", "Jessica", "Matthew", "Ashley", "Jennifer", "Joshua", "Amanda", "Daniel", "David", "James", "Robert", "John", "Joseph", "Andrew", "Ryan", "Brandon", "Jason", "Justin", "Sarah", "William", "Jonathan", "Stephanie", "Brian", "Nicole", "Nicholas", "Anthony", "Heather", "Eric", "Elizabeth", "Adam", "Megan", "Melissa", "Kevin", "Steven", "Thomas", "Timothy", "Christina", "Kyle", "Rachel", "Laura", "Lauren", "Amber", "Brittany", "Danielle", "Richard", "Kimberly", "Jeffrey", "Amy", "Crystal", "Michelle", "Tiffany", "Jeremy", "Benjamin", "Mark", "Emily", "Aaron", "Charles", "Rebecca", "Jacob", "Stephen", "Patrick", "Sean", "Erin", "Zachary", "Jamie", "Kelly", "Samantha", "Nathan", "Sara", "Dustin", "Paul", "Angela", "Tyler", "Scott", "Katherine", "Andrea", "Gregory", "Erica", "Mary", "Travis", "Lisa", "Kenneth", "Bryan", "Lindsey", "Kristen", "Jose", "Alexander", "Jesse", "Katie", "Lindsay", "Shannon", "Vanessa", "Courtney", "Christine", "Alicia", "Cody", "Allison", "Bradley", "Samuel"]
+top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy", "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey", "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson", "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza", "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers", "Long", "Ross", "Foster", "Jimenez", "Powell"]
+# For generating random user names.
 
-user2 = User.create!(
-    email: 'insurance_agent@example.com',
-    password: 'password123',
-    role: "Insurance Agent"
-)
+NUM_RECORDS = 4
+# Adjust NUM_RECORDS to increase/decrease the number of records created when calling the 'rails db:seed' command
+lawyers = Array.new(NUM_RECORDS) {|i|
+    User.create!(
+        email: "lawyer#{i}@example.com",
+        password: 'password123',
+        role: "Lawyer",
+        first_name: top_100_first_names[rand(0..99)],
+        last_name: top_100_last_names[rand(0..99)]
+    )
+}
+puts "Created #{NUM_RECORDS} lawyer models..."
 
-user3 = User.create!(
-    email: 'lawyer2@example.com',
-    password: 'password123',
-    role: "Lawyer"
-)
+insurance_agents = Array.new(NUM_RECORDS) {|i|
+    User.create!(
+        email: "insurance_agent#{i}@example.com",
+        password: 'password123',
+        role: "Insurance Agent",
+        first_name: top_100_first_names[rand(0..99)],
+        last_name: top_100_last_names[rand(0..99)]
+    )
+}
+puts "Created #{NUM_RECORDS} insurance agent models..."
 
-GeneratedReleaseForm.create!(
-    claim_number:           "123456789",
-    date_of_incident:       "9-10-2021",
-    defendant_name:         "Danny Defendant",
-    incident_description:   "car accident",
-    insurance_company_name: "Geico",
-    law_firm_name:          "Saul Goodman & Associates",
-    place_of_incident:      "Memphis, TN",
-    plaintiff_name:         "Patty Plaintiff",
-    policy_number:          "PO12345",
-    settlement_amount:      2400.4,
-    lawyer: user1,
-    insurance_agent: user2
-)
+release_forms = Array.new(NUM_RECORDS) {|i|
+    ReleaseForm.create!(
+        claim_number:           "#{rand(100000..999999)}",
+        policy_number:          "P#{rand(10000..99999)}",
+        settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
+        lawyer: lawyers[i],
+        insurance_agent: insurance_agents[i]
+    )
+}
+puts "Created #{NUM_RECORDS} release form models..."
 
-rf = ReleaseForm.create!(
-    claim_number:           "123456789",
-    policy_number:          "PO12345",
-    settlement_amount:      2400.4,
-    lawyer: user3,
-    insurance_agent: user2              
-)
+generated_release_forms = Array.new(NUM_RECORDS) {|i|
+    GeneratedReleaseForm.create!(
+        claim_number:           "#{rand(100000..999999)}",
+        policy_number:          "P#{rand(10000..99999)}",
+        settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
+        date_of_incident:       "9-10-2021",
+        defendant_name:         "Danny Defendant",
+        incident_description:   "car accident",
+        law_firm_name:          "Saul Goodman & Associates",
+        place_of_incident:      "Memphis, TN",
+        plaintiff_name:         "Patty Plaintiff",
+        lawyer: lawyers[i],
+        insurance_agent: insurance_agents[i]
+    )
+}
+puts "Created #{NUM_RECORDS} generated release form models..."
 
-Comment.create!(
-    content: "This is the worst release form I have ever seen! Rejected!",
-    release_form: rf
-)
+comments = Array.new(NUM_RECORDS) {|i|
+    Comment.create!(
+        content: "This is blank! What gives??",
+        release_form: release_forms[i],
+        author: lawyers[i]
+    )
+    Comment.create!(
+        content: "Please fix XYZ and send it back to me! Thanks!",
+        release_form: generated_release_forms[i],
+        author: lawyers[i]
+    )
+}
+puts "Created #{NUM_RECORDS*2} comment models..."
+puts "Completed DB seeding!"
