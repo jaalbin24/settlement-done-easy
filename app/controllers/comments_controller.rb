@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
         comment = release_form.comments.build(comment_params)
         release_form.update_attribute(:status, "Rejected")
         if comment.save
+            UserMailer.with(user: @release_form.insurance_agent).lawyer_reject_notification.deliver_later
             redirect_to(release_form_index_path) 
         end
     end
