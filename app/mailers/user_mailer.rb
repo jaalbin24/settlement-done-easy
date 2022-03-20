@@ -9,6 +9,16 @@ class UserMailer < ApplicationMailer
         mail(to: @user.email, subject: 'Welcome to Settlement Done Easy')
     end
 
+    def insurance_new_notification
+        @user = params[:user]
+        mail(to: @user.email, subject: 'A New Document is Ready For Review.')
+    end
+
+    def insurance_edit_notification
+        @user = params[:user]
+        mail(to: @user.email, subject: 'A Revised Document is Ready For Review.')
+    end
+
     def lawyer_approve_notification
         @user = params[:user]
         mail(to: @user.email, subject: 'A document has been approved.')
