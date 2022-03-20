@@ -2,7 +2,7 @@
 <p class="text-center">Only the lawyers will see this page. Insurance agents will never need to see this page.</p>
 <div class="w-25 float-left position-absolute">
     <div class="d-grid gap-2">
-        <h4 class="text-center mt-4"><%= link_to "Approve", approve_form_path(), method: :post, class: 'btn btn-lg btn-success', style: "height:50px; width:300px;" %></h4>
+        <%=link_to 'Approve', release_form_ready_to_send_path(@release_form), class: 'btn btn-lg btn-success'%>
         <h4 class="text-center mt-4">OR</h4>
     </div>
     <%= bootstrap_form_with model: @comment, method: :post, url: comment_create_path(@release_form), local: true do |form| %>
