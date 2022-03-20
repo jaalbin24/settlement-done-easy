@@ -54,7 +54,8 @@ class ReleaseFormsController < ApplicationController
     end
 
     def index
-        @release_forms = ReleaseForm.all
+        @user = current_user
+        @release_forms = @user.lawyer_owned_release_forms + @user.insurance_agent_owned_release_forms
         render :index
     end
 
