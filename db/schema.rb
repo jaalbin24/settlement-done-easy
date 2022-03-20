@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2022_03_18_013152) do
     t.string "incident_description"
     t.date "date_of_incident"
     t.float "settlement_amount", default: 0.0, null: false
-    t.string "status", default: "Incomplete", null: false
+    t.string "status", default: "Reviewable", null: false
     t.boolean "approved_by_lawyer", default: false, null: false
     t.integer "lawyer_id"
     t.integer "insurance_agent_id"

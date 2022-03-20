@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   get 'release_forms/:id',                    to: 'release_forms#show',                 as: 'release_form_show'
   get 'release_forms/edit/:id',               to: 'release_forms#edit',                 as: 'release_form_edit'
   get 'release_forms/:id/ready_to_send',      to: 'release_forms#ready_to_send',        as: 'release_form_ready_to_send'
+  post 'release_forms/approve/:id',           to: 'release_forms#approve_form',         as: 'approve_form'
+
   post 'release_forms/new',                   to: 'release_forms#create',               as: 'release_form_create'
   patch 'release_forms/:id',                  to: 'release_forms#update',               as: 'release_form_update'
   patch 'release_forms/:id/send_to_client',   to: 'release_forms#send_to_client',       as: 'release_form_send_to_client'
@@ -32,8 +34,5 @@ Rails.application.routes.draw do
   # Generated release form destruction is also handled by the release_forms controller.
   
   post 'comment/:release_form_id',            to: 'comments#create',                    as: 'comment_create'
-
-
-
 
 end

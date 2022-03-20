@@ -5,7 +5,7 @@
         <%=link_to 'Approve', release_form_ready_to_send_path(@release_form), class: 'btn btn-lg btn-success'%>
         <h4 class="text-center mt-4">OR</h4>
     </div>
-    <%= bootstrap_form_with model: @comment, url: comment_create_path(@release_form), local: true do |form| %>
+    <%= bootstrap_form_with model: @comment, method: :post, url: comment_create_path(@release_form), local: true do |form| %>
     <div>
         <%= form.text_area :content, class: "form-control", placeholder: "Add reason for rejection here."%>
         <br>
