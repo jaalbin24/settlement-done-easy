@@ -1,6 +1,5 @@
 class GeneratedReleaseFormsController < ApplicationController
-    # This is essentially the "New" method for generated release forms. It's just a different name
-    before_action :authenticate_user!
+    # before_action :authenticate_user!
 
     def new
         @release_form = GeneratedReleaseForm.new

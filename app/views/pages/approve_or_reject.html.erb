@@ -1,21 +1,43 @@
-<h1 class="text-center">This is the Approve/Reject page</h1>
+<h1 class="text-center">Review Release Form</h1>
 <p class="text-center">Only the lawyers will see this page. Insurance agents will never need to see this page.</p>
-<div class="w-25 float-left position-absolute">
-    <div class="d-grid gap-2">
-        <%=link_to 'Approve', release_form_ready_to_send_path(@release_form), class: 'btn btn-lg btn-success'%>
-        <h4 class="text-center mt-4">OR</h4>
+
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                <%=link_to 'Approve', release_form_ready_to_send_path(@release_form), class: 'btn btn-lg btn-success w-100'%>
+            </div>
+            <div class="col">
+                <%=link_to 'Reject', nil, class: 'btn btn-lg btn-danger w-100'%>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p class="text-center">You will be taken to a page where you can request a signature from your client.</p>
+            </div>
+            <div class="col">
+                <p class="text-center">You will be able to request changes from the insurance agent.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <%= bootstrap_form_with model: @comment, method: :post, url: comment_create_path(@release_form), local: true do |form| %>
+                    <div>
+                        <%= form.text_area :content, class: "form-control", autofocus: "autofocus", placeholder: "Add reason for rejection here."%>
+                        <br>
+                        <%=form.submit("Post Comment")%>
+                    </div>
+                <% end %>
+                <br>
+                <%=render "comments"%>
+            </div>
+        </div>
     </div>
-    <%= bootstrap_form_with model: @comment, method: :post, url: comment_create_path(@release_form), local: true do |form| %>
-    <div>
-        <%= form.text_area :content, class: "form-control", placeholder: "Add reason for rejection here."%>
-        <br>
-        <%=form.submit("Reject")%>
+    <div class="col">
+      <embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="100%" height="800" style="border: none;">
     </div>
-    <% end %>
-    <br>
-    <%=render "comments"%>
 </div>
-<div style="width: 50%; float: right;">
-    <embed src="<%=rails_blob_path(@release_form.pdf)%>" type="application/pdf" width="595" height="770" style="border: none;">
-</div>
+
 
