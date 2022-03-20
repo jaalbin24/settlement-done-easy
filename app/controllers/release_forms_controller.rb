@@ -66,8 +66,9 @@ class ReleaseFormsController < ApplicationController
     end
 
     def approve_form
-        release_form = ReleaseForm.find(params[:id])
-        release_form.update_attribute(:status, "Approved")
+        @release_form = ReleaseForm.find(params[:id])
+        @release_form.update_attribute(:status, "Approved")
+        UserMailer.with(user: @release_form.insurance_agent).lawyer_approve_notification.deliver_later
         redirect_to(release_form_index_path)
     end
 end
