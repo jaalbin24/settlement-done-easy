@@ -1,5 +1,6 @@
 class ReleaseFormsController < ApplicationController
-    before_action :authenticate_user!
+    include DsEnvelope
+    # before_action :authenticate_user!
 
     def new
         @release_form = ReleaseForm.new
@@ -56,6 +57,26 @@ class ReleaseFormsController < ApplicationController
     def index
         @release_forms = ReleaseForm.all
         render :index
+    end
+
+    def ready_to_send
+        @release_form = ReleaseForm.find(params[:id])
+        render :ready_to_send
+    end
+
+    def send_to_client
+        @release_form = ReleaseForm.find(params[:id])
+        envelope_args = {
+            email_subject: 'Signature Required!',
+            signer_email: params[:client_email],
+            signer_name: params[:client_name],
+            cc_email: Rails.configuration.APP_EMAIL,
+            cc_name: 'Settlement Done Easy',
+            status: 'sent'
+        }
+        create_and_send(@release_form.pdf, envelope_args)
+        flash[:success] = "Sent signature request to #{params[:client_email]}"
+        redirect_to root_path
     end
 
     # Defines what parameters can be accepted from a browser. This is for security. Without defining the data expected from the browser,
