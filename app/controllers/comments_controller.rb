@@ -4,8 +4,10 @@ class CommentsController < ApplicationController
     def create
         release_form = ReleaseForm.find(params[:release_form_id])
         comment = release_form.comments.build(comment_params)
+        release_form.update_attribute(:status, "Rejected")
         if comment.save
-            redirect_back(fallback_location: root_path)
+            UserMailer.with(user: @release_form.insurance_agent).lawyer_reject_notification.deliver_later
+            redirect_to(release_form_index_path) 
         end
     end
 

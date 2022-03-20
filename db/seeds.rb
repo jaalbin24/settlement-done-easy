@@ -18,6 +18,12 @@ user2 = User.create!(
     role: "Insurance Agent"
 )
 
+user3 = User.create!(
+    email: 'lawyer2@example.com',
+    password: 'password123',
+    role: "Lawyer"
+)
+
 GeneratedReleaseForm.create!(
     claim_number:           "123456789",
     date_of_incident:       "9-10-2021",
@@ -37,7 +43,7 @@ rf = ReleaseForm.create!(
     claim_number:           "123456789",
     policy_number:          "PO12345",
     settlement_amount:      2400.4,
-    lawyer: user1,
+    lawyer: user3,
     insurance_agent: user2              
 )
 
