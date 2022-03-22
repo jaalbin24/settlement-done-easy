@@ -14,7 +14,7 @@
 #  plaintiff_name         :string
 #  policy_number          :string
 #  settlement_amount      :float            default(0.0), not null
-#  status                 :string           default("Reviewable"), not null
+#  status                 :string           default("waiting_for_review"), not null
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
