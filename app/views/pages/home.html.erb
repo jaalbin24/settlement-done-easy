@@ -1,2 +1,13 @@
-<h1>Hello!</h1>
-<p>This is the Home page!</p>
+<h1 class="text-center mb-4">The Dashboard</h1>
+
+<div class="container" style="height: 20.4rem;">
+    <div class="row h-100">
+        <div class="col h-100">
+            <%=render "action_needed"%>
+            <%=render "waiting_on"%>
+        </div>
+        <div class="col h-100">
+            <%=render "active_settlements"%>
+        </div>
+    </div>
+</div>
