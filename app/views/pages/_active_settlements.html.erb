@@ -1,9 +1,9 @@
 <div class="card text-white bg-dark h-100">
     <div class="card-header"><h4 class="m-0">Active Settlements</h4></div>
     <div class="list-group overflow-auto" style="max-height: 100%;">
-        <%10.times do |i|%>
+        <%@user.settlements.each do |s|%>
             <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                Settlement #<%=i+1%>
+                <%=s.lawyer.full_name%> for $<%=s.settlement_amount%>
             </a>
         <%end%>
     </div>
