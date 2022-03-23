@@ -36,6 +36,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :role
       t.string :first_name
       t.string :last_name
+      t.string :organization # The company/firm each user represents
 
       t.timestamps null: false
     end

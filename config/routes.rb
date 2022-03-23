@@ -35,4 +35,8 @@ Rails.application.routes.draw do
   
   post 'comment/:release_form_id',            to: 'comments#create',                    as: 'comment_create'
 
+  get 'settlements/new',                      to: 'settlements#new',                    as: 'settlement_new'
+  post 'settlements',                         to: 'settlements#create',                 as: 'settlement_create'
+  get 'settlements/start_with_who',           to: 'settlements#start_with_who',         as: 'settlement_start_with_who'
+
 end
