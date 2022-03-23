@@ -6,8 +6,8 @@ top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"
 insurance_companies = ["State Farm", "Geico", "Berkshire Hathaway", "Progressive", "Allstate", "Liberty Mutual", "USAA", "Nationwide"]
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims"]
 # For generating random organizations to which each user belongs
-SEED_SIZE = 5
-NUM_SETTLEMENTS = SEED_SIZE * 5
+SEED_SIZE = 10
+NUM_SETTLEMENTS = SEED_SIZE * 10
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
 lawyers = Array.new(SEED_SIZE) {|i|
     User.create!(
@@ -36,16 +36,7 @@ puts "Created #{SEED_SIZE} insurance agent models..."
 settlements = Array.new(NUM_SETTLEMENTS) {|i|
     lawyer = lawyers[rand(0..lawyers.size-1)]
     insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
-    settlement = lawyer.settlements.build(
-        lawyer:             lawyer,
-        insurance_agent:    insurance_agent,
-        claim_number:       "#{rand(100000..999999)}",
-        policy_number:      "P#{rand(10000..99999)}",
-        settlement_amount:  '%.02f' % rand(100000..1000000).fdiv(100),
-        defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
-        plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}"
-    )
-    settlement = insurance_agent.settlements.build(
+    settlement = Settlement.new(
         lawyer:             lawyer,
         insurance_agent:    insurance_agent,
         claim_number:       "#{rand(100000..999999)}",

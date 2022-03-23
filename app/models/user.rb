@@ -30,20 +30,6 @@ class User < ApplicationRecord
   validates :first_name, :last_name, presence: true
 
   has_many(
-    :lawyer_owned_release_forms,
-    class_name: 'ReleaseForm',
-    foreign_key: 'lawyer_id',
-    inverse_of: :lawyer
-  )
-
-  has_many(
-    :insurance_agent_owned_release_forms,
-    class_name: 'ReleaseForm',
-    foreign_key: 'insurance_agent_id',
-    inverse_of: :insurance_agent
-  )
-
-  has_many(
     :comments,
     class_name: 'Comment',
     foreign_key: 'user_id',
@@ -51,14 +37,14 @@ class User < ApplicationRecord
   )
 
   has_many(
-    :settlements,
+    :l_settlements,
     class_name: 'Settlement',
     foreign_key: 'lawyer_id',
     inverse_of: :lawyer
   )
 
   has_many(
-    :settlements,
+    :ia_settlements,
     class_name: 'Settlement',
     foreign_key: 'insurance_agent_id',
     inverse_of: :insurance_agent
@@ -84,4 +70,11 @@ class User < ApplicationRecord
     return role == "Insurance Agent"
   end
 
+  def settlements
+    if isLawyer?
+      return l_settlements
+    elsif isInsuranceAgent?
+      return ia_settlements
+    end
+  end
 end

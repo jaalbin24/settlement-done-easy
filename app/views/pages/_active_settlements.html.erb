@@ -1,10 +1,29 @@
 <div class="card text-white bg-dark h-100">
     <div class="card-header"><h4 class="m-0">Active Settlements</h4></div>
-    <div class="list-group overflow-auto" style="max-height: 100%;">
-        <%@user.settlements.each do |s|%>
-            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                <%=s.lawyer.full_name%> for $<%=s.settlement_amount%>
-            </a>
-        <%end%>
-    </div>
+    <table class="table table-sm table-hover table-borderless" style="max-height: 100%;">
+        <thead class="border-bottom border-secondary">
+            <tr>
+                <th>Name</th>
+                <th>Firm</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%@user.settlements.each do |s|%>
+                <%if @user.isInsuranceAgent?%>
+                    <tr class="table-secondary">
+                        <td><%=s.lawyer.full_name%></td>
+                        <td><%=s.lawyer.organization%></td>
+                        <td>$<%=s.settlement_amount%></td>
+                    </tr>
+                <%else%>
+                    <tr class="table-secondary">
+                        <td><%=s.insurance_agent.full_name%></td>
+                        <td><%=s.insurance_agent.organization%></td>
+                        <td>$<%=s.settlement_amount%></td>
+                    </tr>
+                <%end%>
+            <%end%>
+        </tbody>
+    </table>
 </div>

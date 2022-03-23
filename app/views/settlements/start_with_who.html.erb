@@ -6,22 +6,12 @@
         <div class="card-body">
 
             <div class="mb-3">
-            <%= f.label :name, { class: "form-label"} %>
-            <%= f.text_field :name, { class: "form-control", placeholder: "Site Name", autofocus: "" } %>
-            </div>
-
-            <div class="mb-3">
-            <%= f.label :code, { class: "form-label"} %>
-            <%= f.text_field :code, { class: "form-control", placeholder: "Site Code" } %>
-            </div>
-
-            <div class="mb-3">
-            <%= f.label :select_one, { class: "form-label"} %>
-            <select class="form-select" name="settlement[user]">
-                <%@users.each do |u|%>
-                    <option><%=u.full_name%> (<%=u.organization%>)</option>
-                <%end%>
-            </select>
+                <%= f.label :select_one, { class: "form-label"} %>
+                <select class="form-select" name="settlement[user]">
+                    <%@users.each do |u|%>
+                        <option><%=u.full_name%> (<%=u.organization%>)</option>
+                    <%end%>
+                </select>
             </div>
 
             <%= f.submit "Start", class: "btn btn-primary" %>
