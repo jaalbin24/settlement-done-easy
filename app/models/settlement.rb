@@ -29,7 +29,6 @@ class Settlement < ApplicationRecord
         :lawyer,
         class_name: "User",
         foreign_key: "lawyer_id",
-        inverse_of: :settlements,
         dependent: :destroy
     )
 
@@ -37,7 +36,6 @@ class Settlement < ApplicationRecord
         :insurance_agent,
         class_name: "User",
         foreign_key: "insurance_agent_id",
-        inverse_of: :settlements,
         dependent: :destroy
     )
 
