@@ -16,16 +16,17 @@
 
             <div class="mb-3">
             <%= f.label :settlement_amount, { class: "form-label"} %>
-            <%= f.text_field :settlement_amount, { class: "form-control", placeholder: "Defendent name" } %>
+            <%= f.text_field :settlement_amount, { class: "form-control", placeholder: "Settlement amount" } %>
             </div>
 
             <div class="mb-3">
-            <%= f.label :select_one, { class: "form-label"} %>
-            <select class="form-select" name="settlement[user]">
-                <%@users.each do |u|%>
-                    <option><%=u.full_name%> (<%=u.organization%>)</option>
+                <%= f.label :select_one, { class: "form-label"} %>
+                <%if current_user.isLawyer?%>
+                    <%= f.select :insurance_agent, options_for_select(User.all_insurance_agents.map { |user| ["#{user.full_name}"]}, selected: session['new_settlement_partner_id']), html: {selected: true} %>
+                    <%= f.select :insurance_agent, User.all_insurance_agents.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:selected => f.object.insurance_agent, :class => "form-select"}%>
+                <%else%>
+                    <%= f.select :lawyer, User.all_lawyers.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:class => "form-select"}%>
                 <%end%>
-            </select>
             </div>
 
             <%= f.submit "Start", class: "btn btn-primary" %>

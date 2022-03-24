@@ -1,43 +1,51 @@
 class SettlementsController < ApplicationController
-    # before_action :authenticate_user!
+    before_action :authenticate_user!
+    def partner_selected
+        session['new_settlement_partner_id'] = params[:settlement][:insurance_agent]
+        redirect_to settlement_new_path
+    end
+
     def new
-        if current_user != nil
+        if current_user.isLawyer?
             @settlement = Settlement.new
-            if current_user.isLawyer?
-                @users = User.all_insurance_agents
-            elsif current_user.isInsuranceAgent?
-                @users = User.all_lawyers
-            else
-                @users = nil
-            end
+            @users = User.all_insurance_agents
+            render :new
+        elsif current_user.isInsuranceAgent?
+            @settlement = Settlement.new
+            @users = User.all_lawyers
             render :new
         else
-            redirect_to release_form_index_url
+            flash[:error] = "You should not be here!"
+            redirect_to root_path
         end
     end
 
     def create
         user = current_user
-        user.settlements.build(settlement_params)
-    end
-
-    def start_with_who
-        if current_user != nil
-            @settlement = Settlement.new
-            if current_user.isLawyer?
-                @users = User.all_insurance_agents
-            elsif current_user.isInsuranceAgent?
-                @users = User.all_lawyers
-            else
-                @users = nil
-            end
-            render :start_with_who
+        settlement = user.settlements.build(settlement_params)
+        if settlement.save
+            flash[:success] = "Settlement started with #{settlement.partner_of(user)}"
+            redirect_to root_path
         else
-            redirect_to release_form_index_url
+            flash.now[:error] = "Settlement not created!"
+            render :new
         end
     end
 
-    def settlement_params(params)
+    def start_with_who
+        @settlement = Settlement.new
+        if current_user.isLawyer?
+            @users = User.all_insurance_agents
+            render :start_with_who
+        elsif current_user.isInsuranceAgent?
+            @users = User.all_lawyers
+            render :start_with_who
+        else
+            redirect_to root_path
+        end
+    end
+
+    def settlement_params
         params.require(:settlement).permit(
             :lawyer,
             :insurance_agent,
@@ -45,7 +53,8 @@ class SettlementsController < ApplicationController
             :policy_number,
             :settlement_amount,
             :defendent_name,
-            :plaintiff_name
+            :plaintiff_name,
+            :partner_id
         )
     end
 end

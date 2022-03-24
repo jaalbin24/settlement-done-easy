@@ -77,4 +77,14 @@ class User < ApplicationRecord
       return ia_settlements
     end
   end
+
+  def opposite_role
+    if isLawyer?
+      return :insurance_agent
+    elsif isInsuranceAgent?
+      return :lawyer
+    else
+      return
+    end
+  end
 end
