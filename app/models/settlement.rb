@@ -45,4 +45,12 @@ class Settlement < ApplicationRecord
         foreign_key: "settlement_id",
         inverse_of: :settlement
     )
+
+    def partner_of(user)
+        if user.isLawyer?
+            return insurance_agent
+        elsif user.isInsuranceAgent?
+            return lawyer
+        end
+    end
 end
