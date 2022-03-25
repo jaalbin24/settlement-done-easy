@@ -56,9 +56,9 @@
         </div>
       </div>
     </nav>
-    <div class="d-flex justify-content-end">
+    <div>
       <% flash.each do |key, message| %>
-        <div class="alert alert-dismissible <%=flash_class(key)%> position-absolute">
+        <div class="alert alert-dismissible <%=flash_class(key)%> text-center">
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           <%=message.html_safe%>
         </div>

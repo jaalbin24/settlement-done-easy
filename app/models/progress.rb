@@ -44,6 +44,41 @@ class Progress < ApplicationRecord
         dependent: :destroy
     )
 
+    def status_action_path(settlement)
+        status = settlement.progress.status
+        case settlemenet.progress.stage
+        when 1
+            case status
+            when 1
+                return release_form_new_path(settlement)
+            when 2
+                return approve_or_reject_path(settlement.release_form)
+            when 3
+                return release_form_new_path(settlement)
+            end
+        when 2
+            case status
+            when 1
+                return "#"
+            when 2
+                return "#"
+            when 3
+                return "#"
+            end
+        when 3
+            case status
+            when 1
+                return "#"
+            when 2
+                return "#"
+            when 3
+                return "#"
+            end
+        when 4
+            return "#"
+        end
+    end
+
     def status_message
         case stage
         when 1
@@ -79,17 +114,13 @@ class Progress < ApplicationRecord
     end
 
     def update
-        puts "================== PROGRESS MODEL UPDATING"
         if stage == 1
             if !settlement.hasDocument?
-                puts "================== STATUS = 1"
                 self.status = 1
             elsif !settlement.release_form.approved?
                 if !settlement.release_form.adjustmentNeeded?
-                    puts "================== STATUS = 2"
                     self.status = 2
                 else
-                    puts "================== STATUS = 3"
                     self.status = 3
                 end
             elsif settlement.release_form.approved?
