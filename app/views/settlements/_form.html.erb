@@ -1,0 +1,73 @@
+<%= form_with model: @settlement, url: path, local: true do |f| %>
+    <div class="card">
+        <div class="card-body bg-dark">
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                    <%= f.label "Claimant", { class: "form-label"} %>
+                    <%= f.text_field :plaintiff_name, { class: "form-control", placeholder: "Claimant", :required => true }%>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                    <%= f.label "Policy holder", { class: "form-label"} %>
+                    <%= f.text_field :defendent_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                    <%= f.label "Date of incident", { class: "form-label"} %>
+                    <%= f.date_field :incident_date, { class: "form-control", :required => true } %>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                    <%= f.label "Location of incident", { class: "form-label"} %>
+                    <%= f.text_field :incident_location, { class: "form-control", placeholder: "Location", :required => true } %>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                    <%= f.label "Amount", { class: "form-label"} %>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input class="form-control" step="0.01" required="required" type="number" value="<%=@settlement.settlement_amount%>" name="settlement[settlement_amount]" id="settlement_settlement_amount">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                    <%= f.label "Claim number", { class: "form-label"} %>
+                    <%= f.text_field :claim_number, { class: "form-control", placeholder: "Claim number", :required => true } %>
+                    </div>
+                </div>
+            </div>
+            <%if submit_label != "Edit"%>
+            <div class="mb-3">
+                <%if current_user.isLawyer?%>
+                    <%= f.label "Insurance agent", {class: "form-label"} %>
+                <%else%>
+                    <%= f.label "Lawyer", {class: "form-label"} %>
+                <%end%>
+                <select class="form-select" name="partner_id" required>
+                    <option disabled selected value>Select here</option>
+                    <%if current_user.isLawyer?%>
+                        <%User.all_insurance_agents.each do |u|%>
+                        <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization})"%></option>
+                        <%end%>
+                    <%else%>
+                        <%User.all_lawyers.each do |u|%>
+                        <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization})"%></option>
+                        <%end%>
+                    <%end%>
+                </select>
+            </div>
+            <%end%>
+            <%= f.submit "#{submit_label}", class: "btn btn-primary" %>
+        </div>
+    </div>
+<% end %>

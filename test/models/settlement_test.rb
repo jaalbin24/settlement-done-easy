@@ -4,8 +4,9 @@
 #
 #  id                 :integer          not null, primary key
 #  claim_number       :string
-#  date_of_incident   :date
 #  defendent_name     :string
+#  incident_date      :date
+#  incident_location  :string
 #  plaintiff_name     :string
 #  policy_number      :string
 #  settlement_amount  :float

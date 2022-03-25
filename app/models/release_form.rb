@@ -46,16 +46,11 @@ class ReleaseForm < ApplicationRecord
         class_name: 'Settlement',
         foreign_key: 'settlement_id',
         inverse_of: :release_form,
-        dependent: :destroy
     )
 
     validates :settlement_amount, numericality: true
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
     
-    validates :claim_number, presence: true
-    validates :policy_number, presence: true
-    validates :settlement_amount, presence: true
-    validates :status, presence: true
     validates :pdf, presence: true
 
     # before_save do

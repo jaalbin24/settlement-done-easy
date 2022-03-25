@@ -14,12 +14,12 @@
                 <tr class="table-secondary">
                     <%if @user.isInsuranceAgent?%>
                         <td><%=render "status"%></td>
-                        <td><%=link_to s.lawyer.full_name, nil%></td>
+                        <td><%=link_to s.lawyer.full_name, settlement_show_path(s)%></td>
                         <td><%=s.lawyer.organization%></td>
                         <td>$<%=s.settlement_amount%></td>
                     <%else%>
                         <td><%=render "status"%></td>
-                        <td><%=link_to s.insurance_agent.full_name, nil%></td>
+                        <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
                         <td><%=s.insurance_agent.organization%></td>
                         <td>$<%=s.settlement_amount%></td>
                     <%end%>

@@ -33,21 +33,24 @@ class User < ApplicationRecord
     :comments,
     class_name: 'Comment',
     foreign_key: 'user_id',
-    inverse_of: :author
+    inverse_of: :author,
+    dependent: :destroy
   )
 
   has_many(
     :l_settlements,
     class_name: 'Settlement',
     foreign_key: 'lawyer_id',
-    inverse_of: :lawyer
+    inverse_of: :lawyer,
+    dependent: :destroy
   )
 
   has_many(
     :ia_settlements,
     class_name: 'Settlement',
     foreign_key: 'insurance_agent_id',
-    inverse_of: :insurance_agent
+    inverse_of: :insurance_agent,
+    dependent: :destroy
   )
 
   def full_name
