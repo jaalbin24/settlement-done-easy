@@ -44,41 +44,6 @@ class Progress < ApplicationRecord
         dependent: :destroy
     )
 
-    def status_action_path(settlement)
-        status = settlement.progress.status
-        case settlemenet.progress.stage
-        when 1
-            case status
-            when 1
-                return release_form_new_path(settlement)
-            when 2
-                return approve_or_reject_path(settlement.release_form)
-            when 3
-                return release_form_new_path(settlement)
-            end
-        when 2
-            case status
-            when 1
-                return "#"
-            when 2
-                return "#"
-            when 3
-                return "#"
-            end
-        when 3
-            case status
-            when 1
-                return "#"
-            when 2
-                return "#"
-            when 3
-                return "#"
-            end
-        when 4
-            return "#"
-        end
-    end
-
     def status_message
         case stage
         when 1
