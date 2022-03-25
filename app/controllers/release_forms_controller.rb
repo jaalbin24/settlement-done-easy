@@ -10,7 +10,7 @@ class ReleaseFormsController < ApplicationController
         settlement = Settlement.find(params[:settlement_id])
         @release_form = settlement.build_release_form(release_form_params)
         if @release_form.save
-            flash[:success] = "Release form added! Click <a href=#{release_form_show_path(@release_form)}>here<a> to view it."
+            flash[:info] = "Release form added! Click <a href=#{release_form_show_path(@release_form)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
         else
             flash.now[:error] = "Failed to upload release_form!"
@@ -27,7 +27,7 @@ class ReleaseFormsController < ApplicationController
         @release_form = ReleaseForm.find(params[:id])
         if @release_form.update(release_form_params)
             UserMailer.with(user: @release_form.lawyer).insurance_edit_notification.deliver_later
-            flash[:success] = "Release form updated!"
+            flash[:info] = "Release form updated!"
             @release_form.update_pdf
             # This^ should be moved to the release_form.rb file.
             # TODO: Move the PDF-updating feature to the model file. This should not be in the controller.
@@ -79,7 +79,7 @@ class ReleaseFormsController < ApplicationController
                 status: 'sent'
             }
             create_and_send(@release_form.pdf, envelope_args)
-            flash[:success] = "Sent signature request to #{params[:client_email]}"
+            flash[:info] = "Sent signature request to #{params[:client_email]}"
             redirect_to root_path
         else
             flash[:error] = "Release Form must be approved first! Click #{view_context.link_to('here', approve_or_reject_path(@release_form))} to approve it!".html_safe
