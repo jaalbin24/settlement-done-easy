@@ -12,6 +12,11 @@ Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
 
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip(
+    {container:'body', trigger: 'hover', placement:"right"}
+  );   
+});
 import 'bootstrap'
 import 'autosize'
 

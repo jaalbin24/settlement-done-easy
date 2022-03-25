@@ -7,6 +7,7 @@
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string
 #  last_name              :string
+#  organization           :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
@@ -29,28 +30,61 @@ class User < ApplicationRecord
   validates :first_name, :last_name, presence: true
 
   has_many(
-    :lawyer_owned_release_forms,
-    class_name: 'ReleaseForm',
-    foreign_key: 'lawyer_id',
-    inverse_of: :lawyer
-  )
-
-  has_many(
-    :insurance_agent_owned_release_forms,
-    class_name: 'ReleaseForm',
-    foreign_key: 'insurance_agent_id',
-    inverse_of: :insurance_agent
-  )
-
-  has_many(
     :comments,
     class_name: 'Comment',
     foreign_key: 'user_id',
     inverse_of: :author
   )
 
+  has_many(
+    :l_settlements,
+    class_name: 'Settlement',
+    foreign_key: 'lawyer_id',
+    inverse_of: :lawyer
+  )
+
+  has_many(
+    :ia_settlements,
+    class_name: 'Settlement',
+    foreign_key: 'insurance_agent_id',
+    inverse_of: :insurance_agent
+  )
+
   def full_name
     return "#{first_name} #{last_name}"
   end
 
+  def self.all_lawyers
+    return User.where(:role => "Lawyer").order(:first_name, :last_name, :organization)
+  end
+
+  def self.all_insurance_agents
+    return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization)
+  end
+
+  def isLawyer?
+    return role == "Lawyer"
+  end
+
+  def isInsuranceAgent?
+    return role == "Insurance Agent"
+  end
+
+  def settlements
+    if isLawyer?
+      return l_settlements
+    elsif isInsuranceAgent?
+      return ia_settlements
+    end
+  end
+
+  def opposite_role
+    if isLawyer?
+      return :insurance_agent
+    elsif isInsuranceAgent?
+      return :lawyer
+    else
+      return
+    end
+  end
 end

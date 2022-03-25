@@ -29,6 +29,9 @@
             <li class="nav-item">
               <%= link_to "Make a Payment", nil, class: 'nav-link'%>
             </li>
+            <li class="nav-item">
+              <%= link_to "New Settlement", settlement_start_with_who_path, class: 'nav-link'%>
+            </li>
           </ul>
           <ul class="navbar-nav ms-sm-auto">
             <% if user_signed_in? %>
