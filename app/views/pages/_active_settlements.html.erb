@@ -12,17 +12,15 @@
         <tbody>
             <%@user.settlements.each do |s|%>
                 <tr class="table-secondary">
+                    <td><%=render "status", settlement: s%></td>
                     <%if @user.isInsuranceAgent?%>
-                        <td><%=render "status"%></td>
                         <td><%=link_to s.lawyer.full_name, nil%></td>
                         <td><%=s.lawyer.organization%></td>
-                        <td>$<%=s.settlement_amount%></td>
                     <%else%>
-                        <td><%=render "status"%></td>
                         <td><%=link_to s.insurance_agent.full_name, nil%></td>
                         <td><%=s.insurance_agent.organization%></td>
-                        <td>$<%=s.settlement_amount%></td>
                     <%end%>
+                    <td>$<%=s.settlement_amount%></td>
                 </tr>
             <%end%>
         </tbody>
