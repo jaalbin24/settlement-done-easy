@@ -8,6 +8,7 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string :plaintiff_name
       t.string :incident_location
       t.date :incident_date
+      t.boolean :signature_requested, null: false, default: false
 
       t.timestamps
     end

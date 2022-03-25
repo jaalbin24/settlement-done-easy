@@ -46,24 +46,17 @@ settlements = Array.new(NUM_SETTLEMENTS) {|i|
         incident_location:  "Memphis, TN",
         incident_date:      Date.new(rand(2019..2021), rand(1..12), rand(1..28))
     )
+    settlement.build_release_form(
+        claim_number:           "#{rand(100000..999999)}",
+        policy_number:          "P#{rand(10000..99999)}",
+        settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100)
+    )
     if !settlement.save
         puts "SAVE FAILED: #{settlement.errors.full_messages.inspect}"
     end
     settlement
 }
 puts "Created #{NUM_SETTLEMENTS} settlement models..."
-
-release_forms = Array.new(NUM_SETTLEMENTS) {|i|
-    release_form = ReleaseForm.new(
-        claim_number:           "#{rand(100000..999999)}",
-        policy_number:          "P#{rand(10000..99999)}",
-        settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100)
-    )
-    release_form.settlement = settlements[i]
-    release_form.save
-    release_form
-}
-puts "Created #{NUM_SETTLEMENTS} release form models..."
 
 # generated_release_forms = Array.new(SEED_SIZE) {|i|
 #     GeneratedReleaseForm.new(

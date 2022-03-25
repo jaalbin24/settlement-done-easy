@@ -2,18 +2,7 @@
 #
 # Table name: settlements
 #
-#  id                 :integer          not null, primary key
-#  claim_number       :string
-#  defendent_name     :string
-#  incident_date      :date
-#  incident_location  :string
-#  plaintiff_name     :string
-#  policy_number      :string
-#  settlement_amount  :float
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  insurance_agent_id :integer
-#  lawyer_id          :integer
+
 #
 # Indexes
 #
