@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Details</h1>
+            <%=render "form", path: settlement_update_path(@settlement), submit_label: "Edit"%>
+            <div class="list-group">
+                <%if @settlement.release_form != nil%>
+                    <%=link_to "View documents", release_form_show_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
+                <%else%>
+                    <%=link_to "Upload documents", release_form_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
+                <%end%>
+                <a href="#" class="list-group-item list-group-item-action disabled">Get Signature</a>
+                <a href="#" class="list-group-item list-group-item-action disabled">Close Settlement</a>
+                <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action"%>
+
+            </div>
+        </div>
+        <div class="col">
+            <h1 class="text-center">Activity</h1>
+            <div class="bg-primary w-100" style="height: 30rem">
+                <h3 class="text-center align-middle">The activity log will go here.</h3>
+            </div>
+        </div>
+    </div>
+</div>
