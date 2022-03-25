@@ -11,10 +11,9 @@ class CreateReleaseForms < ActiveRecord::Migration[6.1]
       t.string :incident_description
       t.date :date_of_incident
       t.float :settlement_amount,         null: false, default: 0
-      t.string :status,                   null: false, default: "waiting_for_review"
-      t.boolean :approved_by_lawyer,      null: false, default: false
-      t.references :lawyer
-      t.references :insurance_agent
+      t.boolean :approved,                null: false, default: false
+      t.boolean :adjustment_needed,       null: false, default: false
+      t.boolean :signed,                  null: false, default: false
       t.references :settlement
 
       t.timestamps
