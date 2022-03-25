@@ -40,10 +40,11 @@ settlements = Array.new(NUM_SETTLEMENTS) {|i|
         lawyer:             lawyer,
         insurance_agent:    insurance_agent,
         claim_number:       "#{rand(100000..999999)}",
-        policy_number:      "P#{rand(10000..99999)}",
         settlement_amount:  '%.02f' % rand(100000..1000000).fdiv(100),
         defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
-        plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}"
+        plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
+        incident_location:  "Memphis, TN",
+        incident_date:      Date.new(rand(2019..2021), rand(1..12), rand(1..28))
     )
     if !settlement.save
         puts "SAVE FAILED: #{settlement.errors.full_messages.inspect}"

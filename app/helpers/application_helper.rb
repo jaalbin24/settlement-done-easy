@@ -11,9 +11,12 @@ module ApplicationHelper
       bootstrap_alert_class = {
         "success" => "alert-success",
         "error" => "alert-danger",
-        "notice" => "alert-info",
+        "danger" => "alert-danger",
+        "info" => "alert-info",
         "alert" => "alert-danger",
-        "warn" => "alert-warning"
+        "warning" => "alert-warning",
+        "secondary" => "alert-secondary",
+        "primary" => "alert-primary"
       }
       bootstrap_alert_class[level]
     end

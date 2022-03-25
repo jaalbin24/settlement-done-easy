@@ -1,8 +1,6 @@
 <%= bootstrap_form_with model: @release_form, url: path, local: true do |form| %>
   <div>
     <%=form.file_field :pdf, class: "form-control"%>
-    <%= form.text_field :claim_number, class: "form-control", placeholder: "Claim number"%>
-    <%= form.text_field :policy_number, class: "form-control", placeholder: "Policy number"%>
     <br>
     <%=form.submit("Upload")%>
   </div>
