@@ -14,10 +14,10 @@
                 <tr class="table-secondary">
                     <td><%=render "status", settlement: s%></td>
                     <%if @user.isInsuranceAgent?%>
-                        <td><%=link_to s.lawyer.full_name, nil%></td>
+                        <td><%=link_to s.lawyer.full_name, settlement_show_path(s)%></td>
                         <td><%=s.lawyer.organization%></td>
                     <%else%>
-                        <td><%=link_to s.insurance_agent.full_name, nil%></td>
+                        <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
                         <td><%=s.insurance_agent.organization%></td>
                     <%end%>
                     <td>$<%=s.settlement_amount%></td>
