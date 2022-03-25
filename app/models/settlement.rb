@@ -4,8 +4,9 @@
 #
 #  id                 :integer          not null, primary key
 #  claim_number       :string
-#  date_of_incident   :date
 #  defendent_name     :string
+#  incident_date      :date
+#  incident_location  :string
 #  plaintiff_name     :string
 #  policy_number      :string
 #  settlement_amount  :float
@@ -29,22 +30,23 @@ class Settlement < ApplicationRecord
         :lawyer,
         class_name: "User",
         foreign_key: "lawyer_id",
-        dependent: :destroy
     )
 
     belongs_to(
         :insurance_agent,
         class_name: "User",
         foreign_key: "insurance_agent_id",
-        dependent: :destroy
     )
 
     has_one(
         :release_form,
         class_name: "ReleaseForm",
         foreign_key: "settlement_id",
-        inverse_of: :settlement
+        inverse_of: :settlement,
+        dependent: :destroy
     )
+
+    # Validate lawyer.role == "Lawyer" and the same for insurance agents
 
     def partner_of(user)
         if user.isLawyer?

@@ -1,21 +1,19 @@
 class ReleaseFormsController < ApplicationController
     include DsEnvelope
     # before_action :authenticate_user!
-
-
     def new
         @release_form = ReleaseForm.new
         render :new
     end
 
     def create
-        @release_form = ReleaseForm.create(release_form_params)
+        settlement = Settlement.find(params[:settlement_id])
+        @release_form = settlement.build_release_form(release_form_params)
         if @release_form.save
-            UserMailer.with(user: @release_form.lawyer).insurance_new_notification.deliver_later
-            flash[:success] = "Release form created!"
-            redirect_to release_form_show_url(@release_form)
+            flash[:success] = "Release form added! Click <a href=#{release_form_show_path(@release_form)}>here<a> to view it."
+            redirect_to settlement_show_url(settlement)
         else
-            flash.now[:error] = "Failed to create release form!"
+            flash.now[:error] = "Failed to add release form"
             render :new
         end
     end

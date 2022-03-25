@@ -80,7 +80,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.float "settlement_amount"
     t.string "defendent_name"
     t.string "plaintiff_name"
-    t.date "date_of_incident"
+    t.string "incident_location"
+    t.date "incident_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lawyer_id"
