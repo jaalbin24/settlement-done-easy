@@ -1,10 +1,30 @@
 <div class="card text-white bg-dark h-100">
     <div class="card-header"><h4 class="m-0">Active Settlements</h4></div>
-    <div class="list-group overflow-auto" style="max-height: 100%;">
-        <%10.times do |i|%>
-            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                Settlement #<%=i+1%>
-            </a>
-        <%end%>
-    </div>
+    <table class="table table-sm table-hover table-borderless" style="max-height: 100%;">
+        <thead class="border-bottom border-secondary">
+            <tr>
+                <th>Status</th>
+                <th>Name</th>
+                <th>Firm</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%@user.settlements.each do |s|%>
+                <tr class="table-secondary">
+                    <%if @user.isInsuranceAgent?%>
+                        <td><%=render "status"%></td>
+                        <td><%=link_to s.lawyer.full_name, nil%></td>
+                        <td><%=s.lawyer.organization%></td>
+                        <td>$<%=s.settlement_amount%></td>
+                    <%else%>
+                        <td><%=render "status"%></td>
+                        <td><%=link_to s.insurance_agent.full_name, nil%></td>
+                        <td><%=s.insurance_agent.organization%></td>
+                        <td>$<%=s.settlement_amount%></td>
+                    <%end%>
+                </tr>
+            <%end%>
+        </tbody>
+    </table>
 </div>

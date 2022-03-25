@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_20_154344) do
+ActiveRecord::Schema.define(version: 2022_03_22_212943) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -61,15 +61,32 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.string "incident_description"
     t.date "date_of_incident"
     t.float "settlement_amount", default: 0.0, null: false
-    t.string "status", default: "Reviewable", null: false
+    t.string "status", default: "waiting_for_review", null: false
     t.boolean "approved_by_lawyer", default: false, null: false
     t.integer "lawyer_id"
     t.integer "insurance_agent_id"
+    t.integer "settlement_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "type"
     t.index ["insurance_agent_id"], name: "index_release_forms_on_insurance_agent_id"
     t.index ["lawyer_id"], name: "index_release_forms_on_lawyer_id"
+    t.index ["settlement_id"], name: "index_release_forms_on_settlement_id"
+  end
+
+  create_table "settlements", force: :cascade do |t|
+    t.string "claim_number"
+    t.string "policy_number"
+    t.float "settlement_amount"
+    t.string "defendent_name"
+    t.string "plaintiff_name"
+    t.date "date_of_incident"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "lawyer_id"
+    t.integer "insurance_agent_id"
+    t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
+    t.index ["lawyer_id"], name: "index_settlements_on_lawyer_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -81,6 +98,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.string "role"
     t.string "first_name"
     t.string "last_name"
+    t.string "organization"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -91,4 +109,6 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "release_forms"
   add_foreign_key "comments", "users"
+  add_foreign_key "settlements", "users", column: "insurance_agent_id"
+  add_foreign_key "settlements", "users", column: "lawyer_id"
 end

@@ -15,6 +15,7 @@ class CreateReleaseForms < ActiveRecord::Migration[6.1]
       t.boolean :approved_by_lawyer,      null: false, default: false
       t.references :lawyer
       t.references :insurance_agent
+      t.references :settlement
 
       t.timestamps
     end
