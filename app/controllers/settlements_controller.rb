@@ -68,7 +68,6 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        settlement.release_form.destroy
         settlement.destroy
         flash[:info] = "Settlement canceled"
         redirect_to root_path

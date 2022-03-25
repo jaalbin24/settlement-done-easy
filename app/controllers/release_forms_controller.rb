@@ -13,7 +13,7 @@ class ReleaseFormsController < ApplicationController
             flash[:success] = "Release form added! Click <a href=#{release_form_show_path(@release_form)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
         else
-            flash.now[:error] = "Failed to add release form"
+            flash.now[:error] = "Failed to upload release_form!"
             render :new
         end
     end
