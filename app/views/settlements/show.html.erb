@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+        <div class="card">
+            <h1 class="text-center card-header">Details</h1>
+            <%=render "form", path: settlement_update_path(@settlement), submit_label: "Edit"%>
+            <div class="list-group">
+                <%if @settlement.release_form != nil%>
+                    <%=link_to "View documents", release_form_show_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
+                <%else%>
+                    <%=link_to "Upload documents", release_form_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
+                <%end%>
+                <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
+                <a href="#" class="list-group-item list-group-item-action disabled">Close settlement</a>
+                <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action"%>
+
+            </div>
+        </div>
+        </div>
+        <div class="col">
+        <div class="card">
+            <h1 class="text-center card-header">Activity</h1>
+            <div class="card">
+                <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center"><strong>Status:</strong> <%=@settlement.status_message%></a>                
+                <div class="card-body bg-dark">
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

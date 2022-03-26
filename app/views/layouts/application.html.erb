@@ -21,16 +21,10 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <%= link_to "Release Forms", release_form_index_path, class: 'nav-link'%>
-            </li>
-            <li class="nav-item">
-              <%= link_to "New", generate_or_upload_path, class: 'nav-link'%>
-            </li>
-            <li class="nav-item">
               <%= link_to "Make a Payment", nil, class: 'nav-link'%>
             </li>
             <li class="nav-item">
-              <%= link_to "New Settlement", settlement_start_with_who_path, class: 'nav-link'%>
+              <%= link_to "New Settlement", settlement_new_path, class: 'nav-link'%>
             </li>
           </ul>
           <ul class="navbar-nav ms-sm-auto">
@@ -56,9 +50,9 @@
         </div>
       </div>
     </nav>
-    <div class="d-flex justify-content-end">
+    <div>
       <% flash.each do |key, message| %>
-        <div class="alert alert-dismissible <%=flash_class(key)%> position-absolute">
+        <div class="alert alert-dismissible <%=flash_class(key)%> text-center">
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           <%=message.html_safe%>
         </div>

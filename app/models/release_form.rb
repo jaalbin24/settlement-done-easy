@@ -3,7 +3,8 @@
 # Table name: release_forms
 #
 #  id                     :integer          not null, primary key
-#  approved_by_lawyer     :boolean          default(FALSE), not null
+#  adjustment_needed      :boolean          default(FALSE), not null
+#  approved               :boolean          default(FALSE), not null
 #  claim_number           :string
 #  date_of_incident       :date
 #  defendant_name         :string
@@ -14,19 +15,15 @@
 #  plaintiff_name         :string
 #  policy_number          :string
 #  settlement_amount      :float            default(0.0), not null
-#  status                 :string           default("waiting_for_review"), not null
+#  signed                 :boolean          default(FALSE), not null
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  insurance_agent_id     :integer
-#  lawyer_id              :integer
 #  settlement_id          :integer
 #
 # Indexes
 #
-#  index_release_forms_on_insurance_agent_id  (insurance_agent_id)
-#  index_release_forms_on_lawyer_id           (lawyer_id)
-#  index_release_forms_on_settlement_id       (settlement_id)
+#  index_release_forms_on_settlement_id  (settlement_id)
 #
 class ReleaseForm < ApplicationRecord
     include ActionView::Helpers::NumberHelper 
@@ -46,21 +43,19 @@ class ReleaseForm < ApplicationRecord
         class_name: 'Settlement',
         foreign_key: 'settlement_id',
         inverse_of: :release_form,
-        dependent: :destroy
     )
 
     validates :settlement_amount, numericality: true
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
-    
-    validates :claim_number, presence: true
-    validates :policy_number, presence: true
-    validates :settlement_amount, presence: true
-    validates :status, presence: true
     validates :pdf, presence: true
 
     # before_save do
     #     self.update_status
     # end
+
+    after_save do
+        settlement.save
+    end
 
     before_validation do
         if !self.pdf.attached?
@@ -69,15 +64,6 @@ class ReleaseForm < ApplicationRecord
     end
     # This^ callback is only here to allow rails db:seed to run without error. 
     # It should be commented out for all other cases.
-
-    def status_is_valid
-        errors.add(:status, "Status not valid") unless ["waiting_for_review", "waiting_for_adjustments", "waiting_for_approval", "waiting_to_be_sent_to_client", "waiting_for_client_signature", "complete"].include? status
-        # waiting_for_review ------------- (default status) form has been sent to lawyer for review
-        # waiting_for_adjustments -------- form has been rejected and sent to insurance agent for adjustment. Making adjustments and resending form will trigger status change to waiting_for_review again
-        # waiting_to_be_sent_to_client --- form has been approved and is waiting to be sent to client
-        # waiting_for_client_signature --- form has been sent to client to be signed
-        # complete ----------------------- form has been signed by client
-    end
 
     def settlement_amount_less_than_one_million
         if settlement_amount != nil
@@ -111,20 +97,20 @@ class ReleaseForm < ApplicationRecord
         return number_to_currency(self.settlement_amount.to_f, delimiter: ',', unit: '$')
     end
 
-    # def update_status
-    #     if self.law_firm_name != nil && self.pdf.attached?
-    #         self.status = "Ready to send!"
-    #     if !self.approved_by_lawyer && !self.adjustment_made_since_
-    #         self.status = "Adjustment needed!"
-    #     elsif #CONDITION
-    #         self.status = "Waiting for approval..."
-    #     if self.approved_by_lawyer
-    #         self.status = "Approved!"
-    #     end
-    # end
-
     def pdf_file_name
         name = self.claim_number + "_release_form.pdf"
         return name
+    end
+
+    def approved?
+        return approved
+    end
+
+    def adjustmentNeeded?
+        return adjustment_needed
+    end
+
+    def signed?
+        return signed
     end
 end
