@@ -69,22 +69,17 @@ class ReleaseFormsController < ApplicationController
 
     def send_to_client
         @release_form = ReleaseForm.find(params[:id])
-        if (@release_form.status == 'Approved')
-            envelope_args = {
-                email_subject: 'Signature Required!',
-                signer_email: params[:client_email],
-                signer_name: params[:client_name],
-                cc_email: Rails.configuration.APP_EMAIL,
-                cc_name: 'Settlement Done Easy',
-                status: 'sent'
-            }
-            create_and_send(@release_form.pdf, envelope_args)
-            flash[:info] = "Sent signature request to #{params[:client_email]}"
-            redirect_to root_path
-        else
-            flash[:error] = "Release Form must be approved first! Click #{view_context.link_to('here', approve_or_reject_path(@release_form))} to approve it!".html_safe
-            redirect_back(fallback_location: root_path)
-        end
+        envelope_args = {
+            email_subject: 'Signature Required!',
+            signer_email: params[:client_email],
+            signer_name: params[:client_name],
+            cc_email: Rails.configuration.APP_EMAIL,
+            cc_name: 'Settlement Done Easy',
+            status: 'sent'
+        }
+        create_and_send(@release_form.pdf, envelope_args)
+        flash[:info] = "Sent signature request to #{params[:client_email]}"
+        redirect_to root_path
     end
 
     # Defines what parameters can be accepted from a browser. This is for security. Without defining the data expected from the browser,

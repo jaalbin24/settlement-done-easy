@@ -7,13 +7,14 @@
             <div class="list-group">
                 <%if @settlement.release_form != nil%>
                     <%=link_to "View documents", release_form_show_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
-                <%else%>
+                <%elsif current_user.isInsuranceAgent?%>
                     <%=link_to "Upload documents", release_form_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
                 <%end%>
-                <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
-                <a href="#" class="list-group-item list-group-item-action disabled">Close settlement</a>
-                <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action"%>
-
+                <%if current_user.isLawyer?%>
+                    <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
+                    <a href="#" class="list-group-item list-group-item-action disabled">Complete settlement</a>
+                <%end%>
+                <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
             </div>
         </div>
         </div>

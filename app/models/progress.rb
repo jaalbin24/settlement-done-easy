@@ -28,6 +28,7 @@ class Progress < ApplicationRecord
         # STATUS 1 = Waiting to be sent to claimant
         # STATUS 2 = Waiting for claimant signature
         # STATUS 3 = Approved by claimant (signed)
+        # STATUS 4 = Waiting for final document review
 
     # STAGE 3
         # STATUS 1 = Waiting for payment
