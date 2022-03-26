@@ -2,17 +2,19 @@
 #
 # Table name: settlements
 #
-#  id                 :integer          not null, primary key
-#  claim_number       :string
-#  date_of_incident   :date
-#  defendent_name     :string
-#  plaintiff_name     :string
-#  policy_number      :string
-#  settlement_amount  :float
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  insurance_agent_id :integer
-#  lawyer_id          :integer
+#  id                  :integer          not null, primary key
+#  claim_number        :string
+#  defendent_name      :string
+#  incident_date       :date
+#  incident_location   :string
+#  plaintiff_name      :string
+#  policy_number       :string
+#  settlement_amount   :float
+#  signature_requested :boolean          default(FALSE), not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  insurance_agent_id  :integer
+#  lawyer_id           :integer
 #
 # Indexes
 #
@@ -29,22 +31,40 @@ class Settlement < ApplicationRecord
         :lawyer,
         class_name: "User",
         foreign_key: "lawyer_id",
-        dependent: :destroy
     )
 
     belongs_to(
         :insurance_agent,
         class_name: "User",
         foreign_key: "insurance_agent_id",
-        dependent: :destroy
     )
 
     has_one(
         :release_form,
         class_name: "ReleaseForm",
         foreign_key: "settlement_id",
+        inverse_of: :settlement,
+    )
+
+    has_one(
+        :progress,
+        class_name: "Progress",
+        foreign_key: "settlement_id",
         inverse_of: :settlement
     )
+
+    before_destroy do
+        release_form.destroy unless release_form == nil
+        progress.destroy
+    end
+
+    after_save do
+        progress.update
+    end
+
+    before_create do
+        progress = self.build_progress
+    end
 
     def partner_of(user)
         if user.isLawyer?
@@ -52,5 +72,19 @@ class Settlement < ApplicationRecord
         elsif user.isInsuranceAgent?
             return lawyer
         end
+    end
+
+    def hasDocument?
+        if release_form == nil
+            return false
+        elsif !release_form.pdf.attached?
+            return false
+        else
+            return true
+        end
+    end
+
+    def status_message
+        return progress.status_message
     end
 end

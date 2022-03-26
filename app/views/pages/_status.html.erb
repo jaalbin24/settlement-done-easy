@@ -1,3 +1,17 @@
-<span class="badge rounded-pill bg-success" data-bs-toggle="tooltip" data-bs-placement="left" title="Tooltip on left"> </span>
-<span class="badge rounded-pill bg-warning"> </span>
-<span class="badge rounded-pill bg-secondary"> </span>
+<%if settlement.progress.stage = 1%>
+    <span class="badge rounded-pill bg-warning"> </span>
+    <span class="badge rounded-pill bg-secondary"> </span>
+    <span class="badge rounded-pill bg-secondary"> </span>
+<%elsif settlement.progress.stage = 2%>
+    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-warning"> </span>
+    <span class="badge rounded-pill bg-secondary"> </span>
+<%elsif settlement.progress.stage = 3%>
+    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-warning"> </span>
+<%elsif settlement.progress.stage = 4%>
+    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-success"> </span>
+<%end%>
