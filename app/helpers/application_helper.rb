@@ -16,7 +16,8 @@ module ApplicationHelper
       "alert" => "alert-danger",
       "warning" => "alert-warning",
       "secondary" => "alert-secondary",
-      "primary" => "alert-primary"
+      "primary" => "alert-primary",
+      "notice" => "alert-info"
     }
     bootstrap_alert_class[level]
   end
