@@ -44,7 +44,7 @@ class SettlementsController < ApplicationController
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
-            flash[:primary] = "Started a new settlement with #{partner.full_name}!"
+            flash[:info] = "Started a new settlement with #{partner.full_name}!"
             redirect_to settlement_show_path(settlement)
         else
             flash.now[:error] = "Settlement not created!"
@@ -68,7 +68,6 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        settlement.release_form.destroy
         settlement.destroy
         flash[:info] = "Settlement canceled"
         redirect_to root_path

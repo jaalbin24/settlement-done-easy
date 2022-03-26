@@ -20,9 +20,9 @@
 class Progress < ApplicationRecord
     # STAGE 1
         # STATUS 1 = Waiting for document upload
-        # STATUS 2 = Waiting for approval (Can lead to Stage 1, Status 2 or Stage 1, Status 3)
-        # STATUS 3 = Needs adjustment (Can lead to Stage 1, Status 1 or Stage 1, Status 3
-        # STATUS 4 = Approved
+        # STATUS 2 = Waiting for document approval (Can lead to Stage 1, Status 2 or Stage 1, Status 3)
+        # STATUS 3 = Document needs adjustment (Can lead to Stage 1, Status 1 or Stage 1, Status 3
+        # STATUS 4 = Document Approved
 
     # STAGE 2
         # STATUS 1 = Waiting to be sent to claimant
@@ -32,7 +32,9 @@ class Progress < ApplicationRecord
     # STAGE 3
         # STATUS 1 = Waiting for payment
         # STATUS 2 = Payment received
-        # STATUS 5 = Settlement Complete
+
+    # STAGE 4
+        # STATUS 1 = Completed
 
     belongs_to(
         :settlement,
@@ -42,38 +44,75 @@ class Progress < ApplicationRecord
         dependent: :destroy
     )
 
+    def status_message
+        case stage
+        when 1
+            case status
+            when 1
+                return "Waiting for #{settlement.insurance_agent.full_name} to upload documents"
+            when 2
+                return "Waiting for #{settlement.lawyer.full_name} to review documents"
+            when 3
+                return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents"
+            end
+        when 2
+            case status
+            when 1
+                return "Waiting for signature request to be sent"
+            when 2
+                return "Waiting for signature"
+            when 3
+                return "Waiting for final document review"
+            end
+        when 3
+            case status
+            when 1
+                return "Waiting for payment"
+            when 2
+                return ""
+            when 3
+                return ""
+            end
+        when 4
+            return "Completed"
+        end
+    end
+
     def update
         if stage == 1
             if !settlement.hasDocument?
-                status = 1
-                return
+                self.status = 1
             elsif !settlement.release_form.approved?
                 if !settlement.release_form.adjustmentNeeded?
-                    status = 2
+                    self.status = 2
                 else
-                    status = 3
+                    self.status = 3
                 end
             elsif settlement.release_form.approved?
-                stage = 2
-                status = 1
-                return
+                self.stage = 2
+                self.status = 1
             end
         elsif stage == 2
             if !settlement.release_form.signed?
                 if !settlement.signature_requested?
-                    status = 1
+                    self.status = 1
                 elsif settlement.signature_requested?
-                    status = 2
+                    self.status = 2
                 end
             elsif settlement.release_form.signed?
-                stage = 3
-                status = 1
+                self.status = 3
+                if settlement.finalApproved?
+                    self.stage = 3
+                    self.status = 1
+                end
             end
         elsif stage == 3
             # This is the payment section. It will be implemented when that feature is.
         elsif stage == 4
             
         end
-        self.save
+        if !self.save
+            puts "================== PROGRESS MODEL ERROR: #{self.errors.full_messages.inspect}"
+        end
     end
 end
