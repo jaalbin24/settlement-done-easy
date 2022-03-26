@@ -5,7 +5,11 @@
             <tr>
                 <th>Status</th>
                 <th>Name</th>
-                <th>Firm</th>
+                <%if current_user.isLawyer?%>
+                    <th>Company</th>
+                <%elsif current_user.isInsuranceAgent?%>
+                    <th>Firm</th>
+                <%end%>
                 <th>Amount</th>
             </tr>
         </thead>
