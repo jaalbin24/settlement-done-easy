@@ -1,13 +1,8 @@
 class PagesController < ApplicationController
-    # before_action :authenticate_user!, except: [:home, :user_type_select]
+    before_action :authenticate_user!, except: :user_type_select
 
     def home
-        if user_signed_in?
-            @user = current_user
-            render :home
-        else
-            redirect_to release_form_index_url
-        end
+        render :home
     end
 
     def user_type_select

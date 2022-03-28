@@ -1,20 +1,22 @@
-<div class="card text-white bg-dark h-100">
-    <div class="card-header"><h4 class="m-0">Active Settlements</h4></div>
-    <table class="table table-sm table-hover table-borderless" style="max-height: 100%;">
+<h3 class="text-center mb-4"><%=need_message(@stage, @status)%></h3>
+
+
+<table class="table table-sm table-hover table-borderless mx-auto w-50" style="max-height: 100%;">
         <thead class="border-bottom border-secondary">
             <tr>
                 <th>Status</th>
-                <th>Name</th>
                 <%if current_user.isLawyer?%>
+                    <th>Agent Name</th>
                     <th>Company</th>
                 <%elsif current_user.isInsuranceAgent?%>
+                    <th>Lawyer Name</th>
                     <th>Firm</th>
                 <%end%>
                 <th>Amount</th>
             </tr>
         </thead>
         <tbody>
-            <%current_user.settlements.each do |s|%>
+            <%@settlements.each do |s|%>
                 <tr class="table-secondary">
                     <td><%=render "status", settlement: s%></td>
                     <%if current_user.isInsuranceAgent?%>
@@ -29,4 +31,3 @@
             <%end%>
         </tbody>
     </table>
-</div>

@@ -1,4 +1,5 @@
 class SettlementsController < ApplicationController
+    include SettlementProgress
     before_action :authenticate_user!
 
     def new
@@ -12,6 +13,22 @@ class SettlementsController < ApplicationController
             render :new
         else
             handle_invalid_request
+        end
+    end
+
+    def need_index
+        @stage = params[:stage].to_i
+        @status = params[:status].to_i
+        if SettlementProgress.statusValid?(@stage, @status)
+            if current_user.isLawyer?
+                @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("lawyer_id=?", current_user.id)))
+            elsif current_user.isInsuranceAgent?
+                @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("insurance_agent_id=?", current_user.id)))
+            end
+            render :need_index
+        else
+            flash[:error] = "That status is not valid! Stage = #{@stage} Status = #{@status}"
+            redirect_to root_path
         end
     end
 
