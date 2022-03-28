@@ -11,6 +11,8 @@
 #  policy_number       :string
 #  settlement_amount   :float
 #  signature_requested :boolean          default(FALSE), not null
+#  stage               :integer          default(1), not null
+#  status              :integer          default(1), not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  insurance_agent_id  :integer
@@ -46,24 +48,17 @@ class Settlement < ApplicationRecord
         inverse_of: :settlement,
     )
 
-    has_one(
-        :progress,
-        class_name: "Progress",
-        foreign_key: "settlement_id",
-        inverse_of: :settlement
-    )
-
     before_destroy do
         release_form.destroy unless release_form == nil
-        progress.destroy
     end
 
-    after_save do
-        progress.update
-    end
-
-    before_create do
-        progress = self.build_progress
+    after_commit do
+        if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
+            self.update_progress
+            if self.changed?
+                self.save
+            end
+        end
     end
 
     def partner_of(user)
@@ -85,6 +80,41 @@ class Settlement < ApplicationRecord
     end
 
     def status_message
-        return progress.status_message
+        return SettlementProgress.status_message(self)
+    end
+
+    def update_progress
+        if stage == 1
+            if !hasDocument?
+                self.status = 1
+            elsif !release_form.approved?
+                if !self.release_form.adjustmentNeeded?
+                    self.status = 2
+                else
+                    self.status = 3
+                end
+            elsif release_form.approved?
+                self.stage = 2
+                self.status = 1
+            end
+        elsif stage == 2
+            if !release_form.signed?
+                if !signature_requested?
+                    self.status = 1
+                elsif signature_requested?
+                    self.status = 2
+                end
+            elsif release_form.signed?
+                self.status = 3
+                if finalApproved?
+                    self.stage = 3
+                    self.status = 1
+                end
+            end
+        elsif stage == 3
+            # This is the payment section. It will be implemented when that feature is.
+        elsif stage == 4
+            
+        end
     end
 end
