@@ -11,6 +11,8 @@
 #  policy_number       :string
 #  settlement_amount   :float
 #  signature_requested :boolean          default(FALSE), not null
+#  stage               :integer          default(1), not null
+#  status              :integer          default(1), not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  insurance_agent_id  :integer
