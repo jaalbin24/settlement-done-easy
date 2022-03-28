@@ -19,11 +19,13 @@ To run SDE, follow these instructions...
 
 Before taking to production...
 delete this section of code from release_form.rb 
-    ```before_validation do
-        if !self.pdf.attached?
-            self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'dummy_file.pdf')
-        end 
-    end```
+```
+before_validation do
+    if !self.pdf.attached?
+        self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'dummy_file.pdf')
+    end 
+end
+```
 
 Ideas for improvement:
 ```

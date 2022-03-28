@@ -9,6 +9,8 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string :incident_location
       t.date :incident_date
       t.boolean :signature_requested, null: false, default: false
+      t.integer :stage,               null: false, default: 1
+      t.integer :status,              null: false, default: 1
 
       t.timestamps
     end
