@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_25_140040) do
+ActiveRecord::Schema.define(version: 2022_03_22_212943) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -50,15 +50,6 @@ ActiveRecord::Schema.define(version: 2022_03_25_140040) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "progresses", force: :cascade do |t|
-    t.integer "stage", default: 1, null: false
-    t.integer "status", default: 1, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.integer "settlement_id"
-    t.index ["settlement_id"], name: "index_progresses_on_settlement_id"
-  end
-
   create_table "release_forms", force: :cascade do |t|
     t.string "law_firm_name", default: "Default Law Firm (FAKE! USED FOR TESTING PURPOSES!)", null: false
     t.string "insurance_company_name", default: "Default Insurance Co. (FAKE! USED FOR TESTING PURPOSES!)", null: false
@@ -89,6 +80,8 @@ ActiveRecord::Schema.define(version: 2022_03_25_140040) do
     t.string "incident_location"
     t.date "incident_date"
     t.boolean "signature_requested", default: false, null: false
+    t.integer "stage", default: 1, null: false
+    t.integer "status", default: 1, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lawyer_id"
@@ -117,7 +110,6 @@ ActiveRecord::Schema.define(version: 2022_03_25_140040) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "release_forms"
   add_foreign_key "comments", "users"
-  add_foreign_key "progresses", "settlements"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
   add_foreign_key "settlements", "users", column: "lawyer_id"
 end
