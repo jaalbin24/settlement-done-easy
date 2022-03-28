@@ -30,4 +30,6 @@ end
 Ideas for improvement:
 ```
 -Adding support for assistive technologies (screen-readers for the blind, etc.)
+-Custom ACH service in place of Stripe would cut "money in account" time by two days and save $5 per transaction.
+-Including clients in the site.
 ```
