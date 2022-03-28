@@ -7,7 +7,7 @@ insurance_companies = ["State Farm", "Geico", "Berkshire Hathaway", "Progressive
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims"]
 # For generating random organizations to which each user belongs
 SEED_SIZE = 5
-NUM_SETTLEMENTS = 0
+NUM_SETTLEMENTS = SEED_SIZE * 10
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
 lawyers = Array.new(SEED_SIZE) {|i|
     User.create!(
@@ -44,7 +44,7 @@ settlements = Array.new(NUM_SETTLEMENTS) {|i|
         defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
         plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
         incident_location:  "Memphis, TN",
-        incident_date:      Date.new(rand(2019..2021), rand(1..12), rand(1..28))
+        incident_date:      Date.today - rand(30..365).days
     )
     settlement.build_release_form(
         claim_number:           "#{rand(100000..999999)}",
