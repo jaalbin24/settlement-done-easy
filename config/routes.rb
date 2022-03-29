@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   get 'home',                                   to: 'pages#home',                         as: 'home'
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'    
-  get 'approve_or_reject/:id',                  to: 'pages#approve_or_reject',            as: 'approve_or_reject'
 
   get 'release_forms',                          to: 'release_forms#index',                as: 'release_form_index'
   get ':settlement_id/release_forms/new',       to: 'release_forms#new',                  as: 'release_form_new'
@@ -21,7 +20,6 @@ Rails.application.routes.draw do
 
   post ':settlement_id/release_forms/new',      to: 'release_forms#create',               as: 'release_form_create'
   patch 'release_forms/:id',                    to: 'release_forms#update',               as: 'release_form_update'
-  patch 'release_forms/:id/send_to_client',     to: 'release_forms#send_to_client',       as: 'release_form_send_to_client'
   delete 'release_forms/:id',                   to: 'release_forms#destroy',              as: 'release_form_delete'
 
 
@@ -37,10 +35,13 @@ Rails.application.routes.draw do
 
   get 'settlements/new',                        to: 'settlements#new',                    as: 'settlement_new'
   get 'settlements/need_index/:stage/:status',  to: 'settlements#need_index',             as: 'settlement_need_index'
+  get 'settlements/start_with_who',             to: 'settlements#start_with_who',         as: 'settlement_start_with_who'
   get 'settlements/:id',                        to: 'settlements#show',                   as: 'settlement_show'
+  get 'settlements/:id/review_document',        to: 'settlements#review_document',        as: 'settlement_review_document'
+  get 'settlements/:id/get_client_signature',   to: 'settlements#get_client_signature',   as: 'settlement_get_client_signature'
   post 'settlements',                           to: 'settlements#create',                 as: 'settlement_create'
   patch 'settlements/:id',                      to: 'settlements#update',                 as: 'settlement_update'
-  get 'settlements/start_with_who',             to: 'settlements#start_with_who',         as: 'settlement_start_with_who'
+  patch 'settlements/:id/send_ds_signature_request', to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
   delete 'settlement/:id',                      to: 'settlements#destroy',                as: 'settlement_destroy'
 
   post 'settlement_partner_selected',           to: 'settlements#partner_selected',       as: 'settlement_partner_selected'
