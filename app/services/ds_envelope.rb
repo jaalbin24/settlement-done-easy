@@ -77,9 +77,4 @@ module DsEnvelope
       results = envelope_api.create_envelope Rails.cache.fetch('account_id'), envelope_definition
       Rails.logger.info "==> Results from envelope creation: #{results}"
     end
-  
-    # Small defence against code injection
-    def sanitize_param(param)
-        param.gsub(/([^\w \-\@\.\,])+/, '')
-    end
 end

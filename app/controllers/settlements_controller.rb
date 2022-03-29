@@ -1,5 +1,6 @@
 class SettlementsController < ApplicationController
     include SettlementProgress
+    include DsEnvelope
     before_action :authenticate_user!
 
     def new
@@ -98,11 +99,52 @@ class SettlementsController < ApplicationController
             return
         end
         if @settlement.update(settlement_params)
-            flash.now[:info] = "Settlement updated"
+            flash.now[:info] = "Settlement updated."
             render :show
         else
-            #
+            flash.now[:error] = "Settlement could not be updated."
         end
+    end
+
+    def review_document
+        begin
+            @settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        if !@settlement.hasDocument?
+            flash[:error] = "That settlement does not have a document to review. #{@settlement.insurance_agent.full_name} must add one."
+            redirect_to settlement_show_path(@settlement)
+        else
+            @comment = Comment.new
+            render :review_document
+        end
+    end
+    
+    def get_client_signature
+        begin
+            @settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        render :get_client_signature
+    end
+
+    def send_ds_signature_request
+        @settlement = Settlement.find(params[:id])
+        envelope_args = {
+            email_subject: "#{@settlement.lawyer.full_name} is requesting a signature.",
+            signer_email: params[:client_email],
+            signer_name: params[:client_name],
+            cc_email: Rails.configuration.APP_EMAIL,
+            cc_name: 'Settlement Done Easy',
+            status: 'sent'
+        }
+        create_and_send(@settlement.release_form.pdf, envelope_args)
+        flash[:info] = "Sent signature request to #{params[:client_email]}"
+        redirect_to root_path
     end
 
     def start_with_who

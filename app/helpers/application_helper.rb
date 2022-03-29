@@ -31,7 +31,7 @@ module ApplicationHelper
             when 1
                 return release_form_new_path(settlement)
             when 2
-                return approve_or_reject_path(settlement.release_form)
+                return settlement_review_document_path(settlement)
             when 3
                 return release_form_new_path(settlement)
             end
