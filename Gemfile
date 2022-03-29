@@ -81,3 +81,6 @@ gem 'docusign_esign'
 
 # For authenticating with the DocuSign API
 gem 'jwt'
+
+# Job scheduler for running cron jobs at regular intervals
+gem 'whenever'

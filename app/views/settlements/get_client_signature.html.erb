@@ -1,0 +1,17 @@
+<h1 class="text-center">Get Signature From Client</h1>
+
+<div class="w-50" style="float: right;">
+    <embed src="<%=rails_blob_path(@settlement.release_form.pdf)%>" type="application/pdf"  width="100%" height="700" style="border: none; float: right;">
+</div>
+
+<div class="float-left" style="width: 40%;">
+  <%= bootstrap_form_with url: settlement_send_ds_signature_request_path, method: :patch, local: true do |form| %>
+    <div>
+      <%= form.text_field :client_name, class: "form-control", placeholder: "Client name"%>
+      <%= form.email_field :client_email, class: "form-control", placeholder: "Client email"%>
+      <br>
+      <%=form.submit("Send to Client!")%>
+    </div>
+  <% end %>
+  <p>Your client will recieve an email</p>
+</div>
