@@ -3,7 +3,6 @@ default: &default
   BASE_URL: http://localhost:3000
   APP_EMAIL: john.smith29324@gmail.com
   # =================== DocuSign Config Area ===================
-
   DOCUSIGN_USERNAME: john.smith29324@gmail.com
   DOCUSIGN_PASSWORD: password123
   DOCUSIGN_INTEGRATION_KEY: 7c3457f0-5abb-49f7-97b8-5ad0c634eed9
@@ -16,6 +15,10 @@ default: &default
   DOCUSIGN_AUTH_SERVER: https://account-d.docusign.com
   DOCUSIGN_REDIRECT_URI: http://localhost:3000/ds_test_page
   # =================== DocuSign Config Area ===================
+  # ==================== Stripe Config Area ====================
+  STRIPE_SECRET_KEY: sk_test_51KinH0L1IPDLUIKcVRshYQEk4ThvQYQm6BkDKk9QJtk6mHov9pCEZoxaTtOreoDMjK405DqOITtngbsvItw7zHG40025FszDIp
+  STRIPE_PUBLIC_KEY: pk_test_51KinH0L1IPDLUIKcaZXWYeeJMj9ToW5oBoviKyzyOfCZW7Nueg3byyxRgywIybIbk5esdike11XnmKbuBNkxXiCk00OFZXp1Ev
+  # ==================== Stripe Config Area ====================
 
 
 development:
@@ -26,6 +29,3 @@ test:
 
 production:
   <<: *default
-
-  # JWT authentication link: https://account-d.docusign.com/oauth/auth?response_type=code&scope=impersonation&client_id=7c3457f0-5abb-49f7-97b8-5ad0c634eed9&redirect_uri=http://localhost:3000/ds_test_page
-

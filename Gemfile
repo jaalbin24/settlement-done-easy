@@ -84,3 +84,6 @@ gem 'jwt'
 
 # Job scheduler for running cron jobs at regular intervals
 gem 'whenever'
+
+# Payment Processor
+gem 'stripe', '~> 5.47.0'

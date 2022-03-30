@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+    require 'stripe'
     before_action :authenticate_user!, except: :user_type_select
 
     def home
@@ -19,7 +20,18 @@ class PagesController < ApplicationController
         render :approve_or_reject
     end
 
-    def ds_test_page
-        render :ds_test_page
+    def testing
+        payment_intent = Stripe::PaymentIntent.create(
+            amount: 2400,
+            currency: 'usd',
+            automatic_payment_methods: {
+                enabled: false,
+            },
+        )
+        {
+            clientSecret: payment_intent['client_secret']
+        }.to_json
+
+        render :testing
     end
 end
