@@ -13,6 +13,8 @@
                 <%if current_user.isLawyer?%>
                     <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
                     <a href="#" class="list-group-item list-group-item-action disabled">Complete settlement</a>
+                <%elsif current_user.isInsuranceAgent?%>
+                    <a href="<%=settlement_start_stripe_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>
                 <%end%>
                 <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
             </div>

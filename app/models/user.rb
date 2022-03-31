@@ -14,6 +14,7 @@
 #  role                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  stripe_customer_id     :string
 #
 # Indexes
 #
@@ -27,7 +28,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :role, inclusion: {in: ["Insurance Agent", "Lawyer"]}
-  validates :first_name, :last_name, presence: true
+  validates :first_name, :last_name, :email, :encrypted_password, presence: true
 
   has_many(
     :comments,
@@ -52,6 +53,19 @@ class User < ApplicationRecord
     inverse_of: :insurance_agent,
     dependent: :destroy
   )
+
+  after_create do
+    if self.isInsuranceAgent?
+      customer = Stripe::Customer.create(
+        email: self.email, 
+        name: self.full_name,
+        description: "Insurance Agent with #{self.organization}"
+      )
+      stripe_customer_id = JSON.parse(customer.to_s)['id']
+      self.stripe_customer_id = "#{stripe_customer_id}"
+      self.save
+    end
+  end
 
   def full_name
     return "#{first_name} #{last_name}"
