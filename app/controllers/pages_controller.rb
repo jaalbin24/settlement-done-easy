@@ -21,17 +21,6 @@ class PagesController < ApplicationController
     end
 
     def testing
-        payment_intent = Stripe::PaymentIntent.create(
-            amount: 2400,
-            currency: 'usd',
-            automatic_payment_methods: {
-                enabled: false,
-            },
-        )
-        {
-            clientSecret: payment_intent['client_secret']
-        }.to_json
-
         render :testing
     end
 end

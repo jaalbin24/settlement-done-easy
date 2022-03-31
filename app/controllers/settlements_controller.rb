@@ -147,6 +147,29 @@ class SettlementsController < ApplicationController
         redirect_to root_path
     end
 
+    def start_stripe_session
+        settlement = Settlement.find(params[:id])
+        product = Stripe::Product.create({name: "Settlement!"})
+        puts "============================="
+        price = Stripe::Price.create({
+            unit_amount: (settlement.settlement_amount * 100).to_i,
+            currency: 'usd',
+            product: product,
+        })
+        puts "============================="
+        checkout_session = Stripe::Checkout::Session.create({
+            success_url: 'https://localhost:3000/',
+            cancel_url: 'https://localhost:3000/',
+            payment_method_types: ['us_bank_account'],
+            line_items: [
+                {price: price, quantity: 1},
+            ],
+            mode: 'payment',
+        })
+        puts "============================= URL: #{checkout_session.url}"
+        redirect_to checkout_session.url
+    end
+
     def start_with_who
         @settlement = Settlement.new
         if current_user.isLawyer?

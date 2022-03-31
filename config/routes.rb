@@ -40,12 +40,12 @@ Rails.application.routes.draw do
   get 'settlements/:id',                        to: 'settlements#show',                   as: 'settlement_show'
   get 'settlements/:id/review_document',        to: 'settlements#review_document',        as: 'settlement_review_document'
   get 'settlements/:id/get_client_signature',   to: 'settlements#get_client_signature',   as: 'settlement_get_client_signature'
+  get 'settlements/:id/start_stripe_session',   to: 'settlements#start_stripe_session',   as: 'settlement_start_stripe_session'
   post 'settlements',                           to: 'settlements#create',                 as: 'settlement_create'
   patch 'settlements/:id',                      to: 'settlements#update',                 as: 'settlement_update'
   patch 'settlements/:id/send_ds_signature_request', to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
   delete 'settlement/:id',                      to: 'settlements#destroy',                as: 'settlement_destroy'
 
   post 'settlement_partner_selected',           to: 'settlements#partner_selected',       as: 'settlement_partner_selected'
-
 
 end
