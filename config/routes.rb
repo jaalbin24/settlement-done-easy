@@ -35,7 +35,6 @@ Rails.application.routes.draw do
   get 'dashboard',                              to: 'settlements#dashboard',              as: 'settlement_dashboard'
   get 'settlements/new',                        to: 'settlements#new',                    as: 'settlement_new'
   get 'settlements/need_index/:stage/:status',  to: 'settlements#need_index',             as: 'settlement_need_index'
-  get 'settlements/start_with_who',             to: 'settlements#start_with_who',         as: 'settlement_start_with_who'
   get 'settlements/:id',                        to: 'settlements#show',                   as: 'settlement_show'
   get 'settlements/:id/review_document',        to: 'settlements#review_document',        as: 'settlement_review_document'
   get 'settlements/:id/get_client_signature',   to: 'settlements#get_client_signature',   as: 'settlement_get_client_signature'
@@ -44,9 +43,6 @@ Rails.application.routes.draw do
   patch 'settlements/:id',                      to: 'settlements#update',                 as: 'settlement_update'
   patch 'settlements/:id/send_ds_signature_request', to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
   delete 'settlement/:id',                      to: 'settlements#destroy',                as: 'settlement_destroy'
-
-  post 'settlement_partner_selected',           to: 'settlements#partner_selected',       as: 'settlement_partner_selected'
-
 
   get 'stripe_onboard_account_link',            to: 'stripe#onboard_account_link',        as: 'stripe_onboard_account_link'
   get 'stripe_handle_return_from_onboard',      to: 'stripe#handle_return_from_onboard',  as: 'stripe_handle_return_from_onboard'

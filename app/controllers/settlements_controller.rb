@@ -125,6 +125,16 @@ class SettlementsController < ApplicationController
             render :review_document
         end
     end
+
+    def approve_stage1_document
+        begin
+            settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        
+    end
     
     def get_client_signature
         begin
@@ -149,19 +159,6 @@ class SettlementsController < ApplicationController
         create_and_send(@settlement.release_form.pdf, envelope_args)
         flash[:info] = "Sent signature request to #{params[:client_email]}"
         redirect_to root_path
-    end
-
-    def start_with_who
-        @settlement = Settlement.new
-        if current_user.isLawyer?
-            @users = User.all_insurance_agents
-            render :start_with_who
-        elsif current_user.isInsuranceAgent?
-            @users = User.all_lawyers
-            render :start_with_who
-        else
-            handle_invalid_request
-        end
     end
 
     def settlement_params

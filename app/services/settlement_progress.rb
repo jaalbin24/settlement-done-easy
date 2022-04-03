@@ -1,19 +1,19 @@
 module SettlementProgress
     # STAGE 1
-        # STATUS 1 = Waiting for document upload
-        # STATUS 2 = Waiting for document approval (Can lead to Stage 1, Status 2 or Stage 1, Status 3)
-        # STATUS 3 = Document needs adjustment (Can lead to Stage 1, Status 1 or Stage 1, Status 3
-        # STATUS 4 = Document Approved
+        # STATUS 1 = Waiting for document upload.
+        # STATUS 2 = Waiting for document approval.
+        # STATUS 3 = Document needs adjustment.
 
     # STAGE 2
-        # STATUS 1 = Waiting to be sent to claimant
-        # STATUS 2 = Waiting for claimant signature
-        # STATUS 3 = Approved by claimant (signed) and waiting for final document review
+        # STATUS 1 = Document approved. Waiting to be sent to claimant.
+        # STATUS 2 = DS signature request sent. Waiting for claimant signature.
+        # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
 
     # STAGE 3
-        # STATUS 1 = Waiting for payment
-        # STATUS 2 = Paid. Payment processing
-        # STATUS 3 = Payment received
+        # STATUS 1 = Document w/ signature approved. Waiting for payment.
+        # STATUS 2 = Paid. Payment processing.
+        # STATUS 3 = Error with payment. Waiting for payment again.
+        # STATUS 4 = Payment received. Waiting for Settlement completion.
 
     # STAGE 4
         # STATUS 1 = Completed
@@ -114,5 +114,66 @@ module SettlementProgress
         when 4
             return "Completed"
         end
+    end
+
+    # Checks if progress change agrees with the settlement workflow.
+    def self.progress_change_valid?(settlement, desired_stage, desired_status)
+        case desired_stage
+        when 1
+            case desired_status
+            when 1
+                if settlement.stage == 1
+                    return true
+                end
+            when 2
+                if settlement.stage == 1 && (settlement.status == 1 || settlement.status == 3)
+                    return true
+                end
+            when 3
+                if settlement.stage == 1 && settlement.status == 2
+                    return true
+                end
+            end
+        when 2
+            case desired_status
+            when 1
+                if settlement.stage == 1 && (settlement.status == 2 || settlement.status == 3)
+                    return true
+                end
+            when 2
+                if settlement.stage == 2 && settlement.status == 1
+                    return true
+                end
+            when 3
+                if settlement.stage == 2 && settlement.status == 2
+                    return true
+                end
+            end
+        when 3
+            case desired_status
+            when 1
+                if settlement.stage == 2 && settlement.status == 3
+                    return true
+                end
+            when 2
+                if settlement.stage == 3 && settlement.status == 1
+                    return true
+                end
+            when 3
+                if settlement.stage == 3 && settlement.status == 2
+                    return true
+                end
+            when 4
+                if settlement.stage == 3 && (settlement.status == 2 || settlement.status == 3)
+                    return true
+                end
+            end
+        when 4
+            if settlement.stage == 3 && settlement.status == 3
+                return true
+            end
+        end
+        puts "=================== Progress change from (stage #{settlement.stage}, status #{settlement.status}) to (stage #{desired_stage}, status #{desired_status}) is not valid."
+        return false
     end
 end
