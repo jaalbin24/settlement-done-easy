@@ -1,10 +1,5 @@
 class PagesController < ApplicationController
-    require 'stripe'
     before_action :authenticate_user!, except: :user_type_select
-
-    def home
-        render :home
-    end
 
     def user_type_select
         render :user_type_select

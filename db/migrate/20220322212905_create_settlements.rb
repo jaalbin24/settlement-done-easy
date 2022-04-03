@@ -11,6 +11,8 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.boolean :signature_requested, null: false, default: false
       t.integer :stage,               null: false, default: 1
       t.integer :status,              null: false, default: 1
+      t.string :stripe_product_id
+      t.string :stripe_price_id
 
       t.timestamps
     end

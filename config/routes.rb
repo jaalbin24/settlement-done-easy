@@ -5,13 +5,11 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'user/registrations'}
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  root to: "pages#home"
+  root to: "settlements#dashboard"
 
-  get 'home',                                   to: 'pages#home',                         as: 'home'
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
   get 'testing',                                to: 'pages#testing',                      as: 'testing'    
-
   get 'release_forms',                          to: 'release_forms#index',                as: 'release_form_index'
   get ':settlement_id/release_forms/new',       to: 'release_forms#new',                  as: 'release_form_new'
   get 'release_forms/:id',                      to: 'release_forms#show',                 as: 'release_form_show'
@@ -34,6 +32,7 @@ Rails.application.routes.draw do
   
   post 'comment/:release_form_id',              to: 'comments#create',                    as: 'comment_create'
 
+  get 'dashboard',                              to: 'settlements#dashboard',              as: 'settlement_dashboard'
   get 'settlements/new',                        to: 'settlements#new',                    as: 'settlement_new'
   get 'settlements/need_index/:stage/:status',  to: 'settlements#need_index',             as: 'settlement_need_index'
   get 'settlements/start_with_who',             to: 'settlements#start_with_who',         as: 'settlement_start_with_who'
@@ -47,5 +46,11 @@ Rails.application.routes.draw do
   delete 'settlement/:id',                      to: 'settlements#destroy',                as: 'settlement_destroy'
 
   post 'settlement_partner_selected',           to: 'settlements#partner_selected',       as: 'settlement_partner_selected'
+
+
+  get 'stripe_onboard_account_link',            to: 'stripe#onboard_account_link',        as: 'stripe_onboard_account_link'
+  get 'stripe_handle_return_from_onboard',      to: 'stripe#handle_return_from_onboard',  as: 'stripe_handle_return_from_onboard'
+  get 'stripe_login_link',                      to: 'stripe#login_link',                  as: 'stripe_login_link'
+  get 'stripe_settlement_checkout_session/:id', to: 'stripe#settlement_checkout_session', as: 'stripe_settlement_checkout_session'
 
 end

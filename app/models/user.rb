@@ -14,7 +14,7 @@
 #  role                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  stripe_customer_id     :string
+#  stripe_account_id      :string
 #
 # Indexes
 #
@@ -55,14 +55,20 @@ class User < ApplicationRecord
   )
 
   after_create do
-    if self.isInsuranceAgent?
-      customer = Stripe::Customer.create(
-        email: self.email, 
-        name: self.full_name,
-        description: "Insurance Agent with #{self.organization}"
-      )
-      stripe_customer_id = JSON.parse(customer.to_s)['id']
-      self.stripe_customer_id = "#{stripe_customer_id}"
+    if self.isLawyer? && self.stripe_account_id == nil
+      account = Stripe::Account.create({
+        type: "express",
+        country: "US",
+        email: self.email,
+        capabilities: {
+          us_bank_account_ach_payments: {requested: true},
+          card_payments: {requested: true},
+          transfers: {requested: true},
+        },
+        business_type: "company",
+        business_profile: {url: "http://settlementdoneeasy.com/"}
+      })
+      self.stripe_account_id = account.id
       self.save
     end
   end

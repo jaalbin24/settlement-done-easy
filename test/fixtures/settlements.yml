@@ -17,6 +17,8 @@
 #  updated_at          :datetime         not null
 #  insurance_agent_id  :integer
 #  lawyer_id           :integer
+#  stripe_price_id     :string
+#  stripe_product_id   :string
 #
 # Indexes
 #
