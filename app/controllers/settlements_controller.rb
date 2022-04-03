@@ -3,6 +3,10 @@ class SettlementsController < ApplicationController
     include DsEnvelope
     before_action :authenticate_user!
 
+    def dashboard
+        render :dashboard
+    end
+    
     def new
         if current_user.isLawyer?
             @settlement = Settlement.new
@@ -145,29 +149,6 @@ class SettlementsController < ApplicationController
         create_and_send(@settlement.release_form.pdf, envelope_args)
         flash[:info] = "Sent signature request to #{params[:client_email]}"
         redirect_to root_path
-    end
-
-    def start_stripe_session
-        settlement = Settlement.find(params[:id])
-        product = Stripe::Product.create({name: "Settlement!"})
-        puts "============================="
-        price = Stripe::Price.create({
-            unit_amount: (settlement.settlement_amount * 100).to_i,
-            currency: 'usd',
-            product: product,
-        })
-        puts "============================="
-        checkout_session = Stripe::Checkout::Session.create({
-            success_url: 'https://localhost:3000/',
-            cancel_url: 'https://localhost:3000/',
-            payment_method_types: ['us_bank_account'],
-            line_items: [
-                {price: price, quantity: 1},
-            ],
-            mode: 'payment',
-        })
-        puts "============================= URL: #{checkout_session.url}"
-        redirect_to checkout_session.url
     end
 
     def start_with_who

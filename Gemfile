@@ -87,3 +87,6 @@ gem 'whenever'
 
 # Payment Processor
 gem 'stripe', '~> 5.47.0'
+
+# Logs outgoing HTTP requests. Used for debugging.
+gem 'httplog'

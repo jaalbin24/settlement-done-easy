@@ -82,6 +82,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.boolean "signature_requested", default: false, null: false
     t.integer "stage", default: 1, null: false
     t.integer "status", default: 1, null: false
+    t.string "stripe_product_id"
+    t.string "stripe_price_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lawyer_id"
@@ -100,7 +102,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "first_name"
     t.string "last_name"
     t.string "organization"
-    t.string "stripe_customer_id"
+    t.string "stripe_account_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true

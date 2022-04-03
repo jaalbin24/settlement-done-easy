@@ -17,6 +17,8 @@
 #  updated_at          :datetime         not null
 #  insurance_agent_id  :integer
 #  lawyer_id           :integer
+#  stripe_price_id     :string
+#  stripe_product_id   :string
 #
 # Indexes
 #
@@ -58,6 +60,35 @@ class Settlement < ApplicationRecord
             if self.changed?
                 self.save
             end
+        end
+    end
+
+    before_save do
+        if self.claim_number_changed?
+            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+            self.stripe_product_id = stripe_product.id
+        end
+        if self.settlement_amount_changed?
+            stripe_price = Stripe::Price.create({
+                unit_amount_decimal: self.settlement_amount * 100,
+                currency: "usd",
+                product: self.stripe_product_id
+            })
+            self.stripe_price_id = stripe_price.id
+        end
+    end
+
+    after_create do
+        if self.stripe_price_id == nil
+            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+            stripe_price = Stripe::Price.create({
+                unit_amount_decimal: self.settlement_amount * 100,
+                currency: "usd",
+                product: stripe_product.id
+            })
+            self.stripe_product_id = stripe_product.id
+            self.stripe_price_id = stripe_price.id
+            self.save
         end
     end
 
