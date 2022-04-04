@@ -12,7 +12,7 @@
                 <h3 class="text-center mb-3">What do you think of the document?</h3>
                 <div class="row">
                     <div class="col">
-                        <%=link_to 'Looks good!', settlement_get_client_signature_path(@settlement), class: 'btn btn-lg btn-success w-100'%>
+                        <%=link_to 'Looks good!', settlement_approve_stage1_document_path(@settlement), class: 'btn btn-lg btn-success w-100'%>
                     </div>
                     <div class="col">
                         <%=link_to 'Needs changes', nil, class: 'btn btn-lg btn-danger w-100'%>

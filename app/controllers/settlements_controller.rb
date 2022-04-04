@@ -133,7 +133,14 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        
+        settlement.document_approved = true
+        settlement.save
+
+        flash[:info] = "Document approved! You can now get your client's signature."
+        redirect_to settlement_get_client_signature_path(settlement)
+    end
+
+    def reject_stage1_document
     end
     
     def get_client_signature

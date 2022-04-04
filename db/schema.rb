@@ -79,11 +79,15 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "plaintiff_name"
     t.string "incident_location"
     t.date "incident_date"
-    t.boolean "signature_requested", default: false, null: false
     t.integer "stage", default: 1, null: false
     t.integer "status", default: 1, null: false
     t.string "stripe_product_id"
     t.string "stripe_price_id"
+    t.boolean "document_approved", default: false, null: false
+    t.boolean "document_needs_adjustment", default: false, null: false
+    t.boolean "final_document_approved", default: false, null: false
+    t.boolean "signature_requested", default: false, null: false
+    t.boolean "document_signed", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lawyer_id"

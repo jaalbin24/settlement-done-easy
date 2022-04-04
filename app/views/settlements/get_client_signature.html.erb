@@ -7,11 +7,11 @@
 <div class="float-left" style="width: 40%;">
   <%= bootstrap_form_with url: settlement_send_ds_signature_request_path, method: :patch, local: true do |form| %>
     <div>
-      <%= form.text_field :client_name, class: "form-control", placeholder: "Client name"%>
-      <%= form.email_field :client_email, class: "form-control", placeholder: "Client email"%>
+      <%= form.text_field :client_name, class: "form-control", placeholder: "Client name", value: @settlement.plaintiff_name%>
+      <%= form.email_field :client_email, class: "form-control", placeholder: "Client email", autofocus: true%>
       <br>
       <%=form.submit("Send to Client!")%>
     </div>
   <% end %>
-  <p>Your client will recieve an email</p>
+  <p>Your client will recieve an email from DocuSign</p>
 </div>
