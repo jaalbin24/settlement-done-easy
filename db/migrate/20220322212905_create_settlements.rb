@@ -17,6 +17,7 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.boolean :document_needs_adjustment, null: false, default: false
       t.boolean :final_document_approved,   null: false, default: false
       t.boolean :signature_requested,       null: false, default: false
+      t.boolean :document_signed,           null: false, default: false
 
 
       t.timestamps

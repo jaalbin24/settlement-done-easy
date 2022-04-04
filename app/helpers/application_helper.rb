@@ -99,7 +99,7 @@ module ApplicationHelper
         path = "#"
         user.settlements.each do |s|
             if s.stage == 2 && s.status == 1
-                settlement_show_path(s)
+                path = settlement_show_path(s)
                 count += 1
             end
         end

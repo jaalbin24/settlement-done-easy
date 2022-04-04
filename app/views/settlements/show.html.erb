@@ -6,7 +6,11 @@
             <%=render "form", path: settlement_update_path(@settlement), submit_label: "Edit"%>
             <div class="list-group">
                 <%if @settlement.release_form != nil%>
-                    <%=link_to "View documents", release_form_show_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
+                    <%if @settlement.stage == 1 && @settlement.status == 2%>
+                        <%=link_to "View documents", settlement_review_document_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
+                    <%else%>
+                        <%=link_to "View documents", release_form_show_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
+                    <%end%>
                 <%elsif current_user.isInsuranceAgent?%>
                     <%=link_to "Upload documents", release_form_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
                 <%end%>
