@@ -67,6 +67,31 @@ class StripeController < ApplicationController
                 },
             },
         })
+        settlement.stripe_payment_intent_id = stripe_session.payment_intent
+        if !settlement.save
+            puts "=========================== ERROR: SETTLEMENT NOT SAVED"
+        end
         redirect_to stripe_session.url
+    end
+
+    def get_payment_status
+        begin
+            settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        stripe_payment_intent = Stripe::PaymentIntent.retrieve(settlement.stripe_payment_intent_id)
+        if stripe_payment_intent.status == "processing"
+            flash[:info] = "Payment still processing."
+            redirect_to settlement_show_path(settlement)
+        elsif stripe_payment_intent.status == "succeeded"
+            settlement.payment_received = true
+            settlement.save
+            flash[:success] = "Payment of $#{stripe_payment_intent.amount/100.0} has been received for claim #{settlement.claim_number}."
+            redirect_to settlement_show_url(settlement)
+        else
+            handle_invalid_request
+        end
     end
 end

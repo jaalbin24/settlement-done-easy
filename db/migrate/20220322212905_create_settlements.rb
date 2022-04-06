@@ -8,16 +8,22 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string :plaintiff_name
       t.string :incident_location
       t.date :incident_date
-      t.integer :stage,               null: false, default: 1
-      t.integer :status,              null: false, default: 1
+      t.integer :stage,                     null: false, default: 1
+      t.integer :status,                    null: false, default: 1
       t.string :stripe_product_id
       t.string :stripe_price_id
+      t.string :stripe_payment_intent_id
+
 
       t.boolean :document_approved,         null: false, default: false
       t.boolean :document_needs_adjustment, null: false, default: false
       t.boolean :final_document_approved,   null: false, default: false
       t.boolean :signature_requested,       null: false, default: false
       t.boolean :document_signed,           null: false, default: false
+      t.boolean :payment_made,              null: false, default: false
+      t.boolean :payment_received,          null: false, default: false
+      t.boolean :payment_has_error,         null: false, default: false
+      t.boolean :completed,                 null: false, default: false
 
 
       t.timestamps

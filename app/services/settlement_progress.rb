@@ -87,29 +87,31 @@ module SettlementProgress
         when 1
             case status
             when 1
-                return "Waiting for #{settlement.insurance_agent.full_name} to upload documents"
+                return "Waiting for #{settlement.insurance_agent.full_name} to upload documents."
             when 2
-                return "Waiting for #{settlement.lawyer.full_name} to review documents"
+                return "Waiting for #{settlement.lawyer.full_name} to review documents."
             when 3
-                return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents"
+                return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents."
             end
         when 2
             case status
             when 1
-                return "Waiting for #{settlement.lawyer.full_name} to send signature request"
+                return "Waiting for #{settlement.lawyer.full_name} to send signature request."
             when 2
-                return "Waiting for #{settlement.plaintiff_name}'s signature"
+                return "Waiting for #{settlement.plaintiff_name}'s signature."
             when 3
-                return "Waiting for #{settlement.lawyer.full_name} to review final document"
+                return "Waiting for #{settlement.lawyer.full_name} to review final document."
             end
         when 3
             case status
             when 1
-                return "Waiting for #{settlement.insurance_agent.full_name} to make the payment"
+                return "Waiting for #{settlement.insurance_agent.full_name} to make the payment."
             when 2
-                return "Payment processing"
+                return "Payment processing."
             when 3
-                return "Payment received! #{settlement.lawyer.full_name} can complete this settlement."
+                return "Error with payment."
+            when 4
+                return "Payment received! #{settlement.lawyer.full_name} can now complete this settlement."
             end
         when 4
             return "Completed"

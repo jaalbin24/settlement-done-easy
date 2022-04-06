@@ -237,6 +237,36 @@ class SettlementsController < ApplicationController
           
     end
 
+    def payment_success
+        begin
+            @settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        stripe_payment_intent = Stripe::PaymentIntent.retrieve(@settlement.stripe_payment_intent_id)
+        if stripe_payment_intent.status == "processing" || stripe_payment_intent.status == "succeeded"
+            @settlement.payment_made = true
+            if !@settlement.save
+                puts "====================== ERROR SAVING: #{@settlement.errors.full_messages.inspect}"
+            end
+            render :payment_success
+        end
+    end
+
+    def complete
+        begin
+            settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        settlement.completed = true
+        settlement.save
+        flash[:success] = "Settlement completed!"
+        redirect_to settlement_show_url(settlement)
+    end
+
     def settlement_params
         params.require(:settlement).permit(
             :claim_number,

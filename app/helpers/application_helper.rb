@@ -67,9 +67,11 @@ module ApplicationHelper
             when 1
                 return stripe_settlement_checkout_session_path(settlement)
             when 2
-                return "#"
+                return stripe_get_payment_status_path(settlement)
             when 3
                 return "#"
+            when 4
+                return settlement_complete_path(settlement)
             end
         when 4
             return "#"

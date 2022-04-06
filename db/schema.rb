@@ -84,11 +84,16 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.integer "status", default: 1, null: false
     t.string "stripe_product_id"
     t.string "stripe_price_id"
+    t.string "stripe_payment_intent_id"
     t.boolean "document_approved", default: false, null: false
     t.boolean "document_needs_adjustment", default: false, null: false
     t.boolean "final_document_approved", default: false, null: false
     t.boolean "signature_requested", default: false, null: false
     t.boolean "document_signed", default: false, null: false
+    t.boolean "payment_made", default: false, null: false
+    t.boolean "payment_received", default: false, null: false
+    t.boolean "payment_has_error", default: false, null: false
+    t.boolean "completed", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lawyer_id"
