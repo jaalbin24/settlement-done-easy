@@ -19,6 +19,7 @@
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  ds_envelope_id         :string
 #  settlement_id          :integer
 #
 # Indexes

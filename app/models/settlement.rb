@@ -2,21 +2,32 @@
 #
 # Table name: settlements
 #
-#  id                  :integer          not null, primary key
-#  claim_number        :string
-#  defendent_name      :string
-#  incident_date       :date
-#  incident_location   :string
-#  plaintiff_name      :string
-#  policy_number       :string
-#  settlement_amount   :float
-#  signature_requested :boolean          default(FALSE), not null
-#  stage               :integer          default(1), not null
-#  status              :integer          default(1), not null
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  insurance_agent_id  :integer
-#  lawyer_id           :integer
+#  id                        :integer          not null, primary key
+#  claim_number              :string
+#  completed                 :boolean          default(FALSE), not null
+#  defendent_name            :string
+#  document_approved         :boolean          default(FALSE), not null
+#  document_needs_adjustment :boolean          default(FALSE), not null
+#  document_signed           :boolean          default(FALSE), not null
+#  final_document_approved   :boolean          default(FALSE), not null
+#  incident_date             :date
+#  incident_location         :string
+#  payment_has_error         :boolean          default(FALSE), not null
+#  payment_made              :boolean          default(FALSE), not null
+#  payment_received          :boolean          default(FALSE), not null
+#  plaintiff_name            :string
+#  policy_number             :string
+#  settlement_amount         :float
+#  signature_requested       :boolean          default(FALSE), not null
+#  stage                     :integer          default(1), not null
+#  status                    :integer          default(1), not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  insurance_agent_id        :integer
+#  lawyer_id                 :integer
+#  stripe_payment_intent_id  :string
+#  stripe_price_id           :string
+#  stripe_product_id         :string
 #
 # Indexes
 #
@@ -61,6 +72,38 @@ class Settlement < ApplicationRecord
         end
     end
 
+    before_save do
+        # if release_form.changed?
+        #     release_from.save
+        # end
+        if self.claim_number_changed?
+            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+            self.stripe_product_id = stripe_product.id
+        end
+        if self.settlement_amount_changed?
+            stripe_price = Stripe::Price.create({
+                unit_amount_decimal: self.settlement_amount * 100,
+                currency: "usd",
+                product: self.stripe_product_id
+            })
+            self.stripe_price_id = stripe_price.id
+        end
+    end
+
+    after_create do
+        if self.stripe_price_id == nil
+            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+            stripe_price = Stripe::Price.create({
+                unit_amount_decimal: self.settlement_amount * 100,
+                currency: "usd",
+                product: stripe_product.id
+            })
+            self.stripe_product_id = stripe_product.id
+            self.stripe_price_id = stripe_price.id
+            self.save
+        end
+    end
+
     def partner_of(user)
         if user.isLawyer?
             return insurance_agent
@@ -82,39 +125,70 @@ class Settlement < ApplicationRecord
     def status_message
         return SettlementProgress.status_message(self)
     end
+    # STAGE 1
+        # STATUS 1 = Waiting for document upload.
+        # STATUS 2 = Waiting for document approval.
+        # STATUS 3 = Document needs adjustment.
 
+    # STAGE 2
+        # STATUS 1 = Document approved. Waiting to be sent to claimant.
+        # STATUS 2 = DS signature request sent. Waiting for claimant signature.
+        # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
+
+    # STAGE 3
+        # STATUS 1 = Document w/ signature approved. Waiting for payment.
+        # STATUS 2 = Paid. Payment processing.
+        # STATUS 3 = Error with payment. Waiting for payment again.
+        # STATUS 4 = Payment received. Waiting for Settlement completion.
+
+    # STAGE 4
+        # STATUS 1 = Completed
     def update_progress
         if stage == 1
             if !hasDocument?
                 self.status = 1
-            elsif !release_form.approved?
-                if !self.release_form.adjustmentNeeded?
+            elsif !document_approved?
+                if !document_needs_adjustment?
                     self.status = 2
                 else
                     self.status = 3
                 end
-            elsif release_form.approved?
+            elsif document_approved?
                 self.stage = 2
                 self.status = 1
             end
         elsif stage == 2
-            if !release_form.signed?
+            if !document_signed?
                 if !signature_requested?
                     self.status = 1
                 elsif signature_requested?
                     self.status = 2
                 end
-            elsif release_form.signed?
+            else
                 self.status = 3
-                if finalApproved?
+                if final_document_approved?
                     self.stage = 3
                     self.status = 1
                 end
             end
         elsif stage == 3
-            # This is the payment section. It will be implemented when that feature is.
-        elsif stage == 4
-            
+            if !payment_made?
+                self.status = 1
+            else
+                if !payment_received?
+                    if payment_has_error?
+                        self.status = 3
+                    else
+                        self.status = 2
+                    end
+                else
+                    self.status = 4
+                    if completed?
+                        self.stage = 4
+                        self.status = 1
+                    end
+                end
+            end
         end
     end
 end
