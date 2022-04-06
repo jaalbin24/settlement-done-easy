@@ -14,6 +14,7 @@
 #  role                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  stripe_account_id      :string
 #
 # Indexes
 #
@@ -27,7 +28,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :role, inclusion: {in: ["Insurance Agent", "Lawyer"]}
-  validates :first_name, :last_name, presence: true
+  validates :first_name, :last_name, :email, :encrypted_password, presence: true
 
   has_many(
     :comments,
@@ -52,6 +53,25 @@ class User < ApplicationRecord
     inverse_of: :insurance_agent,
     dependent: :destroy
   )
+
+  after_create do
+    if self.isLawyer? && self.stripe_account_id == nil
+      account = Stripe::Account.create({
+        type: "express",
+        country: "US",
+        email: self.email,
+        capabilities: {
+          us_bank_account_ach_payments: {requested: true},
+          card_payments: {requested: true},
+          transfers: {requested: true},
+        },
+        business_type: "company",
+        business_profile: {url: "http://settlementdoneeasy.com/"}
+      })
+      self.stripe_account_id = account.id
+      self.save
+    end
+  end
 
   def full_name
     return "#{first_name} #{last_name}"

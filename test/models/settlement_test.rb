@@ -2,21 +2,32 @@
 #
 # Table name: settlements
 #
-#  id                  :integer          not null, primary key
-#  claim_number        :string
-#  defendent_name      :string
-#  incident_date       :date
-#  incident_location   :string
-#  plaintiff_name      :string
-#  policy_number       :string
-#  settlement_amount   :float
-#  signature_requested :boolean          default(FALSE), not null
-#  stage               :integer          default(1), not null
-#  status              :integer          default(1), not null
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  insurance_agent_id  :integer
-#  lawyer_id           :integer
+#  id                        :integer          not null, primary key
+#  claim_number              :string
+#  completed                 :boolean          default(FALSE), not null
+#  defendent_name            :string
+#  document_approved         :boolean          default(FALSE), not null
+#  document_needs_adjustment :boolean          default(FALSE), not null
+#  document_signed           :boolean          default(FALSE), not null
+#  final_document_approved   :boolean          default(FALSE), not null
+#  incident_date             :date
+#  incident_location         :string
+#  payment_has_error         :boolean          default(FALSE), not null
+#  payment_made              :boolean          default(FALSE), not null
+#  payment_received          :boolean          default(FALSE), not null
+#  plaintiff_name            :string
+#  policy_number             :string
+#  settlement_amount         :float
+#  signature_requested       :boolean          default(FALSE), not null
+#  stage                     :integer          default(1), not null
+#  status                    :integer          default(1), not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  insurance_agent_id        :integer
+#  lawyer_id                 :integer
+#  stripe_payment_intent_id  :string
+#  stripe_price_id           :string
+#  stripe_product_id         :string
 #
 # Indexes
 #

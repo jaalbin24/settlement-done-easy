@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.boolean "adjustment_needed", default: false, null: false
     t.boolean "signed", default: false, null: false
     t.integer "settlement_id"
+    t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "type"
@@ -79,9 +80,20 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "plaintiff_name"
     t.string "incident_location"
     t.date "incident_date"
-    t.boolean "signature_requested", default: false, null: false
     t.integer "stage", default: 1, null: false
     t.integer "status", default: 1, null: false
+    t.string "stripe_product_id"
+    t.string "stripe_price_id"
+    t.string "stripe_payment_intent_id"
+    t.boolean "document_approved", default: false, null: false
+    t.boolean "document_needs_adjustment", default: false, null: false
+    t.boolean "final_document_approved", default: false, null: false
+    t.boolean "signature_requested", default: false, null: false
+    t.boolean "document_signed", default: false, null: false
+    t.boolean "payment_made", default: false, null: false
+    t.boolean "payment_received", default: false, null: false
+    t.boolean "payment_has_error", default: false, null: false
+    t.boolean "completed", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lawyer_id"
@@ -100,6 +112,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "first_name"
     t.string "last_name"
     t.string "organization"
+    t.string "stripe_account_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true

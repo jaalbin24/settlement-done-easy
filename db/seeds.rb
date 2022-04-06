@@ -6,9 +6,10 @@ top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"
 insurance_companies = ["State Farm", "Geico", "Berkshire Hathaway", "Progressive", "Allstate", "Liberty Mutual", "USAA", "Nationwide"]
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims"]
 # For generating random organizations to which each user belongs
-SEED_SIZE = 5
-NUM_SETTLEMENTS = SEED_SIZE * 10
+SEED_SIZE = 2
+NUM_SETTLEMENTS = SEED_SIZE * 2
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
+
 lawyers = Array.new(SEED_SIZE) {|i|
     User.create!(
         email: "lawyer#{i}@example.com",
@@ -16,7 +17,8 @@ lawyers = Array.new(SEED_SIZE) {|i|
         role: "Lawyer",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization: law_firms[rand(0..law_firms.size-1)]
+        organization: law_firms[rand(0..law_firms.size-1)],
+        stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
     )
 }
 puts "Created #{SEED_SIZE} lawyer models..."
@@ -40,11 +42,11 @@ settlements = Array.new(NUM_SETTLEMENTS) {|i|
         lawyer:             lawyer,
         insurance_agent:    insurance_agent,
         claim_number:       "#{rand(100000..999999)}",
-        settlement_amount:  '%.02f' % rand(100000..1000000).fdiv(100),
+        settlement_amount:  1000.00,
         defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
         plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
         incident_location:  "Memphis, TN",
-        incident_date:      Date.today - rand(30..365).days
+        incident_date:      Date.today - rand(30..365).days,
     )
     settlement.build_release_form(
         claim_number:           "#{rand(100000..999999)}",

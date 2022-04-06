@@ -4,6 +4,7 @@
         <%if current_user.isLawyer?%>
             <%=settlements_need_approval(current_user)%>
             <%=settlements_ready_to_be_signed(current_user)%>
+            <%=settlements_need_final_approval%>
             <%=settlements_need_payment_review(current_user)%>
         <%elsif current_user.isInsuranceAgent?%>
             <%=settlements_need_document(current_user)%>

@@ -16,6 +16,8 @@ class CreateReleaseForms < ActiveRecord::Migration[6.1]
       t.boolean :signed,                  null: false, default: false
       t.references :settlement
 
+      t.string :ds_envelope_id
+
       t.timestamps
     end
   end

@@ -1,0 +1,37 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+        <div class="card">
+            <h3 class="card-header text-center">Final Document Review</h3>
+            <div class="alert alert-dismissible alert-secondary">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h6 class="card-subtitle text-warning text-center mb-2">Please make sure your client has signed correctly.</h6>
+                <h6 class="card-title" style="text-align: justify;">Download a PDF to get a better look at small print. If everything looks good, approve the document by clicking the green button. If anything about the document needs to be modified, click the red button, and you will be taken to a page where you can request your client's signature again.</h6>
+            </div>
+            <div class="card-body bg-dark">
+                <h3 class="text-center mb-3">What do you think of the document?</h3>
+                <div class="row">
+                    <div class="col">
+                        <%=link_to 'Looks good!', settlement_approve_stage2_document_path(@settlement), class: 'btn btn-lg btn-success w-100'%>
+                    </div>
+                    <div class="col">
+                        <%=link_to 'Needs changes', settlement_reject_stage2_document_path(@settlement), class: 'btn btn-lg btn-danger w-100'%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="text-center">The document is approved, and <%=@settlement.insurance_agent.full_name%> can initiate payment.</p>
+                    </div>
+                    <div class="col">
+                        <p class="text-center">The document is rejected, and a new signature request must be sent to your client.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+      <embed src="<%=rails_blob_path(@settlement.release_form.pdf)%>" type="application/pdf" width="100%" height="800" style="border: none;">
+    </div>
+</div>
+
+

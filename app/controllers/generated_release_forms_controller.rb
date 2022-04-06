@@ -9,7 +9,6 @@ class GeneratedReleaseFormsController < ApplicationController
     def update
         @release_form = GeneratedReleaseForm.find(params[:id])
         if @release_form.update(generated_release_form_params)
-            UserMailer.with(user: @release_form.lawyer).insurance_edit_notification.deliver_later
             flash[:success] = "Release form updated!"
             redirect_to release_form_show_url(@release_form)
         else
@@ -21,7 +20,6 @@ class GeneratedReleaseFormsController < ApplicationController
     def create
         @release_form = GeneratedReleaseForm.create(generated_release_form_params)
         if @release_form.save
-            UserMailer.with(user: @release_form.lawyer).insurance_new_notification.deliver_later
             flash[:success] = "Release form created!"
             redirect_to release_form_show_url(@release_form)
         else

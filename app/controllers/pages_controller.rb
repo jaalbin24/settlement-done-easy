@@ -1,10 +1,6 @@
 class PagesController < ApplicationController
     before_action :authenticate_user!, except: :user_type_select
 
-    def home
-        render :home
-    end
-
     def user_type_select
         render :user_type_select
     end
@@ -19,7 +15,7 @@ class PagesController < ApplicationController
         render :approve_or_reject
     end
 
-    def ds_test_page
-        render :ds_test_page
+    def testing
+        render :testing
     end
 end
