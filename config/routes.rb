@@ -45,6 +45,8 @@ Rails.application.routes.draw do
   get 'settlements/:id/get_client_signature',         to: 'settlements#get_client_signature',   as: 'settlement_get_client_signature'
   get 'settlements/:id/start_stripe_session',         to: 'settlements#start_stripe_session',   as: 'settlement_start_stripe_session'
   get 'settlements/:id/get_ds_envelope_status',       to: 'settlements#get_ds_envelope_status', as: 'settlement_get_ds_envelope_status'
+  get 'settlements/:id/payment_success',              to: 'settlements#payment_success',        as: 'settlement_payment_success'
+  get 'settlements/:id/complete',                     to: 'settlements#complete',               as: 'settlement_complete'
   post 'settlements',                                 to: 'settlements#create',                 as: 'settlement_create'
   patch 'settlements/:id',                            to: 'settlements#update',                 as: 'settlement_update'
   patch 'settlements/:id/send_ds_signature_request',  to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
@@ -54,5 +56,5 @@ Rails.application.routes.draw do
   get 'stripe_handle_return_from_onboard',            to: 'stripe#handle_return_from_onboard',  as: 'stripe_handle_return_from_onboard'
   get 'stripe_login_link',                            to: 'stripe#login_link',                  as: 'stripe_login_link'
   get 'stripe_settlement_checkout_session/:id',       to: 'stripe#settlement_checkout_session', as: 'stripe_settlement_checkout_session'
-
+  get 'stripe_get_payment_status/:id',                to: 'stripe#get_payment_status',          as: 'stripe_get_payment_status'
 end

@@ -4,6 +4,7 @@
 #
 #  id                        :integer          not null, primary key
 #  claim_number              :string
+#  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
 #  document_approved         :boolean          default(FALSE), not null
 #  document_needs_adjustment :boolean          default(FALSE), not null
@@ -11,6 +12,9 @@
 #  final_document_approved   :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
+#  payment_has_error         :boolean          default(FALSE), not null
+#  payment_made              :boolean          default(FALSE), not null
+#  payment_received          :boolean          default(FALSE), not null
 #  plaintiff_name            :string
 #  policy_number             :string
 #  settlement_amount         :float
@@ -21,6 +25,7 @@
 #  updated_at                :datetime         not null
 #  insurance_agent_id        :integer
 #  lawyer_id                 :integer
+#  stripe_payment_intent_id  :string
 #  stripe_price_id           :string
 #  stripe_product_id         :string
 #
@@ -171,30 +176,19 @@ class Settlement < ApplicationRecord
                 self.status = 1
             else
                 if !payment_received?
-                    if payment_has_errors?
+                    if payment_has_error?
                         self.status = 3
                     else
                         self.status = 2
                     end
                 else
                     self.status = 4
+                    if completed?
+                        self.stage = 4
+                        self.status = 1
+                    end
                 end
             end
-        elsif completed?
-            self.stage = 4
-            self.status = 1
         end
-    end
-
-    def payment_made?
-        return false
-    end
-
-    def payment_received?
-        return false
-    end
-
-    def payment_has_errors?
-        return false
     end
 end
