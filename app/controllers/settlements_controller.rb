@@ -121,7 +121,6 @@ class SettlementsController < ApplicationController
             flash[:error] = "That settlement does not have a document to review. #{@settlement.insurance_agent.full_name} must add one."
             redirect_to settlement_show_path(@settlement)
         else
-            @comment = Comment.new
             render :review_document
         end
     end
@@ -133,6 +132,7 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
+        settlement.document_needs_adjustment = false
         settlement.document_approved = true
         settlement.save
 
@@ -141,6 +141,23 @@ class SettlementsController < ApplicationController
     end
 
     def reject_stage1_document
+    end
+
+    def approve_stage2_document
+        begin
+            settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        settlement.final_document_approved = true
+        settlement.save
+
+        flash[:info] = "Document approved! #{settlement.insurance_agent.full_name} can now initiate payment."
+        redirect_to settlement_show_path(settlement)
+    end
+
+    def reject_stage2_document
     end
     
     def get_client_signature
@@ -154,18 +171,70 @@ class SettlementsController < ApplicationController
     end
 
     def send_ds_signature_request
-        @settlement = Settlement.find(params[:id])
+        begin
+            settlement = Settlement.find(params[:id])
+            if params[:client_email] == nil || !params[:client_email].include?("@") || !params[:client_email].include?(".")
+                flash.now[:warning] = "You did not provide a valid client email. No email sent."
+                render :get_client_signature
+                return
+            elsif params[:client_name] != settlement.plaintiff_name
+                flash[:warning] = "Client's name does not match the plaintiff name given in settlement. No email sent."
+                redirect_to root_path
+                return
+            end
+        rescue
+            handle_invalid_request
+            return
+        end
         envelope_args = {
-            email_subject: "#{@settlement.lawyer.full_name} is requesting a signature.",
+            email_subject: "#{settlement.lawyer.full_name} is requesting a signature.",
             signer_email: params[:client_email],
             signer_name: params[:client_name],
             cc_email: Rails.configuration.APP_EMAIL,
             cc_name: 'Settlement Done Easy',
             status: 'sent'
         }
-        create_and_send(@settlement.release_form.pdf, envelope_args)
+        envelope_id = create_and_send(settlement.release_form.pdf, envelope_args)
+        settlement.signature_requested = true
+        settlement.release_form.ds_envelope_id = envelope_id
+        if !settlement.release_form.save || !settlement.save
+            puts "====================== ERROR SAVING: #{settlement.errors.full_messages.inspect} | #{settlement.release_form.errors.full_messages.inspect}"
+        end
         flash[:info] = "Sent signature request to #{params[:client_email]}"
         redirect_to root_path
+    end
+
+    def get_ds_envelope_status
+        settlement = Settlement.find(params[:id])
+        if !settlement.document_signed?
+            envelope = retrieve_envelope(settlement.release_form.ds_envelope_id)
+            status = JSON.parse(envelope.to_json)['status']
+            puts "================================== get_ds_envelope_status: envelope = #{envelope}"
+            if status == "completed" 
+                temp_file = download_document(settlement.release_form.ds_envelope_id)
+                settlement.release_form.pdf.attach(io: temp_file.open, filename: settlement.release_form.pdf_file_name, content_type: "application/pdf")
+                settlement.document_signed = true
+                sleep(7)
+                settlement.save
+            end
+        end
+        redirect_to root_path
+    end
+
+    def review_final_document
+        begin
+            @settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        if !@settlement.hasDocument?
+            flash[:error] = "That settlement does not have a document to review. #{@settlement.insurance_agent.full_name} must add one."
+            redirect_to settlement_show_path(@settlement)
+        else
+            render :review_final_document
+        end
+          
     end
 
     def settlement_params

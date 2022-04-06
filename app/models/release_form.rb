@@ -19,6 +19,7 @@
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  ds_envelope_id         :string
 #  settlement_id          :integer
 #
 # Indexes
@@ -45,7 +46,6 @@ class ReleaseForm < ApplicationRecord
         inverse_of: :release_form,
     )
 
-    validates :settlement_amount, numericality: true
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
     validates :pdf, presence: true
 
@@ -98,7 +98,7 @@ class ReleaseForm < ApplicationRecord
     end
 
     def pdf_file_name
-        name = self.claim_number + "_release_form.pdf"
+        name = settlement.claim_number + "_release_form.pdf"
         return name
     end
 

@@ -105,9 +105,9 @@ module SettlementProgress
         when 3
             case status
             when 1
-                return "Waiting for #{settlement.insurance_agent.full_name} to add payment"
+                return "Waiting for #{settlement.insurance_agent.full_name} to make the payment"
             when 2
-                return "Payment is processing"
+                return "Payment processing"
             when 3
                 return "Payment received! #{settlement.lawyer.full_name} can complete this settlement."
             end

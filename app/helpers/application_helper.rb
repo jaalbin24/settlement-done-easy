@@ -24,6 +24,24 @@ module ApplicationHelper
 
     # Used for the status link on the settlement show that can lead anywhere depending on the status of a settlement.
     def status_action_path(settlement)
+        # STAGE 1
+            # STATUS 1 = Waiting for document upload.
+            # STATUS 2 = Waiting for document approval.
+            # STATUS 3 = Document needs adjustment.
+
+        # STAGE 2
+            # STATUS 1 = Document approved. Waiting to be sent to claimant.
+            # STATUS 2 = DS signature request sent. Waiting for claimant signature.
+            # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
+
+        # STAGE 3
+            # STATUS 1 = Document w/ signature approved. Waiting for payment.
+            # STATUS 2 = Paid. Payment processing.
+            # STATUS 3 = Error with payment. Waiting for payment again.
+            # STATUS 4 = Payment received. Waiting for Settlement completion.
+
+        # STAGE 4
+            # STATUS 1 = Completed
         status = settlement.status
         case settlement.stage
         when 1
@@ -38,16 +56,16 @@ module ApplicationHelper
         when 2
             case status
             when 1
-                return "#"
+                return settlement_get_client_signature_path(settlement)
             when 2
-                return "#"
+                return settlement_get_ds_envelope_status_path(settlement)
             when 3
-                return "#"
+                return settlement_review_final_document_path(settlement)
             end
         when 3
             case status
             when 1
-                return "#"
+                return stripe_settlement_checkout_session_path(settlement)
             when 2
                 return "#"
             when 3
@@ -67,8 +85,12 @@ module ApplicationHelper
                 count += 1
             end
         end
-        if count > 0 && user.isLawyer?
-            bg = 'danger'
+        if count > 0
+            if user.isLawyer?
+                bg = 'danger'
+            elsif user.isInsuranceAgent?
+                bg = 'warning'
+            end
         else
             bg = 'primary'
         end
@@ -103,8 +125,12 @@ module ApplicationHelper
                 count += 1
             end
         end
-        if count > 0 && user.isLawyer?
-            bg = 'danger'
+        if count > 0
+            if user.isLawyer?
+                bg = 'danger'
+            elsif user.isInsuranceAgent?
+                bg = 'warning'
+            end
         else
             bg = 'primary'
         end
@@ -139,8 +165,12 @@ module ApplicationHelper
                 count += 1
             end
         end
-        if count > 0 && user.isInsuranceAgent?
-            bg = 'danger'
+        if count > 0
+            if user.isInsuranceAgent?
+                bg = 'danger'
+            elsif user.isLawyer?
+                bg = 'warning'
+            end
         else
             bg = 'primary'
         end
@@ -175,8 +205,12 @@ module ApplicationHelper
                 count += 1
             end
         end
-        if count > 0 && user.isInsuranceAgent?
-            bg = 'danger'
+        if count > 0
+            if user.isInsuranceAgent?
+                bg = 'danger'
+            elsif user.isLawyer?
+                bg = 'warning'
+            end
         else
             bg = 'primary'
         end
@@ -211,8 +245,12 @@ module ApplicationHelper
                 count += 1
             end
         end
-        if count > 0 && user.isInsuranceAgent?
-            bg = 'danger'
+        if count > 0
+            if user.isInsuranceAgent?
+                bg = 'danger'
+            elsif user.isLawyer?
+                bg = 'warning'
+            end
         else
             bg = 'primary'
         end
@@ -247,8 +285,12 @@ module ApplicationHelper
                 count += 1
             end
         end
-        if count > 0 && user.isLawyer?
-            bg = 'danger'
+        if count > 0
+            if user.isLawyer?
+                bg = 'danger'
+            elsif user.isInsuranceAgent?
+                bg = 'warning'
+            end
         else
             bg = 'primary'
         end
@@ -283,6 +325,11 @@ module ApplicationHelper
                 count += 1
             end
         end
+        if count > 0
+            bg = 'warning'
+        else
+            bg = 'primary'
+        end
         if user.isLawyer?
             if count != 1
                 message = "Settlements waiting for client signature."
@@ -300,12 +347,50 @@ module ApplicationHelper
             path = settlement_need_index_path(stage = 2, status = 2)
         end
         return "<a href='#{path}' class='list-group-item list-group-item-action d-flex align-items-center'>
-                    <span class='badge bg-primary rounded-pill' style='width: 2rem; margin-right: 0.5rem;'>#{count}</span>
+                    <span class='badge bg-#{bg} rounded-pill' style='width: 2rem; margin-right: 0.5rem;'>#{count}</span>
                     #{message}
                 </a>".html_safe
     end
 
-    
+    def settlements_need_final_approval
+        count = 0
+        path = "#"
+        current_user.settlements.each do |s|
+            if s.stage == 2 && s.status == 3
+                path = settlement_show_path(s)
+                count += 1
+            end
+        end
+        if count > 0
+            if current_user.isLawyer?
+                bg = 'danger'
+            elsif current_user.isInsuranceAgent?
+                bg = 'warning'
+            end
+        else
+            bg = 'primary'
+        end
+        if current_user.isLawyer?
+            if count != 1
+                message = "Settlements need final approval."
+            else
+                message = "Settlement needs final approval."
+            end
+        elsif current_user.isInsuranceAgent?
+            if count != 1
+                message = "Settlements waiting for final approval."
+            else
+                message = "Settlement waiting for final approval."
+            end
+        end
+        if count != 0 && count != 1
+            path = settlement_need_index_path(stage = 2, status = 3)
+        end
+        return "<a href='#{path}' class='list-group-item list-group-item-action d-flex align-items-center'>
+                    <span class='badge bg-#{bg} rounded-pill' style='width: 2rem; margin-right: 0.5rem;'>#{count}</span>
+                    #{message}
+                </a>".html_safe
+    end
 
     def need_message(stage, status)
         message = "These settlements "

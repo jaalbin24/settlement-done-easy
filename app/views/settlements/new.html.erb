@@ -1,5 +1,7 @@
-<h1 class="text-center text-primary mb-3">Start a New Settlement!</h1>
 <div class="mx-auto w-50">
-    <%=render "form", path: settlement_create_path(@partner), submit_label: "Start"%>
+    <div class="card">
+        <h3 class="card-header text-center">Start a New Settlement</h3>
+        <%=render "form", path: settlement_create_path(@partner), submit_label: "Start"%>
+    </div>
 </div>
 
