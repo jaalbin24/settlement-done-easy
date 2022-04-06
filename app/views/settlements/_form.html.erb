@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <%if submit_label != "Edit"%>
+            <%if submit_label == "Start"%>
             <div class="mb-3">
                 <%if current_user.isLawyer?%>
                     <%= f.label "Insurance agent", {class: "form-label"} %>
@@ -75,7 +75,7 @@
                 </select>
             </div>
             <%end%>
-            <%= f.submit "#{submit_label}", class: "btn btn-primary" %>
+            <%= f.submit "#{submit_label}!", class: "btn btn-lg btn-primary w-100" %>
         </div>
     </div>
 <% end %>

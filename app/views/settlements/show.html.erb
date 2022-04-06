@@ -3,7 +3,7 @@
         <div class="col">
         <div class="card">
             <h1 class="text-center card-header">Details</h1>
-            <%=render "form", path: settlement_update_path(@settlement), submit_label: "Edit"%>
+            <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
             <div class="list-group">
                 <%if @settlement.release_form != nil%>
                     <%if @settlement.stage == 1 && @settlement.status == 2%>
@@ -15,7 +15,13 @@
                     <%=link_to "Upload documents", release_form_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
                 <%end%>
                 <%if current_user.isLawyer?%>
-                    <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
+                    <%if @settlement.stage != 2%>
+                        <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
+                    <%elsif @settlement.status != 1%>
+                        <%=link_to "Resend signature request", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
+                    <%else%>
+                        <%=link_to "Get signature", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
+                    <%end%>
                     <a href="#" class="list-group-item list-group-item-action disabled">Complete settlement</a>
                 <%elsif current_user.isInsuranceAgent?%>
                     <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>

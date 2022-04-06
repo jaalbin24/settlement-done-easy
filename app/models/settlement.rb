@@ -68,6 +68,9 @@ class Settlement < ApplicationRecord
     end
 
     before_save do
+        # if release_form.changed?
+        #     release_from.save
+        # end
         if self.claim_number_changed?
             stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
             self.stripe_product_id = stripe_product.id
@@ -173,12 +176,25 @@ class Settlement < ApplicationRecord
                     else
                         self.status = 2
                     end
+                else
+                    self.status = 4
                 end
             end
-        elsif stage == 4
-            if completed?
-                self.status = 1
-            end
+        elsif completed?
+            self.stage = 4
+            self.status = 1
         end
+    end
+
+    def payment_made?
+        return false
+    end
+
+    def payment_received?
+        return false
+    end
+
+    def payment_has_errors?
+        return false
     end
 end

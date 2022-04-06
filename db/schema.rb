@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.boolean "adjustment_needed", default: false, null: false
     t.boolean "signed", default: false, null: false
     t.integer "settlement_id"
+    t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "type"

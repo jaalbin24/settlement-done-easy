@@ -14,6 +14,7 @@ class StripeController < ApplicationController
         end
     end
 
+    # For lawyers to sign in to their Stripe Express account and view that Dashboard
     def login_link
         user = current_user
         if user.isLawyer?
@@ -48,27 +49,24 @@ class StripeController < ApplicationController
             handle_invalid_request
             return
         end
-        if session['checkout_session_id'] == nil
-            stripe_session = Stripe::Checkout::Session.create({
-                line_items: [{
-                    price: settlement.stripe_price_id,
-                    quantity: 1,
-                }],
-                mode: 'payment',
-                success_url: 'http://localhost:3000/',
-                cancel_url: 'http://localhost:3000/',
-                payment_method_types: [
-                    'us_bank_account'
-                ],
-                payment_intent_data: {
-                    application_fee_amount: 500,
-                    transfer_data: {
-                        destination: settlement.lawyer.stripe_account_id,
-                    },
+        stripe_session = Stripe::Checkout::Session.create({
+            line_items: [{
+                price: settlement.stripe_price_id,
+                quantity: 1,
+            }],
+            mode: "payment",
+            success_url: "http://localhost:3000/settlements/#{settlement.id}/payment_success",
+            cancel_url: "http://localhost:3000/",
+            payment_method_types: [
+                "us_bank_account"
+            ],
+            payment_intent_data: {
+                application_fee_amount: 500,
+                transfer_data: {
+                    destination: settlement.lawyer.stripe_account_id,
                 },
-            })
-            session['checkout_session_id'] = stripe_session.id
-        end
-        redirect_to Stripe::Checkout::Session.retrieve(session['checkout_session_id']).url
+            },
+        })
+        redirect_to stripe_session.url
     end
 end
