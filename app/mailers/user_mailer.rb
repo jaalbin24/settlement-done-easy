@@ -19,12 +19,12 @@ class UserMailer < ApplicationMailer
         mail(to: @user.email, subject: 'A Revised Document is Ready For Review.')
     end
 
-    def lawyer_approve_notification
+    def attorney_approve_notification
         @user = params[:user]
         mail(to: @user.email, subject: 'A document has been approved.')
     end
 
-    def lawyer_reject_notification
+    def attorney_reject_notification
         @user = params[:user]
         mail(to: @user.email, subject: 'A document has been rejected.')
     end

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: release_forms
+# Table name: documents
 #
 #  id                     :integer          not null, primary key
 #  adjustment_needed      :boolean          default(FALSE), not null
@@ -24,9 +24,9 @@
 #
 # Indexes
 #
-#  index_release_forms_on_settlement_id  (settlement_id)
+#  index_documents_on_settlement_id  (settlement_id)
 #
-class GeneratedReleaseForm < ReleaseForm
+class GeneratedDocument < Document
     before_create do
         self.init_pdf
     end

@@ -10,10 +10,10 @@
         <div class="card-body">
 
             <div class="mb-3">
-                <%if current_user.isLawyer?%>
+                <%if current_user.isAttorney?%>
                     <%= f.select :insurance_agent, User.all_insurance_agents.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:class => "form-select"}%>
                 <%else%>
-                    <%= f.select :lawyer, User.all_lawyers.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:class => "form-select"}%>
+                    <%= f.select :attorney, User.all_attorneys.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:class => "form-select"}%>
                 <%end%>
             </div>
 

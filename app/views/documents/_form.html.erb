@@ -1,7 +1,7 @@
 
 
 
-<%= bootstrap_form_with model: @release_form, url: path, local: true do |form| %>
+<%= bootstrap_form_with model: @document, url: path, local: true do |form| %>
   <div class="card">
     <div class="card-body bg-dark">
       <%=form.file_field :pdf, class: "form-control", required: true%>

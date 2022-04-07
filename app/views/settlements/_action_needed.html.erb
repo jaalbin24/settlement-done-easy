@@ -1,7 +1,7 @@
 <div class="card text-white bg-dark mb-4">
     <div class="card-header"><h4 class="m-0">Action Needed</h4></div>
     <div class="list-group">
-        <%if current_user.isLawyer?%>
+        <%if current_user.isAttorney?%>
             <%=settlements_need_approval(current_user)%>
             <%=settlements_ready_to_be_signed(current_user)%>
             <%=settlements_need_final_approval%>
