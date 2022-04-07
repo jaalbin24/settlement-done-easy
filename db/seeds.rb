@@ -10,18 +10,18 @@ SEED_SIZE = 2
 NUM_SETTLEMENTS = SEED_SIZE * 2
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
 
-lawyers = Array.new(SEED_SIZE) {|i|
+attorneys = Array.new(SEED_SIZE) {|i|
     User.create!(
-        email: "lawyer#{i}@example.com",
+        email: "attorney#{i}@example.com",
         password: 'password123',
-        role: "Lawyer",
+        role: "Attorney",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
         organization: law_firms[rand(0..law_firms.size-1)],
         stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
     )
 }
-puts "Created #{SEED_SIZE} lawyer models..."
+puts "Created #{SEED_SIZE} attorney models..."
 
 insurance_agents = Array.new(SEED_SIZE) {|i|
     User.create!(
@@ -36,10 +36,10 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
 puts "Created #{SEED_SIZE} insurance agent models..."
 
 settlements = Array.new(NUM_SETTLEMENTS) {|i|
-    lawyer = lawyers[rand(0..lawyers.size-1)]
+    attorney = attorneys[rand(0..attorneys.size-1)]
     insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
     settlement = Settlement.new(
-        lawyer:             lawyer,
+        attorney:             attorney,
         insurance_agent:    insurance_agent,
         claim_number:       "#{rand(100000..999999)}",
         settlement_amount:  1000.00,
@@ -48,7 +48,7 @@ settlements = Array.new(NUM_SETTLEMENTS) {|i|
         incident_location:  "Memphis, TN",
         incident_date:      Date.today - rand(30..365).days,
     )
-    settlement.build_release_form(
+    settlement.build_document(
         claim_number:           "#{rand(100000..999999)}",
         policy_number:          "P#{rand(10000..99999)}",
         settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100)
@@ -60,8 +60,8 @@ settlements = Array.new(NUM_SETTLEMENTS) {|i|
 }
 puts "Created #{NUM_SETTLEMENTS} settlement models..."
 
-# generated_release_forms = Array.new(SEED_SIZE) {|i|
-#     GeneratedReleaseForm.new(
+# generated_documents = Array.new(SEED_SIZE) {|i|
+#     GeneratedDocument.new(
 #         claim_number:           "#{rand(100000..999999)}",
 #         policy_number:          "P#{rand(10000..99999)}",
 #         settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
@@ -78,13 +78,13 @@ puts "Created #{NUM_SETTLEMENTS} settlement models..."
 # comments = Array.new(SEED_SIZE) {|i|
 #     Comment.create!(
 #         content: "This is blank! What gives??",
-#         release_form: release_forms[i],
-#         author: lawyers[i]
+#         document: documents[i],
+#         author: attorneys[i]
 #     )
 #     Comment.create!(
 #         content: "Please fix XYZ and send it back to me! Thanks!",
-#         release_form: generated_release_forms[i],
-#         author: lawyers[i]
+#         document: generated_documents[i],
+#         author: attorneys[i]
 #     )
 # }
 # puts "Created #{SEED_SIZE*2} comment models..."

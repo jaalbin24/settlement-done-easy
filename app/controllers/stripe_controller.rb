@@ -1,7 +1,7 @@
 class StripeController < ApplicationController
     def onboard_account_link
         user = current_user
-        if user.isLawyer?
+        if user.isAttorney?
             account_link = Stripe::AccountLink.create(
                 account: user.stripe_account_id,
                 refresh_url: 'http://localhost:3000/stripe_handle_return_from_onboard',
@@ -14,10 +14,10 @@ class StripeController < ApplicationController
         end
     end
 
-    # For lawyers to sign in to their Stripe Express account and view that Dashboard
+    # For attorneys to sign in to their Stripe Express account and view that Dashboard
     def login_link
         user = current_user
-        if user.isLawyer?
+        if user.isAttorney?
             login_link = Stripe::Account.create_login_link(current_user.stripe_account_id)
             redirect_to login_link.url
         else
@@ -63,7 +63,7 @@ class StripeController < ApplicationController
             payment_intent_data: {
                 application_fee_amount: 500,
                 transfer_data: {
-                    destination: settlement.lawyer.stripe_account_id,
+                    destination: settlement.attorney.stripe_account_id,
                 },
             },
         })

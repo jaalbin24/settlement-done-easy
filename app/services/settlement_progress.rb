@@ -53,7 +53,7 @@ module SettlementProgress
             when 1
                 return "need a document"
             when 2
-                return "Waiting for #{settlement.lawyer.full_name} to review documents"
+                return "Waiting for #{settlement.attorney.full_name} to review documents"
             when 3
                 return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents"
             end
@@ -89,18 +89,18 @@ module SettlementProgress
             when 1
                 return "Waiting for #{settlement.insurance_agent.full_name} to upload documents."
             when 2
-                return "Waiting for #{settlement.lawyer.full_name} to review documents."
+                return "Waiting for #{settlement.attorney.full_name} to review documents."
             when 3
                 return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents."
             end
         when 2
             case status
             when 1
-                return "Waiting for #{settlement.lawyer.full_name} to send signature request."
+                return "Waiting for #{settlement.attorney.full_name} to send signature request."
             when 2
                 return "Waiting for #{settlement.plaintiff_name}'s signature."
             when 3
-                return "Waiting for #{settlement.lawyer.full_name} to review final document."
+                return "Waiting for #{settlement.attorney.full_name} to review final document."
             end
         when 3
             case status
@@ -111,7 +111,7 @@ module SettlementProgress
             when 3
                 return "Error with payment."
             when 4
-                return "Payment received! #{settlement.lawyer.full_name} can now complete this settlement."
+                return "Payment received! #{settlement.attorney.full_name} can now complete this settlement."
             end
         when 4
             return "Completed"

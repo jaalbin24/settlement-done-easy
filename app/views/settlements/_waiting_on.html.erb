@@ -1,7 +1,7 @@
 <div class="card text-white bg-dark">
     <div class="card-header"><h4 class="m-0">Waiting...</h4></div>
     <div class="list-group">
-        <%if current_user.isLawyer?%>
+        <%if current_user.isAttorney?%>
             <%=settlements_need_adjustment(current_user)%>
             <%=settlements_need_document(current_user)%>
             <%=settlements_need_payment(current_user)%>

@@ -2,8 +2,8 @@ class CommentsController < ApplicationController
     # before_action :authenticate_user!
 
     def create
-        release_form = ReleaseForm.find(params[:release_form_id])
-        comment = release_form.comments.build(comment_params)
+        document = Document.find(params[:document_id])
+        comment = document.comments.build(comment_params)
         comment.author = current_user
         if comment.save
             redirect_back(fallback_location: root_path)

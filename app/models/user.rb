@@ -27,7 +27,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  validates :role, inclusion: {in: ["Insurance Agent", "Lawyer"]}
+  validates :role, inclusion: {in: ["Insurance Agent", "Attorney"]}
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
 
   has_many(
@@ -41,8 +41,8 @@ class User < ApplicationRecord
   has_many(
     :l_settlements,
     class_name: 'Settlement',
-    foreign_key: 'lawyer_id',
-    inverse_of: :lawyer,
+    foreign_key: 'attorney_id',
+    inverse_of: :attorney,
     dependent: :destroy
   )
 
@@ -55,7 +55,7 @@ class User < ApplicationRecord
   )
 
   after_create do
-    if self.isLawyer? && self.stripe_account_id == nil
+    if self.isAttorney? && self.stripe_account_id == nil
       account = Stripe::Account.create({
         type: "express",
         country: "US",
@@ -77,16 +77,16 @@ class User < ApplicationRecord
     return "#{first_name} #{last_name}"
   end
 
-  def self.all_lawyers
-    return User.where(:role => "Lawyer").order(:first_name, :last_name, :organization)
+  def self.all_attorneys
+    return User.where(:role => "Attorney").order(:first_name, :last_name, :organization)
   end
 
   def self.all_insurance_agents
     return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization)
   end
 
-  def isLawyer?
-    return role == "Lawyer"
+  def isAttorney?
+    return role == "Attorney"
   end
 
   def isInsuranceAgent?
@@ -94,7 +94,7 @@ class User < ApplicationRecord
   end
 
   def settlements
-    if isLawyer?
+    if isAttorney?
       return l_settlements
     elsif isInsuranceAgent?
       return ia_settlements
@@ -102,10 +102,10 @@ class User < ApplicationRecord
   end
 
   def opposite_role
-    if isLawyer?
+    if isAttorney?
       return :insurance_agent
     elsif isInsuranceAgent?
-      return :lawyer
+      return :attorney
     else
       return
     end

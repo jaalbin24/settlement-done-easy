@@ -10,26 +10,26 @@ Rails.application.routes.draw do
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
   get 'testing',                                to: 'pages#testing',                      as: 'testing'    
-  get ':settlement_id/release_forms/new',       to: 'release_forms#new',                  as: 'release_form_new'
-  get 'release_forms/:id',                      to: 'release_forms#show',                 as: 'release_form_show'
-  get 'release_forms/edit/:id',                 to: 'release_forms#edit',                 as: 'release_form_edit'
-  get 'release_forms/:id/ready_to_send',        to: 'release_forms#ready_to_send',        as: 'release_form_ready_to_send'
-  post 'release_forms/approve/:id',             to: 'release_forms#approve_form',         as: 'approve_form'
+  get ':settlement_id/documents/new',       to: 'documents#new',                  as: 'document_new'
+  get 'documents/:id',                      to: 'documents#show',                 as: 'document_show'
+  get 'documents/edit/:id',                 to: 'documents#edit',                 as: 'document_edit'
+  get 'documents/:id/ready_to_send',        to: 'documents#ready_to_send',        as: 'document_ready_to_send'
+  post 'documents/approve/:id',             to: 'documents#approve_form',         as: 'approve_form'
 
-  post ':settlement_id/release_forms/new',      to: 'release_forms#create',               as: 'release_form_create'
-  patch 'release_forms/:id',                    to: 'release_forms#update',               as: 'release_form_update'
-  delete 'release_forms/:id',                   to: 'release_forms#destroy',              as: 'release_form_delete'
+  post ':settlement_id/documents/new',      to: 'documents#create',               as: 'document_create'
+  patch 'documents/:id',                    to: 'documents#update',               as: 'document_update'
+  delete 'documents/:id',                   to: 'documents#destroy',              as: 'document_delete'
 
 
-  # Generated release form index is handled by the release_forms controller.
-  get 'generated_release_forms/new',            to: 'generated_release_forms#new',        as: 'generated_release_form_new'
-  # Generated release form showing is handled by the release_forms controller.
-  get 'generated_release_forms/edit/:id',       to: 'generated_release_forms#edit',       as: 'generated_release_form_edit'
-  post 'generated_release_forms/new',           to: 'generated_release_forms#create',     as: 'generated_release_form_create'
-  patch 'generated_release_forms/:id',          to: 'generated_release_forms#update',     as: 'generated_release_form_update'
-  # Generated release form destruction is also handled by the release_forms controller.
+  # Generated release form index is handled by the documents controller.
+  get 'generated_documents/new',            to: 'generated_documents#new',        as: 'generated_document_new'
+  # Generated release form showing is handled by the documents controller.
+  get 'generated_documents/edit/:id',       to: 'generated_documents#edit',       as: 'generated_document_edit'
+  post 'generated_documents/new',           to: 'generated_documents#create',     as: 'generated_document_create'
+  patch 'generated_documents/:id',          to: 'generated_documents#update',     as: 'generated_document_update'
+  # Generated release form destruction is also handled by the documents controller.
   
-  post 'comment/:release_form_id',              to: 'comments#create',                    as: 'comment_create'
+  post 'comment/:document_id',              to: 'comments#create',                    as: 'comment_create'
 
   get 'dashboard',                                    to: 'settlements#dashboard',              as: 'settlement_dashboard'
   get 'settlements/new',                              to: 'settlements#new',                    as: 'settlement_new'

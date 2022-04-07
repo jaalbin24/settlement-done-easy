@@ -10,7 +10,7 @@ class PagesController < ApplicationController
     end
 
     def approve_or_reject
-        @release_form = ReleaseForm.find(params[:id])
+        @document = Document.find(params[:id])
         @comment = Comment.new
         render :approve_or_reject
     end

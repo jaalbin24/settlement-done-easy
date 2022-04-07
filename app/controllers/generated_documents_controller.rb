@@ -1,16 +1,16 @@
-class GeneratedReleaseFormsController < ApplicationController
+class GeneratedDocumentsController < ApplicationController
     # before_action :authenticate_user!
 
     def new
-        @release_form = GeneratedReleaseForm.new
+        @document = GeneratedDocument.new
         render :new
     end
 
     def update
-        @release_form = GeneratedReleaseForm.find(params[:id])
-        if @release_form.update(generated_release_form_params)
+        @document = GeneratedDocument.find(params[:id])
+        if @document.update(generated_document_params)
             flash[:success] = "Release form updated!"
-            redirect_to release_form_show_url(@release_form)
+            redirect_to document_show_url(@document)
         else
             flash[:error] = "Failed to update release form!"
             render :show
@@ -18,18 +18,18 @@ class GeneratedReleaseFormsController < ApplicationController
     end
 
     def create
-        @release_form = GeneratedReleaseForm.create(generated_release_form_params)
-        if @release_form.save
+        @document = GeneratedDocument.create(generated_document_params)
+        if @document.save
             flash[:success] = "Release form created!"
-            redirect_to release_form_show_url(@release_form)
+            redirect_to document_show_url(@document)
         else
             flash.now[:error] = "Failed to create release form!"
             render :new
         end
     end
 
-    def generated_release_form_params
-        params.require(:generated_release_form).permit(
+    def generated_document_params
+        params.require(:generated_document).permit(
             :claim_number, 
             :date_of_incident, 
             :defendant_name, 

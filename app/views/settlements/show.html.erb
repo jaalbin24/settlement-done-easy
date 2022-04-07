@@ -5,11 +5,11 @@
             <h1 class="text-center card-header">Details</h1>
             <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
             <div class="list-group">
-                <%if current_user.isLawyer?%>
+                <%if current_user.isAttorney?%>
                     <%if @settlement.stage == 1 && @settlement.status == 2%>
-                        <%=link_to "View documents", settlement_review_document_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
-                    <%elsif @settlement.release_form != nil%>
-                        <%=link_to "View documents", release_form_show_path(@settlement.release_form), class: "list-group-item list-group-item-action"%>
+                        <%=link_to "View documents", settlement_review_document_path(@settlement.document), class: "list-group-item list-group-item-action"%>
+                    <%elsif @settlement.document != nil%>
+                        <%=link_to "View documents", document_show_path(@settlement.document), class: "list-group-item list-group-item-action"%>
                     <%else%>
                         <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
                     <%end%>
@@ -26,7 +26,7 @@
                         <%=link_to "Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
                     <%end%>
                 <%elsif current_user.isInsuranceAgent?%>
-                    <%=link_to "Upload documents", release_form_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
+                    <%=link_to "Upload documents", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
                     <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>
                 <%end%>
                 <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>

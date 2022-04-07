@@ -1,6 +1,6 @@
-class CreateReleaseForms < ActiveRecord::Migration[6.1]
+class CreateDocuments < ActiveRecord::Migration[6.1]
   def change
-    create_table :release_forms do |t|
+    create_table :documents do |t|
       t.string :law_firm_name,            null: false, default: "Default Law Firm (FAKE! USED FOR TESTING PURPOSES!)"
       t.string :insurance_company_name,   null: false, default: "Default Insurance Co. (FAKE! USED FOR TESTING PURPOSES!)"
       t.string :claim_number

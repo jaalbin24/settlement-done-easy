@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col">
                     <div class="mb-3">
-                    <%if current_user.isLawyer?%>
+                    <%if current_user.isAttorney?%>
                     <%= f.label "Plaintiff", { class: "form-label"} %>
                     <%elsif current_user.isInsuranceAgent?%>
                     <%= f.label "Claimant", { class: "form-label"} %>
@@ -14,7 +14,7 @@
                 </div>
                 <div class="col">
                     <div class="mb-3">
-                    <%if current_user.isLawyer?%>
+                    <%if current_user.isAttorney?%>
                     <%= f.label "Defendant", { class: "form-label"} %>
                     <%elsif current_user.isInsuranceAgent?%>
                     <%= f.label "Policy holder", { class: "form-label"} %>
@@ -56,19 +56,19 @@
             </div>
             <%if submit_label == "Start"%>
             <div class="mb-3">
-                <%if current_user.isLawyer?%>
+                <%if current_user.isAttorney?%>
                     <%= f.label "Insurance agent", {class: "form-label"} %>
                 <%else%>
-                    <%= f.label "Lawyer", {class: "form-label"} %>
+                    <%= f.label "Attorney", {class: "form-label"} %>
                 <%end%>
                 <select class="form-select" name="partner_id" required>
                     <option disabled selected value>Select here</option>
-                    <%if current_user.isLawyer?%>
+                    <%if current_user.isAttorney?%>
                         <%User.all_insurance_agents.each do |u|%>
                         <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization})"%></option>
                         <%end%>
                     <%else%>
-                        <%User.all_lawyers.each do |u|%>
+                        <%User.all_attorneys.each do |u|%>
                         <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization})"%></option>
                         <%end%>
                     <%end%>
