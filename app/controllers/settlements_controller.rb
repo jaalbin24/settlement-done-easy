@@ -8,13 +8,13 @@ class SettlementsController < ApplicationController
     end
     
     def new
-        if current_user.isLawyer?
+        if current_user.isAttorney?
             @settlement = Settlement.new
             @users = User.all_insurance_agents
             render :new
         elsif current_user.isInsuranceAgent?
             @settlement = Settlement.new
-            @users = User.all_lawyers
+            @users = User.all_attorneys
             render :new
         else
             handle_invalid_request
@@ -25,8 +25,8 @@ class SettlementsController < ApplicationController
         @stage = params[:stage].to_i
         @status = params[:status].to_i
         if SettlementProgress.statusValid?(@stage, @status)
-            if current_user.isLawyer?
-                @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("lawyer_id=?", current_user.id)))
+            if current_user.isAttorney?
+                @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("attorney_id=?", current_user.id)))
             elsif current_user.isInsuranceAgent?
                 @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("insurance_agent_id=?", current_user.id)))
             end
@@ -46,11 +46,11 @@ class SettlementsController < ApplicationController
         end
         # HTML in the "new settlement" page can be modified to bypass browser-based param control and cause errors to be thrown
         # server-side. This begin-rescue block handles cases where the user-select field was sabotaged client-side.
-        if current_user.isLawyer?
-            lawyer = current_user
+        if current_user.isAttorney?
+            attorney = current_user
             insurance_agent = partner
         elsif current_user.isInsuranceAgent?
-            lawyer = partner
+            attorney = partner
             insurance_agent = current_user
         end
         settlement_creation_params = {
@@ -61,7 +61,7 @@ class SettlementsController < ApplicationController
             plaintiff_name: settlement_params[:plaintiff_name],
             incident_date: settlement_params[:incident_date],
             incident_location: settlement_params[:incident_location],
-            lawyer: lawyer,
+            attorney: attorney,
             insurance_agent: insurance_agent
         }
         settlement = Settlement.new(settlement_creation_params)
@@ -187,18 +187,18 @@ class SettlementsController < ApplicationController
             return
         end
         envelope_args = {
-            email_subject: "#{settlement.lawyer.full_name} is requesting a signature.",
+            email_subject: "#{settlement.attorney.full_name} is requesting a signature.",
             signer_email: params[:client_email],
             signer_name: params[:client_name],
             cc_email: Rails.configuration.APP_EMAIL,
             cc_name: 'Settlement Done Easy',
             status: 'sent'
         }
-        envelope_id = create_and_send(settlement.release_form.pdf, envelope_args)
+        envelope_id = create_and_send(settlement.document.pdf, envelope_args)
         settlement.signature_requested = true
-        settlement.release_form.ds_envelope_id = envelope_id
-        if !settlement.release_form.save || !settlement.save
-            puts "====================== ERROR SAVING: #{settlement.errors.full_messages.inspect} | #{settlement.release_form.errors.full_messages.inspect}"
+        settlement.document.ds_envelope_id = envelope_id
+        if !settlement.document.save || !settlement.save
+            puts "====================== ERROR SAVING: #{settlement.errors.full_messages.inspect} | #{settlement.document.errors.full_messages.inspect}"
         end
         flash[:info] = "Sent signature request to #{params[:client_email]}"
         redirect_to root_path
@@ -207,12 +207,12 @@ class SettlementsController < ApplicationController
     def get_ds_envelope_status
         settlement = Settlement.find(params[:id])
         if !settlement.document_signed?
-            envelope = retrieve_envelope(settlement.release_form.ds_envelope_id)
+            envelope = retrieve_envelope(settlement.document.ds_envelope_id)
             status = JSON.parse(envelope.to_json)['status']
             puts "================================== get_ds_envelope_status: envelope = #{envelope}"
             if status == "completed" 
-                temp_file = download_document(settlement.release_form.ds_envelope_id)
-                settlement.release_form.pdf.attach(io: temp_file.open, filename: settlement.release_form.pdf_file_name, content_type: "application/pdf")
+                temp_file = download_document(settlement.document.ds_envelope_id)
+                settlement.document.pdf.attach(io: temp_file.open, filename: settlement.document.pdf_file_name, content_type: "application/pdf")
                 settlement.document_signed = true
                 sleep(7)
                 settlement.save

@@ -18,7 +18,7 @@ To run SDE, follow these instructions...
 4. You're set up!
 
 Before taking to production...
-delete this section of code from release_form.rb 
+delete this section of code from document.rb 
 ```
 before_validation do
     if !self.pdf.attached?

@@ -47,11 +47,11 @@ module ApplicationHelper
         when 1
             case status
             when 1
-                return release_form_new_path(settlement)
+                return document_new_path(settlement)
             when 2
                 return settlement_review_document_path(settlement)
             when 3
-                return release_form_new_path(settlement)
+                return document_new_path(settlement)
             end
         when 2
             case status
@@ -88,7 +88,7 @@ module ApplicationHelper
             end
         end
         if count > 0
-            if user.isLawyer?
+            if user.isAttorney?
                 bg = 'danger'
             elsif user.isInsuranceAgent?
                 bg = 'warning'
@@ -96,7 +96,7 @@ module ApplicationHelper
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Settlements need approval."
             else
@@ -128,7 +128,7 @@ module ApplicationHelper
             end
         end
         if count > 0
-            if user.isLawyer?
+            if user.isAttorney?
                 bg = 'danger'
             elsif user.isInsuranceAgent?
                 bg = 'warning'
@@ -136,7 +136,7 @@ module ApplicationHelper
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Settlements need a signature request."
             else
@@ -170,13 +170,13 @@ module ApplicationHelper
         if count > 0
             if user.isInsuranceAgent?
                 bg = 'danger'
-            elsif user.isLawyer?
+            elsif user.isAttorney?
                 bg = 'warning'
             end
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Settlements waiting for adjustment."
             else
@@ -210,13 +210,13 @@ module ApplicationHelper
         if count > 0
             if user.isInsuranceAgent?
                 bg = 'danger'
-            elsif user.isLawyer?
+            elsif user.isAttorney?
                 bg = 'warning'
             end
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Settlements waiting for payment."
             else
@@ -250,13 +250,13 @@ module ApplicationHelper
         if count > 0
             if user.isInsuranceAgent?
                 bg = 'danger'
-            elsif user.isLawyer?
+            elsif user.isAttorney?
                 bg = 'warning'
             end
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Settlements waiting for a document."
             else
@@ -288,7 +288,7 @@ module ApplicationHelper
             end
         end
         if count > 0
-            if user.isLawyer?
+            if user.isAttorney?
                 bg = 'danger'
             elsif user.isInsuranceAgent?
                 bg = 'warning'
@@ -296,7 +296,7 @@ module ApplicationHelper
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Payments need review."
             else
@@ -332,7 +332,7 @@ module ApplicationHelper
         else
             bg = 'primary'
         end
-        if user.isLawyer?
+        if user.isAttorney?
             if count != 1
                 message = "Settlements waiting for client signature."
             else
@@ -364,7 +364,7 @@ module ApplicationHelper
             end
         end
         if count > 0
-            if current_user.isLawyer?
+            if current_user.isAttorney?
                 bg = 'danger'
             elsif current_user.isInsuranceAgent?
                 bg = 'warning'
@@ -372,7 +372,7 @@ module ApplicationHelper
         else
             bg = 'primary'
         end
-        if current_user.isLawyer?
+        if current_user.isAttorney?
             if count != 1
                 message = "Settlements need final approval."
             else
@@ -400,19 +400,19 @@ module ApplicationHelper
         when 1
             case status
             when 1
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "are waiting for an insurance agent to add a document."
                 elsif current_user.isInsuranceAgent?
                     message += "need a document to continue."
                 end
             when 2
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "need your approval to continue."
                 elsif current_user.isInsuranceAgent?
-                    message += "are waiting for approval from a lawyer."
+                    message += "are waiting for approval from a attorney."
                 end
             when 3
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "are waiting for an insurance agent to make adjustments."
                 elsif current_user.isInsuranceAgent?
                     message += "need your adjustments to continue."
@@ -421,34 +421,34 @@ module ApplicationHelper
         when 2
             case status
             when 1
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "need a signature request sent to your client."
                 elsif current_user.isInsuranceAgent?
                     message += "are waiting for a claimant's signature."
                 end
             when 2
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "are waiting for a client's signature."
                 elsif current_user.isInsuranceAgent?
                     message += "are waiting for a claimant's signature."
                 end
             when 3
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "need your approval to continue."
                 elsif current_user.isInsuranceAgent?
-                    message += "are waiting for final document review from a lawyer."
+                    message += "are waiting for final document review from a attorney."
                 end
             end
         when 3
             case status
             when 1
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "are waiting for payment."
                 elsif current_user.isInsuranceAgent?
                     message += "are ready for payment."
                 end
             when 2
-                if current_user.isLawyer?
+                if current_user.isAttorney?
                     message += "are waiting for payment."
                 elsif current_user.isInsuranceAgent?
                     message += "are ready for payment."
