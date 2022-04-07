@@ -59,7 +59,11 @@ class Document < ApplicationRecord
 
     before_validation do
         if !self.pdf.attached?
-            self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'dummy_file.pdf')
+            begin
+                self.pdf.attach(io: File.open(Rails.root.join("dummy_document.pdf")), filename: 'dummy_document.pdf')
+            rescue
+                self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'blank_dummy_dummy.pdf')
+            end
         end 
     end
     # This^ callback is only here to allow rails db:seed to run without error. 
