@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: release_forms
+# Table name: documents
 #
 #  id                     :integer          not null, primary key
 #  adjustment_needed      :boolean          default(FALSE), not null
@@ -24,9 +24,9 @@
 #
 # Indexes
 #
-#  index_release_forms_on_settlement_id  (settlement_id)
+#  index_documents_on_settlement_id  (settlement_id)
 #
-class ReleaseForm < ApplicationRecord
+class Document < ApplicationRecord
     include ActionView::Helpers::NumberHelper 
     # This^ is included for the number_to_currency method in the settlement_amount_formatted method
     has_one_attached :pdf
@@ -34,8 +34,8 @@ class ReleaseForm < ApplicationRecord
     has_many(
         :comments,
         class_name: 'Comment',
-        foreign_key: 'release_form_id',
-        inverse_of: :release_form,
+        foreign_key: 'document_id',
+        inverse_of: :document,
         dependent: :destroy
     )
 
@@ -43,7 +43,7 @@ class ReleaseForm < ApplicationRecord
         :settlement,
         class_name: 'Settlement',
         foreign_key: 'settlement_id',
-        inverse_of: :release_form,
+        inverse_of: :document,
     )
 
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
@@ -98,7 +98,7 @@ class ReleaseForm < ApplicationRecord
     end
 
     def pdf_file_name
-        name = settlement.claim_number + "_release_form.pdf"
+        name = settlement.claim_number + "_document.pdf"
         return name
     end
 

@@ -23,33 +23,33 @@
 #  status                    :integer          default(1), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
+#  attorney_id               :integer
 #  insurance_agent_id        :integer
-#  lawyer_id                 :integer
 #  stripe_payment_intent_id  :string
 #  stripe_price_id           :string
 #  stripe_product_id         :string
 #
 # Indexes
 #
+#  index_settlements_on_attorney_id         (attorney_id)
 #  index_settlements_on_insurance_agent_id  (insurance_agent_id)
-#  index_settlements_on_lawyer_id           (lawyer_id)
 #
 # Foreign Keys
 #
+#  attorney_id         (attorney_id => users.id)
 #  insurance_agent_id  (insurance_agent_id => users.id)
-#  lawyer_id           (lawyer_id => users.id)
 #
 
 #
 # Indexes
 #
 #  index_settlements_on_insurance_agent_id  (insurance_agent_id)
-#  index_settlements_on_lawyer_id           (lawyer_id)
+#  index_settlements_on_attorney_id           (attorney_id)
 #
 # Foreign Keys
 #
 #  insurance_agent_id  (insurance_agent_id => users.id)
-#  lawyer_id           (lawyer_id => users.id)
+#  attorney_id           (attorney_id => users.id)
 #
 require "test_helper"
 
