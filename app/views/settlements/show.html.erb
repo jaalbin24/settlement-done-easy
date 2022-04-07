@@ -1,47 +1,70 @@
 <div class="container">
     <div class="row">
         <div class="col">
-        <div class="card">
-            <h1 class="text-center card-header">Details</h1>
-            <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
-            <div class="list-group">
-                <%if current_user.isAttorney?%>
-                    <%if @settlement.stage == 1 && @settlement.status == 2%>
-                        <%=link_to "View documents", settlement_review_document_path(@settlement.document), class: "list-group-item list-group-item-action"%>
-                    <%elsif @settlement.document != nil%>
-                        <%=link_to "View documents", document_show_path(@settlement.document), class: "list-group-item list-group-item-action"%>
-                    <%else%>
-                        <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
-                    <%end%>
-                    <%if @settlement.stage != 2%>
-                        <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
-                    <%elsif @settlement.status != 1%>
-                        <%=link_to "Resend signature request", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
-                    <%else%>
-                        <%=link_to "Get signature", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
-                    <%end%>
-                    <%if @settlement.stage != 3%>
-                        <a href="#" class="list-group-item list-group-item-action disabled">Complete settlement</a>
-                    <%elsif @settlement.stage == 3 && @settlement.status == 4%>
-                        <%=link_to "Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
-                    <%end%>
-                <%elsif current_user.isInsuranceAgent?%>
-                    <%=link_to "Upload documents", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
-                    <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>
-                <%end%>
-                <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
-            </div>
-        </div>
-        </div>
-        <div class="col">
-        <div class="card">
-            <h1 class="text-center card-header">Activity</h1>
             <div class="card">
-                <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center"><strong>Status:</strong> <%=@settlement.status_message%></a>                
-                <div class="card-body bg-dark">
+                <h1 class="text-center card-header">Details</h1>
+                <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
+                <div class="list-group">
+                    <%if current_user.isAttorney?%>
+                        <%if @settlement.stage == 1 && @settlement.status == 2%>
+                            <%=link_to "View documents", settlement_review_document_path(@settlement.document), class: "list-group-item list-group-item-action"%>
+                        <%elsif @settlement.document != nil%>
+                            <%=link_to "View documents", document_show_path(@settlement.document), class: "list-group-item list-group-item-action"%>
+                        <%else%>
+                            <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
+                        <%end%>
+                        <%if @settlement.stage != 2%>
+                            <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
+                        <%elsif @settlement.status != 1%>
+                            <%=link_to "Resend signature request", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
+                        <%else%>
+                            <%=link_to "Get signature", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
+                        <%end%>
+                        <%if @settlement.stage != 3%>
+                            <a href="#" class="list-group-item list-group-item-action disabled">Complete settlement</a>
+                        <%elsif @settlement.stage == 3 && @settlement.status == 4%>
+                            <%=link_to "Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
+                        <%end%>
+                    <%elsif current_user.isInsuranceAgent?%>
+                        <%=link_to "Upload documents", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
+                        <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>
+                    <%end%>
+                    <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
                 </div>
             </div>
         </div>
+        <div class="col">
+            <div class="card">
+                <h1 class="text-center card-header">Activity</h1>
+                <div class="card" style="height: 31rem;">
+                    <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center"><strong>Status:</strong> <%=@settlement.status_message%></a>                
+                    <div class="card-body bg-dark">
+                        <p class="m-0 text-center text-muted"><%=@settlement.insurance_agent.full_name%> uploaded a document.</p>
+                        <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> rejected a document.</p>
+                        <p style="text-align: right; margin-bottom: -0.5rem;">Please fix the mistakes.</p>
+                        <p class="m-0 text-muted" style="text-align: right;"><%=@settlement.attorney.first_name%></p>
+                        <p style="margin-bottom: -0.5rem;">They're fixed!</p>
+                        <p class="m-0 text-muted"><%=@settlement.insurance_agent.first_name%></p>
+                        <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> approved a document.</p>
+                        <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> sent a signature request to <%=@settlement.plaintiff_name%>.</p>
+                        <p class="m-0 text-center text-muted"><%=@settlement.plaintiff_name%> signed a document.</p>
+                        <p class="m-0 text-center text-muted"><%=@settlement.insurance_agent.full_name%> paid $<%=@settlement.settlement_amount%> settlement.</p>
+                        <p style="text-align: right; margin-bottom: -0.5rem;">Pleasure doing business with you!</p>
+                        <p class="m-0 text-muted" style="text-align: right;"><%=@settlement.attorney.first_name%></p>
+                        <p style="margin-bottom: -0.5rem;">Likewise!</p>
+                        <p class="m-0 text-muted"><%=@settlement.insurance_agent.first_name%></p>
+                        <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> completed this settlement.</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Type message here..." aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-primary" type="button" id="button-addon2">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
