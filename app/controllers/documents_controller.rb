@@ -1,6 +1,6 @@
 class DocumentsController < ApplicationController
     include DsEnvelope
-    # before_action :authenticate_user!
+    before_action :authenticate_user!
     def new
         @document = Document.new
         render :new
@@ -32,7 +32,7 @@ class DocumentsController < ApplicationController
             # TODO: Move the PDF-updating feature to the model file. This should not be in the controller.
             redirect_to document_show_url(@document)
         else
-            flash[:error] = "Failed to update release form!"
+            flash[:error] = "Failed to update document!"
             render :show
         end 
     end

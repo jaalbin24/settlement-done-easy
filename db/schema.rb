@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "last_name"
     t.string "organization"
     t.string "stripe_account_id"
+    t.boolean "stripe_account_onboarded", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true

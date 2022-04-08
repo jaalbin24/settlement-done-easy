@@ -21,13 +21,13 @@ Rails.application.routes.draw do
   delete 'documents/:id',                   to: 'documents#destroy',              as: 'document_delete'
 
 
-  # Generated release form index is handled by the documents controller.
+  # Generated document index is handled by the documents controller.
   get 'generated_documents/new',            to: 'generated_documents#new',        as: 'generated_document_new'
-  # Generated release form showing is handled by the documents controller.
+  # Generated document showing is handled by the documents controller.
   get 'generated_documents/edit/:id',       to: 'generated_documents#edit',       as: 'generated_document_edit'
   post 'generated_documents/new',           to: 'generated_documents#create',     as: 'generated_document_create'
   patch 'generated_documents/:id',          to: 'generated_documents#update',     as: 'generated_document_update'
-  # Generated release form destruction is also handled by the documents controller.
+  # Generated document destruction is also handled by the documents controller.
   
   post 'comment/:document_id',              to: 'comments#create',                    as: 'comment_create'
 
