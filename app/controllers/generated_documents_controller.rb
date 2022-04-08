@@ -1,5 +1,5 @@
 class GeneratedDocumentsController < ApplicationController
-    # before_action :authenticate_user!
+    before_action :authenticate_user!
 
     def new
         @document = GeneratedDocument.new
@@ -12,7 +12,7 @@ class GeneratedDocumentsController < ApplicationController
             flash[:success] = "Release form updated!"
             redirect_to document_show_url(@document)
         else
-            flash[:error] = "Failed to update release form!"
+            flash[:error] = "Failed to update document!"
             render :show
         end 
     end
@@ -23,7 +23,7 @@ class GeneratedDocumentsController < ApplicationController
             flash[:success] = "Release form created!"
             redirect_to document_show_url(@document)
         else
-            flash.now[:error] = "Failed to create release form!"
+            flash.now[:error] = "Failed to create document!"
             render :new
         end
     end

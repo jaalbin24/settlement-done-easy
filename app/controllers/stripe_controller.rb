@@ -1,4 +1,5 @@
 class StripeController < ApplicationController
+    before_action :authenticate_user!
     def onboard_account_link
         user = current_user
         if user.isAttorney?
@@ -28,8 +29,10 @@ class StripeController < ApplicationController
     def handle_return_from_onboard
         @stripe_account = Stripe::Account.retrieve(current_user.stripe_account_id)
         if @stripe_account.charges_enabled
+            current_user.stripe_account_onboarded = true
             render :onboard_complete
         else
+            current_user.stripe_account_onboarded = false
             render :onboard_not_complete
         end
     end
