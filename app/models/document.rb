@@ -86,16 +86,6 @@ class Document < ApplicationRecord
             errors.add(:date_of_incident, "Must be before today") unless date_of_incident < Date.today
         end
     end
-   
-    def settlement_amount_humanized
-        # returns a worded dollar amount   
-        dollars = self.settlement_amount.floor
-        cents = self.settlement_amount - dollars
-        cents *= 100
-        cents = cents.round
-        humanized = dollars.humanize + " dollars and " + cents.humanize + " cents"
-        return humanized
-    end
 
     def settlement_amount_formatted
         return number_to_currency(self.settlement_amount.to_f, delimiter: ',', unit: '$')

@@ -122,6 +122,14 @@ class Settlement < ApplicationRecord
         end
     end
 
+    def generated_document_file_name
+        if self.hasDocument?
+            return self.document.pdf.blob.filename
+        else
+            return "#{self.claim_number}_release.pdf"
+        end
+    end
+
     def status_message
         return SettlementProgress.status_message(self)
     end
