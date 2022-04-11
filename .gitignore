@@ -38,3 +38,8 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+# Ignore sensitive credentials
+/config/appsettings.yml
+/config/docusign_private_key.txt
+/config/docusign_public_key.txt
