@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                       :integer          not null, primary key
+#  id                       :bigint           not null, primary key
 #  email                    :string           default(""), not null
 #  encrypted_password       :string           default(""), not null
 #  first_name               :string
@@ -28,7 +28,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  validates :role, inclusion: {in: ["Insurance Agent", "Attorney"]}
+  validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm"]}
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
 
   has_many(
@@ -92,6 +92,10 @@ class User < ApplicationRecord
 
   def isInsuranceAgent?
     return role == "Insurance Agent"
+  end
+
+  def isLawFirm?
+    return role == "Law Firm"
   end
 
   def settlements
