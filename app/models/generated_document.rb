@@ -2,7 +2,7 @@
 #
 # Table name: documents
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  adjustment_needed      :boolean          default(FALSE), not null
 #  approved               :boolean          default(FALSE), not null
 #  claim_number           :string
@@ -20,7 +20,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  ds_envelope_id         :string
-#  settlement_id          :integer
+#  settlement_id          :bigint
 #
 # Indexes
 #

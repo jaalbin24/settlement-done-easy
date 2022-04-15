@@ -18,8 +18,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
-    t.integer "record_id", null: false
-    t.integer "blob_id", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
   end
 
   create_table "active_storage_variant_records", force: :cascade do |t|
-    t.integer "blob_id", null: false
+    t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
@@ -47,8 +47,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "content"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "document_id"
-    t.integer "user_id"
+    t.bigint "document_id"
+    t.bigint "user_id"
     t.index ["document_id"], name: "index_comments_on_document_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.boolean "approved", default: false, null: false
     t.boolean "adjustment_needed", default: false, null: false
     t.boolean "signed", default: false, null: false
-    t.integer "settlement_id"
+    t.bigint "settlement_id"
     t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -99,8 +99,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.boolean "completed", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "attorney_id"
-    t.integer "insurance_agent_id"
+    t.bigint "attorney_id"
+    t.bigint "insurance_agent_id"
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
     t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
   end
