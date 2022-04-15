@@ -2,7 +2,7 @@
 #
 # Table name: settlements
 #
-#  id                        :integer          not null, primary key
+#  id                        :bigint           not null, primary key
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
@@ -23,8 +23,8 @@
 #  status                    :integer          default(1), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
-#  attorney_id               :integer
-#  insurance_agent_id        :integer
+#  attorney_id               :bigint
+#  insurance_agent_id        :bigint
 #  stripe_payment_intent_id  :string
 #  stripe_price_id           :string
 #  stripe_product_id         :string
@@ -36,8 +36,8 @@
 #
 # Foreign Keys
 #
-#  attorney_id         (attorney_id => users.id)
-#  insurance_agent_id  (insurance_agent_id => users.id)
+#  fk_rails_...  (attorney_id => users.id)
+#  fk_rails_...  (insurance_agent_id => users.id)
 #
 class Settlement < ApplicationRecord
     belongs_to(
