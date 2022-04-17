@@ -1,6 +1,6 @@
 default: &default
 
-  BASE_URL: http://localhost:3000
+  URL_DOMAIN: localhost:3000
   APP_EMAIL: john.smith29324@gmail.com
   # =================== DocuSign Config Area ===================
   DOCUSIGN_USERNAME: john.smith29324@gmail.com
@@ -13,7 +13,7 @@ default: &default
   DOCUSIGN_OAUTH_BASE_PATH: account-d.docusign.com
   DOCUSIGN_SCOPE: signature impersonation dtr.rooms.read dtr.rooms.write dtr.documents.read dtr.documents.write dtr.profile.read dtr.profile.write dtr.company.read dtr.company.write room_forms click.manage click.send organization_read group_read permission_read user_read user_write account_read domain_read identity_provider_read
   DOCUSIGN_AUTH_SERVER: https://account-d.docusign.com
-  DOCUSIGN_REDIRECT_URI: http://localhost:3000/ds_test_page
+  DOCUSIGN_REDIRECT_URI: http://#{Rails.configuration.URL_DOMAIN} /ds_test_page
   # =================== DocuSign Config Area ===================
   # ==================== Stripe Config Area ====================
   STRIPE_SECRET_KEY: sk_test_51KinH0L1IPDLUIKcVRshYQEk4ThvQYQm6BkDKk9QJtk6mHov9pCEZoxaTtOreoDMjK405DqOITtngbsvItw7zHG40025FszDIp

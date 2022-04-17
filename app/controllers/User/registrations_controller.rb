@@ -32,6 +32,7 @@ class User::RegistrationsController < Devise::RegistrationsController
       end
       clean_up_passwords resource
       set_minimum_password_length
+      @role = params[:user][:role]
       respond_with resource
     end
   end
