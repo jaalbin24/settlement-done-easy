@@ -21,10 +21,10 @@
         <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
           <%if @role == "Insurance Agent"%>
             <label for="user_organization" class="form-label mb-0 mt-2">Company name</label>
-            <input class="form-control" autocomplete="organization" type="email" name="user[organization]" id="user_organization" placeholder="Company name">
+            <input class="form-control" autocomplete="organization" name="user[organization]" id="user_organization" placeholder="Company name">
           <%elsif @role == "Attorney"%>
             <label for="user_organization" class="form-label mb-0 mt-2">Firm name</label>
-            <input class="form-control" autocomplete="organization" type="email" name="user[organization]" id="user_organization" placeholder="Firm name">
+            <input class="form-control" autocomplete="organization" name="user[organization]" id="user_organization" placeholder="Firm name">
           <%end%>
         </div>
       </div>

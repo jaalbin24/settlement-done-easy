@@ -5,8 +5,8 @@ class StripeController < ApplicationController
         if user.isAttorney?
             account_link = Stripe::AccountLink.create(
                 account: user.stripe_account_id,
-                refresh_url: 'http://localhost:3000/stripe_handle_return_from_onboard',
-                return_url: 'http://localhost:3000/stripe_handle_return_from_onboard',
+                refresh_url: "http://#{Rails.configuration.URL_DOMAIN}/stripe_handle_return_from_onboard",
+                return_url: "http://#{Rails.configuration.URL_DOMAIN}/stripe_handle_return_from_onboard",
                 type: 'account_onboarding',
             )
             redirect_to account_link.url
@@ -58,8 +58,8 @@ class StripeController < ApplicationController
                 quantity: 1,
             }],
             mode: "payment",
-            success_url: "http://localhost:3000/settlements/#{settlement.id}/payment_success",
-            cancel_url: "http://localhost:3000/",
+            success_url: "http://#{Rails.configuration.URL_DOMAIN}/settlements/#{settlement.id}/payment_success",
+            cancel_url: "http://#{Rails.configuration.URL_DOMAIN}/",
             payment_method_types: [
                 "us_bank_account"
             ],
