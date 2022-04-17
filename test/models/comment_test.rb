@@ -2,12 +2,12 @@
 #
 # Table name: comments
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  content     :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  document_id :integer
-#  user_id     :integer
+#  document_id :bigint
+#  user_id     :bigint
 #
 # Indexes
 #
@@ -16,8 +16,8 @@
 #
 # Foreign Keys
 #
-#  document_id  (document_id => documents.id)
-#  user_id      (user_id => users.id)
+#  fk_rails_...  (document_id => documents.id)
+#  fk_rails_...  (user_id => users.id)
 #
 require "test_helper"
 
