@@ -10,8 +10,9 @@ To run SDE, follow these instructions...
     3) yarn add bootstrap jquery popper.js
     4) yarn add bootswatch
     5) yarn add autosize
-    6) rails db:migrate:reset db:seed
-    7) rails server
+    6) sudo service postgresql start
+    7) rails db:migrate:reset db:seed
+    8) rails server
 
 3. In your URL, type "localhost:3000" and press enter. The page should load for a while then show the application.
 
