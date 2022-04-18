@@ -14,6 +14,8 @@ To run SDE, follow these instructions...
     7) rails db:migrate:reset db:seed
     8) rails server
 
-3. Open a browser. In your URL field, type "localhost:3000" and press enter. The page should load for a while then show the application.
+3. Configure the config/appsettings.yml file with DocuSign & Stripe account data. An account with DocuSign and Stripe are required to run Settlement Done Easy.
 
-4. You're set up! :)
+4. Open a browser. In your URL field, type "localhost:3000" and press enter. The page should load for a while then show the application.
+
+5. You're set up! :)
