@@ -57,4 +57,10 @@ Rails.application.routes.draw do
   get 'stripe_login_link',                            to: 'stripe#login_link',                  as: 'stripe_login_link'
   get 'stripe_settlement_checkout_session/:id',       to: 'stripe#settlement_checkout_session', as: 'stripe_settlement_checkout_session'
   get 'stripe_get_payment_status/:id',                to: 'stripe#get_payment_status',          as: 'stripe_get_payment_status'
+
+  get 'organizations/:id/settlements',                to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
+  get 'organizations/:id/members',                    to: 'organization_users#members_index',         as: 'organization_members_index'
+  get 'organizations/:org_id/members/:mem_id',        to: 'organization_users#show_member',           as: 'organization_show_member'
+
+
 end
