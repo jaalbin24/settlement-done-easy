@@ -2,32 +2,32 @@
 
 
 <table class="table table-sm table-hover table-borderless mx-auto w-50" style="max-height: 100%;">
-        <thead class="border-bottom border-secondary">
-            <tr>
-                <th>Status</th>
-                <%if current_user.isAttorney?%>
-                    <th>Agent Name</th>
-                    <th>Company</th>
-                <%elsif current_user.isInsuranceAgent?%>
-                    <th>Attorney Name</th>
-                    <th>Firm</th>
-                <%end%>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            <%@settlements.each do |s|%>
-                <tr class="table-secondary">
-                    <td><%=render "status", settlement: s%></td>
-                    <%if current_user.isInsuranceAgent?%>
-                        <td><%=link_to s.attorney.full_name, settlement_show_path(s)%></td>
-                        <td><%=s.attorney.organization%></td>
-                    <%elsif current_user.isAttorney?%>
-                        <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
-                        <td><%=s.insurance_agent.organization%></td>
-                    <%end%>
-                    <td>$<%=s.settlement_amount%></td>
-                </tr>
+    <thead class="border-bottom border-secondary">
+        <tr>
+            <th>Status</th>
+            <%if current_user.isAttorney?%>
+                <th>Agent Name</th>
+                <th>Company</th>
+            <%elsif current_user.isInsuranceAgent?%>
+                <th>Attorney Name</th>
+                <th>Firm</th>
             <%end%>
-        </tbody>
-    </table>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%@settlements.each do |s|%>
+            <tr class="table-secondary">
+                <td><%=render "status", settlement: s%></td>
+                <%if current_user.isInsuranceAgent?%>
+                    <td><%=link_to s.attorney.full_name, settlement_show_path(s)%></td>
+                    <td><%=s.attorney.organization%></td>
+                <%elsif current_user.isAttorney?%>
+                    <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
+                    <td><%=s.insurance_agent.organization%></td>
+                <%end%>
+                <td>$<%=s.settlement_amount%></td>
+            </tr>
+        <%end%>
+    </tbody>
+</table>
