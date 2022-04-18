@@ -14,23 +14,6 @@ To run SDE, follow these instructions...
     7) rails db:migrate:reset db:seed
     8) rails server
 
-3. In your URL, type "localhost:3000" and press enter. The page should load for a while then show the application.
+3. Open a browser. In your URL field, type "localhost:3000" and press enter. The page should load for a while then show the application.
 
-4. You're set up!
-
-Before taking to production...
-delete this section of code from document.rb 
-```
-before_validation do
-    if !self.pdf.attached?
-        self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'dummy_file.pdf')
-    end 
-end
-```
-
-Ideas for improvement:
-```
--Adding support for assistive technologies (screen-readers for the blind, etc.)
--Custom ACH service in place of Stripe would cut "money in account" time by two days and save $5 per transaction.
--Including clients in the site.
-```
+4. You're set up! :)
