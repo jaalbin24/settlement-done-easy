@@ -24,7 +24,8 @@ law_firm = User.create!(
     password: "password123",
     role: "Law Firm",
     first_name: law_firms[rand(0..law_firms.size)],
-    stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
+    stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
+    stripe_account_onboarded: true
 )
 puts "======================= Created Law Firm: #{law_firm.first_name}"
 
@@ -45,7 +46,7 @@ attorneys = Array.new(SEED_SIZE) {|i|
         role: "Attorney",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization: law_firm,
+        organization_id: law_firm.id,
         stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
     )
     puts "======================= Created Attorney i=#{i}"

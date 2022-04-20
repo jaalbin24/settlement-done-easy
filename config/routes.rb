@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'user/registrations'}
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  root to: "settlements#dashboard"
+  root to: "pages#root"
 
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
@@ -60,7 +60,10 @@ Rails.application.routes.draw do
 
   get 'organizations/:id/settlements',                to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
   get 'organizations/:id/members',                    to: 'organization_users#members_index',         as: 'organization_members_index'
-  get 'organizations/:org_id/members/:mem_id',        to: 'organization_users#show_member',           as: 'organization_show_member'
+  get 'members/:mem_id',                              to: 'organization_users#show_member',           as: 'organization_show_member'
+  delete 'organizations/:org_id/members/:mem_id',     to: 'organization_users#remove_member',         as: 'organization_remove_member'
+  post 'organizations/:org_id/add_member/:mem_id',    to: 'organization_users#add_member',            as: 'organization_add_member'
+  
 
 
 end

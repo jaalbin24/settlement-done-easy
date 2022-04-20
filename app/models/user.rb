@@ -75,7 +75,7 @@ class User < ApplicationRecord
   )
 
   after_create do
-    if self.isAttorney? && self.stripe_account_id == nil
+    if self.isLawFirm? && self.stripe_account_id == nil
       account = Stripe::Account.create({
         type: "express",
         country: "US",
@@ -136,18 +136,6 @@ class User < ApplicationRecord
         settlements += u.settlements
       end
       return settlements
-    end
-  end
-
-
-
-  def opposite_role
-    if isAttorney?
-      return :insurance_agent
-    elsif isInsuranceAgent?
-      return :attorney
-    else
-      return
     end
   end
 end
