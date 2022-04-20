@@ -1,0 +1,29 @@
+
+
+<%if current_user.isLawFirm?%>
+    <h1 class="text-center">Attorney Index</h1>
+    <p class="text-center">This is a list of all attorneys in <%=@organization.first_name%></p>
+<%elsif current_user.isInsuranceCompany?%>
+    <h1 class="text-center">Agent Index</h1>
+    <p class="text-center">This is a list of all agents in <%=@organization.first_name%></p>
+<%end%>
+
+<table class="table table-sm table-hover table-borderless">
+    <thead class="border-bottom border-secondary">
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <%@organization.organization_members.each do |m|%>
+            <tr class="table-secondary">
+                <td><%=m.full_name%></td>
+                <td style="text-align: right;">
+                    <%=link_to "View", organization_show_member_path(m), class: "badge rounded-pill bg-primary text-decoration-none"%>
+                    <%=link_to "Remove", organization_remove_member_path(@organization, m), method: :delete, class: "badge rounded-pill bg-danger text-decoration-none", :data => {:confirm => "Remove #{m.full_name}? Are you sure?"}%>
+                </td>
+            </tr>
+        <%end%>
+    </tbody>
+</table>
