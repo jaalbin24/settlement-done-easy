@@ -15,6 +15,14 @@ class PagesController < ApplicationController
         render :approve_or_reject
     end
 
+    def root
+        if current_user.isOrganization?
+            render "organization_users/root"
+        else
+            render "settlements/dashboard"
+        end
+    end
+
     def testing
         render :testing
     end

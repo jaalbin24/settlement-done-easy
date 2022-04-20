@@ -2,7 +2,12 @@ class StripeController < ApplicationController
     before_action :authenticate_user!
     def onboard_account_link
         user = current_user
-        if user.isAttorney?
+        if user.isLawFirm?
+            if user.stripe_account_onboarded?
+                flash[:info] = "Account already onboarded. No action needed."
+                redirect_to root_path
+                return
+            end
             account_link = Stripe::AccountLink.create(
                 account: user.stripe_account_id,
                 refresh_url: "http://#{Rails.configuration.URL_DOMAIN}/stripe_handle_return_from_onboard",
@@ -18,7 +23,7 @@ class StripeController < ApplicationController
     # For attorneys to sign in to their Stripe Express account and view that Dashboard
     def login_link
         user = current_user
-        if user.isAttorney?
+        if user.isLawFirm?
             login_link = Stripe::Account.create_login_link(current_user.stripe_account_id)
             redirect_to login_link.url
         else
