@@ -7,7 +7,6 @@
 #  encrypted_password       :string           default(""), not null
 #  first_name               :string
 #  last_name                :string
-#  organization             :string
 #  remember_created_at      :datetime
 #  reset_password_sent_at   :datetime
 #  reset_password_token     :string
@@ -15,12 +14,18 @@
 #  stripe_account_onboarded :boolean          default(FALSE), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  organization_id          :bigint
 #  stripe_account_id        :string
 #
 # Indexes
 #
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_organization_id       (organization_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (organization_id => users.id)
 #
 
 # This model initially had no columns defined. If you add columns to the

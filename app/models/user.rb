@@ -7,7 +7,6 @@
 #  encrypted_password       :string           default(""), not null
 #  first_name               :string
 #  last_name                :string
-#  organization             :string
 #  remember_created_at      :datetime
 #  reset_password_sent_at   :datetime
 #  reset_password_token     :string
@@ -15,12 +14,18 @@
 #  stripe_account_onboarded :boolean          default(FALSE), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  organization_id          :bigint
 #  stripe_account_id        :string
 #
 # Indexes
 #
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_organization_id       (organization_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (organization_id => users.id)
 #
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
@@ -28,8 +33,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm"]}
-  validates :first_name, :last_name, :email, :encrypted_password, presence: true
+  validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]}
+  validates :first_name, :email, :encrypted_password, presence: true
 
   has_many(
     :comments,
@@ -55,8 +60,22 @@ class User < ApplicationRecord
     dependent: :destroy
   )
 
+  has_one(
+    :organization,
+    class_name: "User",
+    foreign_key: "organization_id",
+    inverse_of: :organization_members
+  )
+
+  has_many(
+    :organization_members,
+    class_name: "User",
+    foreign_key: "organization_id",
+    inverse_of: :organization
+  )
+
   after_create do
-    if self.isAttorney? && self.stripe_account_id == nil
+    if self.isLawFirm? && self.stripe_account_id == nil
       account = Stripe::Account.create({
         type: "express",
         country: "US",
@@ -98,21 +117,25 @@ class User < ApplicationRecord
     return role == "Law Firm"
   end
 
+  def isInsuranceCompany?
+    return role == "Insurance Company"
+  end
+  
+  def isOrganization?
+    return role == "Law Firm" || role == "Insurance Company"
+  end
+
   def settlements
     if isAttorney?
       return l_settlements
     elsif isInsuranceAgent?
       return ia_settlements
-    end
-  end
-
-  def opposite_role
-    if isAttorney?
-      return :insurance_agent
-    elsif isInsuranceAgent?
-      return :attorney
-    else
-      return
+    elsif isOrganization?
+      settlements = Array.new
+      organization_members.each do |u|
+        settlements += u.settlements
+      end
+      return settlements
     end
   end
 end

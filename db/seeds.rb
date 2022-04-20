@@ -19,6 +19,26 @@ NUM_SETTLEMENTS = SEED_SIZE * 5
 #     organization: "GKBM",
 # )
 
+law_firm = User.create!(
+    email: "law_firm@example.com",
+    password: "password123",
+    role: "Law Firm",
+    first_name: law_firms[rand(0..law_firms.size)],
+    stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
+    stripe_account_onboarded: true
+)
+puts "======================= Created Law Firm: #{law_firm.first_name}"
+
+insurance_company = User.create!(
+    email: "insurance_company@example.com",
+    password: "password123",
+    role: "Insurance Company",
+    first_name: insurance_companies[rand(0..insurance_companies.size)],
+    stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
+)
+puts "======================= Created Insurance Company: #{insurance_company.first_name}"
+
+
 attorneys = Array.new(SEED_SIZE) {|i|
     User.create!(
         email: "attorney#{i}@example.com",
@@ -26,9 +46,10 @@ attorneys = Array.new(SEED_SIZE) {|i|
         role: "Attorney",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization: law_firms[rand(0..law_firms.size-1)],
+        organization_id: law_firm.id,
         stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
     )
+    puts "======================= Created Attorney i=#{i}"
 }
 puts "Created #{SEED_SIZE} attorney models..."
 
@@ -39,50 +60,51 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
         role: "Insurance Agent",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization: insurance_companies[rand(0..insurance_companies.size-1)]
+        organization: insurance_company
     )
+    puts "======================= Created Insurance Agent i=#{i}"
 }
 puts "Created #{SEED_SIZE} insurance agent models..."
 
-settlements = Array.new(NUM_SETTLEMENTS) {|i|
-    attorney = attorneys[rand(0..attorneys.size-1)]
-    insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
-    settlement = Settlement.new(
-        attorney:             attorney,
-        insurance_agent:    insurance_agent,
-        claim_number:       "#{rand(100000..999999)}",
-        settlement_amount:  1000.00,
-        defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
-        plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
-        incident_location:  "Memphis, TN",
-        incident_date:      Date.today - rand(30..365).days,
-    )
-    settlement.build_document(
-        claim_number:           "#{rand(100000..999999)}",
-        policy_number:          "P#{rand(10000..99999)}",
-        settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100)
-    )
-    if !settlement.save
-        puts "SAVE FAILED: #{settlement.errors.full_messages.inspect}"
-    end
-    settlement
-}
-puts "Created #{NUM_SETTLEMENTS} settlement models..."
+# settlements = Array.new(NUM_SETTLEMENTS) {|i|
+#     attorney = attorneys[rand(0..attorneys.size-1)]
+#     insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
+#     settlement = Settlement.new(
+#         attorney:             attorney,
+#         insurance_agent:    insurance_agent,
+#         claim_number:       "#{rand(100000..999999)}",
+#         settlement_amount:  1000.00,
+#         defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
+#         plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
+#         incident_location:  "Memphis, TN",
+#         incident_date:      Date.today - rand(30..365).days,
+#     )
+#     settlement.build_document(
+#         claim_number:           "#{rand(100000..999999)}",
+#         policy_number:          "P#{rand(10000..99999)}",
+#         settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100)
+#     )
+#     if !settlement.save
+#         puts "SAVE FAILED: #{settlement.errors.full_messages.inspect}"
+#     end
+#     settlement
+# }
+# puts "Created #{NUM_SETTLEMENTS} settlement models..."
 
-generated_documents = Array.new(SEED_SIZE) {|i|
-    GeneratedDocument.new(
-        claim_number:           "#{rand(100000..999999)}",
-        policy_number:          "P#{rand(10000..99999)}",
-        settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
-        date_of_incident:       "9-10-2021",
-        defendant_name:         "Danny Defendant",
-        incident_description:   "car accident",
-        law_firm_name:          "Saul Goodman & Associates",
-        place_of_incident:      "Memphis, TN",
-        plaintiff_name:         "Patty Plaintiff",
-    )
-}
-puts "Created #{SEED_SIZE} generated document models..."
+# generated_documents = Array.new(SEED_SIZE) {|i|
+#     GeneratedDocument.new(
+#         claim_number:           "#{rand(100000..999999)}",
+#         policy_number:          "P#{rand(10000..99999)}",
+#         settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
+#         date_of_incident:       "9-10-2021",
+#         defendant_name:         "Danny Defendant",
+#         incident_description:   "car accident",
+#         law_firm_name:          "Saul Goodman & Associates",
+#         place_of_incident:      "Memphis, TN",
+#         plaintiff_name:         "Patty Plaintiff",
+#     )
+# }
+# puts "Created #{SEED_SIZE} generated document models..."
 
 # comments = Array.new(SEED_SIZE) {|i|
 #     Comment.create!(

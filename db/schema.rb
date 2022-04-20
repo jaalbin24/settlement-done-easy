@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_22_212943) do
+ActiveRecord::Schema.define(version: 2022_04_17_173629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,12 +114,13 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
     t.string "role"
     t.string "first_name"
     t.string "last_name"
-    t.string "organization"
     t.string "stripe_account_id"
     t.boolean "stripe_account_onboarded", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "organization_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -129,4 +130,5 @@ ActiveRecord::Schema.define(version: 2022_03_22_212943) do
   add_foreign_key "comments", "users"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
+  add_foreign_key "users", "users", column: "organization_id"
 end
