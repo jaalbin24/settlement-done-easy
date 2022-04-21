@@ -19,7 +19,7 @@ NUM_SETTLEMENTS = SEED_SIZE * 5
 #     organization: "GKBM",
 # )
 
-law_firm = User.create!(
+law_firm_users = User.create!(
     email: "law_firm@example.com",
     password: "password123",
     role: "Law Firm",
@@ -29,13 +29,14 @@ law_firm = User.create!(
 )
 puts "======================= Created Law Firm: #{law_firm.first_name}"
 
-insurance_company = User.create!(
-    email: "insurance_company@example.com",
-    password: "password123",
-    role: "Insurance Company",
-    first_name: insurance_companies[rand(0..insurance_companies.size)],
-    stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
-)
+insurance_company_users = Array.new(SEED_SIZE) {|i|
+    User.create!(
+        email: "insurance_company#{i}@example.com",
+        password: "password123",
+        role: "Insurance Company",
+        first_name: insurance_companies[i]
+    )
+}
 puts "======================= Created Insurance Company: #{insurance_company.first_name}"
 
 
@@ -60,7 +61,7 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
         role: "Insurance Agent",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization: insurance_company
+        organization_id: insurance_company.id
     )
     puts "======================= Created Insurance Agent i=#{i}"
 }
