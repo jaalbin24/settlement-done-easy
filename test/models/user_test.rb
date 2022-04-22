@@ -57,8 +57,4 @@ class UserTest < ActiveSupport::TestCase
     u.organization_id = users(:insurance_company).id
     assert_not u.valid?, u.errors.full_messages.inspect
   end
-
-
-
-
 end

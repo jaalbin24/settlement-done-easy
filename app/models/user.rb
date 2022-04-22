@@ -35,7 +35,7 @@ class User < ApplicationRecord
 
   validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]}
   validates :first_name, :email, :encrypted_password, presence: true
-  # validates :organization_id, absence: {if: :isorganization?, message: "organization must be nil. It is currently #{self.organization_id}"}
+  validates :organization_id, absence: {if: :isOrganization?, message: "id must be nil. It is currently %{value}"}
 
 
   has_many(
