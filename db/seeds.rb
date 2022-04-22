@@ -23,7 +23,7 @@ law_firm = User.create!(
     email: "law_firm@example.com",
     password: "password123",
     role: "Law Firm",
-    first_name: law_firms[rand(0..law_firms.size)],
+    first_name: law_firms[rand(0..law_firms.size-1)],
     stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
     stripe_account_onboarded: true
 )
