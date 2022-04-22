@@ -57,4 +57,7 @@ class SettlementTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+
+  test "stage and status combination agrees with booleans" do
+  end
 end

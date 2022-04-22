@@ -33,4 +33,32 @@ class UserTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+
+  test "email must exist" do
+    users.each do |u|
+      assert u.valid?, u.errors.full_messages.inspect
+      u.email = ""
+      assert_not u.valid?, u.errors.full_messages.inspect
+    end
+  end
+
+  test "password must exist" do
+    users.each do |u|
+      assert u.valid?, u.errors.full_messages.inspect
+      u.password = ""
+      assert_not u.valid?, u.errors.full_messages.inspect
+    end
+  end
+
+  test "organization-type users must have organization=nil" do
+    u = users(:law_firm)
+    u.organization_id = nil
+    assert u.valid?, u.errors.full_messages.inspect
+    u.organization_id = users(:insurance_company).id
+    assert_not u.valid?, u.errors.full_messages.inspect
+  end
+
+
+
+
 end

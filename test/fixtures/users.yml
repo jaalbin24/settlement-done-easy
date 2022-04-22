@@ -32,8 +32,39 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+
+law_firm: {
+  id: 1,
+  first_name: "Test Law Firm",
+  email: "test_law_firm@example.com",
+  encrypted_password: "password123",
+  role: "Law Firm"
+}
+
+insurance_company: {
+  id: 2,
+  first_name: "Test Insurance Company",
+  email: "test_insurance_company@example.com",
+  encrypted_password: "password123",
+  role: "Insurance Company"
+}
+
+attorney: {
+  id: 3,
+  first_name: "John",
+  last_name: "Smith",
+  email: "test_attorney@example.com",
+  encrypted_password: "password123",
+  role: "Attorney",
+  organization_id: 1 
+}
+
+insurance_agent: {
+  id: 4,
+  first_name: "Jane",
+  last_name: "Doe",
+  email: "test_insurance_agent@example.com",
+  encrypted_password: "password123",
+  role: "Insurance Agent",
+  organization_id: 2
+}
