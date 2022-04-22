@@ -19,25 +19,29 @@ NUM_SETTLEMENTS = SEED_SIZE * 5
 #     organization: "GKBM",
 # )
 
-law_firm_users = User.create!(
-    email: "law_firm@example.com",
-    password: "password123",
-    role: "Law Firm",
-    first_name: law_firms[rand(0..law_firms.size)],
-    stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
-    stripe_account_onboarded: true
-)
-puts "======================= Created Law Firm: #{law_firm.first_name}"
+law_firm_users = Array.new(law_firms.size) {|i|
+    law_firm = User.create!(
+        email: "law_firm#{i}@example.com",
+        password: "password123",
+        role: "Law Firm",
+        first_name: law_firms[i],
+        stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
+        stripe_account_onboarded: true
+    )
+    puts "======================= Created Law Firm i=#{i}: #{law_firm.first_name}"
+    law_firm
+}
 
-insurance_company_users = Array.new(SEED_SIZE) {|i|
-    User.create!(
+insurance_company_users = Array.new(insurance_companies.size) {|i|
+    insurance_company = User.create!(
         email: "insurance_company#{i}@example.com",
         password: "password123",
         role: "Insurance Company",
         first_name: insurance_companies[i]
     )
+    puts "======================= Created Insurance Company i=#{i}: #{insurance_company.first_name}"
+    insurance_company
 }
-puts "======================= Created Insurance Company: #{insurance_company.first_name}"
 
 
 attorneys = Array.new(SEED_SIZE) {|i|
@@ -47,7 +51,7 @@ attorneys = Array.new(SEED_SIZE) {|i|
         role: "Attorney",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization_id: law_firm.id,
+        organization_id: law_firm_users[rand(0..law_firm_users.size-1)].id,
         stripe_account_id: "acct_1KkFqHPrr8Fx4mZy"
     )
     puts "======================= Created Attorney i=#{i}"
@@ -61,7 +65,7 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
         role: "Insurance Agent",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
-        organization_id: insurance_company.id
+        organization_id: insurance_company_users[rand(0..insurance_company_users.size-1)].id,
     )
     puts "======================= Created Insurance Agent i=#{i}"
 }
