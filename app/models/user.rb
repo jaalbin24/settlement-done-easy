@@ -100,11 +100,11 @@ class User < ApplicationRecord
   end
 
   def self.all_attorneys
-    return User.where(:role => "Attorney").order(:first_name, :last_name, :organization)
+    return User.where(:role => "Attorney").order(:first_name, :last_name, :organization_id)
   end
 
   def self.all_insurance_agents
-    return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization)
+    return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization_id)
   end
 
   def isAttorney?
