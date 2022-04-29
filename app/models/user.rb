@@ -96,7 +96,16 @@ class User < ApplicationRecord
   end
 
   def full_name
-    return "#{first_name} #{last_name}"
+    full = ""
+    if first_name != nil
+      full += first_name
+      if last_name != nil
+        full += " #{last_name}"
+      end
+    elsif last_name != nil
+      full += last_name
+    end
+    return full
   end
 
   def self.all_attorneys
@@ -105,6 +114,18 @@ class User < ApplicationRecord
 
   def self.all_insurance_agents
     return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization_id)
+  end
+
+  def self.all_law_firms
+    return User.where(:role => "Law Firm").order(:first_name, :organization_id)
+  end
+
+  def self.all_insurance_companies
+    return User.where(:role => "Insurance Company").order(:first_name, :organization_id)
+  end
+
+  def self.all_organizations
+    return User.where(:role => "Insurance Company").or(User.where(:role => "Law Firm")).order(:first_name, :organization_id)
   end
 
   def isAttorney?
