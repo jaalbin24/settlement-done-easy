@@ -71,11 +71,11 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
 }
 puts "Created #{SEED_SIZE} insurance agent models..."
 
-# settlements = Array.new(NUM_SETTLEMENTS) {|i|
+# settlements = Array.new(1) {|i|
 #     attorney = attorneys[rand(0..attorneys.size-1)]
 #     insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
 #     settlement = Settlement.new(
-#         attorney:             attorney,
+#         attorney:           attorney,
 #         insurance_agent:    insurance_agent,
 #         claim_number:       "#{rand(100000..999999)}",
 #         settlement_amount:  1000.00,

@@ -58,10 +58,21 @@ class SettlementTest < ActiveSupport::TestCase
   #   assert true
   # end
 
+  test "test for tests" do
+    settlements.each do |s|
+      assert s.valid?, s.errors.full_messages.inspect
+    end
+  end
+
   test "stage and status combination agrees with booleans" do
+
   end
 
   test "settlement amount must be present" do
     
+  end
+
+  test "completed settlement must have signature" do
+
   end
 end
