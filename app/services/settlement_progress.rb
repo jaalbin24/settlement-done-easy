@@ -1,23 +1,4 @@
 module SettlementProgress
-    # STAGE 1
-        # STATUS 1 = Waiting for document upload.
-        # STATUS 2 = Waiting for document approval.
-        # STATUS 3 = Document needs adjustment.
-
-    # STAGE 2
-        # STATUS 1 = Document approved. Waiting to be sent to claimant.
-        # STATUS 2 = DS signature request sent. Waiting for claimant signature.
-        # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
-
-    # STAGE 3
-        # STATUS 1 = Document w/ signature approved. Waiting for payment.
-        # STATUS 2 = Paid. Payment processing.
-        # STATUS 3 = Error with payment. Waiting for payment again.
-        # STATUS 4 = Payment received. Waiting for Settlement completion.
-
-    # STAGE 4
-        # STATUS 1 = Completed
-
     def self.statusValid?(stage, status)
         stage = stage.to_i
         status = status.to_i

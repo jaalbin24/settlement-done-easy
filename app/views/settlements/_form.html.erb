@@ -65,18 +65,18 @@
                     <option disabled selected value>Select here</option>
                     <%if current_user.isAttorney?%>
                         <%User.all_insurance_agents.each do |u|%>
-                            <%if u.organization_id == nil%>
+                            <%if u.organization == nil%>
                                 <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
                             <%else%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (#{User.find(u.organization_id).first_name})"%></option>
+                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.first_name})"%></option>
                             <%end%>
                         <%end%>
                     <%else%>
                         <%User.all_attorneys.each do |u|%>
-                            <%if u.organization_id == nil%>
+                            <%if u.organization == nil%>
                                 <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
                             <%else%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (#{User.find(u.organization_id).first_name})"%></option>
+                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.first_name})"%></option>
                             <%end%>                        
                         <%end%>
                     <%end%>

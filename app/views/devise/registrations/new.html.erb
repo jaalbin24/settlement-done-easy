@@ -34,9 +34,9 @@
       <select class="form-select" id="user_organization_id" name="user[organization_id]" required>
         <option selected disabled hidden>Select one...</option>
         <%@organizations.each do |o|%>
-          <option><%=o.full_name%></option>
+          <option value=<%=o.id%>><%=o.full_name%></option>
         <%end%>
-        <option>I do not have an organization</option>
+        <option value="0">I do not have an organization</option>
       </select>
     </div>
     <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">

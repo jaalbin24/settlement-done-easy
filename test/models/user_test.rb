@@ -38,7 +38,7 @@ class UserTest < ActiveSupport::TestCase
     users.each do |u|
       assert u.valid?, u.errors.full_messages.inspect
       u.email = ""
-      assert_not u.valid?, u.errors.full_messages.inspect
+      assert_not u.valid?
     end
   end
 
@@ -46,15 +46,45 @@ class UserTest < ActiveSupport::TestCase
     users.each do |u|
       assert u.valid?, u.errors.full_messages.inspect
       u.password = ""
-      assert_not u.valid?, u.errors.full_messages.inspect
+      assert_not u.valid?
     end
   end
 
-  test "organization-type users must have organization=nil" do
+  test "organization-type users must have nil organization" do
     u = users(:law_firm)
-    u.organization_id = nil
+    u.organization = nil
     assert u.valid?, u.errors.full_messages.inspect
-    u.organization_id = users(:insurance_company).id
-    assert_not u.valid?, u.errors.full_messages.inspect
+    u.organization = users(:insurance_company)
+    assert_not u.valid?
   end
+
+  test "member-type users must have nil stripe_account_id" do
+    u = users(:attorney)
+    assert u.valid?, u.errors.full_messages.inspect
+    u.stripe_account_id = "XXXXXXXXXXXXX"
+    assert_not u.valid?
+  end
+
+  test "member-type users must not have an onboarded stripe account" do
+    u = users(:attorney)
+    assert u.valid?, u.errors.full_messages.inspect
+    u.stripe_account_onboarded = true
+    assert_not u.valid?
+  end
+
+  test "role must match organization type" do
+    u = users(:attorney)
+    u.organization = users(:law_firm)
+    assert u.valid?, u.errors.full_messages.inspect
+    u.role = "Insurance Agent"
+    assert_not u.valid?
+
+    u = users(:insurance_agent)
+    u.organization = users(:insurance_company)
+    assert u.valid?, u.errors.full_messages.inspect
+    u.role = "Attorney"
+    assert_not u.valid?
+  end
+
+
 end

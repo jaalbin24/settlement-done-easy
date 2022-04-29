@@ -25,6 +25,11 @@
                 <li class="nav-item">
                   <%= link_to "New Settlement", settlement_new_path, class: 'nav-link'%>
                 </li>
+                <%if current_user.organization != nil%>
+                  <li class="nav-item">
+                    <%= link_to current_user.organization.full_name, nil, class: 'nav-link'%>
+                  </li>
+                <%end%>
               <%elsif current_user.isOrganization?%>
                 <%if current_user.stripe_account_onboarded?%>
                   <li class="nav-item">
