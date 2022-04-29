@@ -57,6 +57,7 @@ class Settlement < ApplicationRecord
         class_name: "Document",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
+        dependent: :destroy
     )
 
     before_destroy do
@@ -139,7 +140,7 @@ class Settlement < ApplicationRecord
         # STATUS 3 = Document needs adjustment.
 
     # STAGE 2
-        # STATUS 1 = Document approved. Waiting to be sent to claimant.
+        # STATUS 1 = Document approved. Waiting for signature.
         # STATUS 2 = DS signature request sent. Waiting for claimant signature.
         # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
 
