@@ -28,15 +28,36 @@
 #  fk_rails_...  (organization_id => users.id)
 #
 class User < ApplicationRecord
+  include EnglishLanguageSupport
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]}
-  validates :first_name, :email, :encrypted_password, presence: true
-  # validates :organization_id, absence: {if: :isorganization?, message: "organization must be nil. It is currently #{self.organization_id}"}
+  validates :first_name, :email, :role, :encrypted_password, presence: true
 
+  # Organization-type users cannot belong to an organization.
+  validates :organization, absence: {if: :isOrganization?, message: "must be nil for organization-type users, not '%{value}'"}
+  
+  # Member-type users cannot have Stripe data.
+  validates :stripe_account_id, absence: {unless: :isOrganization?, message: "must be nil for non-organization-type users, not '%{value}'"}
+  validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isOrganization?, message: "must be false for non-organization-type users, not '%{value}'"}
+
+  # Member-type users cannot belong to another member-type user.
+  validate :member_cannot_belong_to_member
+  def member_cannot_belong_to_member
+    if organization != nil
+      errors.add(:organization, "must be an organization-type user, not '#{indefinite_articleize(organization.role)}'") unless organization.isOrganization?
+    end
+  end
+
+  validate :role_must_match_organization_type
+  def role_must_match_organization_type
+    if organization != nil && role != nil
+      errors.add(:organization, "member must have appropriate user role. The role of '#{role}' is invalid for members of the organization '#{organization.role}'") unless (organization.isLawFirm? && isAttorney?) || (organization.isInsuranceCompany? && isInsuranceAgent?)
+    end
+  end
 
   has_many(
     :comments,
@@ -62,11 +83,12 @@ class User < ApplicationRecord
     dependent: :destroy
   )
 
-  has_one(
+  belongs_to(
     :organization,
     class_name: "User",
     foreign_key: "organization_id",
-    inverse_of: :organization_members
+    inverse_of: :organization_members,
+    optional: true
   )
 
   has_many(
@@ -95,8 +117,23 @@ class User < ApplicationRecord
     end
   end
 
+  before_create do
+    if self.organization_id == 0
+      self.organization_id = nil
+    end
+  end
+
   def full_name
-    return "#{first_name} #{last_name}"
+    full = ""
+    if first_name != nil
+      full += first_name
+      if last_name != nil
+        full += " #{last_name}"
+      end
+    elsif last_name != nil
+      full += last_name
+    end
+    return full
   end
 
   def self.all_attorneys
@@ -105,6 +142,18 @@ class User < ApplicationRecord
 
   def self.all_insurance_agents
     return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization_id)
+  end
+
+  def self.all_law_firms
+    return User.where(:role => "Law Firm").order(:first_name, :organization_id)
+  end
+
+  def self.all_insurance_companies
+    return User.where(:role => "Insurance Company").order(:first_name, :organization_id)
+  end
+
+  def self.all_organizations
+    return User.where(:role => "Insurance Company").or(User.where(:role => "Law Firm")).order(:first_name, :organization_id)
   end
 
   def isAttorney?
