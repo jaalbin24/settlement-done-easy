@@ -60,4 +60,8 @@ class SettlementTest < ActiveSupport::TestCase
 
   test "stage and status combination agrees with booleans" do
   end
+
+  test "settlement amount must be present" do
+    
+  end
 end

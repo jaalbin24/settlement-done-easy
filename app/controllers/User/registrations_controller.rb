@@ -7,13 +7,20 @@ class User::RegistrationsController < Devise::RegistrationsController
   # GET /resource/sign_up
   def new
     @role = params[:role]
+    if @role == "Insurance Agent"
+      @organizations = User.all_insurance_companies
+    elsif @role == "Attorney"
+      @organizations = User.all_law_firms
+    else
+      @organizations = User.all_organizations
+    end
     super
   end
 
   # POST /resource
   def create
     build_resource(sign_up_params)
-  
+
     resource.save
     yield resource if block_given?
     if resource.persisted?
@@ -33,6 +40,11 @@ class User::RegistrationsController < Devise::RegistrationsController
       clean_up_passwords resource
       set_minimum_password_length
       @role = params[:user][:role]
+      if @role == "Insurance Agent"
+        @organizations = User.all_insurance_companies
+      elsif @role == "Attorney"
+        @organizations = User.all_law_firms
+      end
       respond_with resource
     end
   end
@@ -65,12 +77,12 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer in the keys array.
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:role, :first_name, :last_name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:role, :first_name, :last_name, :organization_id])
   end
 
   # If you have extra params to permit, append them to the sanitizer in the keys array.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:role, :first_name, :last_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:role, :first_name, :last_name, :organization_id])
   end
 
   # The path used after sign up.
