@@ -40,6 +40,8 @@
 #  fk_rails_...  (insurance_agent_id => users.id)
 #
 class Settlement < ApplicationRecord
+    validates :settlement_amount, presence: false
+
     belongs_to(
         :attorney,
         class_name: "User",

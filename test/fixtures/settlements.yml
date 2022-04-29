@@ -44,8 +44,118 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
+stage_one_status_one: {
+  id: 1,
+  stage: 1,
+  status: 1,
+  attorney_id: 3,
+  insurance_agent_id: 4,
+  settlement_amount: 4444.44,
+  policy_number: "XXXXXX",
+  plaintiff_name: "Patty Plaintiff",
+  defendent_name: "Danny Defendent",
+  incident_date: "12/5/21",
+  incident_location: "Memphis, TN",
+  completed: false,
+  document_approved: false,
+  document_needs_adjustment: false,
+  document_signed: false,
+  final_document_approved: false,
+  payment_has_error: false,
+  payment_made: false,
+  payment_received: false,
+  signature_requested: false
+}
 # column: value
 #
-two: {}
+stage_one_status_two: {
+  id: 2,
+  stage: 1,
+  status: 2,
+  attorney_id: 3,
+  insurance_agent_id: 4,
+  settlement_amount: 4444.44,
+  policy_number: "XXXXXX",
+  plaintiff_name: "Patty Plaintiff",
+  defendent_name: "Danny Defendent",
+  incident_date: "12/5/21",
+  incident_location: "Memphis, TN",
+  completed: false,
+  document_approved: false,
+  document_needs_adjustment: false,
+  document_signed: false,
+  final_document_approved: false,
+  payment_has_error: false,
+  payment_made: false,
+  payment_received: false,
+  signature_requested: false
+}
 # column: value
+stage_one_status_three: {
+  id: 3,
+  stage: 1,
+  status: 3,
+  attorney_id: 3,
+  insurance_agent_id: 4,
+  settlement_amount: 4444.44,
+  policy_number: "XXXXXX",
+  plaintiff_name: "Patty Plaintiff",
+  defendent_name: "Danny Defendent",
+  incident_date: "12/5/21",
+  incident_location: "Memphis, TN",
+  completed: false,
+  document_approved: false,
+  document_needs_adjustment: false,
+  document_signed: false,
+  final_document_approved: false,
+  payment_has_error: false,
+  payment_made: false,
+  payment_received: false,
+  signature_requested: false
+}
+
+stage_two_status_one: {
+  id: 4,
+  stage: 2,
+  status: 1,
+  attorney_id: 3,
+  insurance_agent_id: 4,
+  settlement_amount: 4444.44,
+  policy_number: "XXXXXX",
+  plaintiff_name: "Patty Plaintiff",
+  defendent_name: "Danny Defendent",
+  incident_date: "12/5/21",
+  incident_location: "Memphis, TN",
+  completed: false,
+  document_approved: true,
+  document_needs_adjustment: false,
+  document_signed: false,
+  final_document_approved: false,
+  payment_has_error: false,
+  payment_made: false,
+  payment_received: false,
+  signature_requested: false
+}
+
+stage_two_status_two: {
+  id: 5,
+  stage: 2,
+  status: 2,
+  attorney_id: 3,
+  insurance_agent_id: 4,
+  settlement_amount: 4444.44,
+  policy_number: "XXXXXX",
+  plaintiff_name: "Patty Plaintiff",
+  defendent_name: "Danny Defendent",
+  incident_date: "12/5/21",
+  incident_location: "Memphis, TN",
+  completed: false,
+  document_approved: false,
+  document_needs_adjustment: false,
+  document_signed: false,
+  final_document_approved: false,
+  payment_has_error: false,
+  payment_made: false,
+  payment_received: false,
+  signature_requested: false
+}
