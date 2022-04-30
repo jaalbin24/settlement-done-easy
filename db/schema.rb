@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_17_173629) do
+ActiveRecord::Schema.define(version: 2022_04_30_141922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,11 +67,13 @@ ActiveRecord::Schema.define(version: 2022_04_17_173629) do
     t.boolean "approved", default: false, null: false
     t.boolean "adjustment_needed", default: false, null: false
     t.boolean "signed", default: false, null: false
-    t.bigint "settlement_id"
     t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "type"
+    t.bigint "settlement_id"
+    t.bigint "added_by_id"
+    t.index ["added_by_id"], name: "index_documents_on_added_by_id"
     t.index ["settlement_id"], name: "index_documents_on_settlement_id"
   end
 
@@ -128,6 +130,8 @@ ActiveRecord::Schema.define(version: 2022_04_17_173629) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "documents"
   add_foreign_key "comments", "users"
+  add_foreign_key "documents", "settlements"
+  add_foreign_key "documents", "users", column: "added_by_id"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
   add_foreign_key "users", "users", column: "organization_id"

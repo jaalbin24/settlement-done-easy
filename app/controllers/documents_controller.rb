@@ -8,7 +8,8 @@ class DocumentsController < ApplicationController
 
     def create
         settlement = Settlement.find(params[:settlement_id])
-        @document = settlement.build_document(document_params)
+        @document = settlement.documents.build(document_params)
+        @document.added_by = current_user
         if @document.save
             flash[:info] = "Release form added! Click <a href=#{document_show_path(@document)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
