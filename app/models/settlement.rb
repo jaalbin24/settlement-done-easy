@@ -54,17 +54,13 @@ class Settlement < ApplicationRecord
         foreign_key: "insurance_agent_id",
     )
 
-    has_one(
-        :document,
+    has_many(
+        :documents,
         class_name: "Document",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
         dependent: :destroy
     )
-
-    before_destroy do
-        document.destroy unless document == nil
-    end
 
     after_commit do
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
@@ -76,9 +72,6 @@ class Settlement < ApplicationRecord
     end
 
     before_save do
-        # if document.changed?
-        #     release_from.save
-        # end
         if self.claim_number_changed?
             stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
             self.stripe_product_id = stripe_product.id
@@ -107,6 +100,10 @@ class Settlement < ApplicationRecord
         end
     end
 
+    def most_recent_document
+        documents.last
+    end
+
     def partner_of(user)
         if user.isAttorney?
             return insurance_agent
@@ -115,10 +112,8 @@ class Settlement < ApplicationRecord
         end
     end
 
-    def hasDocument?
-        if document == nil
-            return false
-        elsif !document.pdf.attached?
+    def hasDocuments?
+        if documents == nil || documents.size == 0
             return false
         else
             return true
@@ -126,11 +121,7 @@ class Settlement < ApplicationRecord
     end
 
     def generated_document_file_name
-        if self.hasDocument?
-            return self.document.pdf.blob.filename
-        else
-            return "#{self.claim_number}_release.pdf"
-        end
+        "#{self.claim_number}_release.pdf"
     end
 
     def status_message
@@ -156,7 +147,7 @@ class Settlement < ApplicationRecord
         # STATUS 1 = Completed
     def update_progress
         if stage == 1
-            if !hasDocument?
+            if !hasDocuments?
                 self.status = 1
             elsif !document_approved?
                 if !document_needs_adjustment?

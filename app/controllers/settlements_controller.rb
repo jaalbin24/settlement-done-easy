@@ -117,7 +117,7 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        if !@settlement.hasDocument?
+        if !@settlement.hasDocuments?
             flash[:error] = "That settlement does not have a document to review. #{@settlement.insurance_agent.full_name} must add one."
             redirect_to settlement_show_path(@settlement)
         else
@@ -194,11 +194,11 @@ class SettlementsController < ApplicationController
             cc_name: 'Settlement Done Easy',
             status: 'sent'
         }
-        envelope_id = create_and_send(settlement.document.pdf, envelope_args)
+        envelope_id = create_and_send(settlement.most_recent_document.pdf, envelope_args)
         settlement.signature_requested = true
-        settlement.document.ds_envelope_id = envelope_id
-        if !settlement.document.save || !settlement.save
-            puts "====================== ERROR SAVING: #{settlement.errors.full_messages.inspect} | #{settlement.document.errors.full_messages.inspect}"
+        settlement.most_recent_document.ds_envelope_id = envelope_id
+        if !settlement.most_recent_document.save || !settlement.save
+            puts "====================== ERROR SAVING: #{settlement.errors.full_messages.inspect} | #{settlement.most_recent_document.errors.full_messages.inspect}"
         end
         flash[:info] = "Sent signature request to #{params[:client_email]}"
         redirect_to root_path
@@ -207,13 +207,13 @@ class SettlementsController < ApplicationController
     def get_ds_envelope_status
         settlement = Settlement.find(params[:id])
         if !settlement.document_signed?
-            envelope = retrieve_envelope(settlement.document.ds_envelope_id)
+            envelope = retrieve_envelope(settlement.most_recent_document.ds_envelope_id)
             status = JSON.parse(envelope.to_json)['status']
             puts "================================== get_ds_envelope_status: envelope = #{envelope}"
             if status == "completed" 
-                temp_file = download_document(settlement.document.ds_envelope_id)
-                settlement.document.pdf.attach(io: temp_file.open, filename: settlement.document.pdf_file_name, content_type: "application/pdf")
-                settlement.document_signed = true
+                temp_file = download_document(settlement.most_recent_document.ds_envelope_id)
+                settlement.most_recent_document.pdf.attach(io: temp_file.open, filename: settlement.most_recent_document.pdf_file_name, content_type: "application/pdf")
+                settlement.most_recent_document_signed = true
                 sleep(7)
                 settlement.save
             end
@@ -228,7 +228,7 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        if !@settlement.hasDocument?
+        if !@settlement.hasDocuments?
             flash[:error] = "That settlement does not have a document to review. #{@settlement.insurance_agent.full_name} must add one."
             redirect_to settlement_show_path(@settlement)
         else

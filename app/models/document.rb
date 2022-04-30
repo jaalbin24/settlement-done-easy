@@ -19,12 +19,19 @@
 #  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  added_by_id            :bigint
 #  ds_envelope_id         :string
 #  settlement_id          :bigint
 #
 # Indexes
 #
+#  index_documents_on_added_by_id    (added_by_id)
 #  index_documents_on_settlement_id  (settlement_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (added_by_id => users.id)
+#  fk_rails_...  (settlement_id => settlements.id)
 #
 class Document < ApplicationRecord
     include ActionView::Helpers::NumberHelper 
@@ -43,20 +50,19 @@ class Document < ApplicationRecord
         :settlement,
         class_name: 'Settlement',
         foreign_key: 'settlement_id',
-        inverse_of: :document,
+        inverse_of: :documents,
+        autosave: true
+    )
+
+    belongs_to(
+        :added_by,
+        class_name: 'User',
+        foreign_key: 'added_by_id'
     )
 
     validate :settlement_amount_less_than_one_million, :date_of_incident_must_be_in_past, :settlement_amount_has_only_two_decimal_places
     validates :pdf, presence: true
-
-    # before_save do
-    #     self.update_status
-    # end
-
-    after_save do
-        settlement.save
-    end
-
+    
     before_validation do
         if !self.pdf.attached?
             begin

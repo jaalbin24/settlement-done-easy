@@ -7,9 +7,9 @@
                 <div class="list-group">
                     <%if current_user.isAttorney?%>
                         <%if @settlement.stage == 1 && @settlement.status == 2%>
-                            <%=link_to "View documents", settlement_review_document_path(@settlement.document), class: "list-group-item list-group-item-action"%>
-                        <%elsif @settlement.document != nil%>
-                            <%=link_to "View documents", document_show_path(@settlement.document), class: "list-group-item list-group-item-action"%>
+                            <%=link_to "View documents", settlement_review_document_path(@settlement.most_recent_document), class: "list-group-item list-group-item-action"%>
+                        <%elsif @settlement.most_recent_document != nil%>
+                            <%=link_to "View documents", document_show_path(@settlement.most_recent_document), class: "list-group-item list-group-item-action"%>
                         <%else%>
                             <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
                         <%end%>

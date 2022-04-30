@@ -14,7 +14,7 @@ class CreateDocuments < ActiveRecord::Migration[6.1]
       t.boolean :approved,                null: false, default: false
       t.boolean :adjustment_needed,       null: false, default: false
       t.boolean :signed,                  null: false, default: false
-      t.references :settlement
+
 
       t.string :ds_envelope_id
 
