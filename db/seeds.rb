@@ -6,8 +6,8 @@ top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"
 insurance_companies = ["State Farm", "Geico", "Progressive", "Allstate", "Liberty Mutual", "USAA", "Nationwide"]
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims", "GoodLaw", "Smith & Doe", "Hearsay Law Firm"]
 # For generating random organizations to which each user belongs
-SEED_SIZE = 6
-NUM_SETTLEMENTS = SEED_SIZE * 5
+SEED_SIZE = 2
+NUM_SETTLEMENTS = SEED_SIZE * 1
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
 
 # shannon_elsea = User.create!(
@@ -18,6 +18,13 @@ NUM_SETTLEMENTS = SEED_SIZE * 5
 #     last_name: "Elsea",
 #     organization: "GKBM",
 # )
+docusign_user = User.create(
+    id: 0,
+    email: "example@example.com",
+    password: "password123",
+    first_name: "DocuSign",
+    role: "Insurance Company",
+)
 
 law_firm_users = Array.new(law_firms.size) {|i|
     law_firm = User.create!(

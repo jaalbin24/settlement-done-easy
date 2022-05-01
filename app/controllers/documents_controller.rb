@@ -16,6 +16,9 @@ class DocumentsController < ApplicationController
         settlement = Settlement.find(params[:settlement_id])
         @document = settlement.documents.build(document_params)
         @document.added_by = current_user
+        if @document.signed?
+            @document.uses_wet_signature = true
+        end
         if @document.save
             flash[:info] = "Release form added! Click <a href=#{document_show_path(@document)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
@@ -73,6 +76,7 @@ class DocumentsController < ApplicationController
         document = Document.find(params[:id])
         document.rejected = false
         document.approved = true
+        document.stage = document.settlement.stage
         if document.save
             flash[:info] = "Document approved!"
             redirect_to document_show_url(document)
@@ -86,6 +90,7 @@ class DocumentsController < ApplicationController
         document = Document.find(params[:id])
         document.rejected = true
         document.approved = false
+        document.stage = document.settlement.stage
         if document.save
             flash[:info] = "Document rejected!"
             redirect_to document_show_url(document)
@@ -100,18 +105,74 @@ class DocumentsController < ApplicationController
         render :ready_to_send
     end
 
-    def send_to_client
-        @document = Document.find(params[:id])
+    def get_e_signature
+        begin
+            @document = Document.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        render :get_e_signature
+    end
+
+    def send_ds_signature_request
+        begin
+            document = Document.find(params[:id])
+            if params[:client_email] == nil || !params[:client_email].include?("@") || !params[:client_email].include?(".")
+                flash.now[:warning] = "You did not provide a valid client email. No email sent."
+                render :get_client_signature
+                return
+            elsif params[:client_name] != document.settlement.plaintiff_name
+                flash[:warning] = "Client's name does not match the plaintiff name given in settlement. No email sent."
+                redirect_to root_path
+                return
+            end
+        rescue
+            handle_invalid_request
+            return
+        end
         envelope_args = {
-            email_subject: 'Signature Required!',
+            email_subject: "#{document.settlement.attorney.full_name} is requesting a signature.",
             signer_email: params[:client_email],
             signer_name: params[:client_name],
             cc_email: Rails.configuration.APP_EMAIL,
             cc_name: 'Settlement Done Easy',
             status: 'sent'
         }
-        create_and_send(@document.pdf, envelope_args)
+        envelope_id = create_and_send(document.pdf, envelope_args)
+        document.settlement.signature_requested = true
+        document.ds_envelope_id = envelope_id
+        document.uses_wet_signature = false
+        if !document.save
+            puts "====================== ERROR SAVING: #{document.errors.full_messages.inspect}"
+        end
+        puts "================================================================================================================= DS ENVELOPE ID: #{document.ds_envelope_id}"
         flash[:info] = "Sent signature request to #{params[:client_email]}"
+        redirect_to root_path
+    end
+
+    def get_ds_envelope_status
+        document = Document.find(params[:id])
+        if !document.signed? && document.ds_envelope_id != nil
+            envelope = retrieve_envelope(document.ds_envelope_id)
+            status = JSON.parse(envelope.to_json)['status']
+            flash[:info] = "Document signature status: #{status}"
+            puts "================================== get_ds_envelope_status: envelope = #{envelope}"
+            if status == "completed" 
+                temp_file = download_document(document.ds_envelope_id)
+                doc = document.settlement.documents.build(
+                    signed: true
+                )
+                doc.pdf.attach(io: temp_file.open, filename: doc.pdf_file_name, content_type: "application/pdf")
+                doc.added_by = User.find(0)
+                if !doc.save
+                    puts "============== doc not saved! #{doc.errors.full_messages.inspect}"
+                end
+            end
+        else
+            handle_invalid_request
+            return
+        end
         redirect_to root_path
     end
 

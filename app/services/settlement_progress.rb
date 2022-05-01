@@ -25,42 +25,6 @@ module SettlementProgress
         end
     end
 
-    def self.need_message(stage, status)
-        stage = stage.to_i
-        status = status.to_i
-        case stage
-        when 1
-            case status
-            when 1
-                return "need a document"
-            when 2
-                return "Waiting for #{settlement.attorney.full_name} to review documents"
-            when 3
-                return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents"
-            end
-        when 2
-            case status
-            when 1
-                return "Waiting for signature request to be sent"
-            when 2
-                return "Waiting for signature"
-            when 3
-                return "Waiting for final document review"
-            end
-        when 3
-            case status
-            when 1
-                return "Waiting for payment"
-            when 2
-                return ""
-            when 3
-                return ""
-            end
-        when 4
-            return "Completed"
-        end    
-    end
-
     def self.status_message(settlement)
         stage = settlement.stage
         status = settlement.status
@@ -70,9 +34,9 @@ module SettlementProgress
             when 1
                 return "Waiting for document to be added."
             when 2
-                return "Waiting for #{settlement.attorney.full_name} to review documents."
+                return "Waiting for document review."
             when 3
-                return "Waiting for #{settlement.insurance_agent.full_name} to adjust documents."
+                return "Document rejected. Waiting for new document upload."
             end
         when 2
             case status
@@ -81,12 +45,12 @@ module SettlementProgress
             when 2
                 return "Waiting for #{settlement.plaintiff_name}'s signature."
             when 3
-                return "Waiting for #{settlement.attorney.full_name} to review final document."
+                return "Waiting for final document review."
             end
         when 3
             case status
             when 1
-                return "Waiting for #{settlement.insurance_agent.full_name} to make the payment."
+                return "Waiting for #{settlement.insurance_agent.full_name} to make payment."
             when 2
                 return "Payment processing."
             when 3

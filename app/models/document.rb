@@ -2,16 +2,17 @@
 #
 # Table name: documents
 #
-#  id             :bigint           not null, primary key
-#  approved       :boolean          default(FALSE), not null
-#  rejected       :boolean          default(FALSE), not null
-#  signed         :boolean          default(FALSE), not null
-#  stage          :integer
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  added_by_id    :bigint
-#  ds_envelope_id :string
-#  settlement_id  :bigint
+#  id                 :bigint           not null, primary key
+#  approved           :boolean          default(FALSE), not null
+#  rejected           :boolean          default(FALSE), not null
+#  signed             :boolean          default(FALSE), not null
+#  stage              :integer
+#  uses_wet_signature :boolean          default(FALSE), not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  added_by_id        :bigint
+#  ds_envelope_id     :string
+#  settlement_id      :bigint
 #
 # Indexes
 #
@@ -47,7 +48,7 @@ class Document < ApplicationRecord
     belongs_to(
         :added_by,
         class_name: 'User',
-        foreign_key: 'added_by_id'
+        foreign_key: 'added_by_id',
     )
 
     validates :pdf, presence: true
@@ -57,7 +58,7 @@ class Document < ApplicationRecord
             begin
                 self.pdf.attach(io: File.open(Rails.root.join("dummy_document.pdf")), filename: 'dummy_document.pdf')
             rescue
-                self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'blank_dummy_dummy.pdf')
+                self.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'blank_document.pdf')
             end
         end 
     end

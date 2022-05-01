@@ -6,7 +6,6 @@
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
-#  document_needs_adjustment :boolean          default(FALSE), not null
 #  document_signed           :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
@@ -58,7 +57,6 @@ stage_one_status_one: {
   incident_location: "Memphis, TN",
   completed: false,
   document_approved: false,
-  document_needs_adjustment: false,
   document_signed: false,
   stage_2_document_approved: false,
   payment_has_error: false,
@@ -82,7 +80,6 @@ stage_one_status_two: {
   incident_location: "Memphis, TN",
   completed: false,
   document_approved: false,
-  document_needs_adjustment: false,
   document_signed: false,
   stage_2_document_approved: false,
   payment_has_error: false,
@@ -105,7 +102,6 @@ stage_one_status_three: {
   incident_location: "Memphis, TN",
   completed: false,
   document_approved: false,
-  document_needs_adjustment: false,
   document_signed: false,
   stage_2_document_approved: false,
   payment_has_error: false,
@@ -128,7 +124,6 @@ stage_two_status_one: {
   incident_location: "Memphis, TN",
   completed: false,
   document_approved: true,
-  document_needs_adjustment: false,
   document_signed: false,
   stage_2_document_approved: false,
   payment_has_error: false,
@@ -151,7 +146,6 @@ stage_two_status_two: {
   incident_location: "Memphis, TN",
   completed: false,
   document_approved: false,
-  document_needs_adjustment: false,
   document_signed: false,
   stage_2_document_approved: false,
   payment_has_error: false,
