@@ -71,6 +71,9 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
 }
 puts "Created #{SEED_SIZE} insurance agent models..."
 
+
+
+
 # settlements = Array.new(1) {|i|
 #     attorney = attorneys[rand(0..attorneys.size-1)]
 #     insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
@@ -95,21 +98,6 @@ puts "Created #{SEED_SIZE} insurance agent models..."
 #     settlement
 # }
 # puts "Created #{NUM_SETTLEMENTS} settlement models..."
-
-# generated_documents = Array.new(SEED_SIZE) {|i|
-#     GeneratedDocument.new(
-#         claim_number:           "#{rand(100000..999999)}",
-#         policy_number:          "P#{rand(10000..99999)}",
-#         settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
-#         date_of_incident:       "9-10-2021",
-#         defendant_name:         "Danny Defendant",
-#         incident_description:   "car accident",
-#         law_firm_name:          "Saul Goodman & Associates",
-#         place_of_incident:      "Memphis, TN",
-#         plaintiff_name:         "Patty Plaintiff",
-#     )
-# }
-# puts "Created #{SEED_SIZE} generated document models..."
 
 # comments = Array.new(SEED_SIZE) {|i|
 #     Comment.create!(

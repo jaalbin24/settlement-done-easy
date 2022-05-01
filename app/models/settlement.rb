@@ -6,10 +6,8 @@
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
-#  document_approved         :boolean          default(FALSE), not null
 #  document_needs_adjustment :boolean          default(FALSE), not null
 #  document_signed           :boolean          default(FALSE), not null
-#  final_document_approved   :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
 #  payment_has_error         :boolean          default(FALSE), not null
@@ -20,6 +18,8 @@
 #  settlement_amount         :float
 #  signature_requested       :boolean          default(FALSE), not null
 #  stage                     :integer          default(1), not null
+#  stage_1_document_approved :boolean          default(FALSE), not null
+#  stage_2_document_approved :boolean          default(FALSE), not null
 #  status                    :integer          default(1), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
@@ -66,6 +66,7 @@ class Settlement < ApplicationRecord
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
             self.update_progress
             if self.changed?
+                puts "===================== Settlement progress changed! Stage=#{stage} Status=#{status}"
                 self.save
             end
         end
@@ -146,16 +147,17 @@ class Settlement < ApplicationRecord
     # STAGE 4
         # STATUS 1 = Completed
     def update_progress
+        puts "===================== Settlement progress updating from Stage=#{stage} Status=#{status}"
         if stage == 1
             if !hasDocuments?
                 self.status = 1
-            elsif !document_approved?
+            elsif !stage_1_document_approved?
                 if !document_needs_adjustment?
                     self.status = 2
                 else
                     self.status = 3
                 end
-            elsif document_approved?
+            elsif stage_1_document_approved?
                 self.stage = 2
                 self.status = 1
             end
@@ -168,7 +170,7 @@ class Settlement < ApplicationRecord
                 end
             else
                 self.status = 3
-                if final_document_approved?
+                if stage_2_document_approved?
                     self.stage = 3
                     self.status = 1
                 end

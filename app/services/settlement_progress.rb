@@ -68,7 +68,7 @@ module SettlementProgress
         when 1
             case status
             when 1
-                return "Waiting for #{settlement.insurance_agent.full_name} to upload documents."
+                return "Waiting for document to be added."
             when 2
                 return "Waiting for #{settlement.attorney.full_name} to review documents."
             when 3

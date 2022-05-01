@@ -125,24 +125,6 @@ class SettlementsController < ApplicationController
         end
     end
 
-    def approve_stage1_document
-        begin
-            settlement = Settlement.find(params[:id])
-        rescue
-            handle_invalid_request
-            return
-        end
-        settlement.document_needs_adjustment = false
-        settlement.document_approved = true
-        settlement.save
-
-        flash[:info] = "Document approved! You can now get your client's signature."
-        redirect_to settlement_get_client_signature_path(settlement)
-    end
-
-    def reject_stage1_document
-    end
-
     def approve_stage2_document
         begin
             settlement = Settlement.find(params[:id])
@@ -150,7 +132,7 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        settlement.final_document_approved = true
+        settlement.stage_2_document_approved = true
         settlement.save
 
         flash[:info] = "Document approved! #{settlement.insurance_agent.full_name} can now initiate payment."
@@ -213,8 +195,7 @@ class SettlementsController < ApplicationController
             if status == "completed" 
                 temp_file = download_document(settlement.most_recent_document.ds_envelope_id)
                 settlement.most_recent_document.pdf.attach(io: temp_file.open, filename: settlement.most_recent_document.pdf_file_name, content_type: "application/pdf")
-                settlement.most_recent_document_signed = true
-                sleep(7)
+                settlement.most_recent_document.signed = true
                 settlement.save
             end
         end

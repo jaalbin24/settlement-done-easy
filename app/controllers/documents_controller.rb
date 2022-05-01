@@ -1,6 +1,12 @@
 class DocumentsController < ApplicationController
     include DsEnvelope
     before_action :authenticate_user!
+    
+    def index
+        @settlement = Settlement.find(params[:id])
+        render :index
+    end
+        
     def new
         @document = Document.new
         render :new
@@ -39,8 +45,16 @@ class DocumentsController < ApplicationController
     end
 
     def destroy
-        @document = Document.find(params[:id])
-        @document.destroy
+        document = Document.find(params[:id])
+        settlement = document.settlement
+        filename = document.pdf.filename
+        document.destroy
+        flash[:info] = "#{filename} has been removed."
+        if settlement.documents.size == 0
+            redirect_to settlement_show_url(settlement)
+        else
+            redirect_back(fallback_location: root_path)
+        end
     end
 
     def show
@@ -52,6 +66,32 @@ class DocumentsController < ApplicationController
             format.pdf do
                 send_data @document.pdf.download, filename: @document.pdf_file_name
             end
+        end
+    end
+
+    def approve
+        document = Document.find(params[:id])
+        document.rejected = false
+        document.approved = true
+        if document.save
+            flash[:info] = "Document approved!"
+            redirect_to document_show_url(document)
+        else
+            flash[:warning] = "Document could not be approved! #{document.errors.full_messages.inspect}"
+            redirect_back(fallback_location: root_path)
+        end
+    end
+
+    def reject
+        document = Document.find(params[:id])
+        document.rejected = true
+        document.approved = false
+        if document.save
+            flash[:info] = "Document rejected!"
+            redirect_to document_show_url(document)
+        else
+            flash[:warning] = "Document could not be rejected! #{document.errors.full_messages.inspect}"
+            redirect_back(fallback_location: root_path)
         end
     end
     
@@ -78,6 +118,6 @@ class DocumentsController < ApplicationController
     # Defines what parameters can be accepted from a browser. This is for security. Without defining the data expected from the browser,
     # potentially malicious data can be accepted as valid.
     def document_params
-        params.require(:document).permit(:claim_number, :policy_number, :pdf)
+        params.require(:document).permit(:claim_number, :policy_number, :pdf, :signed)
     end
 end

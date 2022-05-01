@@ -6,10 +6,8 @@
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
-#  document_approved         :boolean          default(FALSE), not null
 #  document_needs_adjustment :boolean          default(FALSE), not null
 #  document_signed           :boolean          default(FALSE), not null
-#  final_document_approved   :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
 #  payment_has_error         :boolean          default(FALSE), not null
@@ -20,6 +18,8 @@
 #  settlement_amount         :float
 #  signature_requested       :boolean          default(FALSE), not null
 #  stage                     :integer          default(1), not null
+#  stage_1_document_approved :boolean          default(FALSE), not null
+#  stage_2_document_approved :boolean          default(FALSE), not null
 #  status                    :integer          default(1), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
@@ -60,7 +60,7 @@ stage_one_status_one: {
   document_approved: false,
   document_needs_adjustment: false,
   document_signed: false,
-  final_document_approved: false,
+  stage_2_document_approved: false,
   payment_has_error: false,
   payment_made: false,
   payment_received: false,
@@ -84,7 +84,7 @@ stage_one_status_two: {
   document_approved: false,
   document_needs_adjustment: false,
   document_signed: false,
-  final_document_approved: false,
+  stage_2_document_approved: false,
   payment_has_error: false,
   payment_made: false,
   payment_received: false,
@@ -107,7 +107,7 @@ stage_one_status_three: {
   document_approved: false,
   document_needs_adjustment: false,
   document_signed: false,
-  final_document_approved: false,
+  stage_2_document_approved: false,
   payment_has_error: false,
   payment_made: false,
   payment_received: false,
@@ -130,7 +130,7 @@ stage_two_status_one: {
   document_approved: true,
   document_needs_adjustment: false,
   document_signed: false,
-  final_document_approved: false,
+  stage_2_document_approved: false,
   payment_has_error: false,
   payment_made: false,
   payment_received: false,
@@ -153,7 +153,7 @@ stage_two_status_two: {
   document_approved: false,
   document_needs_adjustment: false,
   document_signed: false,
-  final_document_approved: false,
+  stage_2_document_approved: false,
   payment_has_error: false,
   payment_made: false,
   payment_received: false,
