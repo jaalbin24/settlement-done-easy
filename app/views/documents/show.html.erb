@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col">
             <div class="card">
-                <h1 class="text-center card-header">Document Info</h1>
+                <h3 class="text-center card-header">Document Info</h3>
                 <div class="card-body bg-dark">
                     <div class="container">
                         <div class="row">
@@ -36,8 +36,10 @@
                             <div class="col">
                                 <%if @document.signed?%>
                                     ✔️
-                                <%else%>
+                                <%elsif @document.ds_envelope_id == nil%>
                                     ❌
+                                <%else%>
+                                    ⌛
                                 <%end%>
                             </div>
                         </div>
@@ -57,32 +59,43 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <%if !@document.approved? && !@document.rejected?%>
+                <h3 class="text-center card-header">Approve or Reject</h3>
+                <div class="card-body bg-dark">
                     <div class="row text-center">
                         <div class="col">
-                        <%if !@document.approved?%>
                             <%=link_to "Approve", document_approve_path(@document), method: :post, class: "btn btn-lg btn-success w-100"%>
-                        <%else%>
-                            <%=link_to "Approve", nil, class: "btn btn-lg btn-success w-100 disabled"%>
-                        <%end%>
                         </div>
                         <div class="col">
-                        <%if !@document.rejected?%>
                             <%=link_to "Reject", document_reject_path(@document), method: :post, class: "btn btn-lg btn-danger w-100"%>
-                        <%else%>
-                            <%=link_to "Reject", nil, class: "btn btn-lg btn-danger w-100 disabled"%>
-                        <%end%>
                         </div>
                     </div>
-                    <div class="row text-center mt-2">
-                        <div class="col">
-                            Once approved, the document cannot be modified.
-                        </div>
-                        <div class="col">
-                            Once rejected, a new document must be uploaded.
-                        </div>
-                    </div>
+                    <h6 class="mt-2 mb-0 text-center">Once approved/rejected, the document cannot be modified.</h6>
                 </div>
+                <%end%>
+                <%if @document.approved? && !@document.signed?%>
+                <h3 class="text-center card-header">Get eSignature</h3>
+                <div class="card-body bg-dark">
+                    <%= form_with url: document_send_ds_signature_request_path(@document), method: :patch, local: true do |f| %>
+                        <div class="mb-3">
+                            <%= f.label "Client name", { class: "form-label"} %>
+                            <%= f.text_field :client_name, class: "form-control", placeholder: "Client name", value: @document.settlement.plaintiff_name, readonly: true%>
+                        </div>
+                        <div class="mb-3">
+                            <%= f.label "Client email", { class: "form-label"} %>
+                            <%= f.email_field :client_email, class: "form-control", placeholder: "Client email", autofocus: true, required: true%>
+                        </div>
+                        <div class="row">
+                        <div class="col">
+                                <%=link_to "Send Later", root_path, class: "btn btn-lg btn-secondary w-100"%>
+                            </div>
+                            <div class="col">
+                                <%=f.submit "Send Now", class: "btn btn-lg btn-primary w-100"%>
+                            </div>
+                        </div>
+                    <% end %>
+                </div>
+                <%end%>
             </div>
             <div class="mt-3 text-center">
                 <%=link_to "Back to document index", document_index_path(@document.settlement), class: "btn btn-lg btn-primary"%>

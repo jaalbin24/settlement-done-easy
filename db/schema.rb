@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.boolean "approved", default: false, null: false
     t.boolean "rejected", default: false, null: false
     t.boolean "signed", default: false, null: false
+    t.boolean "uses_wet_signature", default: false, null: false
     t.integer "stage"
     t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
@@ -82,7 +83,6 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.string "stripe_payment_intent_id"
     t.boolean "stage_1_document_approved", default: false, null: false
     t.boolean "stage_2_document_approved", default: false, null: false
-    t.boolean "document_needs_adjustment", default: false, null: false
     t.boolean "signature_requested", default: false, null: false
     t.boolean "document_signed", default: false, null: false
     t.boolean "payment_made", default: false, null: false

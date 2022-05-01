@@ -6,7 +6,6 @@
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
-#  document_needs_adjustment :boolean          default(FALSE), not null
 #  document_signed           :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
@@ -113,7 +112,7 @@ class Settlement < ApplicationRecord
         end
     end
 
-    def hasDocuments?
+    def has_documents?
         if documents == nil || documents.size == 0
             return false
         else
@@ -128,13 +127,74 @@ class Settlement < ApplicationRecord
     def status_message
         return SettlementProgress.status_message(self)
     end
+
+    def has_approved_and_signed_document?
+        documents.each do |d|
+            if d.approved? && d.signed?
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_approved_document?
+        documents.each do |d|
+            if d.approved?
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_waiting_document?
+        documents.each do |d|
+            if !d.approved? && !d.rejected?
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_document_with_signature_request?
+        documents.each do |d|
+            if d.ds_envelope_id != nil
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_unapproved_signed_document?
+        documents.each do |d|
+            if !d.approved? && d.signed?
+                return true
+            end
+        end
+        return false
+    end
+
+    def document_with_signature_request
+        documents.each do |d|
+            if d.ds_envelope_id != nil
+                return d
+            end
+        end
+    end
+
+    def first_waiting_document
+        documents.each do |d|
+            if !d.approved? && !d.rejected?
+                return d
+            end
+        end
+    end
     # STAGE 1
         # STATUS 1 = Waiting for document upload.
-        # STATUS 2 = Waiting for document approval.
-        # STATUS 3 = Document needs adjustment.
+        # STATUS 2 = Document needs approval.
+        # STATUS 3 = Document rejected. New document must be uploaded or current document must be approved.
 
     # STAGE 2
-        # STATUS 1 = Document approved. Waiting for signature.
+        # STATUS 1 = Document approved. Needs signature.
         # STATUS 2 = DS signature request sent. Waiting for claimant signature.
         # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
 
@@ -148,51 +208,75 @@ class Settlement < ApplicationRecord
         # STATUS 1 = Completed
     def update_progress
         puts "===================== Settlement progress updating from Stage=#{stage} Status=#{status}"
-        if stage == 1
-            if !hasDocuments?
-                self.status = 1
-            elsif !stage_1_document_approved?
-                if !document_needs_adjustment?
-                    self.status = 2
-                else
-                    self.status = 3
-                end
-            elsif stage_1_document_approved?
-                self.stage = 2
-                self.status = 1
-            end
-        elsif stage == 2
-            if !document_signed?
-                if !signature_requested?
-                    self.status = 1
-                elsif signature_requested?
-                    self.status = 2
-                end
+        if !has_documents?
+            self.stage = 1
+            self.status = 1
+        elsif !has_approved_document?
+            self.stage = 1
+            if has_waiting_document?
+                self.status = 2
             else
                 self.status = 3
-                if stage_2_document_approved?
-                    self.stage = 3
-                    self.status = 1
-                end
             end
-        elsif stage == 3
-            if !payment_made?
-                self.status = 1
-            else
-                if !payment_received?
-                    if payment_has_error?
-                        self.status = 3
-                    else
-                        self.status = 2
-                    end
-                else
-                    self.status = 4
-                    if completed?
-                        self.stage = 4
-                        self.status = 1
-                    end
-                end
+        elsif !has_approved_and_signed_document?
+            self.stage = 2
+            self.status = 1
+            if has_document_with_signature_request?
+                self.status = 2
+            elsif has_unapproved_signed_document?
+                self.status = 3
             end
+        elsif !payment_made?
+            self.stage = 3
+            self.status = 1
+        elsif !payment_received?
+            self.stage = 1
         end
+        # if stage == 1
+        #     if !has_documents?
+        #         self.status = 1
+        #     elsif !stage_1_document_approved?
+        #         if !document_needs_adjustment?
+        #             self.status = 2
+        #         else
+        #             self.status = 3
+        #         end
+        #     elsif stage_1_document_approved?
+        #         self.stage = 2
+        #         self.status = 1
+        #     end
+        # elsif stage == 2
+        #     if !document_signed?
+        #         if !signature_requested?
+        #             self.status = 1
+        #         elsif signature_requested?
+        #             self.status = 2
+        #         end
+        #     else
+        #         self.status = 3
+        #         if stage_2_document_approved?
+        #             self.stage = 3
+        #             self.status = 1
+        #         end
+        #     end
+        # elsif stage == 3
+        #     if !payment_made?
+        #         self.status = 1
+        #     else
+        #         if !payment_received?
+        #             if payment_has_error?
+        #                 self.status = 3
+        #             else
+        #                 self.status = 2
+        #             end
+        #         else
+        #             self.status = 4
+        #             if completed?
+        #                 self.stage = 4
+        #                 self.status = 1
+        #             end
+        #         end
+        #     end
+        # end
     end
 end

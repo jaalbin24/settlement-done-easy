@@ -40,7 +40,7 @@ module ApplicationHelper
             when 1
                 return settlement_get_client_signature_path(settlement)
             when 2
-                return settlement_get_ds_envelope_status_path(settlement)
+                return document_get_ds_envelope_status_path(settlement.document_with_signature_request)
             when 3
                 return settlement_review_final_document_path(settlement)
             end
