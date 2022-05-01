@@ -5,16 +5,16 @@
                 <h1 class="text-center card-header">Details</h1>
                 <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
                 <div class="list-group">
-                    <%if current_user.isAttorney?%>
-                        <%if @settlement.stage == 1 && @settlement.status == 2%>
-                            <%=link_to "View documents", settlement_review_document_path(@settlement.most_recent_document), class: "list-group-item list-group-item-action"%>
-                        <%elsif @settlement.most_recent_document != nil%>
-                            <%=link_to "View documents", document_show_path(@settlement.most_recent_document), class: "list-group-item list-group-item-action"%>
-                        <%else%>
-                            <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
-                        <%end%>
+                    <%if @settlement.documents.size > 0%>
+                        <%=link_to "View documents", document_index_path(@settlement), class: "list-group-item list-group-item-action"%>
+                    <%else%>
+                        <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
+                    <%end%>
+                    <%=link_to "Add document", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
+
+                    <%if current_user.isAttorney?%>                            
                         <%if @settlement.stage != 2%>
-                            <a href="#" class="list-group-item list-group-item-action disabled">Get signature</a>
+                            <%=link_to "Get signature", nil, class: "list-group-item list-group-item-action disabled"%>
                         <%elsif @settlement.status != 1%>
                             <%=link_to "Resend signature request", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
                         <%else%>
@@ -26,7 +26,6 @@
                             <%=link_to "Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
                         <%end%>
                     <%elsif current_user.isInsuranceAgent?%>
-                        <%=link_to "Upload documents", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
                         <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>
                     <%end%>
                     <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>

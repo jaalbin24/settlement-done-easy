@@ -54,23 +54,13 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
   end
 
   create_table "documents", force: :cascade do |t|
-    t.string "law_firm_name", default: "Default Law Firm (FAKE! USED FOR TESTING PURPOSES!)", null: false
-    t.string "insurance_company_name", default: "Default Insurance Co. (FAKE! USED FOR TESTING PURPOSES!)", null: false
-    t.string "claim_number"
-    t.string "policy_number"
-    t.string "plaintiff_name"
-    t.string "defendant_name"
-    t.string "place_of_incident"
-    t.string "incident_description"
-    t.date "date_of_incident"
-    t.float "settlement_amount", default: 0.0, null: false
     t.boolean "approved", default: false, null: false
-    t.boolean "adjustment_needed", default: false, null: false
+    t.boolean "rejected", default: false, null: false
     t.boolean "signed", default: false, null: false
+    t.integer "stage"
     t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "type"
     t.bigint "settlement_id"
     t.bigint "added_by_id"
     t.index ["added_by_id"], name: "index_documents_on_added_by_id"
@@ -90,9 +80,9 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.string "stripe_product_id"
     t.string "stripe_price_id"
     t.string "stripe_payment_intent_id"
-    t.boolean "document_approved", default: false, null: false
+    t.boolean "stage_1_document_approved", default: false, null: false
+    t.boolean "stage_2_document_approved", default: false, null: false
     t.boolean "document_needs_adjustment", default: false, null: false
-    t.boolean "final_document_approved", default: false, null: false
     t.boolean "signature_requested", default: false, null: false
     t.boolean "document_signed", default: false, null: false
     t.boolean "payment_made", default: false, null: false

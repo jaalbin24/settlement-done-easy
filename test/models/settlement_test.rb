@@ -6,10 +6,8 @@
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
-#  document_approved         :boolean          default(FALSE), not null
 #  document_needs_adjustment :boolean          default(FALSE), not null
 #  document_signed           :boolean          default(FALSE), not null
-#  final_document_approved   :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
 #  payment_has_error         :boolean          default(FALSE), not null
@@ -20,6 +18,8 @@
 #  settlement_amount         :float
 #  signature_requested       :boolean          default(FALSE), not null
 #  stage                     :integer          default(1), not null
+#  stage_1_document_approved :boolean          default(FALSE), not null
+#  stage_2_document_approved :boolean          default(FALSE), not null
 #  status                    :integer          default(1), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
