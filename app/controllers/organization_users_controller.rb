@@ -32,7 +32,7 @@ class OrganizationUsersController < ApplicationController
 
         member.organization = organization
         if !member.save
-            puts "========================== OrganizationUsersController.add_member: #{member.errors.full_messages.inspect}"
+            puts "========================== ERROR: OrganizationUsersController.add_member: #{member.errors.full_messages.inspect}"
         end
         redirect_to organization_show_member_url
     end

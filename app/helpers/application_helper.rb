@@ -38,7 +38,7 @@ module ApplicationHelper
         when 2
             case status
             when 1
-                return settlement_get_client_signature_path(settlement)
+                return document_get_e_signature_path(settlement.document_that_needs_signature)
             when 2
                 return document_get_ds_envelope_status_path(settlement.document_with_signature_request)
             when 3

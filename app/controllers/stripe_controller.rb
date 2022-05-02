@@ -69,9 +69,8 @@ class StripeController < ApplicationController
                 "us_bank_account"
             ],
             payment_intent_data: {
-                application_fee_amount: 500,
                 transfer_data: {
-                    destination: settlement.attorney.stripe_account_id,
+                    destination: settlement.attorney.organization.stripe_account_id,
                 },
             },
         })
