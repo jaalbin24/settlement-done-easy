@@ -100,6 +100,20 @@ class Settlement < ApplicationRecord
         end
     end
 
+    def init_stripe_data
+        if self.stripe_price_id == nil
+            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+            stripe_price = Stripe::Price.create({
+                unit_amount_decimal: self.settlement_amount * 100,
+                currency: "usd",
+                product: stripe_product.id
+            })
+            self.stripe_product_id = stripe_product.id
+            self.stripe_price_id = stripe_price.id
+            self.save
+        end
+    end
+
     def most_recent_document
         documents.last
     end
@@ -247,51 +261,5 @@ class Settlement < ApplicationRecord
             self.stage = 4
             self.status = 1
         end
-        # if stage == 1
-        #     if !has_documents?
-        #         self.status = 1
-        #     elsif !stage_1_document_approved?
-        #         if !document_needs_adjustment?
-        #             self.status = 2
-        #         else
-        #             self.status = 3
-        #         end
-        #     elsif stage_1_document_approved?
-        #         self.stage = 2
-        #         self.status = 1
-        #     end
-        # elsif stage == 2
-        #     if !document_signed?
-        #         if !signature_requested?
-        #             self.status = 1
-        #         elsif signature_requested?
-        #             self.status = 2
-        #         end
-        #     else
-        #         self.status = 3
-        #         if stage_2_document_approved?
-        #             self.stage = 3
-        #             self.status = 1
-        #         end
-        #     end
-        # elsif stage == 3
-        #     if !payment_made?
-        #         self.status = 1
-        #     else
-        #         if !payment_received?
-        #             if payment_has_error?
-        #                 self.status = 3
-        #             else
-        #                 self.status = 2
-        #             end
-        #         else
-        #             self.status = 4
-        #             if completed?
-        #                 self.stage = 4
-        #                 self.status = 1
-        #             end
-        #         end
-        #     end
-        # end
     end
 end

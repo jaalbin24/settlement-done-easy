@@ -1,8 +1,21 @@
 <h1 class="text-center text-primary">Sign Up!</h1>
-<h5 class="text-center">Are you an Insurance Agent or a Attorney?</h5>
+<h5 class="text-center">What type of user are you?</h5>
 
-<div class="mt-5 d-grid gap-2">
-    <%=link_to "Insurance Agent", new_user_registration_path(:role => "Insurance Agent"), class: "w-50 mx-auto btn btn-lg btn-primary"%>
-    <%=link_to "Attorney", new_user_registration_path(:role => "Attorney"), class: "w-50 mx-auto btn btn-lg btn-primary"%>
+<div class="container w-50 mt-3 mx-auto">
+    <div class="row">
+        <div class="col text-end">
+            <%=link_to "Insurance Agent", new_user_registration_path(:role => "Insurance Agent"), class: "w-75 btn btn-lg btn-primary"%>
+        </div>
+        <div class="col text-start">
+            <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "w-75 btn btn-lg btn-primary"%>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col text-end">
+            <%=link_to "Attorney", new_user_registration_path(:role => "Attorney"), class: "w-75 btn btn-lg btn-primary"%>
+        </div>
+        <div class="col text-start">
+            <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "w-75 btn btn-lg btn-primary"%>
+        </div>
+    </div>
 </div>
-
