@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
   get 'testing',                                to: 'pages#testing',                      as: 'testing'    
-  get ':settlement_id/documents/new',           to: 'documents#new',                      as: 'document_new'
   get 'documents/edit/:id',                     to: 'documents#edit',                     as: 'document_edit'
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
   post 'documents/:id/approve',                 to: 'documents#approve',                  as: 'document_approve'
@@ -22,7 +21,8 @@ Rails.application.routes.draw do
   get 'settlements/:id/documents',              to: 'documents#index',                    as: 'document_index'
 
 
-  post ':settlement_id/documents/new',          to: 'documents#create',                   as: 'document_create'
+  post 'settlements/:id/documents/new',         to: 'documents#create',                   as: 'document_create'
+  get 'settlements/:id/documents/new',          to: 'documents#new',                      as: 'document_new'
   patch 'documents/:id',                        to: 'documents#update',                   as: 'document_update'
   delete 'documents/:id',                       to: 'documents#destroy',                  as: 'document_delete'
 

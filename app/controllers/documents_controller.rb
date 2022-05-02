@@ -8,6 +8,7 @@ class DocumentsController < ApplicationController
     end
         
     def new
+        @settlement = Settlement.find(params[:id])
         @document = Document.new
         render :new
     end

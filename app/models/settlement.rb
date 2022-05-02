@@ -181,6 +181,14 @@ class Settlement < ApplicationRecord
         end
     end
 
+    def document_that_needs_signature
+        documents.each do |d|
+            if d.approved? && !d.signed? && d.ds_envelope_id == nil
+                return d
+            end
+        end
+    end
+
     def first_waiting_document
         documents.each do |d|
             if !d.approved? && !d.rejected?
@@ -230,7 +238,14 @@ class Settlement < ApplicationRecord
             self.stage = 3
             self.status = 1
         elsif !payment_received?
-            self.stage = 1
+            self.stage = 3
+            self.status = 2
+        elsif !completed?
+            self.stage = 3
+            self.status = 4
+        elsif completed?
+            self.stage = 4
+            self.status = 1
         end
         # if stage == 1
         #     if !has_documents?
