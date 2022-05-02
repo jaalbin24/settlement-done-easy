@@ -1,0 +1,60 @@
+<h1 class="text-center">Documents Index</h1>
+
+<%if @settlement.documents.size == 0%>
+    <p class="text-center">This settlement has no documents! Click <%=link_to "here", document_new_path(@settlement)%> to add one.</p>
+<%else%>
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Filename</td>
+            <td>Added by</td>
+            <td>Date added</td>
+            <td>Approval</td>
+            <td>Signature</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <%@settlement.documents.each do |d|%>
+            <tr>
+                <td><%=d.pdf.filename%></td>
+                <%if d.added_by.organization != nil%>
+                    <td><%="#{d.added_by.full_name} (#{d.added_by.organization.full_name})"%></td>
+                <%else%>
+                    <td><%=d.added_by.full_name%></td>
+                <%end%>
+                <td><%=d.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y")%></td>
+                <%if d.approved?%>
+                    <td>✔️</td>
+                <%elsif d.rejected?%>
+                    <td>❌</td>
+                <%else%>
+                    <td>⌛</td>
+                <%end%>
+                <%if d.signed?%>
+                    <td>✔️</td>
+                <%else%>
+                    <td>⌛</td>
+                <%end%>
+                <td class="text-end">
+                    <%if !d.signed?%>
+                        <%=link_to "Sign", document_get_e_signature_path(d), class: "badge rounded-pill bg-primary text-decoration-none"%>
+                    <%end%>
+                    <%=link_to "Review", document_show_path(d), class: "badge rounded-pill bg-primary text-decoration-none"%>
+                    <%=link_to "Download", rails_blob_path(d.pdf, disposition: "attachment"), class: "badge rounded-pill bg-primary text-decoration-none"%>
+                    <%=link_to "Remove", document_delete_path(d), data: {confirm: "Are you sure?"}, method: :delete, class: "badge rounded-pill bg-danger text-decoration-none"%>
+                </td>
+            </tr>
+        <%end%>
+    </tbody>
+</table>
+<%end%>
+
+<div class="row">
+    <div class="text-end col">
+        <%=link_to "Back to settlement", settlement_show_path(@settlement), class: "btn btn-primary"%>
+    </div>
+    <div class="text-start col">
+        <%=link_to "Add document", document_new_path(@settlement), class: "btn btn-primary"%>
+    </div>
+</div>

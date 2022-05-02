@@ -2,29 +2,27 @@
 #
 # Table name: documents
 #
-#  id                     :bigint           not null, primary key
-#  adjustment_needed      :boolean          default(FALSE), not null
-#  approved               :boolean          default(FALSE), not null
-#  claim_number           :string
-#  date_of_incident       :date
-#  defendant_name         :string
-#  incident_description   :string
-#  insurance_company_name :string           default("Default Insurance Co. (FAKE! USED FOR TESTING PURPOSES!)"), not null
-#  law_firm_name          :string           default("Default Law Firm (FAKE! USED FOR TESTING PURPOSES!)"), not null
-#  place_of_incident      :string
-#  plaintiff_name         :string
-#  policy_number          :string
-#  settlement_amount      :float            default(0.0), not null
-#  signed                 :boolean          default(FALSE), not null
-#  type                   :string
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  ds_envelope_id         :string
-#  settlement_id          :bigint
+#  id                 :bigint           not null, primary key
+#  approved           :boolean          default(FALSE), not null
+#  rejected           :boolean          default(FALSE), not null
+#  signed             :boolean          default(FALSE), not null
+#  stage              :integer
+#  uses_wet_signature :boolean          default(FALSE), not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  added_by_id        :bigint
+#  ds_envelope_id     :string
+#  settlement_id      :bigint
 #
 # Indexes
 #
+#  index_documents_on_added_by_id    (added_by_id)
 #  index_documents_on_settlement_id  (settlement_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (added_by_id => users.id)
+#  fk_rails_...  (settlement_id => settlements.id)
 #
 
 # This model initially had no columns defined. If you add columns to the

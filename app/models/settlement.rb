@@ -6,10 +6,7 @@
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
 #  defendent_name            :string
-#  document_approved         :boolean          default(FALSE), not null
-#  document_needs_adjustment :boolean          default(FALSE), not null
 #  document_signed           :boolean          default(FALSE), not null
-#  final_document_approved   :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
 #  payment_has_error         :boolean          default(FALSE), not null
@@ -20,6 +17,8 @@
 #  settlement_amount         :float
 #  signature_requested       :boolean          default(FALSE), not null
 #  stage                     :integer          default(1), not null
+#  stage_1_document_approved :boolean          default(FALSE), not null
+#  stage_2_document_approved :boolean          default(FALSE), not null
 #  status                    :integer          default(1), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
@@ -54,31 +53,25 @@ class Settlement < ApplicationRecord
         foreign_key: "insurance_agent_id",
     )
 
-    has_one(
-        :document,
+    has_many(
+        :documents,
         class_name: "Document",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
         dependent: :destroy
     )
 
-    before_destroy do
-        document.destroy unless document == nil
-    end
-
     after_commit do
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
             self.update_progress
             if self.changed?
+                puts "===================== Settlement progress changed! Stage=#{stage} Status=#{status}"
                 self.save
             end
         end
     end
 
     before_save do
-        # if document.changed?
-        #     release_from.save
-        # end
         if self.claim_number_changed?
             stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
             self.stripe_product_id = stripe_product.id
@@ -107,6 +100,10 @@ class Settlement < ApplicationRecord
         end
     end
 
+    def most_recent_document
+        documents.last
+    end
+
     def partner_of(user)
         if user.isAttorney?
             return insurance_agent
@@ -115,10 +112,8 @@ class Settlement < ApplicationRecord
         end
     end
 
-    def hasDocument?
-        if document == nil
-            return false
-        elsif !document.pdf.attached?
+    def has_documents?
+        if documents == nil || documents.size == 0
             return false
         else
             return true
@@ -126,23 +121,88 @@ class Settlement < ApplicationRecord
     end
 
     def generated_document_file_name
-        if self.hasDocument?
-            return self.document.pdf.blob.filename
-        else
-            return "#{self.claim_number}_release.pdf"
-        end
+        "#{self.claim_number}_release.pdf"
     end
 
     def status_message
         return SettlementProgress.status_message(self)
     end
+
+    def has_approved_and_signed_document?
+        documents.each do |d|
+            if d.approved? && d.signed?
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_approved_document?
+        documents.each do |d|
+            if d.approved?
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_waiting_document?
+        documents.each do |d|
+            if !d.approved? && !d.rejected?
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_document_with_signature_request?
+        documents.each do |d|
+            if d.ds_envelope_id != nil
+                return true
+            end
+        end
+        return false
+    end
+
+    def has_unapproved_signed_document?
+        documents.each do |d|
+            if !d.approved? && d.signed?
+                return true
+            end
+        end
+        return false
+    end
+
+    def document_with_signature_request
+        documents.each do |d|
+            if d.ds_envelope_id != nil
+                return d
+            end
+        end
+    end
+
+    def document_that_needs_signature
+        documents.each do |d|
+            if d.approved? && !d.signed? && d.ds_envelope_id == nil
+                return d
+            end
+        end
+    end
+
+    def first_waiting_document
+        documents.each do |d|
+            if !d.approved? && !d.rejected?
+                return d
+            end
+        end
+    end
     # STAGE 1
         # STATUS 1 = Waiting for document upload.
-        # STATUS 2 = Waiting for document approval.
-        # STATUS 3 = Document needs adjustment.
+        # STATUS 2 = Document needs approval.
+        # STATUS 3 = Document rejected. New document must be uploaded or current document must be approved.
 
     # STAGE 2
-        # STATUS 1 = Document approved. Waiting for signature.
+        # STATUS 1 = Document approved. Needs signature.
         # STATUS 2 = DS signature request sent. Waiting for claimant signature.
         # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
 
@@ -155,51 +215,83 @@ class Settlement < ApplicationRecord
     # STAGE 4
         # STATUS 1 = Completed
     def update_progress
-        if stage == 1
-            if !hasDocument?
-                self.status = 1
-            elsif !document_approved?
-                if !document_needs_adjustment?
-                    self.status = 2
-                else
-                    self.status = 3
-                end
-            elsif document_approved?
-                self.stage = 2
-                self.status = 1
-            end
-        elsif stage == 2
-            if !document_signed?
-                if !signature_requested?
-                    self.status = 1
-                elsif signature_requested?
-                    self.status = 2
-                end
+        puts "===================== Settlement progress updating from Stage=#{stage} Status=#{status}"
+        if !has_documents?
+            self.stage = 1
+            self.status = 1
+        elsif !has_approved_document?
+            self.stage = 1
+            if has_waiting_document?
+                self.status = 2
             else
                 self.status = 3
-                if final_document_approved?
-                    self.stage = 3
-                    self.status = 1
-                end
             end
-        elsif stage == 3
-            if !payment_made?
-                self.status = 1
-            else
-                if !payment_received?
-                    if payment_has_error?
-                        self.status = 3
-                    else
-                        self.status = 2
-                    end
-                else
-                    self.status = 4
-                    if completed?
-                        self.stage = 4
-                        self.status = 1
-                    end
-                end
+        elsif !has_approved_and_signed_document?
+            self.stage = 2
+            self.status = 1
+            if has_document_with_signature_request?
+                self.status = 2
+            elsif has_unapproved_signed_document?
+                self.status = 3
             end
+        elsif !payment_made?
+            self.stage = 3
+            self.status = 1
+        elsif !payment_received?
+            self.stage = 3
+            self.status = 2
+        elsif !completed?
+            self.stage = 3
+            self.status = 4
+        elsif completed?
+            self.stage = 4
+            self.status = 1
         end
+        # if stage == 1
+        #     if !has_documents?
+        #         self.status = 1
+        #     elsif !stage_1_document_approved?
+        #         if !document_needs_adjustment?
+        #             self.status = 2
+        #         else
+        #             self.status = 3
+        #         end
+        #     elsif stage_1_document_approved?
+        #         self.stage = 2
+        #         self.status = 1
+        #     end
+        # elsif stage == 2
+        #     if !document_signed?
+        #         if !signature_requested?
+        #             self.status = 1
+        #         elsif signature_requested?
+        #             self.status = 2
+        #         end
+        #     else
+        #         self.status = 3
+        #         if stage_2_document_approved?
+        #             self.stage = 3
+        #             self.status = 1
+        #         end
+        #     end
+        # elsif stage == 3
+        #     if !payment_made?
+        #         self.status = 1
+        #     else
+        #         if !payment_received?
+        #             if payment_has_error?
+        #                 self.status = 3
+        #             else
+        #                 self.status = 2
+        #             end
+        #         else
+        #             self.status = 4
+        #             if completed?
+        #                 self.stage = 4
+        #                 self.status = 1
+        #             end
+        #         end
+        #     end
+        # end
     end
 end
