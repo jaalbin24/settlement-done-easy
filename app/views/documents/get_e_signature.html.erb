@@ -6,13 +6,13 @@
                 <div class="alert alert-dismissible alert-secondary">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <h6 class="card-subtitle text-warning text-center mb-2">Send a signature request with DocuSign.</h6>
-                    <h6 class="card-title" style="text-align: justify;">Your client, <strong><%=@settlement.plaintiff_name%></strong>, will receive an email from DocuSign asking them to electronically sign this document. When the document is signed, the settlement can continue processing.</h6>
+                    <h6 class="card-title" style="text-align: justify;">Your client, <strong><%=@document.settlement.plaintiff_name%></strong>, will receive an email from DocuSign asking them to electronically sign this document. When the document is signed, the settlement can continue processing.</h6>
                 </div>
                 <div class="card-body bg-dark">
-                    <%= form_with url: settlement_send_ds_signature_request_path(@settlement), method: :patch, local: true do |f| %>
+                    <%= form_with url: document_send_ds_signature_request_path(@document), method: :patch, local: true do |f| %>
                         <div class="mb-3">
                             <%= f.label "Client name", { class: "form-label"} %>
-                            <%= f.text_field :client_name, class: "form-control", placeholder: "Client name", value: @settlement.plaintiff_name, readonly: true%>
+                            <%= f.text_field :client_name, class: "form-control", placeholder: "Client name", value: @document.settlement.plaintiff_name, readonly: true%>
                         </div>
                         <div class="mb-3">
                             <%= f.label "Client email", { class: "form-label"} %>
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="col">
-            <embed src="<%=rails_blob_path(@settlement.most_recent_document.pdf)%>" type="application/pdf"  width="100%" height="700">
+            <embed src="<%=rails_blob_path(@document.pdf)%>" type="application/pdf"  width="100%" height="700">
         </div>
     </div>
 </div>

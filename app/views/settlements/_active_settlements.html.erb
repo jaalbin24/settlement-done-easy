@@ -19,14 +19,14 @@
         <tbody>
             <%current_user.settlements.each do |s|%>
                 <tr class="table-secondary">
-                    <td><%=render "status", settlement: s%></td>
+                    <td><%=render "settlements/status", settlement: s%></td>
                     <td><%=link_to s.plaintiff_name, settlement_show_path(s)%></td>
                     <%if current_user.isInsuranceAgent?%>
                         <td><%=s.attorney.full_name%></td>
-                        <td><%=s.attorney.organization%></td>
+                        <td><%=s.attorney.organization.first_name%></td>
                     <%elsif current_user.isAttorney?%>
                         <td><%=s.insurance_agent.full_name%></td>
-                        <td><%=s.insurance_agent.organization%></td>
+                        <td><%=s.insurance_agent.organization.first_name%></td>
                     <%end%>
                     <td>$<%=s.settlement_amount%></td>
                 </tr>

@@ -6,8 +6,8 @@ top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"
 insurance_companies = ["State Farm", "Geico", "Progressive", "Allstate", "Liberty Mutual", "USAA", "Nationwide"]
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims", "GoodLaw", "Smith & Doe", "Hearsay Law Firm"]
 # For generating random organizations to which each user belongs
-SEED_SIZE = 6
-NUM_SETTLEMENTS = SEED_SIZE * 5
+SEED_SIZE = 2
+NUM_SETTLEMENTS = SEED_SIZE * 1
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
 
 # shannon_elsea = User.create!(
@@ -18,6 +18,13 @@ NUM_SETTLEMENTS = SEED_SIZE * 5
 #     last_name: "Elsea",
 #     organization: "GKBM",
 # )
+docusign_user = User.create(
+    id: 0,
+    email: "example@example.com",
+    password: "password123",
+    first_name: "DocuSign",
+    role: "Insurance Company",
+)
 
 law_firm_users = Array.new(law_firms.size) {|i|
     law_firm = User.create!(
@@ -71,6 +78,9 @@ insurance_agents = Array.new(SEED_SIZE) {|i|
 }
 puts "Created #{SEED_SIZE} insurance agent models..."
 
+
+
+
 # settlements = Array.new(1) {|i|
 #     attorney = attorneys[rand(0..attorneys.size-1)]
 #     insurance_agent = insurance_agents[rand(0..insurance_agents.size-1)]
@@ -95,21 +105,6 @@ puts "Created #{SEED_SIZE} insurance agent models..."
 #     settlement
 # }
 # puts "Created #{NUM_SETTLEMENTS} settlement models..."
-
-# generated_documents = Array.new(SEED_SIZE) {|i|
-#     GeneratedDocument.new(
-#         claim_number:           "#{rand(100000..999999)}",
-#         policy_number:          "P#{rand(10000..99999)}",
-#         settlement_amount:      '%.02f' % rand(100000..1000000).fdiv(100),
-#         date_of_incident:       "9-10-2021",
-#         defendant_name:         "Danny Defendant",
-#         incident_description:   "car accident",
-#         law_firm_name:          "Saul Goodman & Associates",
-#         place_of_incident:      "Memphis, TN",
-#         plaintiff_name:         "Patty Plaintiff",
-#     )
-# }
-# puts "Created #{SEED_SIZE} generated document models..."
 
 # comments = Array.new(SEED_SIZE) {|i|
 #     Comment.create!(
