@@ -10,15 +10,7 @@ SEED_SIZE = 20
 NUM_SETTLEMENTS = SEED_SIZE * 1
 # Adjust SEED_SIZE to increase/decrease the number of records created when calling the 'rails db:seed' command
 
-# shannon_elsea = User.create!(
-#     email: "shannon.elsea@example.com",
-#     password: "password123",
-#     role: "Attorney",
-#     first_name: "Shannon",
-#     last_name: "Elsea",
-#     organization: "GKBM",
-# )
-docusign_user = User.create(
+docusign_user = User.create!(
     id: 0,
     email: "example@example.com",
     password: "password123",
@@ -51,6 +43,14 @@ insurance_company_users = Array.new(insurance_companies.size) {|i|
     insurance_company
 }
 
+shannon_elsea = User.create!(
+    email: "shannon.elsea@example.com",
+    password: "password123",
+    role: "Attorney",
+    first_name: "Shannon",
+    last_name: "Elsea",
+    organization: User.where("first_name=?", :GKBM).first
+)
 
 attorneys = Array.new(SEED_SIZE) {|i|
     User.create!(

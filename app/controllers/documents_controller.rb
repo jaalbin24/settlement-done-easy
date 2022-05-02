@@ -14,7 +14,7 @@ class DocumentsController < ApplicationController
     end
 
     def create
-        settlement = Settlement.find(params[:settlement_id])
+        settlement = Settlement.find(params[:id])
         @document = settlement.documents.build(document_params)
         @document.added_by = current_user
         if @document.signed?
@@ -77,7 +77,6 @@ class DocumentsController < ApplicationController
         document = Document.find(params[:id])
         document.rejected = false
         document.approved = true
-        document.stage = document.settlement.stage
         if document.save
             flash[:info] = "Document approved!"
             redirect_to document_show_url(document)
@@ -91,7 +90,6 @@ class DocumentsController < ApplicationController
         document = Document.find(params[:id])
         document.rejected = true
         document.approved = false
-        document.stage = document.settlement.stage
         if document.save
             flash[:info] = "Document rejected!"
             redirect_to document_show_url(document)

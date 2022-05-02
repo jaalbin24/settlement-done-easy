@@ -11,8 +11,11 @@ class User::RegistrationsController < Devise::RegistrationsController
       @organizations = User.all_insurance_companies
     elsif @role == "Attorney"
       @organizations = User.all_law_firms
+    elsif @role == "Law Firm" || @role == "Insurance Company"
+      @organizations = nil
     else
-      @organizations = User.all_organizations
+      redirect_to user_type_select_url
+      return
     end
     super
   end
@@ -44,6 +47,11 @@ class User::RegistrationsController < Devise::RegistrationsController
         @organizations = User.all_insurance_companies
       elsif @role == "Attorney"
         @organizations = User.all_law_firms
+      elsif @role == "Law Firm" || @role == "Insurance Company"
+        @organizations = nil
+      else
+        redirect_to user_type_select_url
+        return
       end
       respond_with resource
     end

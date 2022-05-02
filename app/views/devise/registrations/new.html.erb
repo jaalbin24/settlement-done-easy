@@ -1,45 +1,84 @@
-<h2 class="text-center">Sign up</h2>
 <div class="mx-auto w-50">
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
-    <div class="container">
-      <div class="row">
-        <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
-          <label for="user_first_name" class="form-label mb-0 mt-2">First name</label>
-          <input type="text" autofocus="autofocus" class="form-control" id="user_first_name" placeholder="First name" name="user[first_name]">
+  <div class="card">
+  <h2 class="text-center card-header">Sign up!</h2>
+  <div class="card-body bg-dark">
+  <%if @role == "Insurance Company" || @role == "Law Firm"%>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
+      <div class="container">
+        <div class="row">
+          <div class="col form-group px-0">
+            <label for="user_first_name" class="form-label mb-0 mt-2">Name of organization as it appears on Form W-7</label>
+            <input type="text" autofocus="autofocus" class="form-control" id="user_first_name" placeholder="Name of organization" name="user[first_name]" required>
+          </div>
         </div>
-        <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
-          <label for="user_last_name" class="form-label mb-0 mt-2">Last name</label>
-          <input type="text" class="form-control" id="user_last_name" placeholder="Last name" name="user[last_name]">
+        <div class="row">
+          <div class="col form-group px-0">
+            <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
+            <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
+            <label for="user_password" class="form-label mb-0 mt-2">Password</label>
+            <input type="password" class="form-control" id="user_password" placeholder="Password" name="user[password]" required>
+          </div>
+          <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
+            <label for="user_password_confirmation" class="form-label mb-0 mt-2">Confirm Password</label>
+            <input type="password" class="form-control" id="user_password_confirmation" placeholder="Confirm password" name="user[password_confirmation]" required>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col form-group px-0">
-          <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
-          <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email">
+      <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
+      <button type="submit" name="commit" class="btn btn-lg btn-primary w-100 mt-4" data-disable-with="Sign up">Sign up!</button>
+    <%end%>
+
+  <%else%>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
+      <div class="container">
+        <div class="row">
+          <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
+            <label for="user_first_name" class="form-label mb-0 mt-2">First name</label>
+            <input type="text" autofocus="autofocus" class="form-control" id="user_first_name" placeholder="First name" name="user[first_name]" required>
+          </div>
+          <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
+            <label for="user_last_name" class="form-label mb-0 mt-2">Last name</label>
+            <input type="text" class="form-control" id="user_last_name" placeholder="Last name" name="user[last_name]" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col form-group px-0">
+            <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
+            <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
+            <label for="user_password" class="form-label mb-0 mt-2">Password</label>
+            <input type="password" class="form-control" id="user_password" placeholder="Password" name="user[password]" required>
+          </div>
+          <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
+            <label for="user_password_confirmation" class="form-label mb-0 mt-2">Confirm Password</label>
+            <input type="password" class="form-control" id="user_password_confirmation" placeholder="Confirm password" name="user[password_confirmation]" required>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
-          <label for="user_password" class="form-label mb-0 mt-2">Password</label>
-          <input type="password" class="form-control" id="user_password" placeholder="Password" name="user[password]">
-        </div>
-        <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
-          <label for="user_password_confirmation" class="form-label mb-0 mt-2">Confirm Password</label>
-          <input type="password" class="form-control" id="user_password_confirmation" placeholder="Confirm password" name="user[password_confirmation]">
-        </div>
+      <div class="form-group">
+        <label for="user_organization_id" class="form-label mb-0 mt-2">Which organization do you belong to?</label>
+        <select class="form-select" id="user_organization_id" name="user[organization_id]" required>
+          <option selected disabled hidden>Select one...</option>
+          <%@organizations.each do |o|%>
+            <option value=<%=o.id%>><%=o.full_name%></option>
+          <%end%>
+          <option value="0">I do not have an organization</option>
+        </select>
       </div>
+      <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
+      <button type="submit" name="commit" class="btn btn-lg btn-primary w-100 mt-4" data-disable-with="Sign up">Sign up!</button>
+    <%end%>
+
+  <%end%>
     </div>
-    <div class="form-group">
-      <label for="user_organization_id" class="form-label mb-0 mt-2">Which organization do you belong to?</label>
-      <select class="form-select" id="user_organization_id" name="user[organization_id]" required>
-        <option selected disabled hidden>Select one...</option>
-        <%@organizations.each do |o|%>
-          <option value=<%=o.id%>><%=o.full_name%></option>
-        <%end%>
-        <option value="0">I do not have an organization</option>
-      </select>
-    </div>
-    <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
-    <button type="submit" name="commit" class="btn btn-primary mt-4" data-disable-with="Sign up">Sign up</button>
-  <% end %>
+  </div>
 </div>

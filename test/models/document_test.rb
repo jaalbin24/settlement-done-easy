@@ -6,7 +6,6 @@
 #  approved           :boolean          default(FALSE), not null
 #  rejected           :boolean          default(FALSE), not null
 #  signed             :boolean          default(FALSE), not null
-#  stage              :integer
 #  uses_wet_signature :boolean          default(FALSE), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null

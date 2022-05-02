@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.boolean "rejected", default: false, null: false
     t.boolean "signed", default: false, null: false
     t.boolean "uses_wet_signature", default: false, null: false
-    t.integer "stage"
     t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
