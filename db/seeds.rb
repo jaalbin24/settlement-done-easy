@@ -89,7 +89,7 @@ puts "Created #{SEED_SIZE} insurance agent models..."
 #         insurance_agent:    insurance_agent,
 #         claim_number:       "#{rand(100000..999999)}",
 #         settlement_amount:  1000.00,
-#         defendent_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
+#         defendant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
 #         plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
 #         incident_location:  "Memphis, TN",
 #         incident_date:      Date.today - rand(30..365).days,
