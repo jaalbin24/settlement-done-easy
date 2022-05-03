@@ -5,7 +5,7 @@
 #  id                        :bigint           not null, primary key
 #  claim_number              :string
 #  completed                 :boolean          default(FALSE), not null
-#  defendent_name            :string
+#  defendant_name            :string
 #  document_signed           :boolean          default(FALSE), not null
 #  incident_date             :date
 #  incident_location         :string
@@ -43,113 +43,50 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-stage_one_status_one: {
-  id: 1,
-  stage: 1,
-  status: 1,
-  attorney_id: 3,
-  insurance_agent_id: 4,
-  settlement_amount: 4444.44,
-  policy_number: "XXXXXX",
-  plaintiff_name: "Patty Plaintiff",
-  defendent_name: "Danny Defendent",
-  incident_date: "12/5/21",
-  incident_location: "Memphis, TN",
-  completed: false,
-  document_approved: false,
-  document_signed: false,
-  stage_2_document_approved: false,
-  payment_has_error: false,
-  payment_made: false,
-  payment_received: false,
-  signature_requested: false
-}
-# column: value
-#
-stage_one_status_two: {
-  id: 2,
-  stage: 1,
-  status: 2,
-  attorney_id: 3,
-  insurance_agent_id: 4,
-  settlement_amount: 4444.44,
-  policy_number: "XXXXXX",
-  plaintiff_name: "Patty Plaintiff",
-  defendent_name: "Danny Defendent",
-  incident_date: "12/5/21",
-  incident_location: "Memphis, TN",
-  completed: false,
-  document_approved: false,
-  document_signed: false,
-  stage_2_document_approved: false,
-  payment_has_error: false,
-  payment_made: false,
-  payment_received: false,
-  signature_requested: false
-}
-# column: value
-stage_one_status_three: {
-  id: 3,
-  stage: 1,
-  status: 3,
-  attorney_id: 3,
-  insurance_agent_id: 4,
-  settlement_amount: 4444.44,
-  policy_number: "XXXXXX",
-  plaintiff_name: "Patty Plaintiff",
-  defendent_name: "Danny Defendent",
-  incident_date: "12/5/21",
-  incident_location: "Memphis, TN",
-  completed: false,
-  document_approved: false,
-  document_signed: false,
-  stage_2_document_approved: false,
-  payment_has_error: false,
-  payment_made: false,
-  payment_received: false,
-  signature_requested: false
-}
+<%
+[true, false].each do |a|
+  [true, false].each do |b|
+    [true, false].each do |c|
+      [true, false].each do |d|
+        [true, false].each do |e|
+          s = Settlement.new(
+            attorney_id: 3,
+            insurance_agent_id: 4,
+            settlement_amount: 1100.11,
+            policy_number: "test_P110011",
+            claim_number: "test_C110011",
+            plaintiff_name: "Patty Plaintiff",
+            defendant_name: "Danny Defendant",
+            incident_date: "12/5/21",
+            incident_location: "Memphis, TN",
+            completed: a,
+            payment_has_error: b,
+            payment_made: c,
+            payment_received: d,
+            signature_requested: e
+          )
+          if s.valid? || s.errors.full_messages.size == 2%>
+            <%="#{a}_#{b}_#{c}_#{d}_#{e}"%>: {
+              attorney_id: 3,
+              insurance_agent_id: 4,
+              settlement_amount: 1100.11,
+              policy_number: "test_P110011",
+              claim_number: "test_C110011",
+              plaintiff_name: "Patty Plaintiff",
+              defendant_name: "Danny Defendant",
+              incident_date: "12/5/21",
+              incident_location: "Memphis, TN",
+              completed: <%=a%>,
+              payment_has_error: <%=b%>,
+              payment_made: <%=c%>,
+              payment_received: <%=d%>,
+              signature_requested: <%=e%>
+            }
+          <%end
+        end
+      end
+    end
+  end
+end%>
 
-stage_two_status_one: {
-  id: 4,
-  stage: 2,
-  status: 1,
-  attorney_id: 3,
-  insurance_agent_id: 4,
-  settlement_amount: 4444.44,
-  policy_number: "XXXXXX",
-  plaintiff_name: "Patty Plaintiff",
-  defendent_name: "Danny Defendent",
-  incident_date: "12/5/21",
-  incident_location: "Memphis, TN",
-  completed: false,
-  document_approved: true,
-  document_signed: false,
-  stage_2_document_approved: false,
-  payment_has_error: false,
-  payment_made: false,
-  payment_received: false,
-  signature_requested: false
-}
 
-stage_two_status_two: {
-  id: 5,
-  stage: 2,
-  status: 2,
-  attorney_id: 3,
-  insurance_agent_id: 4,
-  settlement_amount: 4444.44,
-  policy_number: "XXXXXX",
-  plaintiff_name: "Patty Plaintiff",
-  defendent_name: "Danny Defendent",
-  incident_date: "12/5/21",
-  incident_location: "Memphis, TN",
-  completed: false,
-  document_approved: false,
-  document_signed: false,
-  stage_2_document_approved: false,
-  payment_has_error: false,
-  payment_made: false,
-  payment_received: false,
-  signature_requested: false
-}

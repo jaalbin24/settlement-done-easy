@@ -4,7 +4,7 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string :claim_number
       t.string :policy_number
       t.float :settlement_amount
-      t.string :defendent_name
+      t.string :defendant_name
       t.string :plaintiff_name
       t.string :incident_location
       t.date :incident_date
@@ -15,10 +15,7 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string :stripe_payment_intent_id
 
 
-      t.boolean :stage_1_document_approved, null: false, default: false
-      t.boolean :stage_2_document_approved, null: false, default: false
       t.boolean :signature_requested,       null: false, default: false
-      t.boolean :document_signed,           null: false, default: false
       t.boolean :payment_made,              null: false, default: false
       t.boolean :payment_received,          null: false, default: false
       t.boolean :payment_has_error,         null: false, default: false

@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.string "claim_number"
     t.string "policy_number"
     t.float "settlement_amount"
-    t.string "defendent_name"
+    t.string "defendant_name"
     t.string "plaintiff_name"
     t.string "incident_location"
     t.date "incident_date"
@@ -80,10 +80,7 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.string "stripe_product_id"
     t.string "stripe_price_id"
     t.string "stripe_payment_intent_id"
-    t.boolean "stage_1_document_approved", default: false, null: false
-    t.boolean "stage_2_document_approved", default: false, null: false
     t.boolean "signature_requested", default: false, null: false
-    t.boolean "document_signed", default: false, null: false
     t.boolean "payment_made", default: false, null: false
     t.boolean "payment_received", default: false, null: false
     t.boolean "payment_has_error", default: false, null: false

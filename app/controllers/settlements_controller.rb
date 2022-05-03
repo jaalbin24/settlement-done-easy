@@ -57,7 +57,7 @@ class SettlementsController < ApplicationController
             claim_number: settlement_params[:claim_number],
             policy_number: settlement_params[:policy_number],
             settlement_amount: settlement_params[:settlement_amount],
-            defendent_name: settlement_params[:defendent_name],
+            defendant_name: settlement_params[:defendant_name],
             plaintiff_name: settlement_params[:plaintiff_name],
             incident_date: settlement_params[:incident_date],
             incident_location: settlement_params[:incident_location],
@@ -160,7 +160,7 @@ class SettlementsController < ApplicationController
             :claim_number,
             :policy_number,
             :settlement_amount,
-            :defendent_name,
+            :defendant_name,
             :plaintiff_name,
             :incident_date,
             :incident_location

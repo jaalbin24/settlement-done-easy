@@ -40,8 +40,7 @@ class Document < ApplicationRecord
         :settlement,
         class_name: 'Settlement',
         foreign_key: 'settlement_id',
-        inverse_of: :documents,
-        autosave: true
+        inverse_of: :documents
     )
 
     belongs_to(
@@ -51,6 +50,13 @@ class Document < ApplicationRecord
     )
 
     validates :pdf, presence: true
+
+    validate :envelope_id_exists_if_e_signed
+    def envelope_id_exists_if_e_signed
+        if signed? && !uses_wet_signature && ds_envelope_id == nil
+            errors.add(:ds_envelope_id, "must exist when signed and not using wet signature")
+        end
+    end
     
     before_validation do
         if !self.pdf.attached?
