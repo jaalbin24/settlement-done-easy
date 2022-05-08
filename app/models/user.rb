@@ -3,14 +3,20 @@
 # Table name: users
 #
 #  id                       :bigint           not null, primary key
+#  business_name            :string
+#  current_sign_in_at       :datetime
+#  current_sign_in_ip       :string
 #  email                    :string           default(""), not null
 #  encrypted_password       :string           default(""), not null
 #  first_name               :string
 #  last_name                :string
+#  last_sign_in_at          :datetime
+#  last_sign_in_ip          :string
 #  remember_created_at      :datetime
 #  reset_password_sent_at   :datetime
 #  reset_password_token     :string
 #  role                     :string
+#  sign_in_count            :integer          default(0), not null
 #  stripe_account_onboarded :boolean          default(FALSE), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -32,18 +38,36 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :trackable
 
   validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]}
-  validates :first_name, :email, :role, :encrypted_password, presence: true
+  validates :email, :role, :encrypted_password, presence: true
+  validates :first_name, :last_name, presence: {unless: :isOrganization?}
+  validates :first_name, :last_name, absence: {if: :isOrganization?}
+  validates :business_name, presence: {if: :isOrganization?}
+  validates :business_name, absence: {unless: :isOrganization?}
+
+  validate :name_has_valid_characters
+  def name_has_valid_characters
+    if business_name != nil && isOrganization? && !business_name.tr(" &-", "").match?(/\A[a-zA-Z0-9'-]*\z/)
+      errors.add(:business_name, "can only contain letters, numbers, ampersands (&), and hyphens (-)")
+    elsif !isOrganization?
+      if first_name != nil && !first_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
+        errors.add(:first_name, "can only contain letters and hyphens (-)")
+      end
+      if last_name != nil && !last_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
+        errors.add(:last_name, "can only contain letters and hyphens (-)")
+      end
+    end
+  end
 
   # Organization-type users cannot belong to an organization.
   validates :organization, absence: {if: :isOrganization?, message: "must be nil for organization-type users, not '%{value}'"}
   
-  # Member-type users cannot have Stripe data.
+  # Stripe data constraints.
   validates :stripe_account_id, absence: {unless: :isOrganization?, message: "must be nil for non-organization-type users, not '%{value}'"}
-  validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isOrganization?, message: "must be false for non-organization-type users, not '%{value}'"}
-
+  validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isLawFirm?, message: "cannot be true if user is not a Law Firm"}
+  
   # Member-type users cannot belong to another member-type user.
   validate :member_cannot_belong_to_member
   def member_cannot_belong_to_member
@@ -124,6 +148,9 @@ class User < ApplicationRecord
   end
 
   def full_name
+    if isOrganization?
+      return business_name
+    end
     full = ""
     if first_name != nil
       full += first_name

@@ -21,10 +21,10 @@
                 <td><%=render "status", settlement: s%></td>
                 <%if current_user.isInsuranceAgent?%>
                     <td><%=link_to s.attorney.full_name, settlement_show_path(s)%></td>
-                    <td><%=s.attorney.organization%></td>
+                    <td><%=s.attorney.organization.full_name%></td>
                 <%elsif current_user.isAttorney?%>
                     <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
-                    <td><%=s.insurance_agent.organization%></td>
+                    <td><%=s.insurance_agent.organization.full_name%></td>
                 <%end%>
                 <td>$<%=s.settlement_amount%></td>
             </tr>
