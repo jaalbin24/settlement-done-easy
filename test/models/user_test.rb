@@ -3,14 +3,20 @@
 # Table name: users
 #
 #  id                       :bigint           not null, primary key
+#  business_name            :string
+#  current_sign_in_at       :datetime
+#  current_sign_in_ip       :string
 #  email                    :string           default(""), not null
 #  encrypted_password       :string           default(""), not null
 #  first_name               :string
 #  last_name                :string
+#  last_sign_in_at          :datetime
+#  last_sign_in_ip          :string
 #  remember_created_at      :datetime
 #  reset_password_sent_at   :datetime
 #  reset_password_token     :string
 #  role                     :string
+#  sign_in_count            :integer          default(0), not null
 #  stripe_account_onboarded :boolean          default(FALSE), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -34,6 +40,48 @@ class UserTest < ActiveSupport::TestCase
   #   assert true
   # end
 
+  test "fixtures are valid" do
+    users.each do |u|
+      assert u.valid?, u.errors.full_messages.inspect
+    end
+  end
+
+  test "first name must have valid characters" do
+    users.each do |u|
+      if !u.isOrganization?
+        assert u.valid?, u.errors.full_messages.inspect
+        u.first_name = "$haggy"
+        assert_not u.valid?
+        u.first_name = "Shaggy"
+        assert u.valid?, u.errors.full_messages.inspect
+      end
+    end
+  end
+
+  test "last name must have valid characters" do
+    users.each do |u|
+      if !u.isOrganization?
+        assert u.valid?, u.errors.full_messages.inspect
+        u.last_name = "L@stn4me"
+        assert_not u.valid?
+        u.last_name = "Lastname"
+        assert u.valid?
+      end
+    end
+  end
+
+  test "business name must have valid characters" do
+    users.each do |u|
+      if u.isOrganization?
+        assert u.valid?, u.errors.full_messages.inspect
+        u.business_name = "Invl!d #usiness"
+        assert_not u.valid?
+        u.business_name = "Valid Business"
+        assert u.valid?
+      end
+    end
+  end
+  
   test "email must exist" do
     users.each do |u|
       assert u.valid?, u.errors.full_messages.inspect

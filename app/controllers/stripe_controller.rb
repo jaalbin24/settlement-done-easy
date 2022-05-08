@@ -57,6 +57,7 @@ class StripeController < ApplicationController
             handle_invalid_request
             return
         end
+        settlement.init_stripe_data
         stripe_session = Stripe::Checkout::Session.create({
             line_items: [{
                 price: settlement.stripe_price_id,
@@ -76,7 +77,7 @@ class StripeController < ApplicationController
         })
         settlement.stripe_payment_intent_id = stripe_session.payment_intent
         if !settlement.save
-            puts "=========================== ERROR: SETTLEMENT NOT SAVED"
+            puts "=========================== ERROR: SETTLEMENT NOT SAVED: #{settlement.errors.full_messages.inspect}"
         end
         redirect_to stripe_session.url
     end
@@ -95,7 +96,7 @@ class StripeController < ApplicationController
         elsif stripe_payment_intent.status == "succeeded"
             settlement.payment_received = true
             settlement.save
-            flash[:success] = "Payment of $#{stripe_payment_intent.amount/100.0} has been received for claim #{settlement.claim_number}."
+            flash[:success] = "Payment of $#{stripe_payment_intent.amount/100.0} has been received for claim #{settlement.claim_number}. Click <a href='#{settlement_complete_path(settlement)}'>here<a> to complete this settlement."
             redirect_to settlement_show_url(settlement)
         else
             handle_invalid_request

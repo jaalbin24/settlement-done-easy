@@ -3,14 +3,20 @@
 # Table name: users
 #
 #  id                       :bigint           not null, primary key
+#  business_name            :string
+#  current_sign_in_at       :datetime
+#  current_sign_in_ip       :string
 #  email                    :string           default(""), not null
 #  encrypted_password       :string           default(""), not null
 #  first_name               :string
 #  last_name                :string
+#  last_sign_in_at          :datetime
+#  last_sign_in_ip          :string
 #  remember_created_at      :datetime
 #  reset_password_sent_at   :datetime
 #  reset_password_token     :string
 #  role                     :string
+#  sign_in_count            :integer          default(0), not null
 #  stripe_account_onboarded :boolean          default(FALSE), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -35,7 +41,7 @@
 
 law_firm: {
   id: 1,
-  first_name: "Test Law Firm",
+  business_name: "Test Law Firm",
   email: "test_law_firm@example.com",
   encrypted_password: "password123",
   role: "Law Firm"
@@ -43,7 +49,7 @@ law_firm: {
 
 insurance_company: {
   id: 2,
-  first_name: "Test Insurance Company",
+  business_name: "Test Insurance Company",
   email: "test_insurance_company@example.com",
   encrypted_password: "password123",
   role: "Insurance Company"

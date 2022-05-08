@@ -68,7 +68,7 @@
                             <%if u.organization == nil%>
                                 <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
                             <%else%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.first_name})"%></option>
+                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
                             <%end%>
                         <%end%>
                     <%else%>
@@ -76,7 +76,7 @@
                             <%if u.organization == nil%>
                                 <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
                             <%else%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.first_name})"%></option>
+                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
                             <%end%>                        
                         <%end%>
                     <%end%>
