@@ -65,18 +65,17 @@ class Settlement < ApplicationRecord
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
             self.update_progress
             if self.changed?
-                puts "===================== Settlement progress changed! Stage=#{stage} Status=#{status}"
                 self.save
             end
         end
     end
 
     before_save do
-        if self.claim_number_changed?
+        if self.claim_number_changed? && self.stripe_product_id != nil
             stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
             self.stripe_product_id = stripe_product.id
         end
-        if self.settlement_amount_changed?
+        if self.settlement_amount_changed? && self.stripe_price_id != nil
             stripe_price = Stripe::Price.create({
                 unit_amount_decimal: self.settlement_amount * 100,
                 currency: "usd",
@@ -86,23 +85,9 @@ class Settlement < ApplicationRecord
         end
     end
 
-    after_create do
-        if self.stripe_price_id == nil
-            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
-            stripe_price = Stripe::Price.create({
-                unit_amount_decimal: self.settlement_amount * 100,
-                currency: "usd",
-                product: stripe_product.id
-            })
-            self.stripe_product_id = stripe_product.id
-            self.stripe_price_id = stripe_price.id
-            self.save
-        end
-    end
-
     def init_stripe_data
-        if self.stripe_price_id == nil
-            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+        if self.stripe_price_id == nil || self.stripe_price_id == nil
+            stripe_product = Stripe::Product.create({name: "Settlement for claim #{self.claim_number}"})
             stripe_price = Stripe::Price.create({
                 unit_amount_decimal: self.settlement_amount * 100,
                 currency: "usd",
@@ -112,10 +97,6 @@ class Settlement < ApplicationRecord
             self.stripe_price_id = stripe_price.id
             self.save
         end
-    end
-
-    def most_recent_document
-        documents.last
     end
 
     def partner_of(user)
@@ -229,7 +210,6 @@ class Settlement < ApplicationRecord
     # STAGE 4
         # STATUS 1 = Completed
     def update_progress
-        puts "===================== Settlement progress updating from Stage=#{stage} Status=#{status}"
         if !has_documents?
             self.stage = 1
             self.status = 1

@@ -1,12 +1,6 @@
 
-
-<%if current_user.isLawFirm?%>
-    <h1 class="text-center">Attorney Index</h1>
-    <p class="text-center">This is a list of all attorneys in <%=@organization.first_name%></p>
-<%elsif current_user.isInsuranceCompany?%>
-    <h1 class="text-center">Agent Index</h1>
-    <p class="text-center">This is a list of all agents in <%=@organization.first_name%></p>
-<%end%>
+<h1 class="text-center"><%=member_role_name.capitalize%> Index</h1>
+<p class="text-center">This is a list of all <%=member_role_name%>s in <%=@organization.full_name%></p>
 
 <table class="table table-sm table-hover table-borderless">
     <thead class="border-bottom border-secondary">
