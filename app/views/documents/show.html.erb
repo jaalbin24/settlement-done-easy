@@ -35,11 +35,11 @@
                             </div>
                             <div class="col">
                                 <%if @document.signed?%>
-                                    ✔️
-                                <%elsif @document.ds_envelope_id == nil%>
-                                    ❌
+                                    <td>✔️</td>
+                                <%elsif @document.ds_envelope_id != nil%>
+                                    <td>⌛</td>
                                 <%else%>
-                                    ⌛
+                                    <td>❌</td>
                                 <%end%>
                             </div>
                         </div>
@@ -73,8 +73,11 @@
                     <h6 class="mt-2 mb-0 text-center">Once approved/rejected, the document cannot be modified.</h6>
                 </div>
                 <%end%>
-                <%if @document.approved? && !@document.signed?%>
+                <%if !@document.signed?%>
                 <h3 class="text-center card-header">Get eSignature</h3>
+                <div class="card-body py-1">
+                    <p class="card-text text-center"><%=@document.settlement.plaintiff_name%> will receive an email with instructions to eSign this document.</p>
+                </div>
                 <div class="card-body bg-dark">
                     <%= form_with url: document_send_ds_signature_request_path(@document), method: :patch, local: true do |f| %>
                         <div class="mb-3">

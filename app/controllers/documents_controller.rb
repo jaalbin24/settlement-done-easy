@@ -111,7 +111,12 @@ class DocumentsController < ApplicationController
             handle_invalid_request
             return
         end
-        render :get_e_signature
+        if !@document.approved?
+            flash[:info] = "Document must be approved before e-signing."
+            redirect_to document_show_url(@document)
+        else
+            render :get_e_signature
+        end
     end
 
     def send_ds_signature_request
@@ -119,11 +124,15 @@ class DocumentsController < ApplicationController
             document = Document.find(params[:id])
             if params[:client_email] == nil || !params[:client_email].include?("@") || !params[:client_email].include?(".")
                 flash.now[:warning] = "You did not provide a valid client email. No email sent."
-                render :get_client_signature
+                redirect_to document_show_url(document)
                 return
             elsif params[:client_name] != document.settlement.plaintiff_name
                 flash[:warning] = "Client's name does not match the plaintiff name given in settlement. No email sent."
-                redirect_to root_path
+                redirect_to document_show_url(document)
+                return
+            elsif !document.approved?
+                flash[:info] = "Document must be approved before e-signing."
+                redirect_to document_show_url(document)
                 return
             end
         rescue
@@ -147,7 +156,7 @@ class DocumentsController < ApplicationController
         end
         puts "================================================================================================================= DS ENVELOPE ID: #{document.ds_envelope_id}"
         flash[:info] = "Sent signature request to #{params[:client_email]}"
-        redirect_to root_path
+        redirect_to document_show_url(document)
     end
 
     def get_ds_envelope_status

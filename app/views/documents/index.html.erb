@@ -33,8 +33,10 @@
                 <%end%>
                 <%if d.signed?%>
                     <td>✔️</td>
-                <%else%>
+                <%elsif d.ds_envelope_id != nil%>
                     <td>⌛</td>
+                <%else%>
+                    <td>❌</td>
                 <%end%>
                 <td class="text-end">
                     <%if !d.signed?%>
