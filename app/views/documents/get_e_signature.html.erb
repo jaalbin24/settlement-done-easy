@@ -8,7 +8,7 @@
                     <h6 class="card-subtitle text-warning text-center mb-2">Send a signature request with DocuSign.</h6>
                     <h6 class="card-title" style="text-align: justify;">Your client, <strong><%=@document.settlement.plaintiff_name%></strong>, will receive an email from DocuSign asking them to electronically sign this document. When the document is signed, the settlement can continue processing.</h6>
                 </div>
-                <div class="card-body bg-dark">
+                <div class="card-body">
                     <%= form_with url: document_send_ds_signature_request_path(@document), method: :patch, local: true do |f| %>
                         <div class="mb-3">
                             <%= f.label "Client name", { class: "form-label"} %>

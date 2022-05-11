@@ -1,7 +1,7 @@
 <div class="mx-auto w-50">
   <div class="card">
   <h2 class="text-center card-header">Sign up!</h2>
-  <div class="card-body bg-dark">
+  <div class="card-body">
   <%if @role == "Insurance Company" || @role == "Law Firm"%>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
@@ -71,7 +71,7 @@
           <%@organizations.each do |o|%>
             <option value=<%=o.id%>><%=o.full_name%></option>
           <%end%>
-          <option value="0">I do not have an organization</option>
+          <option value="-1">I do not have an organization</option>
         </select>
       </div>
       <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
