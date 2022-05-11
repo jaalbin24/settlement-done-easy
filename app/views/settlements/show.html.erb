@@ -6,29 +6,22 @@
                 <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
                 <div class="list-group">
                     <%if @settlement.documents.size > 0%>
-                        <%=link_to "View documents", document_index_path(@settlement), class: "list-group-item list-group-item-action"%>
+                        <%=link_to "📄 View documents", document_index_path(@settlement), class: "list-group-item list-group-item-action"%>
                     <%else%>
-                        <%=link_to "View documents", nil, class: "list-group-item list-group-item-action disabled"%>
+                        <%=link_to "📄 View documents", "#", class: "list-group-item list-group-item-action disabled"%>
                     <%end%>
-                    <%=link_to "Add document", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
+                    <%=link_to "➕ Add document", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
 
                     <%if current_user.isAttorney?%>                            
-                        <%if @settlement.stage != 2%>
-                            <%=link_to "Get signature", nil, class: "list-group-item list-group-item-action disabled"%>
-                        <%elsif @settlement.status != 1%>
-                            <%=link_to "Resend signature request", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
-                        <%else%>
-                            <%=link_to "Get signature", settlement_get_client_signature_path(@settlement), class: "list-group-item list-group-item-action"%>
-                        <%end%>
                         <%if @settlement.stage != 3%>
-                            <a href="#" class="list-group-item list-group-item-action disabled">Complete settlement</a>
+                            <a href="#" class="list-group-item list-group-item-action disabled">❌ Complete settlement</a>
                         <%elsif @settlement.stage == 3 && @settlement.status == 4%>
-                            <%=link_to "Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
+                            <%=link_to "🏁 Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
                         <%end%>
                     <%elsif current_user.isInsuranceAgent?%>
-                        <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">Make payment</a>
+                        <a href="<%=stripe_settlement_checkout_session_path(@settlement)%>" class="list-group-item list-group-item-action">💵 Make payment</a>
                     <%end%>
-                    <%=link_to "Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
+                    <%=link_to "❗ Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
                 </div>
             </div>
         </div>
@@ -36,8 +29,8 @@
             <div class="card">
                 <h1 class="text-center card-header border-0">Activity</h1>
                 <%# The code below is a static placeholder for the dynamic activity log that will be incorporated later%>
-                <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center text-warning"><strong class="text-white">Status:</strong> <%=@settlement.status_message%></a>                
-                <div class="card-body bg-dark" style="height: 31rem;">
+                <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center bg-warning"><strong>Status:</strong> <%=@settlement.status_message%></a>                
+                <div class="card-body" style="height: 31rem;">
                     <p class="m-0 text-center text-muted"><%=@settlement.insurance_agent.full_name%> uploaded a document.</p>
                     <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> rejected a document.</p>
                     <p style="text-align: right; margin-bottom: -0.5rem;">Please fix the mistakes.</p>

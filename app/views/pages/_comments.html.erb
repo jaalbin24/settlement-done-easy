@@ -1,12 +1,12 @@
 <%@document.comments.reverse_each do |comment|%>
     
 
-    <div class="card text-white bg-secondary mb-3" style="max-width: 100rem;">
+    <div class="card mb-3" style="max-width: 100rem;">
         <div class="toast-header">
             <strong class="me-auto"><%=comment.author.full_name%></strong>
             <small><%=comment.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d | %l:%M%P")%></small>
         </div>
-        <div class="card-body bg-dark">
+        <div class="card-body">
             <p class="card-text"><%=comment.content%></p>
         </div>
     </div>
