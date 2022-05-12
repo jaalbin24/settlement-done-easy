@@ -19,7 +19,7 @@ default: &default
   STRIPE_SECRET_KEY: sk_test_51KinH0L1IPDLUIKcVRshYQEk4ThvQYQm6BkDKk9QJtk6mHov9pCEZoxaTtOreoDMjK405DqOITtngbsvItw7zHG40025FszDIp
   STRIPE_PUBLIC_KEY: pk_test_51KinH0L1IPDLUIKcaZXWYeeJMj9ToW5oBoviKyzyOfCZW7Nueg3byyxRgywIybIbk5esdike11XnmKbuBNkxXiCk00OFZXp1Ev
   # ==================== Stripe Config Area ====================
-
+# Test change to see if this will be pushed to the remote repo
 
 development:
   <<: *default
