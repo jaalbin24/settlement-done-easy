@@ -1,26 +1,33 @@
-<h2>Log in</h2>
+<div class="mx-auto w-50">
+  <div class="card">
+  <h2 class="text-center card-header">Sign in</h2>
+  <div class="card-body">
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+  <div class="container">
+    <div class="row">
+      <div class="col form-group px-0">
+        <label class="form-label mb-0 mt-2" for="user_email">Email</label>
+        <input class="form-control" autofocus="autofocus" placeholder="Email" type="email" value="" name="user[email]" id="user_email" required>
+      </div>
     </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
+    <div class="row">
+      <div class="col form-group px-0">
+        <label class="form-label mb-0 mt-2" for="user_password">Password</label>
+        <input class="form-control" placeholder="Password" type="password" name="user[password]" id="user_password" required>
+      </div>
+    </div>
+    <% if devise_mapping.rememberable? %>
+    <div class="row">
+      <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
+        <input name="user[remember_me]" type="hidden" value="0" autocomplete="off">
+        <input class="form-check-label" type="checkbox" value="1" name="user[remember_me]" id="user_remember_me">
+        <label class="form-label mb-0 mt-2" for="user_remember_me">Remember me</label>
+      </div>
+    </div>
   </div>
+  <%end%>
+  <button type="submit" name="commit" class="btn btn-lg btn-primary w-100 mt-3" data-disable-with="Sign in">Sign in</button>
 <% end %>
-
+<br>
 <%= render "devise/shared/links" %>

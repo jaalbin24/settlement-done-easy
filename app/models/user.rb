@@ -123,22 +123,22 @@ class User < ApplicationRecord
   )
 
   after_create do
-    if self.isLawFirm? && self.stripe_account_id == nil
-      account = Stripe::Account.create({
-        type: "express",
-        country: "US",
-        email: self.email,
-        capabilities: {
-          us_bank_account_ach_payments: {requested: true},
-          card_payments: {requested: true},
-          transfers: {requested: true},
-        },
-        business_type: "company",
-        business_profile: {url: "http://settlementdoneeasy.com/"}
-      })
-      self.stripe_account_id = account.id
-      self.save
-    end
+    # if self.isLawFirm? && self.stripe_account_id == nil
+    #   account = Stripe::Account.create({
+    #     type: "express",
+    #     country: "US",
+    #     email: self.email,
+    #     capabilities: {
+    #       us_bank_account_ach_payments: {requested: true},
+    #       card_payments: {requested: true},
+    #       transfers: {requested: true},
+    #     },
+    #     business_type: "company",
+    #     business_profile: {url: "http://settlementdoneeasy.com/"}
+    #   })
+    #   self.stripe_account_id = account.id
+    #   self.save
+    # end
   end
 
   before_create do
