@@ -27,8 +27,8 @@ law_firm_users = Array.new(law_firms.size) {|i|
         password: "password123",
         role: "Law Firm",
         business_name: law_firms[i],
-        stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
-        stripe_account_onboarded: true, 
+        # stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
+        # stripe_account_onboarded: true, 
         organization: nil
     )
     puts "Created Law Firm i=#{i}: #{law_firm.business_name}"

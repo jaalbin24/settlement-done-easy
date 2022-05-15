@@ -64,6 +64,8 @@ Rails.application.routes.draw do
   get 'members/:mem_id',                              to: 'organization_users#show_member',           as: 'organization_show_member'
   delete 'organizations/:org_id/members/:mem_id',     to: 'organization_users#remove_member',         as: 'organization_remove_member'
   post 'organizations/:org_id/add_member/:mem_id',    to: 'organization_users#add_member',            as: 'organization_add_member'
+
+  post 'webhook/stripe',                              to: 'stripe#handle_event',                  as: 'stripe_webhook_handle_event'
   
 
 
