@@ -2,10 +2,12 @@
 <h1 class="text-center"><%=member_role_name.capitalize%> Index</h1>
 <p class="text-center">This is a list of all <%=member_role_name%>s in <%=@organization.full_name%></p>
 
-<table class="table table-sm table-hover table-borderless">
-    <thead class="border-bottom border-secondary">
+<table class="table table-sm table-hover">
+    <thead>
         <tr>
             <th>Name</th>
+            <th>Created</th>
+            <th>Last Sign-in</th>
             <th></th>
         </tr>
     </thead>
@@ -13,6 +15,8 @@
         <%@organization.organization_members.each do |m|%>
             <tr class="table-secondary">
                 <td><%=m.full_name%></td>
+                <td><%=m.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y @ %l:%M%P ")%></td>
+                <td><%=m.last_sign_in_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y @ %l:%M%P ")%></td>
                 <td style="text-align: right;">
                     <%=link_to "View", organization_show_member_path(m), class: "badge rounded-pill bg-primary text-decoration-none"%>
                     <%=link_to "Remove", organization_remove_member_path(@organization, m), method: :delete, class: "badge rounded-pill bg-danger text-decoration-none", :data => {:confirm => "Remove #{m.full_name}? Are you sure?"}%>
@@ -21,3 +25,6 @@
         <%end%>
     </tbody>
 </table>
+
+<%=link_to "🡸 Back to dashboard", root_path, class: "btn btn-primary"%>
+<%=link_to "Add #{member_role_name}", nil, class: "btn btn-primary"%>

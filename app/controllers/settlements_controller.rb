@@ -91,8 +91,8 @@ class SettlementsController < ApplicationController
             return
         end
         settlement.destroy
-        flash[:info] = "Settlement canceled"
-        redirect_to root_path
+        flash[:info] = "Settlement canceled!"
+        redirect_back(fallback_location: root_path)
     end
 
     def update
@@ -119,7 +119,7 @@ class SettlementsController < ApplicationController
         end
         if !settlement.has_documents?
             flash[:error] = "This settlement does not have a document to review."
-            redirect_to settlement_show_path(settlement)
+            redirect_back(fallback_location: root_path)
         else
             redirect_to document_show_url(settlement.first_waiting_document)
         end

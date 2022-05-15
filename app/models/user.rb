@@ -40,7 +40,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
 
-  validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]}
+  validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company", "Dummy"]}
   validates :email, :role, :encrypted_password, presence: true
   validates :first_name, :last_name, presence: {unless: :isOrganization?}
   validates :first_name, :last_name, absence: {if: :isOrganization?}

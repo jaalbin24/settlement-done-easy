@@ -15,8 +15,9 @@ docusign_user = User.create!(
     id: 0,
     email: "example@example.com",
     password: "password123",
-    business_name: "DocuSign",
-    role: "Insurance Company",
+    first_name: "DocuSign",
+    last_name: "eSigning",
+    role: "Dummy"
 )
 puts "Created DocuSign user"
 

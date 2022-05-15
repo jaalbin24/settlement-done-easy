@@ -11,6 +11,26 @@
     </div>
     <div class="row">
         <div class="col">
+            Email:
+        </div>
+        <div class="col">
+            <%=@member.email%>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Last sign-in:
+        </div>
+        <div class="col">
+            <%if @member.last_sign_in_at != nil%>
+                <%=@member.last_sign_in_at.in_time_zone("Central Time (US & Canada)").strftime("%l:%M%P %Z | %B %-d, %Y")%>
+            <%else%>
+                Never
+            <%end%>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             Settlements completed:
         </div>
         <div class="col">
@@ -41,5 +61,6 @@
             A
         </div>
     </div>
-    
 </div>
+
+<%=link_to "🡸 Back to dashboard", root_path, class: "btn btn-primary"%>
