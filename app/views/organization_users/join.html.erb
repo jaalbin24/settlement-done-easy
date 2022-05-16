@@ -1,0 +1,20 @@
+
+<div class="mx-auto w-50">
+    <div class="card">
+        <h2 class="text-center card-header">Join <%=indefinite_articleize(organization_role_name.capitalize)%></h2>
+        <div class="card-body">
+        <%= form_for(current_user, url: registration_path(current_user), method: :put) do |f|%>
+            <div class="form-group">
+                <label for="user_organization_id" class="form-label mb-0 mt-2">Which organization do you want to join?</label>
+                <select class="form-select" id="user_organization_id" name="user[organization_id]" required>
+                    <option selected disabled hidden>Select one...</option>
+                    <%@organizations.each do |o|%>
+                    <option value=<%=o.id%>><%=o.full_name%></option>
+                    <%end%>
+                </select>
+            </div>
+            <button type="submit" name="commit" class="btn btn-lg btn-primary w-100 mt-4" data-disable-with="Sign up">Join!</button>
+        <%end%>
+        </div>
+    </div>
+</div>

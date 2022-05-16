@@ -5,21 +5,23 @@
                 <div class="col">
                     <div class="mb-3">
                     <%if current_user.isAttorney?%>
-                    <%= f.label "Plaintiff", { class: "form-label"} %>
+                    <%= f.label "Plaintiff name", { class: "form-label"} %>
+                    <%= f.text_field :plaintiff_name, { class: "form-control", placeholder: "Plaintiff", :required => true }%>
                     <%elsif current_user.isInsuranceAgent?%>
-                    <%= f.label "Claimant", { class: "form-label"} %>
-                    <%end%>
+                    <%= f.label "Claimant name", { class: "form-label"} %>
                     <%= f.text_field :plaintiff_name, { class: "form-control", placeholder: "Claimant", :required => true }%>
+                    <%end%>
                     </div>
                 </div>
                 <div class="col">
                     <div class="mb-3">
                     <%if current_user.isAttorney?%>
-                    <%= f.label "Defendant", { class: "form-label"} %>
+                    <%= f.label "Defendant name", { class: "form-label"} %>
+                    <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Defendant", :required => true } %>
                     <%elsif current_user.isInsuranceAgent?%>
-                    <%= f.label "Policy holder", { class: "form-label"} %>
-                    <%end%>
+                    <%= f.label "Policy holder name", { class: "form-label"} %>
                     <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
+                    <%end%>
                     </div>
                 </div>
             </div>

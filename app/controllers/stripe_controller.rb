@@ -8,6 +8,22 @@ class StripeController < ApplicationController
                 redirect_to root_path
                 return
             end
+            if user.stripe_account_id == nil
+                account = Stripe::Account.create({
+                    type: "express",
+                    country: "US",
+                    email: user.email,
+                    capabilities: {
+                        us_bank_account_ach_payments: {requested: true},
+                        card_payments: {requested: true},
+                        transfers: {requested: true},
+                    },
+                    business_type: "company",
+                    business_profile: {url: "http://settlementdoneeasy.com/"}
+                })
+                user.stripe_account_id = account.id
+                user.save
+            end
             account_link = Stripe::AccountLink.create(
                 account: user.stripe_account_id,
                 refresh_url: "http://#{Rails.configuration.URL_DOMAIN}/stripe_handle_return_from_onboard",
@@ -55,6 +71,15 @@ class StripeController < ApplicationController
             settlement = Settlement.find(params[:id])
         rescue
             handle_invalid_request
+            return
+        end
+        if current_user.organization == nil
+            flash[:info] = "You must belong to an organization to make payments. Click <a href=#{organization_join_path}>here<a> to join an organization."
+            redirect_back(fallback_location: root_path)
+            return
+        elsif !current_user.organization.stripe_account_onboarded?
+            flash[:info] = "You cannot make any payments because #{current_user.organization.full_name} has not set up payment details."
+            redirect_back(fallback_location: root_path)
             return
         end
         settlement.init_stripe_data

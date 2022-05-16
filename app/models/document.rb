@@ -24,8 +24,7 @@
 #  fk_rails_...  (settlement_id => settlements.id)
 #
 class Document < ApplicationRecord
-    include ActionView::Helpers::NumberHelper 
-    # This^ is included for the number_to_currency method in the settlement_amount_formatted method
+
     has_one_attached :pdf
 
     has_many(

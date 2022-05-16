@@ -59,13 +59,17 @@ Rails.application.routes.draw do
   get 'stripe_settlement_checkout_session/:id',       to: 'stripe#settlement_checkout_session', as: 'stripe_settlement_checkout_session'
   get 'stripe_get_payment_status/:id',                to: 'stripe#get_payment_status',          as: 'stripe_get_payment_status'
 
-  get 'organizations/:id/settlements',                to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
-  get 'organizations/:id/members',                    to: 'organization_users#members_index',         as: 'organization_members_index'
-  get 'members/:mem_id',                              to: 'organization_users#show_member',           as: 'organization_show_member'
-  delete 'organizations/:org_id/members/:mem_id',     to: 'organization_users#remove_member',         as: 'organization_remove_member'
-  post 'organizations/:org_id/add_member/:mem_id',    to: 'organization_users#add_member',            as: 'organization_add_member'
 
-  post 'webhook/stripe',                              to: 'stripe#handle_event',                  as: 'stripe_webhook_handle_event'
+  get 'organizations/join',                           to: 'organization_users#join',                  as: 'organization_join'
+  get 'organizations/:org_id/members/new',            to: 'organization_users#new_member',            as: 'organization_new_member'
+  get 'organizations/:org_id/settlements',            to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
+  get 'organizations/:org_id/members',                to: 'organization_users#members_index',         as: 'organization_members_index'
+  get 'organizations/:org_id/members/:mem_id',        to: 'organization_users#show_member',           as: 'organization_show_member'
+  delete 'organizations/:org_id/members/:mem_id',     to: 'organization_users#remove_member',         as: 'organization_remove_member'
+  patch 'organizations/:org_id/members/:mem_id',      to: 'organization_users#add_member',            as: 'organization_add_member'
+  post 'organizations/:org_id/members/',              to: 'organization_users#create_member',         as: 'organization_create_member'
+
+  post 'webhook/stripe',                              to: 'stripe#handle_event',                as: 'stripe_webhook_handle_event'
   
 
 
