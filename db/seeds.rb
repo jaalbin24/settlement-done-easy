@@ -13,13 +13,21 @@ DOCUMENTS_PER_SETTLEMENT = 1
 
 docusign_user = User.create!(
     id: 0,
-    email: "example@example.com",
+    email: "docusign@example.com",
     password: "password123",
     first_name: "DocuSign",
     last_name: "eSigning",
     role: "Dummy"
 )
 puts "Created DocuSign user"
+doc_generator_user = User.create!(
+    email: "doc_generator@example.com",
+    password: "password123",
+    first_name: "Auto",
+    last_name: "Generated",
+    role: "Dummy"
+)
+puts "Created AutoGenerate user"
 
 law_firm_users = Array.new(law_firms.size) {|i|
     law_firm = User.create!(
@@ -52,7 +60,7 @@ shannon_elsea = User.create!(
     role: "Attorney",
     first_name: "Shannon",
     last_name: "Elsea",
-    organization: User.where("first_name=?", :GKBM).first
+    organization: User.where("business_name=?", :GKBM).first
 )
 puts "Created Shannon Elsea user"
 

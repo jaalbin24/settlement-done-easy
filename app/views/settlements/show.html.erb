@@ -1,6 +1,6 @@
 <div class="container">
-    <div class="row">
-        <div class="col">
+    <div class="row" style="display: table;">
+        <div class="col w-50" style="display: table-cell;">
             <div class="card">
                 <h1 class="text-center card-header border-0">Details</h1>
                 <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
@@ -25,12 +25,12 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col w-50" style="display: table-cell;">
             <div class="card">
                 <h1 class="text-center card-header border-0">Activity</h1>
                 <%# The code below is a static placeholder for the dynamic activity log that will be incorporated later%>
                 <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center bg-warning"><strong>Status:</strong> <%=@settlement.status_message%></a>                
-                <div class="card-body" style="height: 31rem;">
+                <div class="card-body h-100" style="">
                     <p class="m-0 text-center text-muted"><%=@settlement.insurance_agent.full_name%> uploaded a document.</p>
                     <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> rejected a document.</p>
                     <p style="text-align: right; margin-bottom: -0.5rem;">Please fix the mistakes.</p>

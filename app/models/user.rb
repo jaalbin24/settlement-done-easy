@@ -111,12 +111,12 @@ class User < ApplicationRecord
     :organization,
     class_name: "User",
     foreign_key: "organization_id",
-    inverse_of: :organization_members,
+    inverse_of: :members,
     optional: true
   )
 
   has_many(
-    :organization_members,
+    :members,
     class_name: "User",
     foreign_key: "organization_id",
     inverse_of: :organization
@@ -142,8 +142,15 @@ class User < ApplicationRecord
   end
 
   before_create do
-    if self.organization_id == 0
+    if organization_id == 0
       self.organization_id = nil
+    end     
+    if role == nil && organization != nil
+      if organization.isLawFirm?
+        self.role = "Attorney"
+      elsif organization.isInsuranceCompany?
+        self.role = "Insurance Agent"
+      end
     end
   end
 
@@ -210,7 +217,7 @@ class User < ApplicationRecord
       return ia_settlements
     elsif isOrganization?
       settlements = Array.new
-      organization_members.each do |u|
+      members.each do |u|
         settlements += u.settlements
       end
       return settlements

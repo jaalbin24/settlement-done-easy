@@ -36,6 +36,7 @@
 #  fk_rails_...  (insurance_agent_id => users.id)
 #
 class Settlement < ApplicationRecord
+    include DocumentGenerator
     validates :settlement_amount, presence: true
     validates :completed, inclusion: {in: [false], unless: :payment_received, message: "cannot be true when payment received is false"}
     validates :payment_received, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
@@ -60,6 +61,10 @@ class Settlement < ApplicationRecord
         inverse_of: :settlement,
         dependent: :destroy
     )
+
+    after_create do
+        generate_document_for_settlement(self)
+    end
 
     after_commit do
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
