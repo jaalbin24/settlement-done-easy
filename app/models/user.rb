@@ -2,26 +2,27 @@
 #
 # Table name: users
 #
-#  id                       :bigint           not null, primary key
-#  business_name            :string
-#  current_sign_in_at       :datetime
-#  current_sign_in_ip       :string
-#  email                    :string           default(""), not null
-#  encrypted_password       :string           default(""), not null
-#  first_name               :string
-#  last_name                :string
-#  last_sign_in_at          :datetime
-#  last_sign_in_ip          :string
-#  remember_created_at      :datetime
-#  reset_password_sent_at   :datetime
-#  reset_password_token     :string
-#  role                     :string
-#  sign_in_count            :integer          default(0), not null
-#  stripe_account_onboarded :boolean          default(FALSE), not null
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  organization_id          :bigint
-#  stripe_account_id        :string
+#  id                        :bigint           not null, primary key
+#  business_name             :string
+#  current_sign_in_at        :datetime
+#  current_sign_in_ip        :string
+#  email                     :string           default(""), not null
+#  encrypted_password        :string           default(""), not null
+#  first_name                :string
+#  has_stripe_payment_method :boolean          default(FALSE), not null
+#  last_name                 :string
+#  last_sign_in_at           :datetime
+#  last_sign_in_ip           :string
+#  remember_created_at       :datetime
+#  reset_password_sent_at    :datetime
+#  reset_password_token      :string
+#  role                      :string
+#  sign_in_count             :integer          default(0), not null
+#  stripe_account_onboarded  :boolean          default(FALSE), not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  organization_id           :bigint
+#  stripe_account_id         :string
 #
 # Indexes
 #
@@ -67,7 +68,8 @@ class User < ApplicationRecord
   # Stripe data constraints.
   validates :stripe_account_id, absence: {unless: :isOrganization?, message: "must be nil for non-organization-type users, not '%{value}'"}
   validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isLawFirm?, message: "cannot be true if user is not a Law Firm"}
-  
+  validates :has_stripe_payment_method, inclusion: {in: [false], unless: :isInsuranceCompany?, message: "cannot be true if user is not an Insurance Company"}
+
   # Member-type users cannot belong to another member-type user.
   validate :member_cannot_belong_to_member
   def member_cannot_belong_to_member

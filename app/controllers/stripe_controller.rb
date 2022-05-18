@@ -78,7 +78,7 @@ class StripeController < ApplicationController
             redirect_back(fallback_location: root_path)
             return
         elsif !current_user.organization.stripe_account_onboarded?
-            flash[:info] = "You cannot make any payments because #{current_user.organization.full_name} has not set up payment details."
+            flash[:info] = "You cannot make payments because #{current_user.organization.full_name} has not set up payment details."
             redirect_back(fallback_location: root_path)
             return
         end
@@ -170,4 +170,31 @@ class StripeController < ApplicationController
             puts "Unhandled event type: #{event.type}"
         end
     end
+
+    def add_payment_method
+        user = current_user
+        if user.isInsuranceCompany?
+            if user.stripe_account_id == nil
+                customer = Stripe::Customer.create(
+                    name: user.business_name,
+                    email: user.email
+                )
+                user.stripe_account_id = customer.id
+                user.has_stripe_payment_method = false
+                if !user.save
+                    flash[:info] = "There was an error creating a Stripe customer object: #{user.errors.full_messages.inspect}"
+                    redirect_back(fallback_location: root_path)
+                    return
+                end
+            end
+            if !user.has_stripe_payment_method?
+
+            end
+        else
+            handle_invalid_request
+            return
+        end
+         
+    end
+
 end

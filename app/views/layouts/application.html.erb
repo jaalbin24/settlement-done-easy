@@ -52,14 +52,20 @@
                     <%= link_to "Attorneys", organization_members_index_path(current_user), class: 'nav-link'%>
                 </li>
               <%elsif current_user.isInsuranceCompany?%>
-                <li class="nav-item">
-                  <%= link_to "Billing", "#", class: 'nav-link'%>
-                </li>
+                <%if current_user.has_stripe_payment_method?%>
+                  <li class="nav-item">
+                    <%= link_to "Payment Details", "#", class: 'nav-link'%>
+                  </li>
+                <%else%>
+                  <li class="nav-item">
+                    <%= link_to "Add payment details", "#", class: 'nav-link'%>
+                  </li>
+                <%end%>
                 <li class="nav-item">
                   <%= link_to "Settlements", organization_settlements_index_path(current_user), class: 'nav-link'%>
                 </li>
                 <li class="nav-item">
-                    <%= link_to "Agents", members_index_path(current_user), class: 'nav-link'%>
+                    <%= link_to "Agents", organization_members_index_path(current_user), class: 'nav-link'%>
                 </li>
               <%end%>
             <%end%>
