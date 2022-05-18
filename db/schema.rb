@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.string "business_name"
     t.string "stripe_account_id"
     t.boolean "stripe_account_onboarded", default: false, null: false
+    t.boolean "has_stripe_payment_method", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "organization_id"

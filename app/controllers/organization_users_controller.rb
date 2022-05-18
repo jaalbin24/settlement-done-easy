@@ -59,7 +59,6 @@ class OrganizationUsersController < ApplicationController
         render :join
     end
 
-
     def member_params
         params.require(:user).permit(
             :first_name,
