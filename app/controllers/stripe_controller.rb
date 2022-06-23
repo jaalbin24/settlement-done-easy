@@ -188,7 +188,7 @@ class StripeController < ApplicationController
                 end
             end
             if !user.has_stripe_payment_method?
-
+                
             end
         else
             handle_invalid_request
