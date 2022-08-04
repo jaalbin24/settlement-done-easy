@@ -56,7 +56,10 @@
     <div class="text-end col">
         <%=link_to "🡸 Back to settlement", settlement_show_path(@settlement), class: "btn btn-outline-primary"%>
     </div>
-    <div class="text-start col">
+    <div class="col-auto">
         <%=link_to "➕ Add document", document_new_path(@settlement), class: "btn btn-primary"%>
+    </div>
+    <div class="text-start col">
+        <%=link_to "✨ Generate document", settlement_generate_document_path(@settlement), class: "btn btn-primary"%>
     </div>
 </div>

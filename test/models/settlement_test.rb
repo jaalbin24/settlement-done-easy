@@ -6,6 +6,7 @@
 #  claim_number             :string
 #  completed                :boolean          default(FALSE), not null
 #  defendant_name           :string
+#  dollar_amount            :float
 #  incident_date            :date
 #  incident_location        :string
 #  payment_has_error        :boolean          default(FALSE), not null
@@ -13,7 +14,6 @@
 #  payment_received         :boolean          default(FALSE), not null
 #  plaintiff_name           :string
 #  policy_number            :string
-#  settlement_amount        :float
 #  signature_requested      :boolean          default(FALSE), not null
 #  stage                    :integer          default(1), not null
 #  status                   :integer          default(1), not null

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_30_141922) do
+ActiveRecord::Schema.define(version: 2022_03_20_154344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,12 +57,11 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.boolean "approved", default: false, null: false
     t.boolean "rejected", default: false, null: false
     t.boolean "signed", default: false, null: false
-    t.boolean "uses_wet_signature", default: false, null: false
+    t.bigint "settlement_id"
+    t.bigint "added_by_id"
     t.string "ds_envelope_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "settlement_id"
-    t.bigint "added_by_id"
     t.index ["added_by_id"], name: "index_documents_on_added_by_id"
     t.index ["settlement_id"], name: "index_documents_on_settlement_id"
   end
@@ -70,7 +69,7 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
   create_table "settlements", force: :cascade do |t|
     t.string "claim_number"
     t.string "policy_number"
-    t.float "settlement_amount"
+    t.float "dollar_amount"
     t.string "defendant_name"
     t.string "plaintiff_name"
     t.string "incident_location"
@@ -85,12 +84,30 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
     t.boolean "payment_received", default: false, null: false
     t.boolean "payment_has_error", default: false, null: false
     t.boolean "completed", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.bigint "attorney_id"
     t.bigint "insurance_agent_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
     t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
+  end
+
+  create_table "stripe_payment_intents", force: :cascade do |t|
+    t.string "stripe_id", null: false
+    t.bigint "settlement_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["settlement_id"], name: "index_stripe_payment_intents_on_settlement_id"
+  end
+
+  create_table "stripe_payment_methods", force: :cascade do |t|
+    t.string "stripe_id", null: false
+    t.string "nickname"
+    t.boolean "preferred", default: false, null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_stripe_payment_methods_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -127,5 +144,7 @@ ActiveRecord::Schema.define(version: 2022_04_30_141922) do
   add_foreign_key "documents", "users", column: "added_by_id"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
+  add_foreign_key "stripe_payment_intents", "settlements"
+  add_foreign_key "stripe_payment_methods", "users"
   add_foreign_key "users", "users", column: "organization_id"
 end

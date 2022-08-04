@@ -17,12 +17,9 @@ class DocumentsController < ApplicationController
         settlement = Settlement.find(params[:id])
         @document = settlement.documents.build(document_params)
         @document.added_by = current_user
-        if @document.signed?
-            @document.uses_wet_signature = true
-        end
         if @document.save
             flash[:info] = "Release form added! Click <a href=#{document_show_path(@document)}>here<a> to view it."
-            redirect_to settlement_show_url(settlement)
+            redirect_back(fallback_location: root_path)
         else
             flash.now[:error] = "Failed to upload document!"
             render :new
@@ -54,11 +51,7 @@ class DocumentsController < ApplicationController
         filename = document.pdf.filename
         document.destroy
         flash[:info] = "#{filename} has been removed."
-        if settlement.documents.size == 0
-            redirect_to settlement_show_url(settlement)
-        else
-            redirect_back(fallback_location: root_path)
-        end
+        redirect_back(fallback_location: root_path)
     end
 
     def show
@@ -79,11 +72,10 @@ class DocumentsController < ApplicationController
         document.approved = true
         if document.save
             flash[:info] = "Document approved!"
-            redirect_to document_show_url(document)
         else
             flash[:warning] = "Document could not be approved! #{document.errors.full_messages.inspect}"
-            redirect_back(fallback_location: root_path)
         end
+        redirect_back(fallback_location: root_path)
     end
 
     def reject
@@ -92,11 +84,10 @@ class DocumentsController < ApplicationController
         document.approved = false
         if document.save
             flash[:info] = "Document rejected!"
-            redirect_to document_show_url(document)
         else
             flash[:warning] = "Document could not be rejected! #{document.errors.full_messages.inspect}"
-            redirect_back(fallback_location: root_path)
         end
+        redirect_back(fallback_location: root_path)
     end
     
     def ready_to_send
@@ -113,7 +104,7 @@ class DocumentsController < ApplicationController
         end
         if !@document.approved?
             flash[:info] = "Document must be approved before e-signing."
-            redirect_to document_show_url(@document)
+            redirect_back(fallback_location: root_path)
         else
             render :get_e_signature
         end
@@ -124,15 +115,15 @@ class DocumentsController < ApplicationController
             document = Document.find(params[:id])
             if params[:client_email] == nil || !params[:client_email].include?("@") || !params[:client_email].include?(".")
                 flash.now[:warning] = "You did not provide a valid client email. No email sent."
-                redirect_to document_show_url(document)
+                redirect_back(fallback_location: root_path)
                 return
             elsif params[:client_name] != document.settlement.plaintiff_name
                 flash[:warning] = "Client's name does not match the plaintiff name given in settlement. No email sent."
-                redirect_to document_show_url(document)
+                redirect_back(fallback_location: root_path)
                 return
             elsif !document.approved?
                 flash[:info] = "Document must be approved before e-signing."
-                redirect_to document_show_url(document)
+                redirect_back(fallback_location: root_path)
                 return
             end
         rescue
@@ -150,13 +141,12 @@ class DocumentsController < ApplicationController
         envelope_id = create_and_send(document.pdf, envelope_args)
         document.settlement.signature_requested = true
         document.ds_envelope_id = envelope_id
-        document.uses_wet_signature = false
         if !document.save
             puts "====================== ERROR SAVING: #{document.errors.full_messages.inspect}"
         end
         puts "================================================================================================================= DS ENVELOPE ID: #{document.ds_envelope_id}"
         flash[:info] = "Sent signature request to #{params[:client_email]}"
-        redirect_to document_show_url(document)
+        redirect_back(fallback_location: root_path)
     end
 
     def get_ds_envelope_status
@@ -173,6 +163,7 @@ class DocumentsController < ApplicationController
                 )
                 doc.pdf.attach(io: temp_file.open, filename: doc.pdf_file_name, content_type: "application/pdf")
                 doc.added_by = User.find(0)
+                doc.ds_envelope_id = document.ds_envelope_id
                 if !doc.save
                     puts "============== doc not saved! #{doc.errors.full_messages.inspect}"
                 end

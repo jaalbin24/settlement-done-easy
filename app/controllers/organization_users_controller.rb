@@ -1,5 +1,18 @@
 class OrganizationUsersController < ApplicationController
     before_action :authenticate_user!
+    before_action :ensure_user_is_organization
+
+    def ensure_user_is_organization
+        if current_user != User.find(params[:org_id])
+            flash[:info] = "You are not authorized to access that page."
+            redirect_to root_path
+        end
+    end
+
+    def show
+        @organization = User.find(params[:org_id])
+        @stripe_account = Stripe::Account.retrieve(current_user.stripe_account_id)
+    end
 
     def settlements_index
         @organization = User.find(params[:org_id])
@@ -41,22 +54,12 @@ class OrganizationUsersController < ApplicationController
         elsif organization.isInsuranceCompany?
             member.role = "Insurance Agent"
         end
-        if !member.save
+        if member.save
+            flash[:info] = "New member #{member.full_name} added!"
+        else
             puts "========================== ERROR: OrganizationUsersController.create_member: #{member.errors.full_messages.inspect}"
         end
         redirect_to organization_show_member_url(organization, member)
-    end
-
-    def join
-        if current_user.isAttorney?
-            @organizations = User.all_law_firms
-        elsif current_user.isInsuranceAgent?
-            @organizations = User.all_insurance_companies
-        else
-            handle_invalid_request
-            return
-        end
-        render :join
     end
 
     def member_params

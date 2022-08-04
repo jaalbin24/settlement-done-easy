@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
   get 'testing',                                to: 'pages#testing',                      as: 'testing'    
+
+  get 'bank_account/new',                       to: 'bank_accounts#new',                   as: 'bank_account_new'
+  
   get 'documents/edit/:id',                     to: 'documents#edit',                     as: 'document_edit'
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
   post 'documents/:id/approve',                 to: 'documents#approve',                  as: 'document_approve'
@@ -23,26 +26,17 @@ Rails.application.routes.draw do
 
   post 'settlements/:id/documents/new',         to: 'documents#create',                   as: 'document_create'
   get 'settlements/:id/documents/new',          to: 'documents#new',                      as: 'document_new'
+  get 'settlements/:id/generate_document',      to: 'settlements#generate_document',      as: 'settlement_generate_document'
   patch 'documents/:id',                        to: 'documents#update',                   as: 'document_update'
   delete 'documents/:id',                       to: 'documents#destroy',                  as: 'document_delete'
-
-
-  # Generated document index is handled by the documents controller.
-  get 'generated_documents/new',                to: 'generated_documents#new',            as: 'generated_document_new'
-  # Generated document showing is handled by the documents controller.
-  get 'generated_documents/edit/:id',           to: 'generated_documents#edit',           as: 'generated_document_edit'
-  post 'generated_documents/new',               to: 'generated_documents#create',         as: 'generated_document_create'
-  patch 'generated_documents/:id',              to: 'generated_documents#update',         as: 'generated_document_update'
-  # Generated document destruction is also handled by the documents controller.
   
   post 'comment/:document_id',                  to: 'comments#create',                    as: 'comment_create'
 
-  get 'dashboard',                                    to: 'settlements#dashboard',              as: 'settlement_dashboard'
   get 'settlements/new',                              to: 'settlements#new',                    as: 'settlement_new'
   get 'settlements/need_index/:stage/:status',        to: 'settlements#need_index',             as: 'settlement_need_index'
   get 'settlements/:id',                              to: 'settlements#show',                   as: 'settlement_show'
   get 'settlements/:id/review_document',              to: 'settlements#review_document',        as: 'settlement_review_document'
-  get 'settlements/:id/review_final_document',        to: 'settlements#review_final_document',  as: 'settlement_review_final_document'
+  get 'settlements/:id/review_signed_document',       to: 'settlements#review_signed_document', as: 'settlement_review_signed_document'
 
   get 'settlements/:id/get_client_signature',         to: 'settlements#get_client_signature',   as: 'settlement_get_client_signature'
   get 'settlements/:id/start_stripe_session',         to: 'settlements#start_stripe_session',   as: 'settlement_start_stripe_session'
@@ -56,9 +50,11 @@ Rails.application.routes.draw do
   get 'stripe_onboard_account_link',                  to: 'stripe#onboard_account_link',        as: 'stripe_onboard_account_link'
   get 'stripe_handle_return_from_onboard',            to: 'stripe#handle_return_from_onboard',  as: 'stripe_handle_return_from_onboard'
   get 'stripe_login_link',                            to: 'stripe#login_link',                  as: 'stripe_login_link'
-  get 'stripe_settlement_checkout_session/:id',       to: 'stripe#settlement_checkout_session', as: 'stripe_settlement_checkout_session'
+  get 'stripe_initiate_settlement_payment/:id',       to: 'stripe#initiate_settlement_payment', as: 'stripe_initiate_settlement_payment'
   get 'stripe_get_payment_status/:id',                to: 'stripe#get_payment_status',          as: 'stripe_get_payment_status'
-
+  get 'stripe_add_payment_method',                    to: 'stripe#add_payment_method',          as: 'stripe_add_payment_method'
+  get 'stripe_client_secret',                         to: 'stripe#client_secret',               as: 'stripe_client_secret'
+  get 'stripe_dashboard',                             to: 'stripe#dashboard',                   as: 'stripe_dashboard'
 
   get 'organizations/join',                           to: 'organization_users#join',                  as: 'organization_join'
   get 'organizations/:org_id/members/new',            to: 'organization_users#new_member',            as: 'organization_new_member'
@@ -69,7 +65,7 @@ Rails.application.routes.draw do
   patch 'organizations/:org_id/members/:mem_id',      to: 'organization_users#add_member',            as: 'organization_add_member'
   post 'organizations/:org_id/members/',              to: 'organization_users#create_member',         as: 'organization_create_member'
 
-  post 'webhook/stripe',                              to: 'stripe#handle_event',                as: 'stripe_webhook_handle_event'
+  post 'webhook/stripe',                              to: 'stripe#handle_event',                      as: 'stripe_webhook_handle_event'
   
 
 

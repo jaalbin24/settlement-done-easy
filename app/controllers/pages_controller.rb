@@ -17,9 +17,12 @@ class PagesController < ApplicationController
 
     def root
         if current_user.isOrganization?
-            render "organization_users/root"
+            if !current_user.stripe_account_id.nil?
+                @external_accounts = Stripe::Account.list_external_accounts(current_user.stripe_account_id).data
+            end
+            render :organization_dashboard
         else
-            render "settlements/dashboard"
+            render :member_dashboard
         end
     end
 

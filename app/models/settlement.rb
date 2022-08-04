@@ -6,6 +6,7 @@
 #  claim_number             :string
 #  completed                :boolean          default(FALSE), not null
 #  defendant_name           :string
+#  dollar_amount            :float
 #  incident_date            :date
 #  incident_location        :string
 #  payment_has_error        :boolean          default(FALSE), not null
@@ -13,7 +14,6 @@
 #  payment_received         :boolean          default(FALSE), not null
 #  plaintiff_name           :string
 #  policy_number            :string
-#  settlement_amount        :float
 #  signature_requested      :boolean          default(FALSE), not null
 #  stage                    :integer          default(1), not null
 #  status                   :integer          default(1), not null
@@ -37,7 +37,7 @@
 #
 class Settlement < ApplicationRecord
     include DocumentGenerator
-    validates :settlement_amount, presence: true
+    validates :dollar_amount, presence: true
     validates :completed, inclusion: {in: [false], unless: :payment_received, message: "cannot be true when payment received is false"}
     validates :payment_received, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
     validates :payment_has_error, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
@@ -59,42 +59,47 @@ class Settlement < ApplicationRecord
         class_name: "Document",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
-        dependent: :destroy
+        dependent: :destroy,
     )
 
-    after_create do
-        generate_document_for_settlement(self)
-    end
+    has_many(
+        :stripe_payment_intents,
+        class_name: "StripePaymentIntent",
+        inverse_of: :settlement,
+        dependent: :destroy
+    )
 
     after_commit do
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
             self.update_progress
             if self.changed?
                 self.save
+            else
+                puts "====> NOT CHANGED"    
             end
         end
     end
 
     before_save do
-        if self.claim_number_changed? && self.stripe_product_id != nil
-            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{self.claim_number}"})
+        if claim_number_changed? && !stripe_product_id.blank?
+            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{claim_number}"})
             self.stripe_product_id = stripe_product.id
         end
-        if self.settlement_amount_changed? && self.stripe_price_id != nil
+        if dollar_amount_changed? && stripe_price_id != nil
             stripe_price = Stripe::Price.create({
-                unit_amount_decimal: self.settlement_amount * 100,
+                unit_amount_decimal: (dollar_amount * 100).round,
                 currency: "usd",
-                product: self.stripe_product_id
+                product: stripe_product_id
             })
             self.stripe_price_id = stripe_price.id
         end
     end
 
     def init_stripe_data
-        if self.stripe_price_id == nil || self.stripe_price_id == nil
-            stripe_product = Stripe::Product.create({name: "Settlement for claim #{self.claim_number}"})
+        if stripe_product_id == nil || stripe_price_id == nil
+            stripe_product = Stripe::Product.create({name: "Settlement for claim #{claim_number}"})
             stripe_price = Stripe::Price.create({
-                unit_amount_decimal: self.settlement_amount * 100,
+                unit_amount_decimal: (dollar_amount * 100).round,
                 currency: "usd",
                 product: stripe_product.id
             })
@@ -113,9 +118,11 @@ class Settlement < ApplicationRecord
     end
 
     def has_documents?
-        if documents == nil || documents.size == 0
+        if documents == nil || documents.empty? || !documents.exists?
+            puts "====> FALSE documents.size=#{documents.size}"
             return false
         else
+            puts "====> TRUE documents.size=#{documents.size}"
             return true
         end
     end
@@ -215,6 +222,8 @@ class Settlement < ApplicationRecord
     # STAGE 4
         # STATUS 1 = Completed
     def update_progress
+        puts "====> SETTLEMENT PROGRESS UPDATED"
+        puts "====> WAS stage=#{stage}, status=#{status}"
         if !has_documents?
             self.stage = 1
             self.status = 1
@@ -246,5 +255,6 @@ class Settlement < ApplicationRecord
             self.stage = 4
             self.status = 1
         end
+        puts "====> NOW stage=#{stage}, status=#{status}"
     end
 end

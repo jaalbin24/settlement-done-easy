@@ -13,7 +13,7 @@
 #  payment_received         :boolean          default(FALSE), not null
 #  plaintiff_name           :string
 #  policy_number            :string
-#  settlement_amount        :float
+#  dollar_amount            :float
 #  signature_requested      :boolean          default(FALSE), not null
 #  stage                    :integer          default(1), not null
 #  status                   :integer          default(1), not null
@@ -49,7 +49,7 @@
           s = Settlement.new(
             attorney_id: 3,
             insurance_agent_id: 4,
-            settlement_amount: 1100.11,
+            dollar_amount: 1100.11,
             policy_number: "test_P110011",
             claim_number: "test_C110011",
             plaintiff_name: "Patty Plaintiff",
@@ -66,7 +66,7 @@
             <%="#{a}_#{b}_#{c}_#{d}_#{e}"%>: {
               attorney_id: 3,
               insurance_agent_id: 4,
-              settlement_amount: 1100.11,
+              dollar_amount: 1100.11,
               policy_number: "test_P110011",
               claim_number: "test_C110011",
               plaintiff_name: "Patty Plaintiff",
