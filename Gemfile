@@ -29,6 +29,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # Logs outgoing HTTP requests. Used for debugging.
+  gem 'httplog'
 end
 
 group :development do
@@ -84,7 +86,4 @@ gem 'jwt'
 gem 'whenever'
 
 # Payment Processor
-gem 'stripe', '~> 5.47.0'
-
-# Logs outgoing HTTP requests. Used for debugging.
-gem 'httplog'
+gem 'stripe' #, '~> 5.47.0'

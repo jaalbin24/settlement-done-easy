@@ -46,12 +46,12 @@ module ApplicationHelper
             when 2
                 return document_get_ds_envelope_status_path(settlement.document_with_signature_request)
             when 3
-                return settlement_review_final_document_path(settlement)
+                return settlement_review_document_path(settlement)
             end
         when 3
             case status
             when 1
-                return stripe_settlement_checkout_session_path(settlement)
+                return stripe_initiate_settlement_payment_path(settlement)
             when 2
                 return stripe_get_payment_status_path(settlement)
             when 3
@@ -84,15 +84,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements need approval."
+                message = "Documents need approval."
             else
-                message = "Settlement needs approval."
+                message = "Document needs approval."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements waiting for approval."
+                message = "Documents waiting for approval."
             else
-                message = "Settlement waiting for approval."
+                message = "Document waiting for approval."
             end
         end
         if count != 0 && count != 1
@@ -124,15 +124,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements need a signature request."
+                message = "Documents need a signature."
             else
-                message = "Settlement needs a signature request."
+                message = "Document needs a signature."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements waiting to be sent to claimant."
+                message = "Documents waiting for signature."
             else
-                message = "Settlement waiting to be sent to claimant."
+                message = "Document waiting for signature."
             end
         end
         if count != 0 && count != 1
@@ -164,15 +164,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements waiting for adjustment."
+                message = "Documents waiting for adjustment."
             else
-                message = "Settlement waiting for adjustment."
+                message = "Document waiting for adjustment."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements need adjustment."
+                message = "Documents need adjustment."
             else
-                message = "Settlement needs adjustment."
+                message = "Document needs adjustment."
             end
         end
         if count != 0 && count != 1
@@ -320,15 +320,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements waiting for client signature."
+                message = "Documents waiting for client signature."
             else
-                message = "Settlement waiting for client signature."
+                message = "Document waiting for client signature."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements waiting for claimant signature."
+                message = "Documents waiting for claimant signature."
             else
-                message = "Settlement waiting for claimant signature."
+                message = "Document waiting for claimant signature."
             end
         end
         if count != 0 && count != 1

@@ -1,8 +1,7 @@
 require "test_helper"
 
-class SettlementsControllerTest < ActionDispatch::IntegrationTest
+class BankAccountsControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end
-
 end

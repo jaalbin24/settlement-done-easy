@@ -2,7 +2,7 @@
 
 default: &default
 
-  URL_DOMAIN: localhost:3000
+  URL_ROOT: localhost:3000
   APP_EMAIL: [email to be used by the mailer]
   # =================== DocuSign Config Area ===================
   DOCUSIGN_USERNAME: [email used to log in to DocuSign]

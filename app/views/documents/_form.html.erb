@@ -1,6 +1,3 @@
-
-
-
 <%= form_with model: @document, url: path, local: true do |f| %>
   <div class="card">
     <div class="card-body form-group">
@@ -22,7 +19,17 @@
         </label>
       </div>
       <br>
-      <%=f.submit "Upload", class: "btn btn-primary"%>
+      <div class="container">
+        <div class="row">
+          <div class="col-auto px-0">
+            <%=f.submit "Upload", class: "btn btn-primary"%>
+          </div>
+          <div class="col-auto">
+            <%=link_to "Generate", settlement_generate_document_path(@settlement), class: "btn btn-primary"%>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </div>
 <% end %>

@@ -67,8 +67,8 @@ class User < ApplicationRecord
   
   # Stripe data constraints.
   validates :stripe_account_id, absence: {unless: :isOrganization?, message: "must be nil for non-organization-type users, not '%{value}'"}
-  validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isLawFirm?, message: "cannot be true if user is not a Law Firm"}
-  validates :has_stripe_payment_method, inclusion: {in: [false], unless: :isInsuranceCompany?, message: "cannot be true if user is not an Insurance Company"}
+  validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isLawFirm?, message: "must be false if user is not a Law Firm"}
+  validates :has_stripe_payment_method, inclusion: {in: [false], unless: :isInsuranceCompany?, message: "must be false if user is not an Insurance Company"}
 
   # Member-type users cannot belong to another member-type user.
   validate :member_cannot_belong_to_member
@@ -121,26 +121,36 @@ class User < ApplicationRecord
     :members,
     class_name: "User",
     foreign_key: "organization_id",
-    inverse_of: :organization
+    inverse_of: :organization,
+    dependent: :destroy
+  )
+
+  has_many(
+    :stripe_payment_methods,
+    class_name: "StripePaymentMethod",
+    foreign_key: "user_id",
+    inverse_of: :user,
+    dependent: :destroy
   )
 
   after_create do
-    # if self.isLawFirm? && self.stripe_account_id == nil
-    #   account = Stripe::Account.create({
-    #     type: "express",
-    #     country: "US",
-    #     email: self.email,
-    #     capabilities: {
-    #       us_bank_account_ach_payments: {requested: true},
-    #       card_payments: {requested: true},
-    #       transfers: {requested: true},
-    #     },
-    #     business_type: "company",
-    #     business_profile: {url: "http://settlementdoneeasy.com/"}
-    #   })
-    #   self.stripe_account_id = account.id
-    #   self.save
-    # end
+    if self.isLawFirm? && self.stripe_account_id == nil
+      account = Stripe::Account.create({
+        type: "custom",
+        country: "US",
+        email: self.email,
+        capabilities: {
+          treasury: {requested: true},
+          us_bank_account_ach_payments: {requested: true},
+          card_payments: {requested: true},
+          transfers: {requested: true},
+        },
+        business_type: "company",
+        business_profile: {url: "http://settlementdoneeasy.com/"},
+      })
+      self.stripe_account_id = account.id
+      self.save
+    end
   end
 
   before_create do
@@ -224,5 +234,25 @@ class User < ApplicationRecord
       end
       return settlements
     end
+  end
+
+  def has_stripe_bank_account?
+    if isLawFirm?
+      list_of_bank_accounts = Stripe::Account.list_external_accounts(stripe_account_id, object: "bank_account").data
+    elsif isInsuranceCompany?
+      list_of_bank_accounts = Stripe::Customer.list_payment_methods(stripe_account_id, type: "us_bank_account").data
+    else
+      return false
+    end
+
+    if list_of_bank_accounts.empty?
+      return false
+    else
+      return true
+    end
+  end
+
+  def preferred_payment_method
+    StripePaymentMethod.where("user_id=?", id).and(StripePaymentMethod.where("preferred=?", true)).first
   end
 end

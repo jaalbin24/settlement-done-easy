@@ -1,6 +1,7 @@
 class SettlementsController < ApplicationController
     include SettlementProgress
     include DsEnvelope
+    include DocumentGenerator
     before_action :authenticate_user!
 
     def dashboard
@@ -33,7 +34,7 @@ class SettlementsController < ApplicationController
             render :need_index
         else
             flash[:error] = "That status is not valid! Stage = #{@stage} Status = #{@status}"
-            redirect_to root_path
+            redirect_back(fallback_location: root_path)
         end
     end
 
@@ -56,7 +57,7 @@ class SettlementsController < ApplicationController
         settlement_creation_params = {
             claim_number: settlement_params[:claim_number],
             policy_number: settlement_params[:policy_number],
-            settlement_amount: settlement_params[:settlement_amount],
+            dollar_amount: settlement_params[:dollar_amount],
             defendant_name: settlement_params[:defendant_name],
             plaintiff_name: settlement_params[:plaintiff_name],
             incident_date: settlement_params[:incident_date],
@@ -66,10 +67,10 @@ class SettlementsController < ApplicationController
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
-            flash[:info] = "Started a new settlement with #{partner.full_name}!"
-            redirect_to settlement_show_path(settlement)
+            flash[:info] = "Started a new settlement with #{partner.full_name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
+            redirect_back(fallback_location: root_path)
         else
-            flash.now[:error] = "Settlement not created!"
+            flash.now[:error] = "#{settlement.errors.full_messages.inspect}"
             render :new
         end
     end
@@ -92,7 +93,7 @@ class SettlementsController < ApplicationController
         end
         settlement.destroy
         flash[:info] = "Settlement canceled!"
-        redirect_back(fallback_location: root_path)
+        redirect_to root_path
     end
 
     def update
@@ -132,14 +133,9 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        stripe_payment_intent = Stripe::PaymentIntent.retrieve(@settlement.stripe_payment_intent_id)
-        if stripe_payment_intent.status == "processing" || stripe_payment_intent.status == "succeeded"
-            @settlement.payment_made = true
-            if !@settlement.save
-                puts "====================== ERROR SAVING: #{@settlement.errors.full_messages.inspect}"
-            end
-            render :payment_success
-        end
+        @settlement.payment_made = true
+        @settlement.save
+        render :payment_success
     end
 
     def complete
@@ -152,14 +148,26 @@ class SettlementsController < ApplicationController
         settlement.completed = true
         settlement.save
         flash[:success] = "Settlement completed!"
-        redirect_to settlement_show_url(settlement)
+        redirect_back(fallback_location: root_path)
+    end
+
+    def generate_document
+        begin
+            settlement = Settlement.find(params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        document = generate_document_for_settlement(settlement)
+        flash[:info] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
+        redirect_back(fallback_location: root_path)
     end
 
     def settlement_params
         params.require(:settlement).permit(
             :claim_number,
             :policy_number,
-            :settlement_amount,
+            :dollar_amount,
             :defendant_name,
             :plaintiff_name,
             :incident_date,

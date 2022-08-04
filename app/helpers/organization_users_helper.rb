@@ -4,6 +4,8 @@ module OrganizationUsersHelper
             return "attorney"
         elsif current_user.isInsuranceCompany?
             return "agent"
+        else
+            return ""
         end
     end
 

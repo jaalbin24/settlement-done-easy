@@ -1,0 +1,28 @@
+# == Schema Information
+#
+# Table name: stripe_payment_intents
+#
+#  id            :bigint           not null, primary key
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  settlement_id :bigint           not null
+#  stripe_id     :string           not null
+#
+# Indexes
+#
+#  index_stripe_payment_intents_on_settlement_id  (settlement_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (settlement_id => settlements.id)
+#
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value

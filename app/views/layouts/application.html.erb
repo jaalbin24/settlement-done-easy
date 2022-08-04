@@ -7,7 +7,9 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <script src="https://js.stripe.com/v3/"></script>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    
   </head>
 
   <body>
@@ -58,7 +60,7 @@
                   </li>
                 <%else%>
                   <li class="nav-item">
-                    <%= link_to "Add payment details", "#", class: 'nav-link'%>
+                    <%= link_to "Add payment details", stripe_add_payment_method_path, class: 'nav-link'%>
                   </li>
                 <%end%>
                 <li class="nav-item">

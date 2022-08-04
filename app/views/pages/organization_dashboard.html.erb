@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <h3 class="card-header">Payouts</h3>
+                <table class="table table-sm table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <td>Claimant</td>
+                            <td>Account</td>
+                            <td>Amount</td>
+                            <td>Date initiated</td>
+                            <td>Status</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%@external_accounts.each do |a|%>
+                        <tr>
+                            <td>John Wilkes</td>
+                            <td>XXXXX9543</td>
+                            <td>$3021.40</td>
+                            <td>July 31</td>
+                            <td><span class="badge rounded-pill bg-success">Complete</span></td>
+                        </tr>
+                        <%end%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <h3 class="card-header">Linked Bank Accounts</h3>
+                <ul class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title">Example Account</h5>
+                                <h6 class="card-subtitle text-muted">XXXXX9543</h6>
+                            </div>
+                            <div class="col-auto">
+                                <h5 class="text-end">❌</h5>
+                                <h6 class="card-subtitle text-muted">Status: Verified</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <%#current_user.bank_accounts.each%>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title">Pirate Account</h5>
+                                <h6 class="card-subtitle text-muted">XXXXX2419</h6>
+                            </div>
+                            <div class="col-auto">
+                                <h5 class="text-end">❌</h5>
+                                <h6 class="card-subtitle text-muted">Status: Verified</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title">Business Account</h5>
+                                <h6 class="card-subtitle text-muted">XXXXX0531</h6>
+                            </div>
+                            <div class="col-auto">
+                                <h5 class="text-end">❌</h5>
+                                <h6 class="card-subtitle text-muted">Status: Verified</h6>
+                            </div>
+                        </div>
+                    </div>
+                </ul>
+                <div class="card-body">
+                    <%=link_to "Add account", bank_account_new_path, class: "card-link"%>
+                    <a href="#" class="card-link">Another link</a>
+                </div>
+                <div class="card-footer text-muted">
+                    2 days ago
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

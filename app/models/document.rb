@@ -2,16 +2,15 @@
 #
 # Table name: documents
 #
-#  id                 :bigint           not null, primary key
-#  approved           :boolean          default(FALSE), not null
-#  rejected           :boolean          default(FALSE), not null
-#  signed             :boolean          default(FALSE), not null
-#  uses_wet_signature :boolean          default(FALSE), not null
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  added_by_id        :bigint
-#  ds_envelope_id     :string
-#  settlement_id      :bigint
+#  id             :bigint           not null, primary key
+#  approved       :boolean          default(FALSE), not null
+#  rejected       :boolean          default(FALSE), not null
+#  signed         :boolean          default(FALSE), not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  added_by_id    :bigint
+#  ds_envelope_id :string
+#  settlement_id  :bigint
 #
 # Indexes
 #
@@ -39,7 +38,7 @@ class Document < ApplicationRecord
         :settlement,
         class_name: 'Settlement',
         foreign_key: 'settlement_id',
-        inverse_of: :documents
+        inverse_of: :documents,
     )
 
     belongs_to(
@@ -49,13 +48,6 @@ class Document < ApplicationRecord
     )
 
     validates :pdf, presence: true
-
-    validate :envelope_id_exists_if_e_signed
-    def envelope_id_exists_if_e_signed
-        if signed? && !uses_wet_signature && ds_envelope_id == nil
-            errors.add(:ds_envelope_id, "must exist when signed and not using wet signature")
-        end
-    end
     
     before_validation do
         if !self.pdf.attached?
@@ -71,7 +63,7 @@ class Document < ApplicationRecord
     after_commit do
         settlement.save
     end
-    
+  
     def pdf_file_name
         name = settlement.claim_number + "_document.pdf"
         return name

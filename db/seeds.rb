@@ -48,7 +48,10 @@ insurance_company_users = Array.new(insurance_companies.size) {|i|
         email: "insurance_company#{i}@example.com",
         password: "password123",
         role: "Insurance Company",
-        business_name: insurance_companies[i]
+        business_name: insurance_companies[i],
+        # stripe_account_id: "cus_M9O2k5IlcwePvn",
+        # has_stripe_payment_method: true,
+        organization: nil
     )
     puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"
     insurance_company
@@ -96,7 +99,7 @@ attorneys.each do |a|
             attorney:           a,
             insurance_agent:    insurance_agents[rand(0..insurance_agents.size-1)],
             claim_number:       "#{rand(100000..999999)}",
-            settlement_amount:  '%.02f' % rand(100000..2499900).fdiv(100),
+            dollar_amount:  '%.02f' % rand(100000..2499900).fdiv(100),
             defendant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             incident_location:  "Memphis, TN",
@@ -106,7 +109,6 @@ attorneys.each do |a|
             doc = settlement.documents.build(
                 added_by: a,
                 signed: [true, false][rand(0..1)],
-                uses_wet_signature: [true, false][rand(0..1)],
                 approved: [true, false][rand(0..1)]
             )
             if doc.save
