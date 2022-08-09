@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-    before_action :authenticate_user!, except: :user_type_select
+    before_action :authenticate_user!, except: [:user_type_select, :root]
 
     def user_type_select
         render :user_type_select
@@ -16,13 +16,14 @@ class PagesController < ApplicationController
     end
 
     def root
-        if current_user.isOrganization?
-            if !current_user.stripe_account_id.nil?
-                @external_accounts = Stripe::Account.list_external_accounts(current_user.stripe_account_id).data
-            end
+        if !user_signed_in?
+            render :home
+        elsif current_user.isOrganization?
             render :organization_dashboard
-        else
+        elsif current_user.isMember?
             render :member_dashboard
+        else
+            render :home
         end
     end
 

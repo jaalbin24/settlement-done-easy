@@ -4,7 +4,7 @@ default: &default
 
   URL_ROOT: localhost:3000
   APP_EMAIL: [email to be used by the mailer]
-  # =================== DocuSign Config Area ===================
+  # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ DocuSign Config Area ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
   DOCUSIGN_USERNAME: [email used to log in to DocuSign]
   DOCUSIGN_PASSWORD: [password used to log in to DocuSign]
   DOCUSIGN_INTEGRATION_KEY: [DocuSign integration key]
@@ -16,17 +16,25 @@ default: &default
   DOCUSIGN_SCOPE: signature impersonation dtr.rooms.read dtr.rooms.write dtr.documents.read dtr.documents.write dtr.profile.read dtr.profile.write dtr.company.read dtr.company.write room_forms click.manage click.send organization_read group_read permission_read user_read user_write account_read domain_read identity_provider_read
   DOCUSIGN_AUTH_SERVER: https://account-d.docusign.com
   DOCUSIGN_REDIRECT_URI: https://[where you want users redirected after they have completed a DocuSign task. No redirecting is actually done when using the app, but this field must be supplied to DocuSign for the API requests to be fulfilled.]
-  # =================== DocuSign Config Area ===================
-  # ==================== Stripe Config Area ====================
-  STRIPE_SECRET_KEY: [Stripe secret key]
-  STRIPE_PUBLIC_KEY: [Stripe public key]
-  # ==================== Stripe Config Area ====================
+  # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ DocuSign Config Area ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 development:
   <<: *default
+  URL_ROOT: http://localhost:3000
+  STRIPE_PUBLIC_KEY: [Stripe public key (test mode)]
+  STRIPE_SECRET_KEY: [Stripe private key (test mode)]
+  STRIPE_ENDPOINT_SECRET: [Stripe CLI endpoint secret (test mode)]
 
 test:
   <<: *default
+  URL_ROOT: http://localhost:3000
+  STRIPE_PUBLIC_KEY: [Stripe public key (test mode)]
+  STRIPE_SECRET_KEY: [Stripe private key (test mode)]
+  STRIPE_ENDPOINT_SECRET: [Stripe CLI endpoint secret (test mode)]
 
 production:
   <<: *default
+  URL_ROOT: https://[domain name]
+  STRIPE_PUBLIC_KEY: [Stripe public key (live mode)]
+  STRIPE_SECRET_KEY: [Stripe private key (live mode)]
+  STRIPE_ENDPOINT_SECRET: [Stripe CLI endpoint secret (live mode)]

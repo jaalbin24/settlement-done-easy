@@ -29,28 +29,28 @@ doc_generator_user = User.create!(
 )
 puts "Created AutoGenerate user"
 
-law_firm_users = Array.new(law_firms.size) {|i|
+law_firm_users = Array.new(1) {|i|
     law_firm = User.create!(
         email: "law_firm#{i}@example.com",
         password: "password123",
         role: "Law Firm",
         business_name: law_firms[i],
-        # stripe_account_id: "acct_1KkFqHPrr8Fx4mZy",
-        # stripe_account_onboarded: true, 
+        stripe_account_id: "acct_1LUMm4PvLqRcxm3z",
+        stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
         organization: nil
     )
     puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
     law_firm
 }
 
-insurance_company_users = Array.new(insurance_companies.size) {|i|
+insurance_company_users = Array.new(1) {|i|
     insurance_company = User.create!(
         email: "insurance_company#{i}@example.com",
         password: "password123",
         role: "Insurance Company",
         business_name: insurance_companies[i],
-        # stripe_account_id: "cus_M9O2k5IlcwePvn",
-        # has_stripe_payment_method: true,
+        stripe_account_id: "acct_1LUMmEQ44dejfzxN",
+        stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
         organization: nil
     )
     puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"

@@ -38,9 +38,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :last_name
       t.string :business_name
       t.string :stripe_account_id
+      t.string :stripe_financial_account_id
       t.boolean :stripe_account_onboarded,      null: false, default: false
-      t.boolean :has_stripe_payment_method,     null: false, default: false
-
       t.timestamps null: false
     end
 

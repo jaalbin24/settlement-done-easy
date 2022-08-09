@@ -59,12 +59,13 @@ class Settlement < ApplicationRecord
         class_name: "Document",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
-        dependent: :destroy,
+        dependent: :destroy
     )
 
-    has_many(
-        :stripe_payment_intents,
-        class_name: "StripePaymentIntent",
+    has_one(
+        :payment,
+        class_name: "Payment",
+        foreign_key: "settlement_id",
         inverse_of: :settlement,
         dependent: :destroy
     )
@@ -77,35 +78,6 @@ class Settlement < ApplicationRecord
             else
                 puts "====> NOT CHANGED"    
             end
-        end
-    end
-
-    before_save do
-        if claim_number_changed? && !stripe_product_id.blank?
-            stripe_product = Stripe::Product.create({name: "Settlement for claim ##{claim_number}"})
-            self.stripe_product_id = stripe_product.id
-        end
-        if dollar_amount_changed? && stripe_price_id != nil
-            stripe_price = Stripe::Price.create({
-                unit_amount_decimal: (dollar_amount * 100).round,
-                currency: "usd",
-                product: stripe_product_id
-            })
-            self.stripe_price_id = stripe_price.id
-        end
-    end
-
-    def init_stripe_data
-        if stripe_product_id == nil || stripe_price_id == nil
-            stripe_product = Stripe::Product.create({name: "Settlement for claim #{claim_number}"})
-            stripe_price = Stripe::Price.create({
-                unit_amount_decimal: (dollar_amount * 100).round,
-                currency: "usd",
-                product: stripe_product.id
-            })
-            self.stripe_product_id = stripe_product.id
-            self.stripe_price_id = stripe_price.id
-            self.save
         end
     end
 

@@ -43,6 +43,19 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "bank_accounts", force: :cascade do |t|
+    t.string "stripe_id", null: false
+    t.string "nickname"
+    t.integer "last4", limit: 2
+    t.string "fingerprint"
+    t.string "status"
+    t.boolean "preferred", default: false, null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_bank_accounts_on_user_id"
+  end
+
   create_table "comments", force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", precision: 6, null: false
@@ -64,6 +77,21 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["added_by_id"], name: "index_documents_on_added_by_id"
     t.index ["settlement_id"], name: "index_documents_on_settlement_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "settlement_id"
+    t.bigint "source_id"
+    t.bigint "destination_id"
+    t.string "stripe_inbound_transfer_id"
+    t.string "stripe_outbound_payment_id"
+    t.string "stripe_outbound_transfer_id"
+    t.float "amount", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["destination_id"], name: "index_payments_on_destination_id"
+    t.index ["settlement_id"], name: "index_payments_on_settlement_id"
+    t.index ["source_id"], name: "index_payments_on_source_id"
   end
 
   create_table "settlements", force: :cascade do |t|
@@ -100,16 +128,6 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["settlement_id"], name: "index_stripe_payment_intents_on_settlement_id"
   end
 
-  create_table "stripe_payment_methods", force: :cascade do |t|
-    t.string "stripe_id", null: false
-    t.string "nickname"
-    t.boolean "preferred", default: false, null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_stripe_payment_methods_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -126,8 +144,8 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.string "last_name"
     t.string "business_name"
     t.string "stripe_account_id"
+    t.string "stripe_financial_account_id"
     t.boolean "stripe_account_onboarded", default: false, null: false
-    t.boolean "has_stripe_payment_method", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "organization_id"
@@ -138,13 +156,16 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "bank_accounts", "users"
   add_foreign_key "comments", "documents"
   add_foreign_key "comments", "users"
   add_foreign_key "documents", "settlements"
   add_foreign_key "documents", "users", column: "added_by_id"
+  add_foreign_key "payments", "bank_accounts", column: "destination_id"
+  add_foreign_key "payments", "bank_accounts", column: "source_id"
+  add_foreign_key "payments", "settlements"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
   add_foreign_key "stripe_payment_intents", "settlements"
-  add_foreign_key "stripe_payment_methods", "users"
   add_foreign_key "users", "users", column: "organization_id"
 end
