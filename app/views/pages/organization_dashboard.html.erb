@@ -14,7 +14,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%@external_accounts.each do |a|%>
                         <tr>
                             <td>John Wilkes</td>
                             <td>XXXXX9543</td>
@@ -22,7 +21,6 @@
                             <td>July 31</td>
                             <td><span class="badge rounded-pill bg-success">Complete</span></td>
                         </tr>
-                        <%end%>
                     </tbody>
                 </table>
             </div>
@@ -31,47 +29,32 @@
             <div class="card">
                 <h3 class="card-header">Linked Bank Accounts</h3>
                 <ul class="list-group list-group-flush">
+                    <%if current_user.bank_accounts.empty?%>
+                    <div class="list-group-item">
+                        <h5 class="m-0 text-center text-muted">No bank accounts have been linked to SDE.</h5>
+                    </div>
+                    <%else%>
+                    <%current_user.bank_accounts.each do |ba|%>
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col">
-                                <h5 class="card-title">Example Account</h5>
-                                <h6 class="card-subtitle text-muted">XXXXX9543</h6>
+                                <h5 class="card-title"><%=ba.nickname%></h5>
+                                <h6 class="card-subtitle text-muted">XXXXX<%=ba.last4%></h6>
                             </div>
-                            <div class="col-auto">
-                                <h5 class="text-end">❌</h5>
-                                <h6 class="card-subtitle text-muted">Status: Verified</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <%#current_user.bank_accounts.each%>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="card-title">Pirate Account</h5>
-                                <h6 class="card-subtitle text-muted">XXXXX2419</h6>
-                            </div>
-                            <div class="col-auto">
-                                <h5 class="text-end">❌</h5>
-                                <h6 class="card-subtitle text-muted">Status: Verified</h6>
+                            <div class="col-auto text-end">
+                                <h5><%=link_to "❌", bank_account_delete_path(ba), method: :delete, class: "text-decoration-none"%></h5>
+                                <h6 class="card-subtitle text-muted">Status: <%=ba.status%></h6>
                             </div>
                         </div>
                     </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="card-title">Business Account</h5>
-                                <h6 class="card-subtitle text-muted">XXXXX0531</h6>
-                            </div>
-                            <div class="col-auto">
-                                <h5 class="text-end">❌</h5>
-                                <h6 class="card-subtitle text-muted">Status: Verified</h6>
-                            </div>
-                        </div>
-                    </div>
+                    <%end%>
+                    <%end%>
                 </ul>
                 <div class="card-body">
-                    <%=link_to "Add account", bank_account_new_path, class: "card-link"%>
-                    <a href="#" class="card-link">Another link</a>
+                    <%=form_with(url: bank_account_create_path, local: true) do |f|%>
+                        <%# This is here to generate a CSRF token that will be used to authenticate a potential POST request %>
+                    <%end%>
+                    <button id="add_bank_account" type="button" class="btn btn-sm btn-primary">Add account</button> 
                 </div>
                 <div class="card-footer text-muted">
                     2 days ago

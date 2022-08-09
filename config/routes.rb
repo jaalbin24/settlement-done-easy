@@ -11,7 +11,9 @@ Rails.application.routes.draw do
   get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
   get 'testing',                                to: 'pages#testing',                      as: 'testing'    
 
-  get 'bank_account/new',                       to: 'bank_accounts#new',                   as: 'bank_account_new'
+  post 'bank_account',                          to: 'bank_accounts#create',               as: 'bank_account_create'
+  get 'bank_account_secret',                    to: 'bank_accounts#secret',               as: 'bank_account_secret'
+  delete 'bank_account/:id',                    to: 'bank_accounts#destroy',              as: 'bank_account_delete'
   
   get 'documents/edit/:id',                     to: 'documents#edit',                     as: 'document_edit'
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
@@ -53,7 +55,6 @@ Rails.application.routes.draw do
   get 'stripe_initiate_settlement_payment/:id',       to: 'stripe#initiate_settlement_payment', as: 'stripe_initiate_settlement_payment'
   get 'stripe_get_payment_status/:id',                to: 'stripe#get_payment_status',          as: 'stripe_get_payment_status'
   get 'stripe_add_payment_method',                    to: 'stripe#add_payment_method',          as: 'stripe_add_payment_method'
-  get 'stripe_client_secret',                         to: 'stripe#client_secret',               as: 'stripe_client_secret'
   get 'stripe_dashboard',                             to: 'stripe#dashboard',                   as: 'stripe_dashboard'
 
   get 'organizations/join',                           to: 'organization_users#join',                  as: 'organization_join'

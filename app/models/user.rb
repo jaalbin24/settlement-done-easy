@@ -2,27 +2,27 @@
 #
 # Table name: users
 #
-#  id                        :bigint           not null, primary key
-#  business_name             :string
-#  current_sign_in_at        :datetime
-#  current_sign_in_ip        :string
-#  email                     :string           default(""), not null
-#  encrypted_password        :string           default(""), not null
-#  first_name                :string
-#  has_stripe_payment_method :boolean          default(FALSE), not null
-#  last_name                 :string
-#  last_sign_in_at           :datetime
-#  last_sign_in_ip           :string
-#  remember_created_at       :datetime
-#  reset_password_sent_at    :datetime
-#  reset_password_token      :string
-#  role                      :string
-#  sign_in_count             :integer          default(0), not null
-#  stripe_account_onboarded  :boolean          default(FALSE), not null
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
-#  organization_id           :bigint
-#  stripe_account_id         :string
+#  id                          :bigint           not null, primary key
+#  business_name               :string
+#  current_sign_in_at          :datetime
+#  current_sign_in_ip          :string
+#  email                       :string           default(""), not null
+#  encrypted_password          :string           default(""), not null
+#  first_name                  :string
+#  last_name                   :string
+#  last_sign_in_at             :datetime
+#  last_sign_in_ip             :string
+#  remember_created_at         :datetime
+#  reset_password_sent_at      :datetime
+#  reset_password_token        :string
+#  role                        :string
+#  sign_in_count               :integer          default(0), not null
+#  stripe_account_onboarded    :boolean          default(FALSE), not null
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  organization_id             :bigint
+#  stripe_account_id           :string
+#  stripe_financial_account_id :string
 #
 # Indexes
 #
@@ -67,8 +67,6 @@ class User < ApplicationRecord
   
   # Stripe data constraints.
   validates :stripe_account_id, absence: {unless: :isOrganization?, message: "must be nil for non-organization-type users, not '%{value}'"}
-  validates :stripe_account_onboarded, inclusion: {in: [false], unless: :isLawFirm?, message: "must be false if user is not a Law Firm"}
-  validates :has_stripe_payment_method, inclusion: {in: [false], unless: :isInsuranceCompany?, message: "must be false if user is not an Insurance Company"}
 
   # Member-type users cannot belong to another member-type user.
   validate :member_cannot_belong_to_member
@@ -97,16 +95,14 @@ class User < ApplicationRecord
     :l_settlements,
     class_name: 'Settlement',
     foreign_key: 'attorney_id',
-    inverse_of: :attorney,
-    dependent: :destroy
+    inverse_of: :attorney
   )
 
   has_many(
     :ia_settlements,
     class_name: 'Settlement',
     foreign_key: 'insurance_agent_id',
-    inverse_of: :insurance_agent,
-    dependent: :destroy
+    inverse_of: :insurance_agent
   )
 
   belongs_to(
@@ -126,19 +122,19 @@ class User < ApplicationRecord
   )
 
   has_many(
-    :stripe_payment_methods,
-    class_name: "StripePaymentMethod",
+    :bank_accounts,
+    class_name: "BankAccount",
     foreign_key: "user_id",
     inverse_of: :user,
     dependent: :destroy
   )
 
-  after_create do
-    if self.isLawFirm? && self.stripe_account_id == nil
-      account = Stripe::Account.create({
+  after_create do |user|
+    if user.isOrganization? && user.stripe_account_id.blank?
+      connect_account = Stripe::Account.create({
         type: "custom",
         country: "US",
-        email: self.email,
+        email: user.email,
         capabilities: {
           treasury: {requested: true},
           us_bank_account_ach_payments: {requested: true},
@@ -148,22 +144,47 @@ class User < ApplicationRecord
         business_type: "company",
         business_profile: {url: "http://settlementdoneeasy.com/"},
       })
-      self.stripe_account_id = account.id
-      self.save
+      user.stripe_account_id = connect_account.id
     end
+    if user.isLawFirm? && user.stripe_financial_account_id.blank?
+      treasury_account = Stripe::Treasury::FinancialAccount.create({
+          supported_currencies: ['usd'],
+          features: {
+            intra_stripe_flows: {requested: true},
+            outbound_transfers: {ach: {requested: true}},
+          },
+        },
+        {stripe_account: user.stripe_account_id},
+      )
+    elsif user.isInsuranceCompany? && user.stripe_financial_account_id.blank?
+      treasury_account = Stripe::Treasury::FinancialAccount.create({
+          supported_currencies: ['usd'],
+          features: {
+            intra_stripe_flows: {requested: true}, # For transfering from IC financial account to LF financial account
+            inbound_transfers: {ach: {requested: true}}, # For transfering from IC bank account to IC financial account
+          },
+        },
+        {stripe_account: user.stripe_account_id},
+      )
+    end
+    user.save
   end
 
-  before_create do
-    if organization_id == 0
-      self.organization_id = nil
+  before_create do |user|
+    if user.organization_id == 0
+      user.organization_id = nil
     end     
-    if role == nil && organization != nil
-      if organization.isLawFirm?
+    if user.role == nil && user.organization != nil
+      if user.organization.isLawFirm?
         self.role = "Attorney"
-      elsif organization.isInsuranceCompany?
+      elsif user.organization.isInsuranceCompany?
         self.role = "Insurance Agent"
       end
     end
+  end
+
+  after_commit do |user|
+    # If stripe data changed, verify data with stripe servers
   end
 
   def full_name
@@ -222,6 +243,14 @@ class User < ApplicationRecord
     return role == "Law Firm" || role == "Insurance Company"
   end
 
+  def isMember?
+    return role == "Attorney" || role == "Insurance Agent"
+  end
+
+  def has_bank_account?
+    return !bank_accounts.empty?
+  end
+
   def settlements
     if isAttorney?
       return l_settlements
@@ -236,23 +265,12 @@ class User < ApplicationRecord
     end
   end
 
-  def has_stripe_bank_account?
-    if isLawFirm?
-      list_of_bank_accounts = Stripe::Account.list_external_accounts(stripe_account_id, object: "bank_account").data
-    elsif isInsuranceCompany?
-      list_of_bank_accounts = Stripe::Customer.list_payment_methods(stripe_account_id, type: "us_bank_account").data
-    else
-      return false
-    end
-
-    if list_of_bank_accounts.empty?
-      return false
-    else
-      return true
-    end
-  end
-
   def preferred_payment_method
-    StripePaymentMethod.where("user_id=?", id).and(StripePaymentMethod.where("preferred=?", true)).first
+    BankAccount.where("user_id=?", id).and(BankAccount.where("preferred=?", true)).first
   end
 end
+
+
+
+
+

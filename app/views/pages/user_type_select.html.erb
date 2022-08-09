@@ -1,21 +1,11 @@
 <h1 class="text-center text-primary">Sign Up!</h1>
 <h5 class="text-center">What type of user are you?</h5>
 
-<div class="container mt-3">
+<div class="container mt-3 w-50 mx-auto">
     <div class="row">
-        <div class="col text-end">
-            <%=link_to "Insurance Agent", new_user_registration_path(:role => "Insurance Agent"), class: "w-50 btn btn-lg btn-primary"%>
-        </div>
-        <div class="col text-start">
-            <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "w-50 btn btn-lg btn-primary"%>
-        </div>
+        <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
     </div>
     <div class="row mt-3">
-        <div class="col text-end">
-            <%=link_to "Attorney", new_user_registration_path(:role => "Attorney"), class: "w-50 btn btn-lg btn-primary"%>
-        </div>
-        <div class="col text-start">
-            <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "w-50 btn btn-lg btn-primary"%>
-        </div>
+        <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
     </div>
 </div>
