@@ -12,3 +12,6 @@ ActiveStorage.start()
 import 'bootstrap'
 import 'autosize'
 import 'stripe/bank_account'
+
+// Instantiates bootstrap as an object to call methods on such as bootstrap.Modal()
+window.bootstrap = require('bootstrap');

@@ -2,16 +2,16 @@
 #
 # Table name: bank_accounts
 #
-#  id          :bigint           not null, primary key
-#  fingerprint :string
-#  last4       :integer
-#  nickname    :string
-#  preferred   :boolean          default(FALSE), not null
-#  status      :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  stripe_id   :string           not null
-#  user_id     :bigint           not null
+#  id                       :bigint           not null, primary key
+#  fingerprint              :string
+#  last4                    :integer
+#  nickname                 :string
+#  preferred                :boolean          default(FALSE), not null
+#  status                   :string
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  stripe_payment_method_id :string           not null
+#  user_id                  :bigint           not null
 #
 # Indexes
 #
@@ -29,11 +29,22 @@ class BankAccount < ApplicationRecord
         inverse_of: :bank_accounts
     )
 
+    has_many(
+        :payments_out,
+        class_name: "Payment",
+        foreign_key: "source_id",
+        inverse_of: :source
+    )
+
+    has_many(
+        :payments_in,
+        class_name: "Payment",
+        foreign_key: "destination_id",
+        inverse_of: :destination
+    )
+
     after_destroy do |bank_account|
-        Stripe::Account.delete_external_account(
-            user.stripe_account_id,
-            stripe_id,
-        )
+        
     end
 
     def send_money_to(destination, amount)

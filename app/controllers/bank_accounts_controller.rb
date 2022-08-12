@@ -1,6 +1,28 @@
 class BankAccountsController < ApplicationController
     before_action :authenticate_user!
     
+    # Called by client-side javascript
+    def secret
+        setup_intent = Stripe::SetupIntent.create(
+            {
+                payment_method_types: ["us_bank_account"],
+                payment_method_options: {
+                    us_bank_account: {
+                        financial_connections: {permissions: ["payment_method", "balances"]},
+                    },
+                },
+                attach_to_self: true,
+                flow_directions: ["inbound", "outbound"],
+            },
+            {stripe_account: current_user.stripe_account_id}
+        )
+        response = {
+            client_secret: setup_intent.client_secret,
+            connect_account_id: current_user.stripe_account_id,
+        }.to_json
+        render :json => response
+    end
+
     def create
         # If params include token, account_num, and client_secret
         # If user has onboarded stripe account
@@ -18,7 +40,7 @@ class BankAccountsController < ApplicationController
         )
 
         bank_account = current_user.bank_accounts.build(
-            stripe_id: external_account.id,
+            stripe_payment_method_id: external_account.id,
             nickname: external_account.bank_name,
             last4: external_account.last4,
             status: external_account.status
@@ -31,17 +53,6 @@ class BankAccountsController < ApplicationController
             flash[:info] = "There was a server error adding that account."
             head 500
         end
-    end
-
-    # Called by client-side javascript
-    def secret
-        fin_conn_session = Stripe::FinancialConnections::Session.create({
-            account_holder: {type: 'account', account: current_user.stripe_account_id},
-            filters: {countries: ['US']},
-            permissions: ['ownership', 'payment_method'],
-        })
-        response = {client_secret: fin_conn_session.client_secret}.to_json
-        render :json => response
     end
 
     def destroy
@@ -75,9 +86,3 @@ class BankAccountsController < ApplicationController
     end
 end
 
-Stripe::PaymentMethod.create({
-    type: 'us_bank_account',
-    us_bank_account: {
-        financial_connections_account: "fca_1LUtz7LjpnfKvSk61PacYq9T"
-    },
-})

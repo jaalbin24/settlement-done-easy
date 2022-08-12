@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
   end
 
   create_table "bank_accounts", force: :cascade do |t|
-    t.string "stripe_id", null: false
+    t.string "stripe_payment_method_id", null: false
     t.string "nickname"
     t.integer "last4", limit: 2
     t.string "fingerprint"
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.bigint "settlement_id"
     t.bigint "source_id"
     t.bigint "destination_id"
+    t.string "status", default: "Pending", null: false
     t.string "stripe_inbound_transfer_id"
     t.string "stripe_outbound_payment_id"
     t.string "stripe_outbound_transfer_id"

@@ -24,6 +24,9 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
             <% if user_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Payments", "#", class: 'nav-link'%>
+              </li>
               <%if !current_user.isOrganization?%>
                 <li class="nav-item">
                   <%= link_to "New Settlement", settlement_new_path, class: 'nav-link'%>
