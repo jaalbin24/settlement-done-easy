@@ -229,4 +229,16 @@ class Settlement < ApplicationRecord
         end
         puts "====> NOW stage=#{stage}, status=#{status}"
     end
+
+    def initiate_payment
+        payment = build_payment(
+            source: insurance_agent.organization.bank_accounts.first,
+            destination: attorney.organization.bank_accounts.first,
+            amount: dollar_amount
+        )
+        payment.save
+        payment.execute_inbound_transfer
+    end
+
+
 end

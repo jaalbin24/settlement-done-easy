@@ -2,16 +2,16 @@
 #
 # Table name: bank_accounts
 #
-#  id          :bigint           not null, primary key
-#  fingerprint :string
-#  last4       :integer
-#  nickname    :string
-#  preferred   :boolean          default(FALSE), not null
-#  status      :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  stripe_id   :string           not null
-#  user_id     :bigint           not null
+#  id                       :bigint           not null, primary key
+#  fingerprint              :string
+#  last4                    :integer
+#  nickname                 :string
+#  preferred                :boolean          default(FALSE), not null
+#  status                   :string
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  stripe_payment_method_id :string           not null
+#  user_id                  :bigint           not null
 #
 # Indexes
 #

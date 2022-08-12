@@ -92,7 +92,7 @@ class User < ApplicationRecord
   )
 
   has_many(
-    :l_settlements,
+    :a_settlements,
     class_name: 'Settlement',
     foreign_key: 'attorney_id',
     inverse_of: :attorney
@@ -103,6 +103,18 @@ class User < ApplicationRecord
     class_name: 'Settlement',
     foreign_key: 'insurance_agent_id',
     inverse_of: :insurance_agent
+  )
+
+  has_many(
+    :a_payments,
+    through: :a_settlements,
+    source: :payment
+  )
+
+  has_many(
+    :ia_payments,
+    through: :ia_settlements,
+    source: :payment
   )
 
   belongs_to(
@@ -129,6 +141,18 @@ class User < ApplicationRecord
     dependent: :destroy
   )
 
+  has_many(
+    :payments_out,
+    through: :bank_accounts,
+    source: :payments_out
+  )
+
+  has_many(
+    :payments_in,
+    through: :bank_accounts,
+    source: :payments_in
+  )
+
   after_create do |user|
     if user.isOrganization? && user.stripe_account_id.blank?
       connect_account = Stripe::Account.create({
@@ -150,8 +174,8 @@ class User < ApplicationRecord
       treasury_account = Stripe::Treasury::FinancialAccount.create({
           supported_currencies: ['usd'],
           features: {
-            intra_stripe_flows: {requested: true},
-            outbound_transfers: {ach: {requested: true}},
+            intra_stripe_flows: {requested: true}, # For recieving money from IC financial account
+            outbound_transfers: {ach: {requested: true}}, # For transferring from LF financial account to LF bank account
           },
         },
         {stripe_account: user.stripe_account_id},
@@ -160,8 +184,8 @@ class User < ApplicationRecord
       treasury_account = Stripe::Treasury::FinancialAccount.create({
           supported_currencies: ['usd'],
           features: {
-            intra_stripe_flows: {requested: true}, # For transfering from IC financial account to LF financial account
-            inbound_transfers: {ach: {requested: true}}, # For transfering from IC bank account to IC financial account
+            intra_stripe_flows: {requested: true}, # For sending money to LF financial account
+            inbound_transfers: {ach: {requested: true}}, # For transferring from IC bank account to IC financial account
           },
         },
         {stripe_account: user.stripe_account_id},
@@ -251,9 +275,21 @@ class User < ApplicationRecord
     return !bank_accounts.empty?
   end
 
+  def payments
+    if isLawFirm?
+      return payments_in
+    elsif isInsuranceCompany?
+      return payments_out
+    elsif isAttorney?
+      return a_payments
+    elsif isInsuranceAgent?
+      return ia_payments
+    end
+  end
+
   def settlements
     if isAttorney?
-      return l_settlements
+      return a_settlements
     elsif isInsuranceAgent?
       return ia_settlements
     elsif isOrganization?
@@ -269,8 +305,3 @@ class User < ApplicationRecord
     BankAccount.where("user_id=?", id).and(BankAccount.where("preferred=?", true)).first
   end
 end
-
-
-
-
-

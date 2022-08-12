@@ -95,22 +95,8 @@ class StripeController < ApplicationController
             redirect_back(fallback_location: root_path)
             return
         end
-        settlement.init_stripe_data
-        payment_intent = Stripe::PaymentIntent.create(
-            amount: (settlement.dollar_amount * 100).round,
-            currency: "usd",
-            payment_method: settlement.insurance_agent.organization.preferred_payment_method,
-            customer: settlement.insurance_agent.organization.stripe_account_id,
-            on_behalf_of: settlement.attorney.organization.stripe_account_id,
-            payment_method_types: ["us_bank_account"]
-        )
-        settlement.stripe_payment_intents.build(stripe_id: payment_intent.id)
-        if settlement.save
-            Stripe::PaymentIntent.confirm(payment_intent.id)
-        else
-            puts "=========================== ERROR: SETTLEMENT NOT SAVED: #{settlement.errors.full_messages.inspect}"
-        end
-        redirect_to stripe_session.url
+        settlement.initiate_payment
+        redirect_back(fallback_location: root_path)
     end
 
     def handle_event
@@ -164,13 +150,74 @@ class StripeController < ApplicationController
             puts event
         when "financial_connections.account.created"
             puts event
-            connect_account_id = event.data.object.account_holder.account
-        when ""
+        when "setup_intent.created"
             puts event
-        when ""
+        when "setup_intent.succeeded"
             puts event
+        when "payment_method.attached"
+            puts event
+            payment_method = event.data.object
+            user = User.where("stripe_account_id=?", event.account).first
+            bank_account = BankAccount.where("stripe_payment_method_id=?", payment_method.id).first
+
+            if !bank_account.nil?
+                bank_account.update(
+                    stripe_payment_method_id: event.data.object.id,
+                    nickname: payment_method.us_bank_account.bank_name,
+                    last4: payment_method.us_bank_account.last4,
+                )
+            else
+                bank_account = user.bank_accounts.build(
+                    stripe_payment_method_id: event.data.object.id,
+                    nickname: payment_method.us_bank_account.bank_name,
+                    last4: payment_method.us_bank_account.last4,
+                )
+                bank_account.save
+            end
+        when "treasury.inbound_transfer.created"
+            puts event
+        when "treasury.inbound_transfer.succeeded"
+            puts event
+            inbound_transfer = event.data.object
+            user = User.where("stripe_account_id=?", event.account).first
+            payment = Payment.where("stripe_inbound_transfer_id=?", inbound_transfer.id).first
+            if payment.nil?
+                puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
+                puts payment
+            else
+                puts payment
+                payment.execute_outbound_payment
+            end
+        when "treasury.outbound_payment.created"
+            puts event
+        when "treasury.outbound_payment.posted"
+            puts event
+            outbound_payment = event.data.object
+            user = User.where("stripe_account_id=?", event.account).first
+            payment = Payment.where("stripe_outbound_payment_id=?", outbound_payment.id).first
+            if payment.nil?
+                puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
+                puts payment
+            else
+                puts payment
+                payment.execute_outbound_transfer
+            end
+        when "treasury.outbound_transfer.created"
+            puts event
+            outbound_transfer = event.data.object
+            user = User.where("stripe_account_id=?", event.account).first
+            payment = Payment.where("stripe_outbound_transfer_id=?", outbound_transfer.id).first
+            if payment.nil?
+                puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
+                puts payment
+            else
+                puts payment
+                payment.complete
+            end
+        when "treasury.outbound_transfer.posted"
         else
             puts "❗❗❗ Unhandled event type: #{event.type} ❗❗❗"
+            puts event
         end
     end
 end

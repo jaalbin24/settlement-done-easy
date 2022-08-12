@@ -4,6 +4,7 @@
 #
 #  id                          :bigint           not null, primary key
 #  amount                      :float            not null
+#  status                      :string           default("Pending"), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint

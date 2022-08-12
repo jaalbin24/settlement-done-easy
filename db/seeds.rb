@@ -37,6 +37,7 @@ law_firm_users = Array.new(1) {|i|
         business_name: law_firms[i],
         stripe_account_id: "acct_1LUMm4PvLqRcxm3z",
         stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
+        stripe_account_onboarded: true,
         organization: nil
     )
     puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
@@ -51,6 +52,7 @@ insurance_company_users = Array.new(1) {|i|
         business_name: insurance_companies[i],
         stripe_account_id: "acct_1LUMmEQ44dejfzxN",
         stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
+        stripe_account_onboarded: true,
         organization: nil
     )
     puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"

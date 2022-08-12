@@ -19,6 +19,7 @@ class PagesController < ApplicationController
         if !user_signed_in?
             render :home
         elsif current_user.isOrganization?
+            @payments = current_user.payments
             render :organization_dashboard
         elsif current_user.isMember?
             render :member_dashboard
