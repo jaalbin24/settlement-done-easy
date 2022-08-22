@@ -6,8 +6,8 @@ top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"
 insurance_companies = ["State Farm", "Geico", "Progressive", "Allstate", "Liberty Mutual", "USAA", "Nationwide"]
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims", "GoodLaw", "Smith & Doe", "Hearsay Law Firm"]
 # For generating random organizations to which each user belongs
-NUM_USERS_OF_EACH_ROLE = 5
-SETTLEMENTS_PER_ATTORNEY = 4
+MEMBERS_PER_ORGANIZATION = 1
+SETTLEMENTS_PER_ATTORNEY = 7
 DOCUMENTS_PER_SETTLEMENT = 1
 # Adjust NUM_USERS_OF_EACH_ROLE to increase/decrease the number of records created when calling the 'rails db:seed' command
 
@@ -20,14 +20,6 @@ docusign_user = User.create!(
     role: "Dummy"
 )
 puts "Created DocuSign user"
-doc_generator_user = User.create!(
-    email: "doc_generator@example.com",
-    password: "password123",
-    first_name: "Auto",
-    last_name: "Generated",
-    role: "Dummy"
-)
-puts "Created AutoGenerate user"
 
 law_firm_users = Array.new(1) {|i|
     law_firm = User.create!(
@@ -41,6 +33,17 @@ law_firm_users = Array.new(1) {|i|
         organization: nil
     )
     puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
+    law_firm.bank_accounts.create!(
+        stripe_payment_method_id: "pm_1LYvHfPvLqRcxm3zIbQJcor9",
+        nickname: "STRIPE TEST BANK (Seeded #1)",
+        last4: 6789,
+        default: true
+    )
+    law_firm.bank_accounts.create!(
+        stripe_payment_method_id: "pm_1LZILoPvLqRcxm3znJP3m131",
+        nickname: "STRIPE TEST BANK (Seeded #2)",
+        last4: 6789,
+    )
     law_firm
 }
 
@@ -55,6 +58,17 @@ insurance_company_users = Array.new(1) {|i|
         stripe_account_onboarded: true,
         organization: nil
     )
+    insurance_company.bank_accounts.create!(
+        stripe_payment_method_id: "pm_1LYvHGQ44dejfzxNSCCrYoET",
+        nickname: "STRIPE TEST BANK (Seeded #1)",
+        last4: 6789,
+        default: true
+    )
+    insurance_company.bank_accounts.create!(
+        stripe_payment_method_id: "pm_1LZIOUQ44dejfzxNeCkdDU99",
+        nickname: "STRIPE TEST BANK (Seeded #2)",
+        last4: 6789,
+    )
     puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"
     insurance_company
 }
@@ -65,11 +79,11 @@ shannon_elsea = User.create!(
     role: "Attorney",
     first_name: "Shannon",
     last_name: "Elsea",
-    organization: User.where("business_name=?", :GKBM).first
+    organization: User.where(business_name: "GKBM").first
 )
 puts "Created Shannon Elsea user"
 
-attorneys = Array.new(NUM_USERS_OF_EACH_ROLE) {|i|
+attorneys = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
     a = User.create!(
         email: "attorney#{i}@example.com",
         password: "password123",
@@ -82,7 +96,7 @@ attorneys = Array.new(NUM_USERS_OF_EACH_ROLE) {|i|
     a
 }
 
-insurance_agents = Array.new(NUM_USERS_OF_EACH_ROLE) {|i|
+insurance_agents = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
     a = User.create!(
         email: "insurance_agent#{i}@example.com",
         password: "password123",
@@ -107,21 +121,12 @@ attorneys.each do |a|
             incident_location:  "Memphis, TN",
             incident_date:      Date.today - rand(30..365).days,
         )
-        loop do
-            doc = settlement.documents.build(
-                added_by: a,
-                signed: [true, false][rand(0..1)],
-                approved: [true, false][rand(0..1)]
-            )
-            if doc.save
-                break
-            else
-                doc.destroy
-            end
-        end
         if !settlement.save
             puts "ERRORS: #{settlement.errors.full_messages.inspect}"
         end
+        doc = settlement.documents.create!(
+            added_by: a,
+        )
     end
 end
 
@@ -134,20 +139,5 @@ puts "======= #{User.all_attorneys.size} attorney models"
 puts "======= #{User.all_insurance_agents.size} insurance agent models"
 puts "Created #{Settlement.all.size} settlement models..."
 puts "Created #{Document.all.size} document models..."
-
-
-# comments = Array.new(NUM_USERS_OF_EACH_ROLE) {|i|
-#     Comment.create!(
-#         content: "This is blank! What gives??",
-#         document: documents[i],
-#         author: attorneys[i]
-#     )
-#     Comment.create!(
-#         content: "Please fix XYZ and send it back to me! Thanks!",
-#         document: generated_documents[i],
-#         author: attorneys[i]
-#     )
-# }
-# puts "Created #{NUM_USERS_OF_EACH_ROLE*2} comment models..."
 
 puts "Completed DB seeding!"

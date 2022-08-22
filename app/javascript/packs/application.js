@@ -10,8 +10,23 @@ Rails.start()
 ActiveStorage.start()
 
 import 'bootstrap'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'autosize'
 import 'stripe/bank_account'
 
+
 // Instantiates bootstrap as an object to call methods on such as bootstrap.Modal()
 window.bootstrap = require('bootstrap');
+
+
+// For bootstrap popovers
+document.addEventListener("DOMContentLoaded", () => {
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+})
+
+
+
+

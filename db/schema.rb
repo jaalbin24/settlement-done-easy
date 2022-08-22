@@ -49,10 +49,11 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.integer "last4", limit: 2
     t.string "fingerprint"
     t.string "status"
-    t.boolean "preferred", default: false, null: false
+    t.boolean "default", default: false, null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["stripe_payment_method_id"], name: "index_bank_accounts_on_stripe_payment_method_id", unique: true
     t.index ["user_id"], name: "index_bank_accounts_on_user_id"
   end
 
@@ -66,10 +67,22 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "document_reviews", force: :cascade do |t|
+    t.bigint "reviewer_id"
+    t.bigint "document_id"
+    t.string "verdict", default: "Waiting", null: false
+    t.string "reason"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["document_id"], name: "index_document_reviews_on_document_id"
+    t.index ["reviewer_id"], name: "index_document_reviews_on_reviewer_id"
+  end
+
   create_table "documents", force: :cascade do |t|
-    t.boolean "approved", default: false, null: false
-    t.boolean "rejected", default: false, null: false
     t.boolean "signed", default: false, null: false
+    t.boolean "needs_signature", default: false, null: false
+    t.boolean "auto_generated", default: false, null: false
+    t.string "status", default: "Waiting for review", null: false
     t.bigint "settlement_id"
     t.bigint "added_by_id"
     t.string "ds_envelope_id"
@@ -79,11 +92,21 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["settlement_id"], name: "index_documents_on_settlement_id"
   end
 
+  create_table "payment_requests", force: :cascade do |t|
+    t.bigint "requester_id"
+    t.bigint "settlement_id"
+    t.string "status", default: "Requested", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["requester_id"], name: "index_payment_requests_on_requester_id"
+    t.index ["settlement_id"], name: "index_payment_requests_on_settlement_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "settlement_id"
     t.bigint "source_id"
     t.bigint "destination_id"
-    t.string "status", default: "Pending", null: false
+    t.string "status", default: "Not sent", null: false
     t.string "stripe_inbound_transfer_id"
     t.string "stripe_outbound_payment_id"
     t.string "stripe_outbound_transfer_id"
@@ -93,6 +116,9 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["destination_id"], name: "index_payments_on_destination_id"
     t.index ["settlement_id"], name: "index_payments_on_settlement_id"
     t.index ["source_id"], name: "index_payments_on_source_id"
+    t.index ["stripe_inbound_transfer_id"], name: "index_payments_on_stripe_inbound_transfer_id", unique: true
+    t.index ["stripe_outbound_payment_id"], name: "index_payments_on_stripe_outbound_payment_id", unique: true
+    t.index ["stripe_outbound_transfer_id"], name: "index_payments_on_stripe_outbound_transfer_id", unique: true
   end
 
   create_table "settlements", force: :cascade do |t|
@@ -105,9 +131,6 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.date "incident_date"
     t.integer "stage", default: 1, null: false
     t.integer "status", default: 1, null: false
-    t.string "stripe_product_id"
-    t.string "stripe_price_id"
-    t.string "stripe_payment_intent_id"
     t.boolean "signature_requested", default: false, null: false
     t.boolean "payment_made", default: false, null: false
     t.boolean "payment_received", default: false, null: false
@@ -119,14 +142,6 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
     t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
-  end
-
-  create_table "stripe_payment_intents", force: :cascade do |t|
-    t.string "stripe_id", null: false
-    t.bigint "settlement_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["settlement_id"], name: "index_stripe_payment_intents_on_settlement_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -153,6 +168,8 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["stripe_account_id"], name: "index_users_on_stripe_account_id", unique: true
+    t.index ["stripe_financial_account_id"], name: "index_users_on_stripe_financial_account_id", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -160,13 +177,16 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
   add_foreign_key "bank_accounts", "users"
   add_foreign_key "comments", "documents"
   add_foreign_key "comments", "users"
+  add_foreign_key "document_reviews", "documents"
+  add_foreign_key "document_reviews", "users", column: "reviewer_id"
   add_foreign_key "documents", "settlements"
   add_foreign_key "documents", "users", column: "added_by_id"
+  add_foreign_key "payment_requests", "settlements"
+  add_foreign_key "payment_requests", "users", column: "requester_id"
   add_foreign_key "payments", "bank_accounts", column: "destination_id"
   add_foreign_key "payments", "bank_accounts", column: "source_id"
   add_foreign_key "payments", "settlements"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
-  add_foreign_key "stripe_payment_intents", "settlements"
   add_foreign_key "users", "users", column: "organization_id"
 end

@@ -23,7 +23,7 @@
                             <td>XXXXX<%=current_user.isLawFirm? ? p.destination.last4 : p.source.last4%></td>
                             <td>$<%=p.amount%></td>
                             <td>July 31</td>
-                            <td><span class="badge rounded-pill bg-<%=p.completed? ? "success" : "info"%>">Complete</span></td>
+                            <td><span class="badge rounded-pill bg-<%=p.completed? ? "success" : "info"%>"><%=p.status%></span></td>
                         </tr>
                         <%end%>
                     </tbody>

@@ -2,28 +2,25 @@
 #
 # Table name: settlements
 #
-#  id                       :bigint           not null, primary key
-#  claim_number             :string
-#  completed                :boolean          default(FALSE), not null
-#  defendant_name           :string
-#  incident_date            :date
-#  incident_location        :string
-#  payment_has_error        :boolean          default(FALSE), not null
-#  payment_made             :boolean          default(FALSE), not null
-#  payment_received         :boolean          default(FALSE), not null
-#  plaintiff_name           :string
-#  policy_number            :string
-#  dollar_amount            :float
-#  signature_requested      :boolean          default(FALSE), not null
-#  stage                    :integer          default(1), not null
-#  status                   :integer          default(1), not null
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  attorney_id              :bigint
-#  insurance_agent_id       :bigint
-#  stripe_payment_intent_id :string
-#  stripe_price_id          :string
-#  stripe_product_id        :string
+#  id                  :bigint           not null, primary key
+#  claim_number        :string
+#  completed           :boolean          default(FALSE), not null
+#  defendant_name      :string
+#  dollar_amount       :float
+#  incident_date       :date
+#  incident_location   :string
+#  payment_has_error   :boolean          default(FALSE), not null
+#  payment_made        :boolean          default(FALSE), not null
+#  payment_received    :boolean          default(FALSE), not null
+#  plaintiff_name      :string
+#  policy_number       :string
+#  signature_requested :boolean          default(FALSE), not null
+#  stage               :integer          default(1), not null
+#  status              :integer          default(1), not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  attorney_id         :bigint
+#  insurance_agent_id  :bigint
 #
 # Indexes
 #

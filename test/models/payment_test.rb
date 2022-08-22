@@ -4,7 +4,7 @@
 #
 #  id                          :bigint           not null, primary key
 #  amount                      :float            not null
-#  status                      :string           default("Pending"), not null
+#  status                      :string           default("Not sent"), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint
@@ -16,9 +16,12 @@
 #
 # Indexes
 #
-#  index_payments_on_destination_id  (destination_id)
-#  index_payments_on_settlement_id   (settlement_id)
-#  index_payments_on_source_id       (source_id)
+#  index_payments_on_destination_id               (destination_id)
+#  index_payments_on_settlement_id                (settlement_id)
+#  index_payments_on_source_id                    (source_id)
+#  index_payments_on_stripe_inbound_transfer_id   (stripe_inbound_transfer_id) UNIQUE
+#  index_payments_on_stripe_outbound_payment_id   (stripe_outbound_payment_id) UNIQUE
+#  index_payments_on_stripe_outbound_transfer_id  (stripe_outbound_transfer_id) UNIQUE
 #
 # Foreign Keys
 #

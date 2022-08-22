@@ -65,14 +65,12 @@ module DocumentGenerator
         pdf.bounding_box([356, y_position], width: 120) do
             pdf.text "Date"
         end
-        d = settlement.documents.build
+        d = settlement.documents.create!(
+            auto_generated: true,
+            added_by: current_user,
+        )
         d.pdf.attach(io: StringIO.new(pdf.render), filename: settlement.generated_document_file_name)
-        d.added_by = doc_generator_user
-        if !d.save
-            puts "================= Auto-generated document not saved! #{d.errors.full_messages.inspect}"
-        else
-            return d
-        end
+        return d
     end
     
     def doc_generator_user

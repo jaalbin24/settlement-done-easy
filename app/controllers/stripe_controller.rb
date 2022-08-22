@@ -72,39 +72,15 @@ class StripeController < ApplicationController
     end
 
     def initiate_settlement_payment
-        begin
-            settlement = Settlement.find(params[:id])
-        rescue
-            handle_invalid_request
-            return
-        end
-        if current_user.organization == nil
-            flash[:info] = "You must belong to an organization to make payments. Click <a href=#{organization_join_path}>here<a> to join an organization."
-            redirect_back(fallback_location: root_path)
-            return
-        elsif settlement.insurance_agent.organization.bank_accounts.empty?
-            flash[:info] = "You cannot make payments because #{settlement.insurance_agent.organization.full_name} does not have a bank account on file."
-            redirect_back(fallback_location: root_path)
-            return
-        elsif !settlement.attorney.organization.stripe_account_onboarded?
-            flash[:info] = "You cannot make payments because #{settlement.attorney.organization.full_name} has not set up payment details."
-            redirect_back(fallback_location: root_path)
-            return
-        elsif !current_user.isInsuranceAgent?
-            flash[:info] = "#{current_user.role.pluralize.capitalize} cannot pay settlements."
-            redirect_back(fallback_location: root_path)
-            return
-        end
-        settlement.initiate_payment
-        redirect_back(fallback_location: root_path)
+        
     end
 
     def handle_event
         payload = request.body.read
-        event = nil
+        dubious_event = nil
 
         begin
-            event = Stripe::Event.construct_from(
+            dubious_event = Stripe::Event.construct_from(
                 JSON.parse(payload, symbolize_names: true)
             )
         rescue JSON::ParserError => e
@@ -119,7 +95,7 @@ class StripeController < ApplicationController
             # Retrieve the event by verifying the signature using the raw body and secret.
             signature = request.env['HTTP_STRIPE_SIGNATURE'];
             begin
-                event = Stripe::Webhook.construct_event(
+                dubious_event = Stripe::Webhook.construct_event(
                     payload, signature, endpoint_secret
                 )
             rescue Stripe::SignatureVerificationError => e
@@ -133,9 +109,14 @@ class StripeController < ApplicationController
             return
         end
 
+        begin 
+            event = Stripe::Event.retrieve(dubious_event.id, {stripe_account: dubious_event.account})
+        rescue NoMethodError
+            event = Stripe::Event.retrieve(dubious_event.id)
+        end
         case event.type
         when "treasury.financial_account.features_status_updated"
-
+            puts event
         when "capability.updated"
             puts event
         when "person.created"
@@ -157,8 +138,8 @@ class StripeController < ApplicationController
         when "payment_method.attached"
             puts event
             payment_method = event.data.object
-            user = User.where("stripe_account_id=?", event.account).first
-            bank_account = BankAccount.where("stripe_payment_method_id=?", payment_method.id).first
+            user = User.with_stripe_id(event.account).first
+            bank_account = BankAccount.with_stripe_id(payment_method.id).first
 
             if !bank_account.nil?
                 bank_account.update(
@@ -176,14 +157,18 @@ class StripeController < ApplicationController
             end
         when "treasury.inbound_transfer.created"
             puts event
+        when "treasury.inbound_transfer.failed"
+            puts event
+            inbound_transfer = event.data.object
+            payment = Payment.with_inbound_transfer_id(inbound_transfer.id).first
+            # No big deal if the inbound transfer fails. No money was taken, so no money needs to be given back.
         when "treasury.inbound_transfer.succeeded"
             puts event
             inbound_transfer = event.data.object
-            user = User.where("stripe_account_id=?", event.account).first
-            payment = Payment.where("stripe_inbound_transfer_id=?", inbound_transfer.id).first
+            payment = Payment.with_inbound_transfer_id(inbound_transfer.id).first
             if payment.nil?
                 puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
-                puts payment
+                head 400
             else
                 puts payment
                 payment.execute_outbound_payment
@@ -193,28 +178,27 @@ class StripeController < ApplicationController
         when "treasury.outbound_payment.posted"
             puts event
             outbound_payment = event.data.object
-            user = User.where("stripe_account_id=?", event.account).first
-            payment = Payment.where("stripe_outbound_payment_id=?", outbound_payment.id).first
+            payment = Payment.with_outbound_payment_id(outbound_payment.id).first
             if payment.nil?
                 puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
-                puts payment
+                head 400
             else
                 puts payment
                 payment.execute_outbound_transfer
             end
         when "treasury.outbound_transfer.created"
             puts event
+        when "treasury.outbound_transfer.posted"
+            puts event
             outbound_transfer = event.data.object
-            user = User.where("stripe_account_id=?", event.account).first
-            payment = Payment.where("stripe_outbound_transfer_id=?", outbound_transfer.id).first
+            payment = Payment.with_outbound_transfer_id(outbound_transfer.id).first
             if payment.nil?
                 puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
-                puts payment
+                head 400
             else
                 puts payment
                 payment.complete
             end
-        when "treasury.outbound_transfer.posted"
         else
             puts "❗❗❗ Unhandled event type: #{event.type} ❗❗❗"
             puts event

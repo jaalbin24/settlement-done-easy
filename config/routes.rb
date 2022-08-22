@@ -17,8 +17,9 @@ Rails.application.routes.draw do
   
   get 'documents/edit/:id',                     to: 'documents#edit',                     as: 'document_edit'
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
-  post 'documents/:id/approve',                 to: 'documents#approve',                  as: 'document_approve'
-  post 'documents/:id/reject',                  to: 'documents#reject',                   as: 'document_reject'
+  patch 'documents/:id/approve',                to: 'document_reviews#approve',           as: 'document_approve'
+  patch 'documents/:id/reject',                 to: 'document_reviews#reject',            as: 'document_reject'
+  patch 'documents/:id/unreject',               to: 'document_reviews#unreject',        as: 'document_unreject'
   get 'document/:id/get_e_signature',           to: 'documents#get_e_signature',          as: 'document_get_e_signature'
   patch 'documents/:id/send_ds_signature_request',  to: 'documents#send_ds_signature_request', as: 'document_send_ds_signature_request'
   get 'documents/:id/get_ds_envelope_status',   to: 'documents#get_ds_envelope_status',   as: 'document_get_ds_envelope_status'  
@@ -35,6 +36,7 @@ Rails.application.routes.draw do
   post 'comment/:document_id',                  to: 'comments#create',                    as: 'comment_create'
 
   get 'settlements/new',                              to: 'settlements#new',                    as: 'settlement_new'
+  get 'settlements/completed',                        to: 'settlements#completed_index',        as: 'settlement_completed_index'
   get 'settlements/need_index/:stage/:status',        to: 'settlements#need_index',             as: 'settlement_need_index'
   get 'settlements/:id',                              to: 'settlements#show',                   as: 'settlement_show'
   get 'settlements/:id/review_document',              to: 'settlements#review_document',        as: 'settlement_review_document'
@@ -45,14 +47,15 @@ Rails.application.routes.draw do
   get 'settlements/:id/payment_success',              to: 'settlements#payment_success',        as: 'settlement_payment_success'
   get 'settlements/:id/complete',                     to: 'settlements#complete',               as: 'settlement_complete'
   post 'settlements',                                 to: 'settlements#create',                 as: 'settlement_create'
+  post 'settlements/:id/execute_payment',             to: 'settlements#execute_payment',        as: 'settlement_execute_payment'
   patch 'settlements/:id',                            to: 'settlements#update',                 as: 'settlement_update'
+
   patch 'settlements/:id/send_ds_signature_request',  to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
   delete 'settlement/:id',                            to: 'settlements#destroy',                as: 'settlement_destroy'
 
   get 'stripe_onboard_account_link',                  to: 'stripe#onboard_account_link',        as: 'stripe_onboard_account_link'
   get 'stripe_handle_return_from_onboard',            to: 'stripe#handle_return_from_onboard',  as: 'stripe_handle_return_from_onboard'
   get 'stripe_login_link',                            to: 'stripe#login_link',                  as: 'stripe_login_link'
-  get 'stripe_initiate_settlement_payment/:id',       to: 'stripe#initiate_settlement_payment', as: 'stripe_initiate_settlement_payment'
   get 'stripe_get_payment_status/:id',                to: 'stripe#get_payment_status',          as: 'stripe_get_payment_status'
   get 'stripe_add_payment_method',                    to: 'stripe#add_payment_method',          as: 'stripe_add_payment_method'
   get 'stripe_dashboard',                             to: 'stripe#dashboard',                   as: 'stripe_dashboard'
@@ -67,7 +70,8 @@ Rails.application.routes.draw do
   post 'organizations/:org_id/members/',              to: 'organization_users#create_member',         as: 'organization_create_member'
 
   post 'webhook/stripe',                              to: 'stripe#handle_event',                      as: 'stripe_webhook_handle_event'
+
+  get 'settlement/:id/payment',                       to: 'payments#show',                            as: 'payment_show'
+  patch 'settlement/:id/payment',                     to: 'payments#update',                          as: 'payment_update'
   
-
-
 end

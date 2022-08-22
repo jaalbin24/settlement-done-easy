@@ -61,6 +61,10 @@ class BankAccountsController < ApplicationController
             flash[:info] = "You must keep at least one bank account. Add another bank account to delete this one."
             redirect_back(fallback_location: root_path)
             return
+        elsif bank_account.has_ongoing_payments?
+            flash[:info] = "You cannot delete a bank account with ongoing payments. Wait for this account's payments to settle before deleting."
+            redirect_back(fallback_location: root_path)
+            return
         else
             begin
                 bank_account.destroy
@@ -73,6 +77,7 @@ class BankAccountsController < ApplicationController
             rescue Stripe::APIConnectionError => e
                 flash[:info] = "Account XXXXX#{bank_account.last4} was not deleted due to poor network connectivity. Try again in a moment."
             rescue  => e
+                puts "⚠️⚠️⚠️ ERROR: #{e.message}"
                 flash[:info] = "Account XXXXX#{bank_account.last4} could not be deleted."
             end
             if bank_account.persisted?

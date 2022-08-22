@@ -4,10 +4,6 @@ class SettlementsController < ApplicationController
     include DocumentGenerator
     before_action :authenticate_user!
 
-    def dashboard
-        render :dashboard
-    end
-    
     def new
         if current_user.isAttorney?
             @settlement = Settlement.new
@@ -68,7 +64,7 @@ class SettlementsController < ApplicationController
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
             flash[:info] = "Started a new settlement with #{partner.full_name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
-            redirect_back(fallback_location: root_path)
+            redirect_to settlement_show_url(settlement)
         else
             flash.now[:error] = "#{settlement.errors.full_messages.inspect}"
             render :new
@@ -111,19 +107,36 @@ class SettlementsController < ApplicationController
         end
     end
 
-    def review_document
+    def execute_payment
         begin
             settlement = Settlement.find(params[:id])
         rescue
             handle_invalid_request
             return
         end
-        if !settlement.has_documents?
-            flash[:error] = "This settlement does not have a document to review."
+        if !settlement.payment.nil?
+            flash[:info] = "This settlement already has an ongoing payment."
             redirect_back(fallback_location: root_path)
-        else
-            redirect_to document_show_url(settlement.first_waiting_document)
+            return
+        elsif current_user.organization == nil
+            flash[:info] = "You must belong to an organization to make payments. Click <a href=#{organization_join_path}>here<a> to join an organization."
+            redirect_back(fallback_location: root_path)
+            return
+        elsif settlement.insurance_agent.organization.bank_accounts.empty?
+            flash[:info] = "You cannot make payments because #{settlement.insurance_agent.organization.full_name} has not set up payment details."
+            redirect_back(fallback_location: root_path)
+            return
+        elsif settlement.attorney.organization.bank_accounts.empty?
+            flash[:info] = "You cannot make payments because #{settlement.attorney.organization.full_name} has not set up payment details."
+            redirect_back(fallback_location: root_path)
+            return
+        elsif !current_user.isInsuranceAgent?
+            flash[:info] = "#{current_user.role.pluralize.capitalize} cannot pay settlements."
+            redirect_back(fallback_location: root_path)
+            return
         end
+        settlement.initiate_payment
+        redirect_back(fallback_location: root_path)
     end
 
     def payment_success
@@ -159,8 +172,28 @@ class SettlementsController < ApplicationController
             return
         end
         document = generate_document_for_settlement(settlement)
-        flash[:info] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
+        if document.save
+            flash[:info] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
+        else
+            flash[:info] = "A document could not be generated. Try again later."
+            puts "⚠️⚠️⚠️ ERROR: #{document.errors.full_messages.inspect}"
+        end
         redirect_back(fallback_location: root_path)
+    end
+
+    def completed_index
+        user = current_user
+        if user.isAttorney?
+            @settlements = Settlement.where("attorney_id=?", user.id).and(Settlement.where("completed=?", true)).all
+        elsif user.isInsuranceAgent?
+            @settlements = Settlement.where("insurance_agent_id=?", user.id).and(Settlement.where("completed=?", true)).all
+        elsif user.isLawFirm?
+            attorney_id_array = User.where(organization_id: user.id).pluck(:id)
+            @settlements = Settlement.where(attorney_id: attorney_id_array).and(Settlement.where("completed=?", true)).all
+        elsif user.isInsuranceCompany?
+            agent_id_array = User.where(organization_id: user.id).pluck(:id)
+            @settlements = Settlement.where(insurance_agent_id: agent_id_array).and(Settlement.where("completed=?", true)).all
+        end  
     end
 
     def settlement_params

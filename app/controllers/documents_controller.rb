@@ -47,15 +47,16 @@ class DocumentsController < ApplicationController
 
     def destroy
         document = Document.find(params[:id])
-        settlement = document.settlement
         filename = document.pdf.filename
+        settlement = document.settlement
         document.destroy
         flash[:info] = "#{filename} has been removed."
-        redirect_back(fallback_location: root_path)
+        redirect_to document_index_url(settlement)
     end
 
     def show
         @document = Document.find(params[:id])
+        @approval_progress = ((@document.reviews.approvals.size.to_f / @document.reviews.size) * 100).to_i
         respond_to do |format|
             format.html do
                 render :show
@@ -64,30 +65,6 @@ class DocumentsController < ApplicationController
                 send_data @document.pdf.download, filename: @document.pdf_file_name
             end
         end
-    end
-
-    def approve
-        document = Document.find(params[:id])
-        document.rejected = false
-        document.approved = true
-        if document.save
-            flash[:info] = "Document approved!"
-        else
-            flash[:warning] = "Document could not be approved! #{document.errors.full_messages.inspect}"
-        end
-        redirect_back(fallback_location: root_path)
-    end
-
-    def reject
-        document = Document.find(params[:id])
-        document.rejected = true
-        document.approved = false
-        if document.save
-            flash[:info] = "Document rejected!"
-        else
-            flash[:warning] = "Document could not be rejected! #{document.errors.full_messages.inspect}"
-        end
-        redirect_back(fallback_location: root_path)
     end
     
     def ready_to_send
