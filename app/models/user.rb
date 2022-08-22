@@ -26,9 +26,11 @@
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_organization_id       (organization_id)
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_email                        (email) UNIQUE
+#  index_users_on_organization_id              (organization_id)
+#  index_users_on_reset_password_token         (reset_password_token) UNIQUE
+#  index_users_on_stripe_account_id            (stripe_account_id) UNIQUE
+#  index_users_on_stripe_financial_account_id  (stripe_financial_account_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -38,8 +40,9 @@ class User < ApplicationRecord
   include EnglishLanguageSupport
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :trackable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable
+
+  scope :with_stripe_id, -> (stripe_id) {where(stripe_account_id: stripe_id)}
 
   validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company", "Dummy"]}
   validates :email, :role, :encrypted_password, presence: true
@@ -50,13 +53,13 @@ class User < ApplicationRecord
 
   validate :name_has_valid_characters
   def name_has_valid_characters
-    if business_name != nil && isOrganization? && !business_name.tr(" &-", "").match?(/\A[a-zA-Z0-9'-]*\z/)
+    if !business_name.blank? && isOrganization? && !business_name.tr(" &-", "").match?(/\A[a-zA-Z0-9'-]*\z/)
       errors.add(:business_name, "can only contain letters, numbers, ampersands (&), and hyphens (-)")
     elsif !isOrganization?
-      if first_name != nil && !first_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
+      if first_name.blank? && !first_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
         errors.add(:first_name, "can only contain letters and hyphens (-)")
       end
-      if last_name != nil && !last_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
+      if last_name.blank? && !last_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
         errors.add(:last_name, "can only contain letters and hyphens (-)")
       end
     end
@@ -71,15 +74,15 @@ class User < ApplicationRecord
   # Member-type users cannot belong to another member-type user.
   validate :member_cannot_belong_to_member
   def member_cannot_belong_to_member
-    if organization != nil
-      errors.add(:organization, "must be an organization-type user, not '#{indefinite_articleize(organization.role)}'") unless organization.isOrganization?
+    if !organization.nil?
+      errors.add(:organization, "must be an organization-type user") unless organization.isOrganization?
     end
   end
 
   validate :role_must_match_organization_type
   def role_must_match_organization_type
-    if organization != nil && role != nil
-      errors.add(:organization, "member must have appropriate user role. The role of '#{role}' is invalid for members of the organization '#{organization.role}'") unless (organization.isLawFirm? && isAttorney?) || (organization.isInsuranceCompany? && isInsuranceAgent?)
+    if !organization.blank? && !role.blank?
+      errors.add(:organization, "member must have appropriate user role. The role of '#{role}' is invalid for members of #{organization.role.pluralize}") unless (organization.isLawFirm? && isAttorney?) || (organization.isInsuranceCompany? && isInsuranceAgent?)
     end
   end
 
@@ -153,6 +156,22 @@ class User < ApplicationRecord
     source: :payments_in
   )
 
+  has_many(
+    :payment_requests,
+    class_name: "PaymentRequest",
+    foreign_key: "requester_id",
+    inverse_of: :requester,
+    dependent: :destroy
+  )
+
+  has_many(
+    :document_reviews,
+    class_name: "DocumentReview",
+    foreign_key: "reviewer_id",
+    inverse_of: :reviewer,
+    dependent: :destroy
+  )
+
   after_create do |user|
     if user.isOrganization? && user.stripe_account_id.blank?
       connect_account = Stripe::Account.create({
@@ -198,7 +217,7 @@ class User < ApplicationRecord
     if user.organization_id == 0
       user.organization_id = nil
     end     
-    if user.role == nil && user.organization != nil
+    if user.role.blank? && !user.organization.blank?
       if user.organization.isLawFirm?
         self.role = "Attorney"
       elsif user.organization.isInsuranceCompany?
@@ -216,12 +235,12 @@ class User < ApplicationRecord
       return business_name
     end
     full = ""
-    if first_name != nil
+    if !first_name.blank?
       full += first_name
-      if last_name != nil
+      if !last_name.blank?
         full += " #{last_name}"
       end
-    elsif last_name != nil
+    elsif !last_name.blank?
       full += last_name
     end
     return full
@@ -292,16 +311,16 @@ class User < ApplicationRecord
       return a_settlements
     elsif isInsuranceAgent?
       return ia_settlements
-    elsif isOrganization?
-      settlements = Array.new
-      members.each do |u|
-        settlements += u.settlements
-      end
-      return settlements
+    elsif isLawFirm?
+      attorney_id_array = User.where(organization_id: id).pluck(:id)
+      settlements = Settlement.where(attorney_id: attorney_id_array).all
+    elsif isInsuranceCompany?
+      agent_id_array = User.where(organization_id: id).pluck(:id)
+      settlements = Settlement.where(insurance_agent_id: agent_id_array).all
     end
   end
 
-  def preferred_payment_method
-    BankAccount.where("user_id=?", id).and(BankAccount.where("preferred=?", true)).first
+  def default_bank_account
+    return bank_accounts.default.first
   end
 end

@@ -4,25 +4,34 @@
             <div class="card">
                 <h1 class="text-center card-header border-0">Details</h1>
                 <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
-                <div class="list-group">
-                    <%if @settlement.documents.size > 0%>
-                        <%=link_to "📄 View documents", document_index_path(@settlement), class: "list-group-item list-group-item-action"%>
-                    <%else%>
-                        <%=link_to "📄 View documents", "#", class: "list-group-item list-group-item-action disabled"%>
-                    <%end%>
-                    <%=link_to "➕ Add document", document_new_path(:settlement_id => @settlement.id), class: "list-group-item list-group-item-action"%>
-
-                    <%if current_user.isAttorney?%>                            
-                        <%if @settlement.stage != 3%>
-                            <a href="#" class="list-group-item list-group-item-action disabled">❌ Complete settlement</a>
-                        <%elsif @settlement.stage == 3 && @settlement.status == 4%>
-                            <%=link_to "🏁 Complete settlement", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
-                        <%end%>
-                    <%elsif current_user.isInsuranceAgent?%>
-                        <a href="<%=stripe_initiate_settlement_payment_path(@settlement)%>" class="list-group-item list-group-item-action">💵 Make payment</a>
-                    <%end%>
-                    <%=link_to "❗ Cancel settlement", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
+                <div class="row">
+                    <div class="col-auto pe-0">
+                        <div class="list-group list-group-flush border-end">
+                            <%=link_to "📄 Documents", document_index_path(@settlement), class: "list-group-item list-group-item-action"%>
+                            <%=link_to "💵 Payment", payment_show_path(@settlement), class: "list-group-item list-group-item-action"%>
+                            <%=link_to "🏁 Complete", settlement_complete_path(@settlement), class: "list-group-item list-group-item-action"%>
+                            <%=link_to "🚫 Cancel", settlement_destroy_path(@settlement), method: :delete, class: "list-group-item list-group-item-action", :data => {:confirm => 'Cancel? Are you sure?'}%>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h5 class="mt-2">Required before payment</h5>
+                        <ul class="list-unstyled pt-2 border-top">
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="bi bi-<%=@settlement.documents.exists? ? "check-square": "square"%>"></i></h5>
+                                <p class="m-0">At least one document.</p>
+                            </li>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="bi bi-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "check-square": "square"%>"></i></h5>
+                                <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
+                            </li>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="bi bi-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "check-square": "square"%>"></i></h5>
+                                <p class="m-0">All documents that need a signature have one.</p>
+                            </li>                            
+                        </ul>
+                    </div>
                 </div>
+                
             </div>
         </div>
         <div class="col w-50" style="display: table-cell;">

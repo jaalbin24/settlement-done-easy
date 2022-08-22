@@ -2,28 +2,25 @@
 #
 # Table name: settlements
 #
-#  id                       :bigint           not null, primary key
-#  claim_number             :string
-#  completed                :boolean          default(FALSE), not null
-#  defendant_name           :string
-#  dollar_amount            :float
-#  incident_date            :date
-#  incident_location        :string
-#  payment_has_error        :boolean          default(FALSE), not null
-#  payment_made             :boolean          default(FALSE), not null
-#  payment_received         :boolean          default(FALSE), not null
-#  plaintiff_name           :string
-#  policy_number            :string
-#  signature_requested      :boolean          default(FALSE), not null
-#  stage                    :integer          default(1), not null
-#  status                   :integer          default(1), not null
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  attorney_id              :bigint
-#  insurance_agent_id       :bigint
-#  stripe_payment_intent_id :string
-#  stripe_price_id          :string
-#  stripe_product_id        :string
+#  id                  :bigint           not null, primary key
+#  claim_number        :string
+#  completed           :boolean          default(FALSE), not null
+#  defendant_name      :string
+#  dollar_amount       :float
+#  incident_date       :date
+#  incident_location   :string
+#  payment_has_error   :boolean          default(FALSE), not null
+#  payment_made        :boolean          default(FALSE), not null
+#  payment_received    :boolean          default(FALSE), not null
+#  plaintiff_name      :string
+#  policy_number       :string
+#  signature_requested :boolean          default(FALSE), not null
+#  stage               :integer          default(1), not null
+#  status              :integer          default(1), not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  attorney_id         :bigint
+#  insurance_agent_id  :bigint
 #
 # Indexes
 #
@@ -37,10 +34,25 @@
 #
 class Settlement < ApplicationRecord
     include DocumentGenerator
+
     validates :dollar_amount, presence: true
     validates :completed, inclusion: {in: [false], unless: :payment_received, message: "cannot be true when payment received is false"}
     validates :payment_received, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
     validates :payment_has_error, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
+    validate :one_or_less_active_payment
+    def one_or_less_active_payment
+        errors.add(:payments, "can only have one active payment at a time.") unless payments.active.size <= 1
+    end
+
+    validate :amount_is_above_allowed_threshold
+    def amount_is_above_allowed_threshold
+        errors.add(:dollar_amount, "must be greater than $#{Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS}") unless dollar_amount > Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS
+    end
+    
+    validate :amount_is_below_allowed_threshold
+    def amount_is_below_allowed_threshold
+        errors.add(:dollar_amount, "must be less than $#{Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS}") unless dollar_amount < Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS
+    end
 
     belongs_to(
         :attorney,
@@ -62,9 +74,17 @@ class Settlement < ApplicationRecord
         dependent: :destroy
     )
 
-    has_one(
-        :payment,
+    has_many(
+        :payments,
         class_name: "Payment",
+        foreign_key: "settlement_id",
+        inverse_of: :settlement,
+        dependent: :destroy
+    )
+
+    has_one(
+        :payment_request,
+        class_name: "PaymentRequest",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
         dependent: :destroy
@@ -81,12 +101,12 @@ class Settlement < ApplicationRecord
         end
     end
 
-    def partner_of(user)
-        if user.isAttorney?
-            return insurance_agent
-        elsif user.isInsuranceAgent?
-            return attorney
-        end
+    after_create do
+        payments.create!(
+            source: insurance_agent.organization.default_bank_account,
+            destination: attorney.organization.default_bank_account,
+            amount: dollar_amount
+        )
     end
 
     def has_documents?
@@ -230,15 +250,29 @@ class Settlement < ApplicationRecord
         puts "====> NOW stage=#{stage}, status=#{status}"
     end
 
-    def initiate_payment
-        payment = build_payment(
-            source: insurance_agent.organization.bank_accounts.first,
-            destination: attorney.organization.bank_accounts.first,
-            amount: dollar_amount
-        )
-        payment.save
-        payment.execute_inbound_transfer
+    def ready_for_payment?
+        if documents.empty? # If settlement has no documents
+            return false
+        elsif documents.rejected.exists? # If settlement has rejected documents
+            return false
+        elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
+            return false
+        elsif documents.unsigned.needs_signature.exists? # If settlement has unsigned documents that should be signed
+            return false
+        else
+            return true
+        end
     end
 
+    def active_payment
+        return payments.active.first
+    end
 
+    def initiate_payment
+        if !ready_for_payment?
+            raise StandardError.new "Settlement not ready for payment!"
+        else
+            payment.execute_inbound_transfer
+        end
+    end
 end

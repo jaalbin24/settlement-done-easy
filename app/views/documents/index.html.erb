@@ -15,11 +15,17 @@
         </tr>
     </thead>
     <tbody>
-        <%@settlement.documents.each do |d|%>
+        <%@settlement.documents.order(status: :asc).each do |d|%>
+        <%if d.rejected?%>
+            <tr class="table-danger">
+        <%elsif d.approved?%>
+            <tr class="table-success">
+        <%else%>
             <tr>
+        <%end%>
                 <td><%=d.pdf.filename%></td>
-                <%if d.added_by.organization != nil%>
-                    <td><%="#{d.added_by.full_name} (#{d.added_by.organization.full_name})"%></td>
+                <%if d.auto_generated?%>
+                    <td><%="#{d.added_by.full_name} (Auto-generated)"%></td>
                 <%else%>
                     <td><%=d.added_by.full_name%></td>
                 <%end%>
@@ -33,15 +39,12 @@
                 <%end%>
                 <%if d.signed?%>
                     <td>✔️</td>
-                <%elsif d.ds_envelope_id != nil%>
+                <%elsif !d.ds_envelope_id.blank?%>
                     <td>⌛</td>
                 <%else%>
                     <td>❌</td>
                 <%end%>
                 <td class="text-end">
-                    <%if !d.signed?%>
-                        <%=link_to "Sign", document_get_e_signature_path(d), class: "badge rounded-pill bg-primary text-decoration-none"%>
-                    <%end%>
                     <%=link_to "Review", document_show_path(d), class: "badge rounded-pill bg-primary text-decoration-none"%>
                     <%=link_to "Download", rails_blob_path(d.pdf, disposition: "attachment"), class: "badge rounded-pill bg-primary text-decoration-none"%>
                     <%=link_to "Remove", document_delete_path(d), data: {confirm: "Are you sure you want to delete #{d.pdf.filename}?"}, method: :delete, class: "badge rounded-pill bg-danger text-decoration-none"%>

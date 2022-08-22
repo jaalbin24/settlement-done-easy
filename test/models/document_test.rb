@@ -2,15 +2,16 @@
 #
 # Table name: documents
 #
-#  id             :bigint           not null, primary key
-#  approved       :boolean          default(FALSE), not null
-#  rejected       :boolean          default(FALSE), not null
-#  signed         :boolean          default(FALSE), not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  added_by_id    :bigint
-#  ds_envelope_id :string
-#  settlement_id  :bigint
+#  id              :bigint           not null, primary key
+#  auto_generated  :boolean          default(FALSE), not null
+#  needs_signature :boolean          default(FALSE), not null
+#  signed          :boolean          default(FALSE), not null
+#  status          :string           default("Waiting for review"), not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  added_by_id     :bigint
+#  ds_envelope_id  :string
+#  settlement_id   :bigint
 #
 # Indexes
 #

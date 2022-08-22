@@ -1,4 +1,4 @@
-<div class="card" style="height: 25.2rem;">
+<div class="card">
     <div class="card-header"><h4 class="m-0">Active Settlements</h4></div>
     <%if current_user.settlements.size != 0%>
     <table class="table table-sm table-hover table-borderless m-0">
@@ -36,6 +36,8 @@
     </table>
     <%else%>
     <p class="text-center">No active settlements!</p>
-    <%=link_to "New settlement", settlement_new_path, class: "text-center btn btn-primary mx-auto"%>
     <%end%>
+    <div class="card-body">
+        <%=link_to "New settlement", settlement_new_path, class: "btn btn-sm btn-primary"%>
+    </div>
 </div>

@@ -29,7 +29,7 @@
               </li>
               <%if !current_user.isOrganization?%>
                 <li class="nav-item">
-                  <%= link_to "New Settlement", settlement_new_path, class: 'nav-link'%>
+                  <%= link_to "Settlements", settlement_completed_index_path, class: 'nav-link'%>
                 </li>
                 <li class="nav-item">
                   <%= link_to current_user.organization.full_name, "#", class: 'nav-link'%>
