@@ -7,7 +7,7 @@ module PaymentSafety
     
     module Payments
         def safe_to_execute_inbound_transfer?(payment)
-            unless payment.stripe_inbound_transfer_id.blank?
+            
         end
 
         def safe_to_execute_outbound_payment?(payment)
