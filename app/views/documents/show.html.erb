@@ -106,13 +106,13 @@
                                 <div class="col border-end">
                                     <h5 class="fs-bold">Approvals gathered:</h5>
                                     <%@document.reviews.approvals.each do |review|%>
-                                        <h6><i class="bi bi-check-square"></i> <%=@document.added_by == review.reviewer ? "#{review.reviewer.full_name} (Automatically)" : review.reviewer.full_name%></h6>
+                                        <h6><i class="fa-regular fa-square-check"></i> <%=@document.added_by == review.reviewer ? "#{review.reviewer.full_name} (Automatically)" : review.reviewer.full_name%></h6>
                                     <%end%>
                                     <%@document.reviews.rejections.each do |review|%>
-                                        <h6 class="text-danger"><i class="bi bi-square"></i> <%=review.reviewer.full_name%></h6>
+                                        <h6 class="text-danger"><i class="fa-regular fa-square"></i> <%=review.reviewer.full_name%></h6>
                                     <%end%>
                                     <%@document.reviews.waiting_for_review.each do |review|%>
-                                        <h6><i class="bi bi-square"></i> <%=review.reviewer.full_name%></h6>
+                                        <h6><i class="fa-regular fa-square"></i> <%=review.reviewer.full_name%></h6>
                                     <%end%>
                                 </div>
                                 <div class="col">

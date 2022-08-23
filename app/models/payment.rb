@@ -4,6 +4,7 @@
 #
 #  id                          :bigint           not null, primary key
 #  amount                      :float            not null
+#  completed_at                :datetime
 #  status                      :string           default("Not sent"), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
@@ -97,7 +98,8 @@ class Payment < ApplicationRecord
         if status_changed?
             if processing?
                 log_entries.build(
-                    message: "Payment initiated."
+                    user: settlement.insurance_agent,
+                    message: "Payment of $#{amount} initiated."
                 )
             elsif failed?
                 log_entries.build(
@@ -205,6 +207,7 @@ class Payment < ApplicationRecord
 
     def complete
         self.status = "Complete"
+        self.completed_at = DateTime.now
         if !self.save
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end

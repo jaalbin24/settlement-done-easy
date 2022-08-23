@@ -111,13 +111,13 @@ class User < ApplicationRecord
   has_many(
     :a_payments,
     through: :a_settlements,
-    source: :payment
+    source: :payments
   )
 
   has_many(
     :ia_payments,
     through: :ia_settlements,
-    source: :payment
+    source: :payments
   )
 
   belongs_to(

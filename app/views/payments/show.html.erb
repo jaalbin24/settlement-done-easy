@@ -19,9 +19,17 @@
                         </div>
                         <div class="col-auto d-flex align-items-center">
                             <%if current_user.isAttorney?%>
-                                <%=link_to "Request payment", payment_request_create_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                <%if @settlement.ready_for_payment?%>
+                                    <%=link_to "Request payment", payment_request_create_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                <%else%>
+                                    <%=link_to "Request payment", nil, class: "disabled btn btn-sm btn-primary"%>
+                                <%end%>
                             <%else%>
-                                <%=link_to "Send payment", settlement_execute_payment_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                <%if @settlement.ready_for_payment?%>
+                                    <%=link_to "Send payment", settlement_execute_payment_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                <%else%>
+                                    <%=link_to "Send payment", nil, class: "disabled btn btn-sm btn-primary"%>
+                                <%end%>
                             <%end%>
                         </div>
                     </div>
@@ -33,46 +41,6 @@
                             <p class="m-0 text-muted"><%=time_ago_in_words(e.created_at)%> ago</p>
                         </li>
                     <%end%>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0">John requested payment.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(6.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0">Jane initiated payment.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(6.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0 text-primary">SDE recieved funds from State Farm.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(2.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0 text-primary">SDE sent funds to GKBM.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(2.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0 text-danger">Payment failed!</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(8.hours.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0">John requested a new payment.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(6.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0">Jane initiated the new payment.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(6.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0 text-primary">SDE recieved funds from State Farm.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(2.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0 text-primary">SDE sent funds to GKBM.</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(2.days.ago)%> ago</p>
-                    </li>
-                    <li class="list-group-item py-1 d-flex justify-content-between">
-                        <p class="m-0 text-success">Payment complete!</p>
-                        <p class="m-0 text-muted"><%=time_ago_in_words(8.hours.ago)%> ago</p>
-                    </li>
                 </ul>
             </div>
         </div>

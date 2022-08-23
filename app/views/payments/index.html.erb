@@ -1,0 +1,48 @@
+<h1 class="text-center">Payments Index</h1>
+
+<%if !@payments.exists?%>
+    <p class="text-center">You do not have any payments.</p>
+<%else%>
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr>
+                <td>Date started</td>
+                <td>Date completed</td>
+                <td>Amount</td>
+                <td>Source</td>
+                <td>Destination</td>
+                <td>Status</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <%@payments.each do |p|%>
+            <%if p.failed? || p.returned?%>
+                <tr class="table-danger">
+            <%else%>
+                <tr>
+            <%end%>
+                    <td><%=p.created_at.in_time_zone("Central Time (US & Canada)").strftime("%-d %b, %Y at %l:%M%P %Z")%></td>
+                    <td>
+                        <%if p.completed_at.nil?%>
+                            N/A
+                        <%else%>
+                            <%=p.completed_at.in_time_zone("Central Time (US & Canada)").strftime("%-d %b, %Y at %l:%M%P %Z")%>
+                        <%end%>
+                    </td>
+                    <td>$<%=p.amount%></td>
+                    <td><%=p.source.user.business_name%></td>
+                    <td><%=p.destination.user.business_name%></td>
+                    <td>
+                        <span class="badge rounded-pill bg-<%=p.completed? ? "success" : "primary"%>"><%=p.status%></span>
+                    </td>
+                    <td>
+                        <a href=<%=payment_show_path(p)%> class="text-decoration-none">
+                            <h6 class="m-0"><i class="fa-solid fa-handshake"></i></h6>
+                        </a>
+                    </td>
+                </tr>
+            <%end%>
+        </tbody>
+    </table>
+<%end%>

@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.string "stripe_outbound_payment_id"
     t.string "stripe_outbound_transfer_id"
     t.float "amount", null: false
+    t.datetime "completed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["destination_id"], name: "index_payments_on_destination_id"
