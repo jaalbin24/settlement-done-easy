@@ -29,15 +29,15 @@
                         <h5 class="mt-2">Required before payment</h5>
                         <ul class="list-unstyled pt-2 border-top">
                             <li class="d-flex gap-2">
-                                <h5 class="mx-0"><i class="bi bi-<%=@settlement.documents.exists? ? "check-square": "square"%>"></i></h5>
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? ? "square-check": "square"%>"></i></h5>
                                 <p class="m-0">At least one document.</p>
                             </li>
                             <li class="d-flex gap-2">
-                                <h5 class="mx-0"><i class="bi bi-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "check-square": "square"%>"></i></h5>
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "square-check": "square"%>"></i></h5>
                                 <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
                             </li>
                             <li class="d-flex gap-2">
-                                <h5 class="mx-0"><i class="bi bi-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "check-square": "square"%>"></i></h5>
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
                                 <p class="m-0">All documents that need a signature have one.</p>
                             </li>                            
                         </ul>
