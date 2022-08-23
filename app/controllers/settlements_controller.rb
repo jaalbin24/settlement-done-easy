@@ -122,6 +122,18 @@ class SettlementsController < ApplicationController
             flash[:info] = "This settlement has already been paid."
             redirect_back(fallback_location: root_path)
             return
+        elsif !settlement.documents.exists?
+            flash[:info] = "This settlement must have an approved document before payment can be made."
+            redirect_back(fallback_location: root_path)
+            return
+        elsif settlement.documents.unapproved.exists?
+            flash[:info] = "All documents must be approved before payment can be made."
+            redirect_back(fallback_location: root_path)
+            return
+        elsif documents.unsigned.need_signature.exists?
+            flash[:info] = "All documents that need a signature must be signed before payment can be made."
+            redirect_back(fallback_location: root_path)
+            return
         elsif !settlement.insurance_agent.organization.bank_accounts.exists?
             flash[:info] = "You cannot make payments because #{settlement.insurance_agent.organization.full_name} has not set up payment details."
             redirect_back(fallback_location: root_path)
