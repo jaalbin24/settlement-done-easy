@@ -116,38 +116,29 @@ class SettlementsController < ApplicationController
         end
         if settlement.has_ongoing_payment?
             flash[:info] = "This settlement already has an ongoing payment."
-            redirect_back(fallback_location: root_path)
-            return
         elsif settlement.has_completed_payment?
             flash[:info] = "This settlement has already been paid."
-            redirect_back(fallback_location: root_path)
-            return
         elsif !settlement.documents.exists?
             flash[:info] = "This settlement must have an approved document before payment can be made."
-            redirect_back(fallback_location: root_path)
-            return
         elsif settlement.documents.unapproved.exists?
             flash[:info] = "All documents must be approved before payment can be made."
-            redirect_back(fallback_location: root_path)
-            return
+
         elsif settlement.documents.unsigned.need_signature.exists?
             flash[:info] = "All documents that need a signature must be signed before payment can be made."
-            redirect_back(fallback_location: root_path)
-            return
+
         elsif !settlement.insurance_agent.organization.bank_accounts.exists?
             flash[:info] = "You cannot make payments because #{settlement.insurance_agent.organization.full_name} has not set up payment details."
-            redirect_back(fallback_location: root_path)
-            return
+
         elsif !settlement.attorney.organization.bank_accounts.exists?
             flash[:info] = "You cannot make payments because #{settlement.attorney.organization.full_name} has not set up payment details."
-            redirect_back(fallback_location: root_path)
-            return
+
         elsif !current_user.isInsuranceAgent?
             flash[:info] = "#{current_user.role.pluralize.capitalize} cannot pay settlements."
-            redirect_back(fallback_location: root_path)
-            return
+
+        else
+            flash[:info] = "Settlement initiated!"
+            settlement.initiate_payment
         end
-        settlement.initiate_payment
         redirect_back(fallback_location: root_path)
     end
 

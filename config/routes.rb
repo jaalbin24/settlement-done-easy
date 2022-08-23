@@ -71,6 +71,7 @@ Rails.application.routes.draw do
 
   post 'webhook/stripe',                              to: 'stripe#handle_event',                      as: 'stripe_webhook_handle_event'
 
+  get 'payments',                                     to: 'payments#index',                           as: 'payment_index'
   get 'settlement/:id/payment',                       to: 'payments#show',                            as: 'payment_show'
   patch 'settlement/:id/payment',                     to: 'payments#update',                          as: 'payment_update'
 

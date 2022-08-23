@@ -9,6 +9,8 @@ class CreatePayments < ActiveRecord::Migration[6.1]
       t.string      :stripe_outbound_payment_id
       t.string      :stripe_outbound_transfer_id
       t.float       :amount,      null: false
+      t.datetime    :completed_at
+
       t.timestamps
     end
     

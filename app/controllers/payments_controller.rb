@@ -20,6 +20,10 @@ class PaymentsController < ApplicationController
         @payment = @settlement.active_payment
     end
 
+    def index
+        @payments = current_user.payments
+    end
+
     def payment_params
         params.require(:payment).permit(
             :source_id,

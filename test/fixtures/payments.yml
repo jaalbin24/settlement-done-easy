@@ -4,6 +4,7 @@
 #
 #  id                          :bigint           not null, primary key
 #  amount                      :float            not null
+#  completed_at                :datetime
 #  status                      :string           default("Not sent"), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
