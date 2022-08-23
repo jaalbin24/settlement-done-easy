@@ -123,6 +123,7 @@ attorneys.each do |a|
         )
         if !settlement.save
             puts "ERRORS: #{settlement.errors.full_messages.inspect}"
+            puts "ERRORS: #{settlement.log_entries.first.errors.full_messages.inspect}"
         end
         doc = settlement.documents.create!(
             added_by: a,
