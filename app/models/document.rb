@@ -66,6 +66,14 @@ class Document < ApplicationRecord
         foreign_key: 'added_by_id',
     )
 
+    has_many(
+        :log_entries,
+        class_name: "DocumentLogEntry",
+        foreign_key: "document_id",
+        inverse_of: :document,
+        dependent: :destroy
+    )
+
     validates :pdf, presence: true
     validates :status, inclusion: {in: ["Approved", "Rejected", "Waiting for review"]}
     validate :has_exactly_two_reviews
@@ -105,15 +113,52 @@ class Document < ApplicationRecord
 
     before_save do |document|
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting document models
-            if reviews.rejections.exists?
-                document.status = "Rejected"
-            elsif reviews.approvals.size == reviews.size
-                puts "====> Document approved! approvals.size=#{reviews.approvals.size} reviews.size=#{reviews.size}"
-                document.status = "Approved"
-            else
-                document.status = "Waiting for review"
-            end
+            update_approval_status
+            generate_any_logs
             settlement.save
+        end
+    end
+
+    after_commit do |document|
+
+    end
+
+    def update_approval_status
+        if reviews.rejections.exists?
+            self.status = "Rejected"
+        elsif reviews.approvals.size == reviews.size
+            self.status = "Approved"
+        else
+            self.status = "Waiting for review"
+        end
+    end
+
+    def generate_any_logs
+        if status_changed?
+            if approved?
+                log_entries.build(
+                    message: "Document is 100% approved."
+                )
+            end
+        end
+        if self.new_record?
+            if auto_generated?
+                log_entries.build(
+                    user: added_by,
+                    message: "#{added_by.full_name} generated a document."
+                )
+            else
+                log_entries.build(
+                    user: added_by,
+                    message: "#{added_by.full_name} uploaded a document."
+                )
+            end
+        end
+        if signed? && signed_changed?
+            log_entries.build(
+                user: added_by,
+                message: "Document has been signed by XXXXXXXXXX",
+            )
         end
     end
   

@@ -97,9 +97,9 @@
                             <p class="text-center text-muted">This document has been approved by all parties.</p>
                             <%else%>
                                 <%if @document.reviews.waiting_for_review.authored_by(current_user).exists?%>
-                                <p class="text-center text-muted">You must approve or reject this document for the settlement to continue.</p>
+                                    <p class="text-center text-muted">You must approve or reject this document for the settlement to continue.</p>
                                 <%else%>
-                                <p class="text-center text-muted"><%=@document.reviews.waiting_for_review.first.reviewer.full_name%> must approve this document for the settlement to continue.</p>
+                                    <p class="text-center text-muted"><%=@document.reviews.waiting_for_review.first.reviewer.full_name%> must approve this document for the settlement to continue.</p>
                                 <%end%>
                             <%end%>
                             <div class="row">

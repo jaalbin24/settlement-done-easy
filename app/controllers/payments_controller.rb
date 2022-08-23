@@ -1,4 +1,6 @@
 class PaymentsController < ApplicationController
+    before_action :authenticate_user!
+
     def create
 
     end
@@ -14,7 +16,8 @@ class PaymentsController < ApplicationController
     end
 
     def show
-        @payment = Settlement.find(params[:id]).active_payment
+        @settlement = Settlement.find(params[:id])
+        @payment = @settlement.active_payment
     end
 
     def payment_params

@@ -73,5 +73,8 @@ Rails.application.routes.draw do
 
   get 'settlement/:id/payment',                       to: 'payments#show',                            as: 'payment_show'
   patch 'settlement/:id/payment',                     to: 'payments#update',                          as: 'payment_update'
+
+  post 'settlement/:id/payment_request',              to: 'payment_requests#create',                  as: 'payment_request_create'
+  patch 'settlement/:id/payment_request',             to: 'payment_requests#update',                  as: 'payment_request_update'
   
 end

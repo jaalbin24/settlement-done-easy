@@ -36,8 +36,8 @@ class Payment < ApplicationRecord
     scope :with_outbound_transfer_id,   ->  (stripe_id) {where(stripe_outbound_transfer_id: stripe_id)}
 
     scope :processing,                  ->              {where(status: "Processing")}
-    scope :active,                      ->              {where.not(status: "Failed").and(where.not(status: "Canceled"))}
-
+    scope :active,                      ->              {where.not(status: "Failed").and(where.not(status: "Canceled").and(where.not(status: "Returned")))}
+    scope :completed,                   ->              {where(status: "Complete")}
     belongs_to(
         :settlement,
         class_name: "Settlement",
@@ -59,7 +59,15 @@ class Payment < ApplicationRecord
         inverse_of: :payments_in
     )
 
-    validates :status, inclusion: {in: ["Not sent", "Processing", "Failed", "Canceled", "Complete"]}
+    has_many(
+        :log_entries,
+        class_name: "PaymentLogEntry",
+        foreign_key: "payment_id",
+        inverse_of: :payment,
+        dependent: :destroy
+    )
+
+    validates :status, inclusion: {in: ["Not sent", "Processing", "Failed", "Canceled", "Complete", "Returned"]}
     validates :source, :destination, :amount, presence: true
     
     validate :amount_is_above_allowed_threshold
@@ -81,6 +89,44 @@ class Payment < ApplicationRecord
         errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
     end
 
+    before_save do
+        generate_any_logs
+    end
+
+    def generate_any_logs
+        if status_changed?
+            if processing?
+                log_entries.build(
+                    message: "Payment initiated."
+                )
+            elsif failed?
+                log_entries.build(
+                    message: "Payment failed."
+                )
+            elsif canceled?
+                log_entries.build(
+                    message: "Payment canceled."
+                )
+            elsif completed?
+                log_entries.build(
+                    message: "Payment completed."
+                )
+            elsif returned?
+                log_entries.build(
+                    message: "Payment returned."
+                )
+            end
+        end
+        if stripe_outbound_payment_id_changed?
+            log_entries.build(
+                message: "SDE recieved funds from #{source.user.business_name}."
+            )
+            log_entries.build(
+                message: "SDE sent funds to #{destination.user.business_name}."
+            )
+        end
+    end
+
     def execute_inbound_transfer
         inbound_transfer = Stripe::Treasury::InboundTransfer.create(
             {
@@ -93,7 +139,10 @@ class Payment < ApplicationRecord
             {stripe_account: settlement.insurance_agent.organization.stripe_account_id}
         )
         self.stripe_inbound_transfer_id = inbound_transfer.id
-        self.save
+        self.status = "Processing"
+        if !self.save
+            puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+        end
     end
 
     def execute_outbound_payment
@@ -118,7 +167,9 @@ class Payment < ApplicationRecord
             {stripe_account: settlement.insurance_agent.organization.stripe_account_id},
         )
         self.stripe_outbound_payment_id = outbound_payment.id
-        self.save
+        if !self.save
+            puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+        end
     end
 
     def execute_outbound_transfer
@@ -143,7 +194,9 @@ class Payment < ApplicationRecord
             {stripe_account: settlement.attorney.organization.stripe_account_id},
         )
         self.stripe_outbound_transfer_id = outbound_transfer.id
-        self.save
+        if !self.save
+            puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+        end
     end
 
     def amount_in_cents
@@ -152,14 +205,28 @@ class Payment < ApplicationRecord
 
     def complete
         self.status = "Complete"
-        self.save
+        if !self.save
+            puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+        end
     end
 
-    def completed?
-        return status == "Complete"
+    def processing?
+        return status == "Processing"
+    end
+
+    def canceled?
+        return status == "Canceled"
     end
 
     def failed?
         return status == "Failed"
+    end
+
+    def returned?
+        return status == "Returned"
+    end
+
+    def completed?
+        return status == "Complete"
     end
 end

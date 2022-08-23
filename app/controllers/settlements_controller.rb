@@ -114,19 +114,19 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        if !settlement.payment.nil?
+        if settlement.has_ongoing_payment?
             flash[:info] = "This settlement already has an ongoing payment."
             redirect_back(fallback_location: root_path)
             return
-        elsif current_user.organization == nil
-            flash[:info] = "You must belong to an organization to make payments. Click <a href=#{organization_join_path}>here<a> to join an organization."
+        elsif settlement.has_completed_payment?
+            flash[:info] = "This settlement has already been paid."
             redirect_back(fallback_location: root_path)
             return
-        elsif settlement.insurance_agent.organization.bank_accounts.empty?
+        elsif !settlement.insurance_agent.organization.bank_accounts.exists?
             flash[:info] = "You cannot make payments because #{settlement.insurance_agent.organization.full_name} has not set up payment details."
             redirect_back(fallback_location: root_path)
             return
-        elsif settlement.attorney.organization.bank_accounts.empty?
+        elsif !settlement.attorney.organization.bank_accounts.exists?
             flash[:info] = "You cannot make payments because #{settlement.attorney.organization.full_name} has not set up payment details."
             redirect_back(fallback_location: root_path)
             return

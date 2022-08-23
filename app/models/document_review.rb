@@ -50,9 +50,45 @@ class DocumentReview < ApplicationRecord
         inverse_of: :document_reviews
     )
 
-    after_commit do
+    has_many(
+        :log_entries,
+        class_name: "DocumentReviewLogEntry",
+        foreign_key: "document_review_id",
+        inverse_of: :document_review,
+        dependent: :destroy
+    )
+
+    after_save do
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
-            document.save
+            if !document.save
+                puts "⚠️⚠️⚠️ ERROR: #{document.errors.full_messages.inspect}"
+                raise ActiveRecord::Rollback
+            end
+        end
+    end
+
+    before_save do
+        generate_any_logs
+    end
+
+    def generate_any_logs
+        if verdict_changed?
+            if is_for_approval?
+                log_entries.build(
+                    user: reviewer,
+                    message: "#{reviewer.full_name} approved a document."
+                )
+            elsif is_for_rejection?
+                log_entries.build(
+                    user: reviewer,
+                    message: "#{reviewer.full_name} rejected a document."
+                )
+            elsif waiting_for_review?
+                log_entries.build(
+                    user: reviewer,
+                    message: "#{reviewer.full_name} unapproved a document."
+                )
+            end
         end
     end
 
@@ -72,6 +108,10 @@ class DocumentReview < ApplicationRecord
         end
         self.verdict = "Waiting"
         return self.save
+    end
+
+    def waiting_for_review?
+        return verdict == "Waiting"
     end
 
     def is_for_approval?

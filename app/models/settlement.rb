@@ -82,13 +82,25 @@ class Settlement < ApplicationRecord
         dependent: :destroy
     )
 
-    has_one(
-        :payment_request,
+    has_many(
+        :payment_requests,
         class_name: "PaymentRequest",
         foreign_key: "settlement_id",
         inverse_of: :settlement,
         dependent: :destroy
     )
+
+    has_many(
+        :log_entries,
+        class_name: "SettlementLogEntry",
+        foreign_key: "settlement_id",
+        inverse_of: :settlement,
+        dependent: :destroy
+    )
+
+    before_save do
+        generate_any_logs
+    end
 
     after_commit do
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
@@ -107,6 +119,22 @@ class Settlement < ApplicationRecord
             destination: attorney.organization.default_bank_account,
             amount: dollar_amount
         )
+    end
+
+    def generate_any_logs
+        puts "METHOD IS HITTING"
+        if new_record?
+            puts "FIRST ONE"
+            log_entries.build(
+                message: "New settlement started."
+            )
+        end
+        if completed_changed?
+            puts "SECOND ONE"
+            log_entries.build(
+                message: "Settlement completed."
+            )
+        end
     end
 
     def has_documents?
@@ -195,24 +223,7 @@ class Settlement < ApplicationRecord
             end
         end
     end
-    # STAGE 1
-        # STATUS 1 = Waiting for document upload.
-        # STATUS 2 = Document needs approval.
-        # STATUS 3 = Document rejected. New document must be uploaded or current document must be approved.
-
-    # STAGE 2
-        # STATUS 1 = Document approved. Needs signature.
-        # STATUS 2 = DS signature request sent. Waiting for claimant signature.
-        # STATUS 3 = Approved by claimant (signed) and waiting for final document review.
-
-    # STAGE 3
-        # STATUS 1 = Document w/ signature approved. Waiting for payment.
-        # STATUS 2 = Paid. Payment processing.
-        # STATUS 3 = Error with payment. Waiting for payment again.
-        # STATUS 4 = Payment received. Waiting for Settlement completion.
-
-    # STAGE 4
-        # STATUS 1 = Completed
+    
     def update_progress
         puts "====> SETTLEMENT PROGRESS UPDATED"
         puts "====> WAS stage=#{stage}, status=#{status}"
@@ -257,7 +268,7 @@ class Settlement < ApplicationRecord
             return false
         elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
             return false
-        elsif documents.unsigned.needs_signature.exists? # If settlement has unsigned documents that should be signed
+        elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
             return false
         else
             return true
@@ -268,11 +279,27 @@ class Settlement < ApplicationRecord
         return payments.active.first
     end
 
+    def active_payment_request
+        return payment_requests.active.first
+    end
+
+    def has_unanswered_payment_request?
+        return payment_requests.unanswered.exists?
+    end
+
+    def has_ongoing_payment?
+        return active_payment.processing?
+    end
+
+    def has_completed_payment?
+        return payments.completed.exists?
+    end
+
     def initiate_payment
         if !ready_for_payment?
             raise StandardError.new "Settlement not ready for payment!"
         else
-            payment.execute_inbound_transfer
+            active_payment.execute_inbound_transfer
         end
     end
 end
