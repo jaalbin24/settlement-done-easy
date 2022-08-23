@@ -87,3 +87,6 @@ gem 'whenever'
 
 # Payment Processor
 gem 'stripe' #, '~> 5.47.0'
+
+# For icons
+gem "font-awesome-sass"
