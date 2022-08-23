@@ -130,7 +130,7 @@ class SettlementsController < ApplicationController
             flash[:info] = "All documents must be approved before payment can be made."
             redirect_back(fallback_location: root_path)
             return
-        elsif documents.unsigned.need_signature.exists?
+        elsif settlement.documents.unsigned.need_signature.exists?
             flash[:info] = "All documents that need a signature must be signed before payment can be made."
             redirect_back(fallback_location: root_path)
             return
