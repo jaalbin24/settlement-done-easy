@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
   patch 'documents/:id/approve',                to: 'document_reviews#approve',           as: 'document_approve'
   patch 'documents/:id/reject',                 to: 'document_reviews#reject',            as: 'document_reject'
-  patch 'documents/:id/unreject',               to: 'document_reviews#unreject',        as: 'document_unreject'
+  patch 'documents/:id/unreject',               to: 'document_reviews#unreject',          as: 'document_unreject'
   get 'document/:id/get_e_signature',           to: 'documents#get_e_signature',          as: 'document_get_e_signature'
   patch 'documents/:id/send_ds_signature_request',  to: 'documents#send_ds_signature_request', as: 'document_send_ds_signature_request'
   get 'documents/:id/get_ds_envelope_status',   to: 'documents#get_ds_envelope_status',   as: 'document_get_ds_envelope_status'  
@@ -74,8 +74,10 @@ Rails.application.routes.draw do
   get 'payments',                                     to: 'payments#index',                           as: 'payment_index'
   get 'settlement/:id/payment',                       to: 'payments#show',                            as: 'payment_show'
   patch 'settlement/:id/payment',                     to: 'payments#update',                          as: 'payment_update'
+  post 'payments/:id/sync',                           to: 'payments#sync_with_stripe',                as: 'payment_sync_with_stripe'
 
   post 'settlement/:id/payment_request',              to: 'payment_requests#create',                  as: 'payment_request_create'
-  patch 'settlement/:id/payment_request',             to: 'payment_requests#update',                  as: 'payment_request_update'
+  post 'payment_request/:id/accept',                  to: 'payment_requests#accept',                  as: 'payment_request_accept'
+  post 'payment_request/:id/deny',                    to: 'payment_requests#deny',                    as: 'payment_request_deny'
   
 end

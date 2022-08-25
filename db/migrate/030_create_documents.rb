@@ -11,6 +11,8 @@ class CreateDocuments < ActiveRecord::Migration[6.1]
 
       t.string :ds_envelope_id
 
+      t.references  :log_book,    foreign_key: {to_table: :log_books}
+
       t.timestamps
     end
   end

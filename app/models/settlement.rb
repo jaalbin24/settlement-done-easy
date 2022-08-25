@@ -21,16 +21,19 @@
 #  updated_at          :datetime         not null
 #  attorney_id         :bigint
 #  insurance_agent_id  :bigint
+#  log_book_id         :bigint
 #
 # Indexes
 #
 #  index_settlements_on_attorney_id         (attorney_id)
 #  index_settlements_on_insurance_agent_id  (insurance_agent_id)
+#  index_settlements_on_log_book_id         (log_book_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (attorney_id => users.id)
 #  fk_rails_...  (insurance_agent_id => users.id)
+#  fk_rails_...  (log_book_id => log_books.id)
 #
 class Settlement < ApplicationRecord
     include DocumentGenerator
@@ -75,6 +78,13 @@ class Settlement < ApplicationRecord
     )
 
     has_many(
+        :document_reviews,
+        class_name: "DocumentReview",
+        through: :documents,
+        source: :reviews
+    )
+
+    has_many(
         :payments,
         class_name: "Payment",
         foreign_key: "settlement_id",
@@ -90,16 +100,18 @@ class Settlement < ApplicationRecord
         dependent: :destroy
     )
 
-    has_many(
-        :log_entries,
-        class_name: "SettlementLogEntry",
-        foreign_key: "settlement_id",
-        inverse_of: :settlement,
-        dependent: :destroy
+    belongs_to(
+        :log_book,
+        class_name: "LogBook",
+        foreign_key: "log_book_id",
+        dependent: :destroy,
+        optional: true
     )
 
     before_save do
+        create_log_book_model_if_self_lacks_one
         generate_any_logs
+        log_book.save!
     end
 
     after_commit do
@@ -114,7 +126,7 @@ class Settlement < ApplicationRecord
     end
 
     after_create do
-        payments.create!(
+        payments.build(
             source: insurance_agent.organization.default_bank_account,
             destination: attorney.organization.default_bank_account,
             amount: dollar_amount
@@ -125,16 +137,20 @@ class Settlement < ApplicationRecord
         puts "METHOD IS HITTING"
         if new_record?
             puts "FIRST ONE"
-            log_entries.build(
+            log_book.entries.build(
                 message: "New settlement started."
             )
         end
         if completed_changed?
             puts "SECOND ONE"
-            log_entries.build(
+            log_book.entries.build(
                 message: "Settlement completed."
             )
         end
+    end
+
+    def create_log_book_model_if_self_lacks_one
+        self.log_book = LogBook.create! if log_book.nil?
     end
 
     def has_documents?
@@ -293,6 +309,22 @@ class Settlement < ApplicationRecord
 
     def has_completed_payment?
         return payments.completed.exists?
+    end
+
+    def payment_related_log_entries
+        array = []
+        array += payments.pluck(:log_book_id) if payments.exists?
+        array += payment_requests.pluck(:log_book_id) if payment_requests.exists?
+        return LogBookEntry.where(log_book_id: array).all
+    end
+
+    def all_log_entries
+        array = [log_book_id]
+        array += payments.pluck(:log_book_id) if payments.exists?
+        array += payment_requests.pluck(:log_book_id) if payment_requests.exists?
+        array += documents.pluck(:log_book_id) if documents.exists?
+        array += document_reviews.pluck(:log_book_id) if document_reviews.exists?
+        return LogBookEntry.where(log_book_id: array).all
     end
 
     def initiate_payment

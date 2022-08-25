@@ -11,16 +11,19 @@
 #  updated_at      :datetime         not null
 #  added_by_id     :bigint
 #  ds_envelope_id  :string
+#  log_book_id     :bigint
 #  settlement_id   :bigint
 #
 # Indexes
 #
 #  index_documents_on_added_by_id    (added_by_id)
+#  index_documents_on_log_book_id    (log_book_id)
 #  index_documents_on_settlement_id  (settlement_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (added_by_id => users.id)
+#  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (settlement_id => settlements.id)
 #
 class Document < ApplicationRecord
@@ -66,12 +69,12 @@ class Document < ApplicationRecord
         foreign_key: 'added_by_id',
     )
 
-    has_many(
-        :log_entries,
-        class_name: "DocumentLogEntry",
-        foreign_key: "document_id",
-        inverse_of: :document,
-        dependent: :destroy
+    belongs_to(
+        :log_book,
+        class_name: "LogBook",
+        foreign_key: "log_book_id",
+        dependent: :destroy,
+        optional: true
     )
 
     validates :pdf, presence: true
@@ -112,15 +115,11 @@ class Document < ApplicationRecord
     end
 
     before_save do |document|
-        if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting document models
-            update_approval_status
-            generate_any_logs
-            settlement.save
-        end
-    end
-
-    after_commit do |document|
-
+        update_approval_status
+        create_log_book_model_if_self_lacks_one
+        generate_any_logs
+        log_book.save!
+        settlement.save
     end
 
     def update_approval_status
@@ -136,35 +135,42 @@ class Document < ApplicationRecord
     def generate_any_logs
         if status_changed?
             if approved?
-                log_entries.build(
-                    message: "Document is 100% approved."
+                log_book.entries.build(
+                    message: "Document #{pdf_file_name} is 100% approved."
                 )
             end
         end
         if self.new_record?
             if auto_generated?
-                log_entries.build(
+                log_book.entries.build(
                     user: added_by,
                     message: "#{added_by.full_name} generated a document."
                 )
             else
-                log_entries.build(
+                log_book.entries.build(
                     user: added_by,
                     message: "#{added_by.full_name} uploaded a document."
                 )
             end
         end
         if signed? && signed_changed?
-            log_entries.build(
+            log_book.entries.build(
                 user: added_by,
                 message: "Document has been signed by XXXXXXXXXX",
             )
         end
     end
+
+    def create_log_book_model_if_self_lacks_one
+        self.log_book = LogBook.create! if log_book.nil?
+    end
   
     def pdf_file_name
-        name = settlement.claim_number + "_document.pdf"
-        return name
+        if pdf.attached?
+            return pdf.filename.to_s
+        else
+            return name = settlement.claim_number + "_document.pdf"
+        end
     end
 
     def rejected?

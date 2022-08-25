@@ -23,6 +23,8 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.references  :attorney,        foreign_key: {to_table: :users}
       t.references  :insurance_agent, foreign_key: {to_table: :users}
 
+      t.references  :log_book,    foreign_key: {to_table: :log_books}
+
       t.timestamps
     end
   end

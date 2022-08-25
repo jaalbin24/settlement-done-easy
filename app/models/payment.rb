@@ -9,6 +9,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint
+#  log_book_id                 :bigint
 #  settlement_id               :bigint
 #  source_id                   :bigint
 #  stripe_inbound_transfer_id  :string
@@ -18,6 +19,7 @@
 # Indexes
 #
 #  index_payments_on_destination_id               (destination_id)
+#  index_payments_on_log_book_id                  (log_book_id)
 #  index_payments_on_settlement_id                (settlement_id)
 #  index_payments_on_source_id                    (source_id)
 #  index_payments_on_stripe_inbound_transfer_id   (stripe_inbound_transfer_id) UNIQUE
@@ -27,6 +29,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (destination_id => bank_accounts.id)
+#  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (settlement_id => settlements.id)
 #  fk_rails_...  (source_id => bank_accounts.id)
 #
@@ -60,12 +63,12 @@ class Payment < ApplicationRecord
         inverse_of: :payments_in
     )
 
-    has_many(
-        :log_entries,
-        class_name: "PaymentLogEntry",
-        foreign_key: "payment_id",
-        inverse_of: :payment,
-        dependent: :destroy
+    belongs_to(
+        :log_book,
+        class_name: "LogBook",
+        foreign_key: "log_book_id",
+        dependent: :destroy,
+        optional: true
     )
 
     validates :status, inclusion: {in: ["Not sent", "Processing", "Failed", "Canceled", "Complete", "Returned"]}
@@ -90,43 +93,57 @@ class Payment < ApplicationRecord
         errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
     end
 
+    before_validation do
+        puts "EXECUTING"
+        if log_book.nil?
+            log_book = LogBook.create!
+            puts "LOGBOOK CREATED"
+        end
+    end
+
     before_save do
+        create_log_book_model_if_self_lacks_one
         generate_any_logs
+        log_book.save!
     end
 
     def generate_any_logs
         if status_changed?
             if processing?
-                log_entries.build(
+                log_book.entries.build(
                     user: settlement.insurance_agent,
                     message: "Payment of $#{amount} initiated."
                 )
             elsif failed?
-                log_entries.build(
+                log_book.entries.build(
                     message: "Payment failed."
                 )
             elsif canceled?
-                log_entries.build(
+                log_book.entries.build(
                     message: "Payment canceled."
                 )
             elsif completed?
-                log_entries.build(
+                log_book.entries.build(
                     message: "Payment completed."
                 )
             elsif returned?
-                log_entries.build(
+                log_book.entries.build(
                     message: "Payment returned."
                 )
             end
         end
         if stripe_outbound_payment_id_changed?
-            log_entries.build(
+            log_book.entries.build(
                 message: "SDE recieved funds from #{source.user.business_name}."
             )
-            log_entries.build(
+            log_book.entries.build(
                 message: "SDE sent funds to #{destination.user.business_name}."
             )
         end
+    end
+
+    def create_log_book_model_if_self_lacks_one
+        self.log_book = LogBook.create! if log_book.nil?
     end
 
     def execute_inbound_transfer
@@ -205,11 +222,104 @@ class Payment < ApplicationRecord
         return (amount * 100).round
     end
 
-    def complete
-        self.status = "Complete"
-        self.completed_at = DateTime.now
-        if !self.save
-            puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+    def sync_with_stripe
+        if completed?
+            return
+        end
+        if !stripe_outbound_transfer_id.nil?
+            outbound_transfer = Stripe::Treasury::OutboundTransfer.retrieve(stripe_outbound_transfer_id, {stripe_account: settlement.attorney.organization.stripe_account_id})
+            case outbound_transfer.status
+            when 'posted'
+                complete_payment
+            when 'canceled'
+                # THIS SHOULD NOT HAPPEN!
+                # Send yourself an email!
+            when 'failed'
+                fail_payment
+            when 'returned'
+                return_payment
+            when 'processing'
+
+            else
+                raise StandardError.new "Unhandled payment status: #{outbound_transfer.status}"
+            end
+        elsif !stripe_outbound_payment_id.nil?
+            outbound_payment = Stripe::Treasury::OutboundPayment.retrieve(stripe_outbound_payment_id, {stripe_account: settlement.insurance_agent.organization.stripe_account_id})
+            case outbound_payment.status
+            when 'posted'
+                execute_outbound_transfer
+            when 'canceled'
+                # THIS SHOULD NOT HAPPEN!
+                # Send yourself an email!
+            when 'failed'
+                fail_payment
+            when 'returned'
+                return_payment
+            when 'processing'
+
+            else
+                raise StandardError.new "Unhandled payment status: #{outbound_payment.status}"
+            end
+        elsif !stripe_inbound_transfer_id.nil?
+            inbound_transfer = Stripe::Treasury::InboundTransfer.retrieve(stripe_inbound_transfer_id, {stripe_account: settlement.insurance_agent.organization.stripe_account_id})
+            case inbound_transfer.status
+            when 'succeeded'
+                execute_outbound_payment
+            when 'canceled'
+                cancel_payment
+            when 'failed'
+                fail_payment
+            when 'processing'
+
+            else
+                raise StandardError.new "Unhandled payment status: #{outbound_payment.status}"
+            end
+        end
+    end
+
+    def complete_payment
+        if completed?
+            raise StandardError.new "Payment is already completed."
+        else
+            self.status = "Complete"
+            self.completed_at = DateTime.now
+            if !self.save
+                puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+            end
+        end
+    end
+
+    def cancel_payment
+        if canceled?
+            raise StandardError.new "Payment is already canceled."
+        else
+            self.status = "Canceled"
+            self.completed_at = DateTime.now
+            if !self.save
+                puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+            end
+        end
+    end
+
+    def fail_payment
+        if failed?
+            raise StandardError.new "Payment is already failed."
+        else
+            self.status = "Failed"
+            if !self.save
+                puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+            end
+        end
+    end
+
+    def return_payment
+        if returned?
+            raise StandardError.new "Payment is already returned."
+        else
+            self.status = "Returned"
+            if !self.save
+                puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
+            end
         end
     end
 

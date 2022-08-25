@@ -9,6 +9,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint
+#  log_book_id                 :bigint
 #  settlement_id               :bigint
 #  source_id                   :bigint
 #  stripe_inbound_transfer_id  :string
@@ -18,6 +19,7 @@
 # Indexes
 #
 #  index_payments_on_destination_id               (destination_id)
+#  index_payments_on_log_book_id                  (log_book_id)
 #  index_payments_on_settlement_id                (settlement_id)
 #  index_payments_on_source_id                    (source_id)
 #  index_payments_on_stripe_inbound_transfer_id   (stripe_inbound_transfer_id) UNIQUE
@@ -27,6 +29,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (destination_id => bank_accounts.id)
+#  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (settlement_id => settlements.id)
 #  fk_rails_...  (source_id => bank_accounts.id)
 #

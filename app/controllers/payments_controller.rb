@@ -24,6 +24,12 @@ class PaymentsController < ApplicationController
         @payments = current_user.payments
     end
 
+    def sync_with_stripe
+        payment = Payment.find(params[:id])
+        payment.sync_with_stripe
+        redirect_back(fallback_location: root_path)
+    end
+
     def payment_params
         params.require(:payment).permit(
             :source_id,

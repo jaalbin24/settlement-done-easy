@@ -118,14 +118,32 @@
                                 <div class="col">
                                     <div class="d-grid gap-2">
                                         <%if !@document.has_been_reviewed_by?(current_user)%>
-                                            <%=link_to "Approve", document_approve_path(@document), method: :patch, class: "btn btn-lg btn-success"%>
-                                            <%=link_to "Reject", document_reject_path(@document), method: :patch, class: "btn btn-lg btn-danger"%>
+                                            <a class="btn btn-lg btn-success" href="<%=document_approve_path(@document)%>" data-method="patch">
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                Approve
+                                            </a>
+                                            <a class="btn btn-lg btn-danger" href="<%=document_reject_path(@document)%>" data-method="patch">
+                                                <i class="fa-solid fa-thumbs-down"></i>
+                                                Reject
+                                            </a>
                                         <%elsif @document.has_been_rejected_by?(current_user)%>
-                                            <%=link_to "Approve", document_approve_path(@document), method: :patch, class: "btn btn-lg btn-success"%>
-                                            <%=link_to "Unreject", document_unreject_path(@document), method: :patch, class: "btn btn-lg btn-info"%>
+                                            <a class="btn btn-lg btn-success" href="<%=document_approve_path(@document)%>" data-method="patch">
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                Approve
+                                            </a>
+                                            <a class="btn btn-lg btn-info" href="<%=document_unreject_path(@document)%>" data-method="patch">
+                                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                                Unreject
+                                            </a>
                                         <%elsif @document.has_been_approved_by?(current_user)%>
-                                            <%=link_to "Approve", "#", class: "disabled btn btn-lg btn-success"%>
-                                            <%=link_to "Reject", "#", class: "disabled btn btn-lg btn-danger"%>
+                                            <a class="disabled btn btn-lg btn-success" href="">
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                Approve
+                                            </a>
+                                            <a class="disabled btn btn-lg btn-danger" href="">
+                                                <i class="fa-solid fa-thumbs-down"></i>
+                                                Reject
+                                            </a>
                                         <%end%>
                                     </div>
                                 </div>
