@@ -1,22 +1,22 @@
 # == Schema Information
 #
-# Table name: document_log_entries
+# Table name: log_book_entries
 #
 #  id          :bigint           not null, primary key
 #  message     :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  document_id :bigint
+#  log_book_id :bigint
 #  user_id     :bigint
 #
 # Indexes
 #
-#  index_document_log_entries_on_document_id  (document_id)
-#  index_document_log_entries_on_user_id      (user_id)
+#  index_log_book_entries_on_log_book_id  (log_book_id)
+#  index_log_book_entries_on_user_id      (user_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (document_id => documents.id)
+#  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (user_id => users.id)
 #
 

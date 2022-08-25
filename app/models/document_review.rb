@@ -8,16 +8,19 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  document_id :bigint
+#  log_book_id :bigint
 #  reviewer_id :bigint
 #
 # Indexes
 #
 #  index_document_reviews_on_document_id  (document_id)
+#  index_document_reviews_on_log_book_id  (log_book_id)
 #  index_document_reviews_on_reviewer_id  (reviewer_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (document_id => documents.id)
+#  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (reviewer_id => users.id)
 #
 class DocumentReview < ApplicationRecord
@@ -50,12 +53,12 @@ class DocumentReview < ApplicationRecord
         inverse_of: :document_reviews
     )
 
-    has_many(
-        :log_entries,
-        class_name: "DocumentReviewLogEntry",
-        foreign_key: "document_review_id",
-        inverse_of: :document_review,
-        dependent: :destroy
+    belongs_to(
+        :log_book,
+        class_name: "LogBook",
+        foreign_key: "log_book_id",
+        dependent: :destroy,
+        optional: true
     )
 
     after_save do
@@ -68,28 +71,34 @@ class DocumentReview < ApplicationRecord
     end
 
     before_save do
+        create_log_book_model_if_self_lacks_one
         generate_any_logs
+        log_book.save!
     end
 
     def generate_any_logs
         if verdict_changed?
             if is_for_approval?
-                log_entries.build(
+                log_book.entries.build(
                     user: reviewer,
                     message: "#{reviewer.full_name} approved a document."
                 )
             elsif is_for_rejection?
-                log_entries.build(
+                log_book.entries.build(
                     user: reviewer,
                     message: "#{reviewer.full_name} rejected a document."
                 )
             elsif waiting_for_review?
-                log_entries.build(
+                log_book.entries.build(
                     user: reviewer,
                     message: "#{reviewer.full_name} unapproved a document."
                 )
             end
         end
+    end
+
+    def create_log_book_model_if_self_lacks_one
+        self.log_book = LogBook.create! if log_book.nil?
     end
 
     def approve

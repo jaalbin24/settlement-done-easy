@@ -47,10 +47,13 @@ class DocumentsController < ApplicationController
 
     def destroy
         document = Document.find(params[:id])
-        filename = document.pdf.filename
+        filename = document.pdf_file_name
         settlement = document.settlement
-        document.destroy
-        flash[:info] = "#{filename} has been removed."
+        if document.destroy
+            flash[:info] = "#{filename} has been removed."
+        else
+            flash[:info] = "#{filename} could not be removed right now. Try again later."
+        end
         redirect_to document_index_url(settlement)
     end
 

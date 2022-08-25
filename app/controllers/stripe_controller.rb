@@ -197,7 +197,7 @@ class StripeController < ApplicationController
                 head 400
             else
                 puts payment
-                payment.complete
+                payment.complete_payment
             end
         else
             puts "❗❗❗ Unhandled event type: #{event.type} ❗❗❗"

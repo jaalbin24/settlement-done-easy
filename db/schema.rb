@@ -67,34 +67,16 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "document_log_entries", force: :cascade do |t|
-    t.bigint "document_id"
-    t.bigint "user_id"
-    t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["document_id"], name: "index_document_log_entries_on_document_id"
-    t.index ["user_id"], name: "index_document_log_entries_on_user_id"
-  end
-
-  create_table "document_review_log_entries", force: :cascade do |t|
-    t.bigint "document_review_id"
-    t.bigint "user_id"
-    t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["document_review_id"], name: "index_document_review_log_entries_on_document_review_id"
-    t.index ["user_id"], name: "index_document_review_log_entries_on_user_id"
-  end
-
   create_table "document_reviews", force: :cascade do |t|
     t.bigint "reviewer_id"
     t.bigint "document_id"
     t.string "verdict", default: "Waiting", null: false
     t.string "reason"
+    t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["document_id"], name: "index_document_reviews_on_document_id"
+    t.index ["log_book_id"], name: "index_document_reviews_on_log_book_id"
     t.index ["reviewer_id"], name: "index_document_reviews_on_reviewer_id"
   end
 
@@ -106,30 +88,27 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.bigint "settlement_id"
     t.bigint "added_by_id"
     t.string "ds_envelope_id"
+    t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["added_by_id"], name: "index_documents_on_added_by_id"
+    t.index ["log_book_id"], name: "index_documents_on_log_book_id"
     t.index ["settlement_id"], name: "index_documents_on_settlement_id"
   end
 
-  create_table "payment_log_entries", force: :cascade do |t|
-    t.bigint "payment_id"
+  create_table "log_book_entries", force: :cascade do |t|
+    t.bigint "log_book_id"
     t.bigint "user_id"
     t.string "message"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["payment_id"], name: "index_payment_log_entries_on_payment_id"
-    t.index ["user_id"], name: "index_payment_log_entries_on_user_id"
+    t.index ["log_book_id"], name: "index_log_book_entries_on_log_book_id"
+    t.index ["user_id"], name: "index_log_book_entries_on_user_id"
   end
 
-  create_table "payment_request_log_entries", force: :cascade do |t|
-    t.bigint "payment_request_id"
-    t.bigint "user_id"
-    t.string "message"
+  create_table "log_books", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["payment_request_id"], name: "index_payment_request_log_entries_on_payment_request_id"
-    t.index ["user_id"], name: "index_payment_request_log_entries_on_user_id"
   end
 
   create_table "payment_requests", force: :cascade do |t|
@@ -137,9 +116,11 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.bigint "accepter_id"
     t.bigint "settlement_id"
     t.string "status", default: "Requested", null: false
+    t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["accepter_id"], name: "index_payment_requests_on_accepter_id"
+    t.index ["log_book_id"], name: "index_payment_requests_on_log_book_id"
     t.index ["requester_id"], name: "index_payment_requests_on_requester_id"
     t.index ["settlement_id"], name: "index_payment_requests_on_settlement_id"
   end
@@ -154,24 +135,16 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.string "stripe_outbound_transfer_id"
     t.float "amount", null: false
     t.datetime "completed_at"
+    t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["destination_id"], name: "index_payments_on_destination_id"
+    t.index ["log_book_id"], name: "index_payments_on_log_book_id"
     t.index ["settlement_id"], name: "index_payments_on_settlement_id"
     t.index ["source_id"], name: "index_payments_on_source_id"
     t.index ["stripe_inbound_transfer_id"], name: "index_payments_on_stripe_inbound_transfer_id", unique: true
     t.index ["stripe_outbound_payment_id"], name: "index_payments_on_stripe_outbound_payment_id", unique: true
     t.index ["stripe_outbound_transfer_id"], name: "index_payments_on_stripe_outbound_transfer_id", unique: true
-  end
-
-  create_table "settlement_log_entries", force: :cascade do |t|
-    t.bigint "settlement_id"
-    t.bigint "user_id"
-    t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["settlement_id"], name: "index_settlement_log_entries_on_settlement_id"
-    t.index ["user_id"], name: "index_settlement_log_entries_on_user_id"
   end
 
   create_table "settlements", force: :cascade do |t|
@@ -191,10 +164,12 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.boolean "completed", default: false, null: false
     t.bigint "attorney_id"
     t.bigint "insurance_agent_id"
+    t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
     t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
+    t.index ["log_book_id"], name: "index_settlements_on_log_book_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -230,26 +205,23 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
   add_foreign_key "bank_accounts", "users"
   add_foreign_key "comments", "documents"
   add_foreign_key "comments", "users"
-  add_foreign_key "document_log_entries", "documents"
-  add_foreign_key "document_log_entries", "users"
-  add_foreign_key "document_review_log_entries", "document_reviews"
-  add_foreign_key "document_review_log_entries", "users"
   add_foreign_key "document_reviews", "documents"
+  add_foreign_key "document_reviews", "log_books"
   add_foreign_key "document_reviews", "users", column: "reviewer_id"
+  add_foreign_key "documents", "log_books"
   add_foreign_key "documents", "settlements"
   add_foreign_key "documents", "users", column: "added_by_id"
-  add_foreign_key "payment_log_entries", "payments"
-  add_foreign_key "payment_log_entries", "users"
-  add_foreign_key "payment_request_log_entries", "payment_requests"
-  add_foreign_key "payment_request_log_entries", "users"
+  add_foreign_key "log_book_entries", "log_books"
+  add_foreign_key "log_book_entries", "users"
+  add_foreign_key "payment_requests", "log_books"
   add_foreign_key "payment_requests", "settlements"
   add_foreign_key "payment_requests", "users", column: "accepter_id"
   add_foreign_key "payment_requests", "users", column: "requester_id"
   add_foreign_key "payments", "bank_accounts", column: "destination_id"
   add_foreign_key "payments", "bank_accounts", column: "source_id"
+  add_foreign_key "payments", "log_books"
   add_foreign_key "payments", "settlements"
-  add_foreign_key "settlement_log_entries", "settlements"
-  add_foreign_key "settlement_log_entries", "users"
+  add_foreign_key "settlements", "log_books"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
   add_foreign_key "users", "users", column: "organization_id"

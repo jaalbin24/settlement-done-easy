@@ -5,6 +5,9 @@ class CreateDocumentReviews < ActiveRecord::Migration[6.1]
       t.references  :document,    foreign_key: {to_table: :documents}
       t.string      :verdict,     null: false,  default: "Waiting"
       t.string      :reason
+
+      t.references  :log_book,    foreign_key: {to_table: :log_books}
+
       t.timestamps
     end
   end

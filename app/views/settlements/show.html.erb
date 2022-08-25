@@ -9,7 +9,7 @@
                         <div class="list-group list-group-flush border-end">
                             <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=document_index_path(@settlement)%>">
                                 <p class="m-0 p-0">
-                                    <i class="fa-regular fa-file"></i>
+                                    <i class="fa-solid fa-file"></i>
                                     Documents
                                 </p>
                             </a>
@@ -59,23 +59,18 @@
                 <h1 class="text-center card-header border-0">Activity</h1>
                 <%# The code below is a static placeholder for the dynamic activity log that will be incorporated later%>
                 <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center bg-warning"><strong>Status:</strong> <%=@settlement.status_message%></a>                
-                <div class="card-body h-100" style="">
-                    <p class="m-0 text-center text-muted"><%=@settlement.insurance_agent.full_name%> uploaded a document.</p>
-                    <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> rejected a document.</p>
-                    <p style="text-align: right; margin-bottom: -0.5rem;">Please fix the mistakes.</p>
-                    <p class="m-0 text-muted" style="text-align: right;"><%=@settlement.attorney.first_name%></p>
-                    <p style="margin-bottom: -0.5rem;">They're fixed!</p>
-                    <p class="m-0 text-muted"><%=@settlement.insurance_agent.first_name%></p>
-                    <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> approved a document.</p>
-                    <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> sent a signature request to <%=@settlement.plaintiff_name%>.</p>
-                    <p class="m-0 text-center text-muted"><%=@settlement.plaintiff_name%> signed a document.</p>
-                    <p class="m-0 text-center text-muted"><%=@settlement.insurance_agent.full_name%> paid $<%=@settlement.dollar_amount%> settlement.</p>
-                    <p style="text-align: right; margin-bottom: -0.5rem;">Pleasure doing business with you!</p>
-                    <p class="m-0 text-muted" style="text-align: right;"><%=@settlement.attorney.first_name%></p>
-                    <p style="margin-bottom: -0.5rem;">Likewise!</p>
-                    <p class="m-0 text-muted"><%=@settlement.insurance_agent.first_name%></p>
-                    <p class="m-0 text-center text-muted"><%=@settlement.attorney.full_name%> completed this settlement.</p>
-                </div>
+                <%if @settlement.all_log_entries.exists?%>
+                    <%@settlement.all_log_entries.each do |e|%>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item py-1 d-flex justify-content-between">
+                            <p class="m-0"><%=e.message%></p>
+                            <p class="m-0 text-muted"><%=time_ago_in_words(e.created_at)%> ago</p>
+                        </li>
+                    </ul>
+                    <%end%>
+                <%else%>
+
+                <%end%>
                 <div class="form-group">
                     <div class="input-group">
                     <input type="text" class="form-control" placeholder="Type message here..." aria-label="Recipient's username" aria-describedby="button-addon2">

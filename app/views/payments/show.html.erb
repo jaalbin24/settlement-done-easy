@@ -17,12 +17,18 @@
                                 <%end%>
                             </h6>
                         </div>
-                        <div class="col-auto d-flex align-items-center">
+                        <div class="col-auto d-flex align-items-center gap-2 pe-1">
                             <%if current_user.isAttorney?%>
                                 <%if @settlement.ready_for_payment?%>
-                                    <%=link_to "Request payment", payment_request_create_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                    <a class="btn btn-sm btn-primary" href="<%=payment_request_create_path(@settlement)%>" data-method="post">
+                                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                                        Request payment
+                                    </a>
                                 <%else%>
-                                    <%=link_to "Request payment", nil, class: "disabled btn btn-sm btn-primary"%>
+                                    <a class="disabled btn btn-sm btn-primary" href="">
+                                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                                        Request payment
+                                    </a>
                                 <%end%>
                             <%else%>
                                 <%if @settlement.ready_for_payment?%>
@@ -31,11 +37,14 @@
                                     <%=link_to "Send payment", nil, class: "disabled btn btn-sm btn-primary"%>
                                 <%end%>
                             <%end%>
+                            <a href="<%=payment_sync_with_stripe_path(@payment)%>" data-method="post" class="btn-sm btn btn-secondary">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <%@payment.log_entries.each do |e|%>
+                    <%@settlement.payment_related_log_entries.each do |e|%>
                         <li class="list-group-item py-1 d-flex justify-content-between">
                             <p class="m-0"><%=e.message%></p>
                             <p class="m-0 text-muted"><%=time_ago_in_words(e.created_at)%> ago</p>
@@ -110,9 +119,8 @@
                     <p>Amount: $<%=@payment.amount%></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Postpone</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Deny</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+                    <%=link_to "Deny", payment_request_deny_path(@settlement.active_payment_request), method: :post, class: "btn btn-secondary"%>
+                    <%=link_to "Accept", payment_request_accept_path(@settlement.active_payment_request), method: :post, class: "btn btn-primary"%>
                 </div>
             </div>
         </div>

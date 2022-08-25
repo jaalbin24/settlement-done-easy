@@ -115,7 +115,7 @@ attorneys.each do |a|
             attorney:           a,
             insurance_agent:    insurance_agents[rand(0..insurance_agents.size-1)],
             claim_number:       "#{rand(100000..999999)}",
-            dollar_amount:  '%.02f' % rand(100000..2499900).fdiv(100),
+            dollar_amount:      '%.02f' % rand(100000..2499900).fdiv(100),
             defendant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             incident_location:  "Memphis, TN",
@@ -123,7 +123,8 @@ attorneys.each do |a|
         )
         if !settlement.save
             puts "ERRORS: #{settlement.errors.full_messages.inspect}"
-            puts "ERRORS: #{settlement.log_entries.first.errors.full_messages.inspect}"
+            # puts "ERRORS: #{settlement.payments.first.errors.full_messages.inspect}"
+            # puts "ERRORS: #{settlement.documents.first.errors.full_messages.inspect}"
         end
         doc = settlement.documents.create!(
             added_by: a,

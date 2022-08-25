@@ -11,6 +11,8 @@ class CreatePayments < ActiveRecord::Migration[6.1]
       t.float       :amount,      null: false
       t.datetime    :completed_at
 
+      t.references  :log_book,    foreign_key: {to_table: :log_books}
+
       t.timestamps
     end
     
