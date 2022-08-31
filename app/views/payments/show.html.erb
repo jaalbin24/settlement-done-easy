@@ -44,11 +44,17 @@
                     </div>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <%@settlement.payment_related_log_entries.each do |e|%>
-                        <li class="list-group-item py-1 d-flex justify-content-between">
-                            <p class="m-0"><%=e.message%></p>
-                            <p class="m-0 text-muted"><%=time_ago_in_words(e.created_at)%> ago</p>
+                    <%if @settlement.payment_related_log_entries.empty?%>
+                        <li class="list-group-item py-1 text-center">
+                            <p class="m-0 text-muted">Payment has not been sent.</p>
                         </li>
+                    <%else%>
+                        <%@settlement.payment_related_log_entries.each do |e|%>
+                            <li class="list-group-item py-1 d-flex justify-content-between">
+                                <p class="m-0"><%=e.message%></p>
+                                <p class="m-0 text-muted"><%=time_ago_in_words(e.created_at)%> ago</p>
+                            </li>
+                        <%end%>
                     <%end%>
                 </ul>
             </div>
