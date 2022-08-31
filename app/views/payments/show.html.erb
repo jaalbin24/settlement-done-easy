@@ -98,7 +98,7 @@
     </div>
 </div>
 
-<%=link_to "🡸 Back to settlement", settlement_show_path(@payment.settlement), class: "btn btn-outline-primary"%>
+<%=link_to "🡸 Back", :back, class: "btn btn-outline-primary"%>
 
 <%if @settlement.has_unanswered_payment_request? && @settlement.active_payment_request.accepter == current_user%>
     <div class="modal fade" id="payment-request-modal" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -117,10 +117,11 @@
                         <h6><%=@settlement.active_payment_request.requester.full_name%> has requested to send payment!</h6>
                     <%end%>
                     <p>Amount: $<%=@payment.amount%></p>
+                    <p>Clicking accept will automatically 
                 </div>
                 <div class="modal-footer">
                     <%=link_to "Deny", payment_request_deny_path(@settlement.active_payment_request), method: :post, class: "btn btn-secondary"%>
-                    <%=link_to "Accept", payment_request_accept_path(@settlement.active_payment_request), method: :post, class: "btn btn-primary"%>
+                    <%=link_to "Send payment", payment_request_accept_path(@settlement.active_payment_request), method: :post, class: "btn btn-primary"%>
                 </div>
             </div>
         </div>

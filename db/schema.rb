@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_20_154344) do
+ActiveRecord::Schema.define(version: 100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,28 +43,29 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "addresses", force: :cascade do |t|
+    t.string "line1"
+    t.string "line2"
+    t.string "city"
+    t.integer "postal_code"
+    t.string "state"
+    t.string "country"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "bank_accounts", force: :cascade do |t|
     t.string "stripe_payment_method_id", null: false
     t.string "nickname"
     t.integer "last4", limit: 2
     t.string "fingerprint"
-    t.string "status"
+    t.string "status", default: "New", null: false
     t.boolean "default", default: false, null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["stripe_payment_method_id"], name: "index_bank_accounts_on_stripe_payment_method_id", unique: true
     t.index ["user_id"], name: "index_bank_accounts_on_user_id"
-  end
-
-  create_table "comments", force: :cascade do |t|
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "document_id"
-    t.bigint "user_id"
-    t.index ["document_id"], name: "index_comments_on_document_id"
-    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "document_reviews", force: :cascade do |t|
@@ -157,10 +158,6 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.date "incident_date"
     t.integer "stage", default: 1, null: false
     t.integer "status", default: 1, null: false
-    t.boolean "signature_requested", default: false, null: false
-    t.boolean "payment_made", default: false, null: false
-    t.boolean "payment_received", default: false, null: false
-    t.boolean "payment_has_error", default: false, null: false
     t.boolean "completed", default: false, null: false
     t.bigint "attorney_id"
     t.bigint "insurance_agent_id"
@@ -170,6 +167,28 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
     t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
     t.index ["log_book_id"], name: "index_settlements_on_log_book_id"
+  end
+
+  create_table "stripe_account_requirements", force: :cascade do |t|
+    t.bigint "stripe_account_id"
+    t.string "status"
+    t.string "required_item"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["stripe_account_id"], name: "index_stripe_account_requirements_on_stripe_account_id"
+  end
+
+  create_table "stripe_accounts", force: :cascade do |t|
+    t.string "stripe_id"
+    t.bigint "user_id"
+    t.boolean "card_payments_enabled"
+    t.boolean "transfers_enabled"
+    t.boolean "us_bank_account_ach_payments_enabled"
+    t.boolean "treasury_enabled"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["stripe_id"], name: "index_stripe_accounts_on_stripe_id", unique: true
+    t.index ["user_id"], name: "index_stripe_accounts_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -187,7 +206,6 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.string "first_name"
     t.string "last_name"
     t.string "business_name"
-    t.string "stripe_account_id"
     t.string "stripe_financial_account_id"
     t.boolean "stripe_account_onboarded", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
@@ -196,15 +214,12 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["stripe_account_id"], name: "index_users_on_stripe_account_id", unique: true
     t.index ["stripe_financial_account_id"], name: "index_users_on_stripe_financial_account_id", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bank_accounts", "users"
-  add_foreign_key "comments", "documents"
-  add_foreign_key "comments", "users"
   add_foreign_key "document_reviews", "documents"
   add_foreign_key "document_reviews", "log_books"
   add_foreign_key "document_reviews", "users", column: "reviewer_id"
@@ -224,5 +239,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_154344) do
   add_foreign_key "settlements", "log_books"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
+  add_foreign_key "stripe_account_requirements", "stripe_accounts"
+  add_foreign_key "stripe_accounts", "users"
   add_foreign_key "users", "users", column: "organization_id"
 end

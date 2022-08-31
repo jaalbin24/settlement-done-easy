@@ -2,26 +2,22 @@
 #
 # Table name: settlements
 #
-#  id                  :bigint           not null, primary key
-#  claim_number        :string
-#  completed           :boolean          default(FALSE), not null
-#  defendant_name      :string
-#  dollar_amount       :float
-#  incident_date       :date
-#  incident_location   :string
-#  payment_has_error   :boolean          default(FALSE), not null
-#  payment_made        :boolean          default(FALSE), not null
-#  payment_received    :boolean          default(FALSE), not null
-#  plaintiff_name      :string
-#  policy_number       :string
-#  signature_requested :boolean          default(FALSE), not null
-#  stage               :integer          default(1), not null
-#  status              :integer          default(1), not null
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  attorney_id         :bigint
-#  insurance_agent_id  :bigint
-#  log_book_id         :bigint
+#  id                 :bigint           not null, primary key
+#  claim_number       :string
+#  completed          :boolean          default(FALSE), not null
+#  defendant_name     :string
+#  dollar_amount      :float
+#  incident_date      :date
+#  incident_location  :string
+#  plaintiff_name     :string
+#  policy_number      :string
+#  stage              :integer          default(1), not null
+#  status             :integer          default(1), not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  attorney_id        :bigint
+#  insurance_agent_id :bigint
+#  log_book_id        :bigint
 #
 # Indexes
 #
@@ -35,55 +31,18 @@
 #  fk_rails_...  (insurance_agent_id => users.id)
 #  fk_rails_...  (log_book_id => log_books.id)
 #
+DEFAULTS: &DEFAULTS
+    claim_number: C123456789
+    completed: false
+    defendant_name: Danny Defendant
+    dollar_amount: 1000.00
+    incident_date: <%=4.weeks.ago.to_s(:db)%>
+    incident_location: Memphis, TN
+    plaintiff_name: Patty Plaintiff
+    policy_number: P123456789
+    attorney: gkbm_attorney
+    insurance_agent: state_farm_insurance_agent
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-<%
-[true, false].each do |a|
-  [true, false].each do |b|
-    [true, false].each do |c|
-      [true, false].each do |d|
-        [true, false].each do |e|
-          s = Settlement.new(
-            attorney_id: 3,
-            insurance_agent_id: 4,
-            dollar_amount: 1100.11,
-            policy_number: "test_P110011",
-            claim_number: "test_C110011",
-            plaintiff_name: "Patty Plaintiff",
-            defendant_name: "Danny Defendant",
-            incident_date: "12/5/21",
-            incident_location: "Memphis, TN",
-            completed: a,
-            payment_has_error: b,
-            payment_made: c,
-            payment_received: d,
-            signature_requested: e
-          )
-          if s.valid? || s.errors.full_messages.size == 2%>
-            <%="#{a}_#{b}_#{c}_#{d}_#{e}"%>: {
-              attorney_id: 3,
-              insurance_agent_id: 4,
-              dollar_amount: 1100.11,
-              policy_number: "test_P110011",
-              claim_number: "test_C110011",
-              plaintiff_name: "Patty Plaintiff",
-              defendant_name: "Danny Defendant",
-              incident_date: "12/5/21",
-              incident_location: "Memphis, TN",
-              completed: <%=a%>,
-              payment_has_error: <%=b%>,
-              payment_made: <%=c%>,
-              payment_received: <%=d%>,
-              signature_requested: <%=e%>
-            }
-          <%end
-        end
-      end
-    end
-  end
-end%>
-
-
+# Settlement "one" is a brand new settlement, just created, not modified.
+one:
+    <<: *DEFAULTS

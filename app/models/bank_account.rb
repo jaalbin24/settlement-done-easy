@@ -7,7 +7,7 @@
 #  fingerprint              :string
 #  last4                    :integer
 #  nickname                 :string
-#  status                   :string
+#  status                   :string           default("New"), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  stripe_payment_method_id :string           not null
@@ -49,6 +49,7 @@ class BankAccount < ApplicationRecord
     )
 
     validates :stripe_payment_method_id, presence: true
+    validates :status, inclusion: {in: ["New", "Validated", "Verified", "Verification failed", "Errored"]}
 
     after_destroy do |bank_account|
         
@@ -59,16 +60,8 @@ class BankAccount < ApplicationRecord
             rollback
         end
     end
-
-    def send_money_to(destination, amount)
-
-    end
-
-    def sync_with_stripe
-
-    end
-
+    
     def has_ongoing_payments?
-        return Payment.processing.where(destination: self).or(Payment.where(source: self))
+        return Payment.processing.where(destination: self).or(Payment.where(source: self)).exists?
     end
 end

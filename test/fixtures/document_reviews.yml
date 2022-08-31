@@ -24,12 +24,24 @@
 #  fk_rails_...  (reviewer_id => users.id)
 #
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+# Attorney added document 1 & 2, so their default approval is below.
+attorney_approval_for_doc1:
+    reviewer: gkbm_attorney
+    verdict: Approved
+    document: one
+
+attorney_approval_for_doc2:
+    reviewer: gkbm_attorney
+    verdict: Approved
+    document: two
+
+# Insurance agent added document 3 & 4, so their default approval is below.
+insurance_agent_approval_for_doc3:
+    reviewer: state_farm_insurance_agent
+    verdict: Approved
+    document: three
+
+insurance_agent_approval_for_doc4:
+    reviewer: state_farm_insurance_agent
+    verdict: Approved
+    document: four

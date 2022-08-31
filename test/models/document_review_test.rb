@@ -26,7 +26,10 @@
 require "test_helper"
 
 class DocumentReviewTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+    test "fixtures are valid" do
+        assert !document_reviews.empty?, "There are no DocumentReview fixtures to test!"
+        document_reviews.each do |dr|
+            assert dr.valid?, dr.errors.full_messages.inspect
+        end
+    end
 end

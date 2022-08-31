@@ -27,64 +27,25 @@
 #  fk_rails_...  (settlement_id => settlements.id)
 #
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
+# NAME KEY
+# [settlement fixture]_[name]
 
-<%
-added_bys = ["attorney", "agent"]
-approvals = ["approved", "rejected", "waiting"]
-sign_types = ["wet", "e"]
-signeds = ["signed", "unsigned"]
-added_bys.each do |a|
-  approvals.each do |b|
-    sign_types.each do |c|
-      signeds.each do |d|
-        if a == "attorney"
-        added_by = 3
-        elsif a == "agent"
-        added_by = 4
-        end
-        if b == "approved"
-        approved = true
-        rejected = false
-        elsif b == "rejected"
-        approved = false
-        rejected = true
-        elsif b == "waiting"
-        approved = false
-        rejected = false
-        end
-        if c == "wet"
-        uses_wet_signature = true
-        elsif c == "e"
-        uses_wet_signature = false
-        end
-        if d == "signed"
-        signed = true
-        elsif d == "unsigned"
-        signed = false
-        end
-        doc = Document.new(
-          settlement_id: 2,
-          added_by_id: added_by,
-          approved: approved,
-          rejected: rejected,
-          uses_wet_signature: uses_wet_signature,
-          signed: signed
-        )
-        if doc.valid? || doc.errors.full_messages.size == 2%>
-          <%="#{a}_#{b}_#{c}_#{d}: {"%>
-            settlement: 1,
-            added_by_id: <%=added_by%>,
-            approved: <%=approved%>,
-            rejected: <%=rejected%>,
-            uses_wet_signature: <%=uses_wet_signature%>,
-            signed: <%=signed%>
-          }
-        <%end
-      end
-    end
-  end
-end%>
+one:
+    added_by: gkbm_attorney
+    auto_generated: true
+    settlement: one
+
+two:
+    added_by: gkbm_attorney
+    auto_generated: false
+    settlement: one
+
+three:
+    added_by: state_farm_insurance_agent
+    auto_generated: true
+    settlement: one
+
+four:
+    added_by: state_farm_insurance_agent
+    auto_generated: false
+    settlement: one

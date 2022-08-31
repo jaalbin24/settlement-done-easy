@@ -7,7 +7,7 @@
 #  fingerprint              :string
 #  last4                    :integer
 #  nickname                 :string
-#  status                   :string
+#  status                   :string           default("New"), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  stripe_payment_method_id :string           not null
@@ -25,7 +25,16 @@
 require "test_helper"
 
 class BankAccountTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+
+    test "fixtures are valid" do
+        assert !bank_accounts.empty?, "There are no bank account fixtures to test!"
+        bank_accounts.each do |ba|
+            assert ba.valid?, ba.errors.full_messages.inspect
+        end
+    end
+
+
+    test "bank account cannot be deleted while it has ongoing payments" do
+
+    end
 end

@@ -12,10 +12,6 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.integer     :status,                    null: false, default: 1
 
 
-      t.boolean     :signature_requested,       null: false, default: false
-      t.boolean     :payment_made,              null: false, default: false
-      t.boolean     :payment_received,          null: false, default: false
-      t.boolean     :payment_has_error,         null: false, default: false
       # TODO: These booleans should be converted to methods 
 
       t.boolean     :completed,                 null: false, default: false

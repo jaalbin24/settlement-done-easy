@@ -2,7 +2,7 @@
 #
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: { registrations: 'user/registrations'}
+  devise_for :users, controllers: { registrations: 'user/registrations', sessions: 'user/sessions'}
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root to: "pages#root"
@@ -33,7 +33,6 @@ Rails.application.routes.draw do
   patch 'documents/:id',                        to: 'documents#update',                   as: 'document_update'
   delete 'documents/:id',                       to: 'documents#destroy',                  as: 'document_delete'
   
-  post 'comment/:document_id',                  to: 'comments#create',                    as: 'comment_create'
 
   get 'settlements/new',                              to: 'settlements#new',                    as: 'settlement_new'
   get 'settlements/completed',                        to: 'settlements#completed_index',        as: 'settlement_completed_index'
@@ -60,7 +59,6 @@ Rails.application.routes.draw do
   get 'stripe_add_payment_method',                    to: 'stripe#add_payment_method',          as: 'stripe_add_payment_method'
   get 'stripe_dashboard',                             to: 'stripe#dashboard',                   as: 'stripe_dashboard'
 
-  get 'organizations/join',                           to: 'organization_users#join',                  as: 'organization_join'
   get 'organizations/:org_id/members/new',            to: 'organization_users#new_member',            as: 'organization_new_member'
   get 'organizations/:org_id/settlements',            to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
   get 'organizations/:org_id/members',                to: 'organization_users#members_index',         as: 'organization_members_index'

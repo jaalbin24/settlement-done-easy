@@ -11,7 +11,6 @@ class PagesController < ApplicationController
 
     def approve_or_reject
         @document = Document.find(params[:id])
-        @comment = Comment.new
         render :approve_or_reject
     end
 

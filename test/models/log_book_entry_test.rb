@@ -22,7 +22,10 @@
 require "test_helper"
 
 class LogBookEntryTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+    test "fixtures are valid" do
+        assert !log_book_entries.empty?, "There are no LogBookEntry fixtures to test!"
+        log_book_entries.each do |lbe|
+            assert lbe.valid?, lbe.errors.full_messages.inspect
+        end
+    end
 end

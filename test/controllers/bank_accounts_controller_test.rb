@@ -1,9 +1,7 @@
 require "test_helper"
 
 class BankAccountsControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  include Devise::Test::IntegrationHelpers
 
   # was the web request successful?
   # was the user redirected to the right page?
