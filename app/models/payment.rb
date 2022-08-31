@@ -94,10 +94,8 @@ class Payment < ApplicationRecord
     end
 
     before_validation do
-        puts "EXECUTING"
         if log_book.nil?
             log_book = LogBook.create!
-            puts "LOGBOOK CREATED"
         end
     end
 

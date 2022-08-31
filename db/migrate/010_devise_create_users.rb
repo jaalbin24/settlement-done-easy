@@ -37,7 +37,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :first_name
       t.string :last_name
       t.string :business_name
-      t.string :stripe_account_id
       t.string :stripe_financial_account_id
       t.boolean :stripe_account_onboarded,      null: false, default: false
       t.timestamps null: false
@@ -45,7 +44,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
 
     add_index :users, :email,                           unique: true
     add_index :users, :reset_password_token,            unique: true
-    add_index :users, :stripe_account_id,               unique: true
     add_index :users, :stripe_financial_account_id,     unique: true
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true

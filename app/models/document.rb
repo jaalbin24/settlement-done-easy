@@ -41,14 +41,6 @@ class Document < ApplicationRecord
     has_one_attached :pdf
 
     has_many(
-        :comments,
-        class_name: 'Comment',
-        foreign_key: 'document_id',
-        inverse_of: :document,
-        dependent: :destroy
-    )
-
-    has_many(
         :reviews,
         class_name: "DocumentReview",
         foreign_key: "document_id",

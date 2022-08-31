@@ -2,26 +2,22 @@
 #
 # Table name: settlements
 #
-#  id                  :bigint           not null, primary key
-#  claim_number        :string
-#  completed           :boolean          default(FALSE), not null
-#  defendant_name      :string
-#  dollar_amount       :float
-#  incident_date       :date
-#  incident_location   :string
-#  payment_has_error   :boolean          default(FALSE), not null
-#  payment_made        :boolean          default(FALSE), not null
-#  payment_received    :boolean          default(FALSE), not null
-#  plaintiff_name      :string
-#  policy_number       :string
-#  signature_requested :boolean          default(FALSE), not null
-#  stage               :integer          default(1), not null
-#  status              :integer          default(1), not null
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  attorney_id         :bigint
-#  insurance_agent_id  :bigint
-#  log_book_id         :bigint
+#  id                 :bigint           not null, primary key
+#  claim_number       :string
+#  completed          :boolean          default(FALSE), not null
+#  defendant_name     :string
+#  dollar_amount      :float
+#  incident_date      :date
+#  incident_location  :string
+#  plaintiff_name     :string
+#  policy_number      :string
+#  stage              :integer          default(1), not null
+#  status             :integer          default(1), not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  attorney_id        :bigint
+#  insurance_agent_id :bigint
+#  log_book_id        :bigint
 #
 # Indexes
 #
@@ -39,9 +35,6 @@ class Settlement < ApplicationRecord
     include DocumentGenerator
 
     validates :dollar_amount, presence: true
-    validates :completed, inclusion: {in: [false], unless: :payment_received, message: "cannot be true when payment received is false"}
-    validates :payment_received, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
-    validates :payment_has_error, inclusion: {in: [false], unless: :payment_made, message: "cannot be true when payment made is false"}
     validate :one_or_less_active_payment
     def one_or_less_active_payment
         errors.add(:payments, "can only have one active payment at a time.") unless payments.active.size <= 1
@@ -118,9 +111,7 @@ class Settlement < ApplicationRecord
         if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
             self.update_progress
             if self.changed?
-                self.save
-            else
-                puts "====> NOT CHANGED"    
+                self.save   
             end
         end
     end
@@ -134,15 +125,12 @@ class Settlement < ApplicationRecord
     end
 
     def generate_any_logs
-        puts "METHOD IS HITTING"
         if new_record?
-            puts "FIRST ONE"
             log_book.entries.build(
                 message: "New settlement started."
             )
         end
         if completed_changed?
-            puts "SECOND ONE"
             log_book.entries.build(
                 message: "Settlement completed."
             )
@@ -261,12 +249,6 @@ class Settlement < ApplicationRecord
             elsif has_unapproved_signed_document?
                 self.status = 3
             end
-        elsif !payment_made?
-            self.stage = 3
-            self.status = 1
-        elsif !payment_received?
-            self.stage = 3
-            self.status = 2
         elsif !completed?
             self.stage = 3
             self.status = 4

@@ -28,7 +28,10 @@
 require "test_helper"
 
 class PaymentRequestTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+    test "fixtures are valid" do
+        assert !payment_requests.empty?, "There are no PaymentRequest fixtures to test!"
+        payment_requests.each do |pr|
+            assert pr.valid?, pr.errors.full_messages.inspect
+        end
+    end
 end

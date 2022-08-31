@@ -29,19 +29,10 @@
 require "test_helper"
 
 class DocumentTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
-
-  test "fixtures are valid" do
-    assert documents.size != 0, "There are no document fixtures to test!"
-    documents.each do |d|
-      d.settlement = settlements(:false_false_false_false_false)
-      assert d.valid?, d.errors.full_messages.inspect
+    test "fixtures are valid" do
+        assert !documents.empty?, "There are no Document fixtures to test!"
+        documents.each do |d|
+            assert d.valid?, d.errors.full_messages.inspect
+        end
     end
-  end
-
-  test "useful test" do
-
-  end
 end

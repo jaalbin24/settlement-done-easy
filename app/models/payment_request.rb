@@ -57,6 +57,7 @@ class PaymentRequest < ApplicationRecord
     )
 
     validates :status, inclusion: {in: ["Requested", "Postponed", "Denied", "Accepted"]}
+    validates :requester, :accepter, presence: true
     validate :requester_is_affiliated_with_settlement
     def requester_is_affiliated_with_settlement
         errors.add(:requester, "is not affiliated with that settlement.") unless settlement.insurance_agent == requester || settlement.attorney == requester

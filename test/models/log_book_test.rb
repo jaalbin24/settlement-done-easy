@@ -9,7 +9,10 @@
 require "test_helper"
 
 class LogBookTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+    test "fixtures are valid" do
+        assert !log_books.empty?, "There are no LogBook fixtures to test!"
+        log_books.each do |lb|
+            assert lb.valid?, lb.errors.full_messages.inspect
+        end
+    end
 end

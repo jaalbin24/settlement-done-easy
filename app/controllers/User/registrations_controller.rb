@@ -61,7 +61,11 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/edit
   def edit
-    super
+    if current_user.isMember?
+      render :edit_member
+    elsif current_user.isOrganization?
+      render :edit_organization
+    end
   end
 
   # PUT /resource

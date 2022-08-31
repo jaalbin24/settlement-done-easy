@@ -22,17 +22,24 @@ docusign_user = User.create!(
 puts "Created DocuSign user"
 
 law_firm_users = Array.new(1) {|i|
-    law_firm = User.create!(
+    law_firm = User.new(
         email: "law_firm#{i}@example.com",
         password: "password123",
         role: "Law Firm",
         business_name: law_firms[i],
-        stripe_account_id: "acct_1LUMm4PvLqRcxm3z",
         stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
         stripe_account_onboarded: true,
         organization: nil
     )
-    puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
+    law_firm.build_stripe_account(
+        stripe_id: "acct_1LUMm4PvLqRcxm3z"
+    )
+    if law_firm.save
+        puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
+    else
+        raise StandardError.new "⚠️⚠️⚠️ ERROR creating law firm user: #{law_firm.errors.full_messages.inspect}"
+    end
+
     law_firm.bank_accounts.create!(
         stripe_payment_method_id: "pm_1LYvHfPvLqRcxm3zIbQJcor9",
         nickname: "STRIPE TEST BANK (Seeded #1)",
@@ -48,16 +55,24 @@ law_firm_users = Array.new(1) {|i|
 }
 
 insurance_company_users = Array.new(1) {|i|
-    insurance_company = User.create!(
+    insurance_company = User.new(
         email: "insurance_company#{i}@example.com",
         password: "password123",
         role: "Insurance Company",
         business_name: insurance_companies[i],
-        stripe_account_id: "acct_1LUMmEQ44dejfzxN",
         stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
         stripe_account_onboarded: true,
         organization: nil
     )
+    insurance_company.build_stripe_account(
+        stripe_id: "acct_1LUMmEQ44dejfzxN"
+    )
+    if insurance_company.save
+        puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"
+    else
+        raise StandardError.new "⚠️⚠️⚠️ ERROR creating insurance company user: #{insurance_company.errors.full_messages.inspect}"
+    end
+
     insurance_company.bank_accounts.create!(
         stripe_payment_method_id: "pm_1LYvHGQ44dejfzxNSCCrYoET",
         nickname: "STRIPE TEST BANK (Seeded #1)",
@@ -69,19 +84,25 @@ insurance_company_users = Array.new(1) {|i|
         nickname: "STRIPE TEST BANK (Seeded #2)",
         last4: 6789,
     )
-    puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"
     insurance_company
 }
 
-shannon_elsea = User.create!(
+shannon_elsea = User.new(
     email: "shannon.elsea@example.com",
     password: "password123",
-    role: "Attorney",
-    first_name: "Shannon",
-    last_name: "Elsea",
-    organization: User.where(business_name: "GKBM").first
+    role: "Law Firm",
+    business_name: "Shannon Elsea",
+    stripe_financial_account_id: "XXXXXXXXXXXXX",
+    organization: nil
 )
-puts "Created Shannon Elsea user"
+shannon_elsea.build_stripe_account(
+    stripe_id: "acct_1LZzCJPvVAkLezlo"
+)
+if shannon_elsea.save
+    puts "Created Shannon Elsea user"
+else
+    raise StandardError.new "⚠️⚠️⚠️ ERROR creating Shannon Elsea user: #{shannon_elsea.errors.full_messages.inspect}"
+end
 
 attorneys = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
     a = User.create!(
