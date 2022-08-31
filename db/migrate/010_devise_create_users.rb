@@ -34,6 +34,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
 
       # Custom attributes
       t.string :role
+      t.string :public_id
       t.string :first_name
       t.string :last_name
       t.string :business_name
