@@ -14,8 +14,6 @@
 #  policy_number      :string
 #  public_number      :integer
 #  ready_for_payment  :boolean          default(FALSE), not null
-#  stage              :integer          default(1), not null
-#  status             :integer          default(1), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  attorney_id        :bigint
@@ -44,6 +42,24 @@ class Settlement < ApplicationRecord
     scope :ready_for_payment,           ->      {where(ready_for_payment: true)}
 
     validates :amount, presence: true
+    validates :locked, inclusion: {in: [true], if: :completed?}
+    validates :ready_for_payment, inclusion: {in: [false], if: :completed?}
+
+    validate :changes_are_allowed_when_settlement_is_locked
+    def changes_are_allowed_when_settlement_is_locked
+        if locked?
+            changed_attributes.keys.each do |a|
+                puts "=========>>>> a=#{a}"
+                unless Settlement.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
+                    raise SafetyError::SafetyError.new "This settlement is locked. It cannot be changed."
+                end
+            end
+        end
+    end
+    def self.attributes_that_can_be_changed_when_settlement_is_locked
+        [:ready_for_payment, :updated_at, :locked, :completed]
+    end
+
     validate :one_or_less_active_payment
     def one_or_less_active_payment
         errors.add(:payments, "can only have one active payment at a time.") unless payments.active.size <= 1
@@ -121,7 +137,7 @@ class Settlement < ApplicationRecord
     before_save do
         puts "❤️❤️❤️ Settlement before_save block"
         unless log_book.nil?
-            generate_any_logs 
+            generate_any_logs
             log_book.save
         end
         generate_any_notifications
@@ -130,7 +146,6 @@ class Settlement < ApplicationRecord
     after_commit do
         puts "❤️❤️❤️ Settlement after_commit block"
         unless self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
-            update_progress
             update_ready_for_payment_attribute
             if self.changed?
                 self.save
@@ -220,130 +235,12 @@ class Settlement < ApplicationRecord
         elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
             puts "📝📝📝 !payments.not_sent.exists?"
             self.ready_for_payment = false
-        elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when a document is deleted as a part of a rejection review
+        elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
             puts "📝📝📝 !documents.first.persisted?"
             self.ready_for_payment = false
         else
             self.ready_for_payment = true
         end
-    end
-
-    def has_documents?
-        if documents == nil || documents.empty? || !documents.exists?
-            puts "====> FALSE documents.size=#{documents.size}"
-            return false
-        else
-            puts "====> TRUE documents.size=#{documents.size}"
-            return true
-        end
-    end
-
-    def generated_document_file_name
-        "#{self.claim_number}_release.pdf"
-    end
-
-    def status_message
-        return SettlementProgress.status_message(self)
-    end
-
-    def has_approved_and_signed_document?
-        documents.each do |d|
-            if d.approved? && d.signed?
-                return true
-            end
-        end
-        return false
-    end
-
-    def has_approved_document?
-        documents.each do |d|
-            if d.approved?
-                return true
-            end
-        end
-        return false
-    end
-
-    def has_waiting_document?
-        documents.each do |d|
-            if !d.approved? && !d.rejected?
-                return true
-            end
-        end
-        return false
-    end
-
-    def has_document_with_signature_request?
-        documents.each do |d|
-            if d.ds_envelope_id != nil
-                return true
-            end
-        end
-        return false
-    end
-
-    def has_unapproved_signed_document?
-        documents.each do |d|
-            if !d.approved? && d.signed?
-                return true
-            end
-        end
-        return false
-    end
-
-    def document_with_signature_request
-        documents.each do |d|
-            if d.ds_envelope_id != nil
-                return d
-            end
-        end
-    end
-
-    def document_that_needs_signature
-        documents.each do |d|
-            if d.approved? && !d.signed? && d.ds_envelope_id == nil
-                return d
-            end
-        end
-    end
-
-    def first_waiting_document
-        documents.each do |d|
-            if !d.approved? && !d.rejected?
-                return d
-            end
-        end
-    end
-    
-    def update_progress
-        puts "====> SETTLEMENT PROGRESS UPDATED"
-        puts "====> WAS stage=#{stage}, status=#{status}"
-        if !has_documents?
-            self.stage = 1
-            self.status = 1
-        elsif !has_approved_document?
-            self.stage = 1
-            if has_waiting_document?
-                self.status = 2
-            else
-                self.status = 3
-            end
-        elsif !has_approved_and_signed_document?
-            self.stage = 2
-            self.status = 1
-            if has_document_with_signature_request?
-                self.status = 2
-            elsif has_unapproved_signed_document?
-                self.status = 3
-            end
-        elsif !completed?
-            self.stage = 3
-            self.status = 4
-        elsif completed?
-            self.stage = 4
-            self.status = 1
-        end
-        puts "====> NOW stage=#{stage}, status=#{status}"
     end
 
     def ready_for_payment?
@@ -363,7 +260,7 @@ class Settlement < ApplicationRecord
     end
 
     def has_processing_payment?
-        return active_payment.processing?
+        return payments.processing.exists?
     end
 
     def has_completed_payment?

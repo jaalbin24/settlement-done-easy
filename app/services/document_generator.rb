@@ -3,7 +3,7 @@ module DocumentGenerator
     # This^ is included for the number_to_currency method
 
     def generate_document_for_settlement(settlement)
-        pdf = Prawn::Document.new(:margin => [30,90,30,90], filename: settlement.generated_document_file_name) # top, right, bottom, left
+        pdf = Prawn::Document.new(:margin => [30,90,30,90], filename: "#{settlement.claim_number}_release.pdf") # top, right, bottom, left
         pdf.default_leading 0
         pdf.font_size(12)
         pdf.font "Times-Roman"
@@ -69,7 +69,7 @@ module DocumentGenerator
             auto_generated: true,
             added_by: current_user,
         )
-        d.pdf.attach(io: StringIO.new(pdf.render), filename: settlement.generated_document_file_name)
+        d.pdf.attach(io: StringIO.new(pdf.render), filename: "#{settlement.claim_number}_release.pdf")
         return d
     end
     

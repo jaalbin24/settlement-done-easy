@@ -148,6 +148,7 @@ class StripeController < ApplicationController
             inbound_transfer = event.data.object
             payment = Payment.with_inbound_transfer_id(inbound_transfer.id).first
             if payment.nil?
+                # Send yourself an email.
                 puts "❗❗❗ PAYMENT DOES NOT EXIST ❗❗❗"
                 head 400
             else

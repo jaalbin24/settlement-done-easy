@@ -83,6 +83,7 @@ class DocumentsController < ApplicationController
             return
         rescue => e
             flash[:info] = "An unknown error occured."
+            puts "⚠️⚠️⚠️ ERROR: #{e.message}"
             redirect_back(fallback_location: root_path)
             return
         end

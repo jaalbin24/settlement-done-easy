@@ -14,8 +14,6 @@
 #  policy_number      :string
 #  public_number      :integer
 #  ready_for_payment  :boolean          default(FALSE), not null
-#  stage              :integer          default(1), not null
-#  status             :integer          default(1), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  attorney_id        :bigint

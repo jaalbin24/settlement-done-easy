@@ -1,17 +1,17 @@
-<%if settlement.stage == 1%>
-    <span class="badge rounded-pill bg-warning"> </span>
-    <span class="badge rounded-pill bg-secondary"> </span>
-    <span class="badge rounded-pill bg-secondary"> </span>
-<%elsif settlement.stage == 2%>
+<%if settlement.completed?%>
     <span class="badge rounded-pill bg-success"> </span>
-    <span class="badge rounded-pill bg-warning"> </span>
-    <span class="badge rounded-pill bg-secondary"> </span>
-<%elsif settlement.stage == 3%>
+    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-success"> </span>
+<%elsif settlement.has_processing_payment?%>
     <span class="badge rounded-pill bg-success"> </span>
     <span class="badge rounded-pill bg-success"> </span>
     <span class="badge rounded-pill bg-warning"> </span>
-<%elsif settlement.stage == 4%>
+<%elsif settlement.documents.exists?%>
     <span class="badge rounded-pill bg-success"> </span>
-    <span class="badge rounded-pill bg-success"> </span>
-    <span class="badge rounded-pill bg-success"> </span>
+    <span class="badge rounded-pill bg-warning"> </span>
+    <span class="badge rounded-pill bg-secondary"> </span>
+<%else%>
+    <span class="badge rounded-pill bg-warning"> </span>
+    <span class="badge rounded-pill bg-secondary"> </span>
+    <span class="badge rounded-pill bg-secondary"> </span>
 <%end%>

@@ -78,6 +78,20 @@ class Document < ApplicationRecord
     def has_exactly_two_reviews
         errors.add(:reviews, "must be of size=2") unless reviews.size == 2
     end
+
+    validate :changes_are_allowed_when_settlement_is_locked
+    def changes_are_allowed_when_settlement_is_locked
+        if settlement.locked?
+            changed_attributes.keys.each do |a|
+                unless Document.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
+                    raise SafetyError::DocumentSafetyError.new "This settlement is locked. You cannot modify its documents."
+                end
+            end
+        end
+    end
+    def self.attributes_that_can_be_changed_when_settlement_is_locked
+        []
+    end
     
     before_validation do |document|
         puts "❤️❤️❤️ Document before_validation block"

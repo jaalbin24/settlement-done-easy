@@ -35,8 +35,6 @@
 #  fk_rails_...  (source_id => bank_accounts.id)
 #
 class Payment < ApplicationRecord
-    include PaymentSafety
-
     scope :with_inbound_transfer_id,    ->  (stripe_id) {where(stripe_inbound_transfer_id: stripe_id)}
     scope :with_outbound_payment_id,    ->  (stripe_id) {where(stripe_outbound_payment_id: stripe_id)}
     scope :with_outbound_transfer_id,   ->  (stripe_id) {where(stripe_outbound_transfer_id: stripe_id)}
@@ -77,6 +75,11 @@ class Payment < ApplicationRecord
 
     validates :status, inclusion: {in: ["Not sent", "Processing", "Failed", "Canceled", "Complete", "Returned"]}
     validates :source, :destination, :amount, presence: true
+    validates :settlement_id, inclusion: {in: -> (i) {[i.settlement_id_was]}, message: "cannot be changed after creation."}, on: :update
+    validates :stripe_inbound_transfer_id, inclusion: {in: -> (i) {[i.stripe_inbound_transfer_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_inbound_transfer_id_was.blank?}, on: :update
+    validates :stripe_outbound_payment_id, inclusion: {in: -> (i) {[i.stripe_outbound_payment_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_outbound_payment_id_was.blank?}, on: :update
+    validates :stripe_outbound_transfer_id, inclusion: {in: -> (i) {[i.stripe_outbound_transfer_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_outbound_transfer_id_was.blank?}, on: :update
+
     
     validate :amount_is_above_allowed_threshold
     def amount_is_above_allowed_threshold
@@ -100,6 +103,24 @@ class Payment < ApplicationRecord
     validate :amount_matches_settlement_amount
     def amount_matches_settlement_amount
         errors.add(:amount, "cannot be different from settlement amount.") unless amount == settlement.amount
+    end
+
+    validate :changes_are_allowed_when_settlement_is_locked
+    def changes_are_allowed_when_settlement_is_locked
+        if settlement.locked?
+            changed_attributes.keys.each do |a|
+                unless Payment.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
+                    raise SafetyError::PaymentSafetyError.new "You cannot change the source bank account while the settlement is locked."       if source_id_changed?
+                    raise SafetyError::PaymentSafetyError.new "You cannot change the destination bank account while the settlement is locked."  if destination_id_changed?
+                    raise SafetyError::PaymentSafetyError.new "You cannot change the payment amount while the settlement is locked."            if amount_changed?
+                    puts "❗❗❗ Changed payment attributes=#{changed_attributes}"
+                    raise SafetyError::PaymentSafetyError.new "This settlement is locked. You cannot change payment details."
+                end
+            end
+        end
+    end
+    def self.attributes_that_can_be_changed_when_settlement_is_locked
+        [:stripe_inbound_transfer_id, :stripe_outbound_payment_id, :stripe_outbound_transfer_id, :status, :completed_at]
     end
 
     before_create do
@@ -220,7 +241,7 @@ class Payment < ApplicationRecord
     end
 
     def execute_inbound_transfer
-        PaymentSafety::Payments.raise_error_unless_safe_to_execute_inbound_transfer_on self
+        SafetyError::Payments.raise_error_unless_safe_to_execute_inbound_transfer_on self
         inbound_transfer = Stripe::Treasury::InboundTransfer.create(
             {
                 financial_account: settlement.insurance_agent.organization.stripe_financial_account_id,
@@ -234,19 +255,16 @@ class Payment < ApplicationRecord
         self.stripe_inbound_transfer_id = inbound_transfer.id
         self.status = "Processing"
         unless self.save
+            # TODO: An inbound transfer failed! Send yourself an email with the following info:
+            # - inbound_transfer_id
+            # - organization & member user
+            # - error message.
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
 
     def execute_outbound_payment
-        PaymentSafety::Payments.raise_error_unless_safe_to_execute_outbound_payment_on self
-        if stripe_inbound_transfer_id.blank?
-            raise StandardError.new "Inbound transfer must be executed before outbound payment."
-        end
-        if !stripe_outbound_payment_id.blank?
-            raise StandardError.new "Outbound payment already executed."
-        end
-
+        SafetyError::Payments.raise_error_unless_safe_to_execute_outbound_payment_on self
         outbound_payment = Stripe::Treasury::OutboundPayment.create(
             {
                 financial_account: settlement.insurance_agent.organization.stripe_financial_account_id,
@@ -262,21 +280,16 @@ class Payment < ApplicationRecord
         )
         self.stripe_outbound_payment_id = outbound_payment.id
         unless self.save
+            # TODO: An outbound payment failed! Send yourself an email with the following info:
+            # - outbound_payment_id
+            # - organization & member user
+            # - error message.
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
 
     def execute_outbound_transfer
-        PaymentSafety::Payments.raise_error_unless_safe_to_execute_outbound_transfer_on self
-        if stripe_inbound_transfer_id.blank?
-            raise StandardError.new "Inbound transfer must be executed before outbound payment."
-        end
-        if stripe_outbound_payment_id.blank?
-            raise StandardError.new "Outbound payment must be executed before outbound transfer."
-        end
-        if !stripe_outbound_transfer_id.blank?
-            raise StandardError.new "Outbound transfer already executed."
-        end
+        SafetyError::Payments.raise_error_unless_safe_to_execute_outbound_transfer_on self
         outbound_transfer = Stripe::Treasury::OutboundTransfer.create(
             {
                 financial_account: settlement.attorney.organization.stripe_financial_account_id,
@@ -290,6 +303,10 @@ class Payment < ApplicationRecord
         )
         self.stripe_outbound_transfer_id = outbound_transfer.id
         unless self.save
+            # TODO: An outbound transfer failed! Send yourself an email with the following info:
+            # - outbound_transfer_id
+            # - organization & member user
+            # - error message.
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
@@ -354,7 +371,7 @@ class Payment < ApplicationRecord
     end
 
     def complete_payment
-        PaymentSafety::Payments.raise_error_unless_safe_to_complete self
+        SafetyError::Payments.raise_error_unless_safe_to_complete self
         self.status = "Complete"
         self.completed_at = DateTime.now
         unless self.save

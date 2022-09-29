@@ -26,49 +26,27 @@ module ApplicationHelper
         bootstrap_alert_class[level]
     end
 
-    # Used for the status link on the settlement show that can lead anywhere depending on the status of a settlement.
-    def status_action_path(settlement)
-        status = settlement.status
-        case settlement.stage
-        when 1
-            case status
-            when 1
-                return document_new_path(settlement)
-            when 2
-                return settlement_review_document_path(settlement)
-            when 3
-                return document_new_path(settlement)
-            end
-        when 2
-            case status
-            when 1
-                return document_get_e_signature_path(settlement.document_that_needs_signature)
-            when 2
-                return document_get_ds_envelope_status_path(settlement.document_with_signature_request)
-            when 3
-                return settlement_review_document_path(settlement)
-            end
-        when 3
-            case status
-            when 1
-                return stripe_initiate_settlement_payment_path(settlement)
-            when 2
-                return stripe_get_payment_status_path(settlement)
-            when 3
-                return "#"
-            when 4
-                return settlement_complete_path(settlement)
-            end
-        when 4
-            return "#"
-        end
+    def green_checked_box_icon
+        `<i class="fa-regular fa-square-check bg-success"></i>`
     end
 
+    def checked_box_icon
+        `<i class="fa-regular fa-square-check"></i>`
+    end
+
+    def red_unchecked_box_icon
+        `<i class="fa-regular fa-square bg-danger"></i>`
+    end
+
+    def unchecked_box_icon
+        `<i class="fa-regular fa-square"></i>`
+    end
+    
     def settlements_need_approval(user)
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 1 && s.status == 2
+            if 1 == 1 && 1 == 2
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -108,7 +86,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 2 && s.status == 1
+            if 1 == 2 && 1 == 1
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -148,7 +126,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 1 && s.status == 3
+            if 1 == 1 && 1 == 3
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -188,7 +166,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 3 && s.status == 1
+            if 1 == 3 && 1 == 1
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -228,7 +206,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 1 && s.status == 1
+            if 1 == 1 && 1 == 1
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -268,7 +246,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 3 && s.status == 2
+            if 1 == 3 && 1 == 2
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -308,7 +286,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 2 && s.status == 2
+            if 1 == 2 && 1 == 2
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -344,7 +322,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         current_user.settlements.each do |s|
-            if s.stage == 2 && s.status == 3
+            if 1 == 2 && 1 == 3
                 path = settlement_show_path(s)
                 count += 1
             end

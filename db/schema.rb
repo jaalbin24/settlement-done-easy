@@ -177,8 +177,6 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "claimant_name"
     t.string "incident_location"
     t.date "incident_date"
-    t.integer "stage", default: 1, null: false
-    t.integer "status", default: 1, null: false
     t.integer "public_number"
     t.boolean "locked", default: false, null: false
     t.boolean "completed", default: false, null: false

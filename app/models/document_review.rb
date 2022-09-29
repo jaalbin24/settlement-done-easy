@@ -40,6 +40,20 @@ class DocumentReview < ApplicationRecord
         errors.add(:reviewer, "must be affiliated with this document's settlement.") unless document.settlement.in?(reviewer.settlements)
     end
 
+    validate :changes_are_allowed_when_settlement_is_locked
+    def changes_are_allowed_when_settlement_is_locked
+        if document.settlement.locked?
+            changed_attributes.keys.each do |a|
+                unless DocumentReview.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
+                    raise SafetyError::SafetyError.new "This settlement is locked. You cannot review any documents."
+                end
+            end
+        end
+    end
+    def self.attributes_that_can_be_changed_when_settlement_is_locked
+        []
+    end
+
     belongs_to(   
         :document,
         class_name: "Document",

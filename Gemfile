@@ -31,6 +31,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Logs outgoing HTTP requests. Used for debugging.
   gem 'httplog'
+  # For Rspec testing
+  gem "rspec-rails"
 end
 
 group :development do
@@ -82,11 +84,9 @@ gem 'docusign_esign'
 # For authenticating with the DocuSign API
 gem 'jwt'
 
-# Job scheduler for running cron jobs at regular intervals
-gem 'whenever'
-
 # Payment Processor
 gem 'stripe' #, '~> 5.47.0'
 
 # For icons
 gem "font-awesome-sass"
+
