@@ -27,7 +27,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 group :production do
   # Use Redis adapter to run Action Cable in production
-  gem 'redis'
+  gem 'redis', '< 5'
 end
 
 group :development, :test do
