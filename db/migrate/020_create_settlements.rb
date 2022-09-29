@@ -10,8 +10,6 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string      :claimant_name
       t.string      :incident_location
       t.date        :incident_date
-      t.integer     :stage,                     null: false, default: 1
-      t.integer     :status,                    null: false, default: 1
       t.integer     :public_number
 
       t.boolean     :locked,                    null: false, default: false

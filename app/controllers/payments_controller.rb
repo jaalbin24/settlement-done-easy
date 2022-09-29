@@ -59,7 +59,7 @@ class PaymentsController < ApplicationController
         begin
             settlement.initiate_payment
             flash[:info] = "Payment started!"
-        rescue PaymentSafety::PaymentSafetyError => e
+        rescue SafetyError::SafetyError => e
             flash[:info] = e.message
         end
         redirect_back(fallback_location: root_path)

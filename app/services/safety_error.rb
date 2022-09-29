@@ -1,16 +1,26 @@
-module PaymentSafety
-    class PaymentSafetyError < StandardError
-        
+module SafetyError
+    class SafetyError < StandardError
+        # These error messages are meant to be seen by the user. Only include info that is ok to be seen by anyone.
+    end
+
+    class PaymentSafetyError < SafetyError
+    end
+
+    class SettlementSafetyError < SafetyError
+    end
+
+    class DocumentSafetyError < SafetyError
     end
 
     module Settlements
-        def self.safe_to_execute_payment?(settlement)
 
-        end
+    end
+
+    module Documents
+        
     end
     
     module Payments
-        # These error messages are meant to be seen by the user. Only include info that is ok to be seen by anyone.
         def self.raise_error_unless_safe_to_execute_inbound_transfer_on(payment)
             default_safety(payment)
             raise PaymentSafetyError.new "This settlement already has a payment processing."                            if payment.settlement.has_processing_payment?
@@ -19,14 +29,9 @@ module PaymentSafety
             raise PaymentSafetyError.new "Payment cannot be sent until all documents that need a signature are signed." if payment.settlement.documents.unsigned.need_signature.exists?
         end
 
-
-
-
-
         def self.raise_error_unless_safe_to_execute_outbound_payment_on(payment)
             default_safety(payment)
             raise PaymentSafetyError.new "Cannot execute outbound payment without an inbound transfer."     if payment.stripe_inbound_transfer_id.blank?
-            
         end
 
         def self.raise_error_unless_safe_to_execute_outbound_transfer_on(payment)

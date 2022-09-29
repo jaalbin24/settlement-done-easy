@@ -27,8 +27,8 @@
                             <%if @settlement.ready_for_payment?%>
                                 <button name="open-payment-confirmation-button" class="btn btn-sm btn-primary" aria-label="Send payment">Send payment</button>
                             <%else%>
-                                <div data-bs-toggle="tooltip" data-bs-placement="top" title="Complete checklist first">
-                                    <button name="open-payment-confirmation-button" class="disabled btn btn-sm btn-primary" aria-label="Send payment">Send payment</button>
+                                <div data-bs-toggle="tooltip" data-bs-placement="top" title="<%=payment_confirmation_button_tooltip_message_for(@settlement)%>">
+                                    <button class="disabled btn btn-sm btn-primary" aria-label="Send payment">Send payment</button>
                                 </div>
                             <%end%>
                         <%end%>
@@ -176,12 +176,6 @@
                 <div class="row">
                     <div class="col-auto pe-0">
                         <div class="list-group list-group-flush border-end">
-                            <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=settlement_complete_path(@settlement)%>">
-                                <p class="m-0 p-0">
-                                    <i class="fa-solid fa-handshake"></i>
-                                    Complete
-                                </p>
-                            </a>
                             <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=settlement_destroy_path(@settlement)%>" data-method="delete">
                                 <p class="m-0 p-0">
                                     <i class="fa-solid fa-handshake-simple-slash"></i>
@@ -200,7 +194,8 @@
                     <p class="m-0">The following requirements must be met to complete this settlement.</p>
                 </div>
                 <div class="card-body">
-                    <ul class="list-unstyled">
+                    <p class="text-muted text-center border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required before payment</span></p>
+                    <ul class="list-unstyled m-0">
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? ? "square-check": "square"%>"></i></h5>
                             <p class="m-0">At least one document.</p>
@@ -212,6 +207,15 @@
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
                             <p class="m-0">All documents that need a signature have one.</p>
+                        </li>
+                        <p class="text-muted text-center mt-2 border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required to complete settlement</span></p>
+                        <li class="d-flex gap-2">
+                            <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.has_processing_payment? || @settlement.has_completed_payment? ? "square-check": "square"%>"></i></h5>
+                            <p class="m-0">Payment has been sent.</p>
+                        </li>
+                        <li class="d-flex gap-2">
+                            <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.has_completed_payment? ? "square-check": "square"%>"></i></h5>
+                            <p class="m-0">Payment has posted.</p>
                         </li>
                     </ul>
                 </div>
