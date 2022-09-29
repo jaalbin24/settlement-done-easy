@@ -1,91 +1,84 @@
 <%= form_with model: @settlement, url: path, local: true do |f| %>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <div class="mb-3">
-                    <%if current_user.isAttorney?%>
-                    <%= f.label "Plaintiff name", { class: "form-label"} %>
-                    <%= f.text_field :plaintiff_name, { class: "form-control", placeholder: "Plaintiff", :required => true }%>
-                    <%elsif current_user.isInsuranceAgent?%>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
                     <%= f.label "Claimant name", { class: "form-label"} %>
-                    <%= f.text_field :plaintiff_name, { class: "form-control", placeholder: "Claimant", :required => true }%>
-                    <%end%>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="mb-3">
-                    <%if current_user.isAttorney?%>
-                    <%= f.label "Defendant name", { class: "form-label"} %>
-                    <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Defendant", :required => true } %>
-                    <%elsif current_user.isInsuranceAgent?%>
-                    <%= f.label "Policy holder name", { class: "form-label"} %>
-                    <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
-                    <%end%>
-                    </div>
+                    <%= f.text_field :claimant_name, { class: "form-control", placeholder: "Claimant", :required => true }%>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <div class="mb-3">
+            <div class="col">
+                <div class="mb-3">
+                    <%if current_user.isAttorney?%>
+                        <%= f.label "Defendant name", { class: "form-label"} %>
+                        <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Defendant", :required => true } %>
+                    <%elsif current_user.isInsuranceAgent?%>
+                        <%= f.label "Policy holder name", { class: "form-label"} %>
+                        <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
+                    <%end%>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
                     <%= f.label "Date of incident", { class: "form-label"} %>
                     <%= f.date_field :incident_date, { class: "form-control", :required => true } %>
-                    </div>
                 </div>
-                <div class="col">
-                    <div class="mb-3">
+            </div>
+            <div class="col">
+                <div class="mb-3">
                     <%= f.label "Location of incident", { class: "form-label"} %>
                     <%= f.text_field :incident_location, { class: "form-control", placeholder: "Location", :required => true } %>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <%= f.label "Amount", { class: "form-label"} %>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input class="form-control" step="0.01" required="required" type="number" value="<%=@settlement.amount%>" name="settlement[amount]" id="settlement_amount">
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <div class="mb-3">
-                    <%= f.label "Amount", { class: "form-label"} %>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input class="form-control" step="0.01" required="required" type="number" value="<%=@settlement.dollar_amount%>" name="settlement[dollar_amount]" id="settlement_dollar_amount">
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="mb-3">
+            <div class="col">
+                <div class="mb-3">
                     <%= f.label "Claim number", { class: "form-label"} %>
                     <%= f.text_field :claim_number, { class: "form-control", placeholder: "Claim number", :required => true } %>
-                    </div>
                 </div>
             </div>
-            <%if submit_label == "Start"%>
-            <div class="mb-3">
+        </div>
+        <%if submit_label == "Start"%>
+        <div class="mb-3">
+            <%if current_user.isAttorney?%>
+                <%= f.label "Insurance agent", {class: "form-label"} %>
+            <%else%>
+                <%= f.label "Attorney", {class: "form-label"} %>
+            <%end%>
+            <select class="form-select" name="partner_id" required>
+                <option disabled selected value>Select here</option>
                 <%if current_user.isAttorney?%>
-                    <%= f.label "Insurance agent", {class: "form-label"} %>
-                <%else%>
-                    <%= f.label "Attorney", {class: "form-label"} %>
-                <%end%>
-                <select class="form-select" name="partner_id" required>
-                    <option disabled selected value>Select here</option>
-                    <%if current_user.isAttorney?%>
-                        <%User.all_insurance_agents.each do |u|%>
-                            <%if u.organization == nil%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
-                            <%else%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
-                            <%end%>
-                        <%end%>
-                    <%else%>
-                        <%User.all_attorneys.each do |u|%>
-                            <%if u.organization == nil%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
-                            <%else%>
-                                <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
-                            <%end%>                        
+                    <%User.all_insurance_agents.each do |u|%>
+                        <%if u.organization == nil%>
+                            <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
+                        <%else%>
+                            <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
                         <%end%>
                     <%end%>
-                </select>
-            </div>
-            <%end%>
-            <%= f.submit "#{submit_label}!", class: "btn btn-lg btn-primary w-100" %>
+                <%else%>
+                    <%User.all_attorneys.each do |u|%>
+                        <%if u.organization == nil%>
+                            <option value="<%=u.id%>"><%="#{u.full_name} (No affiliation)"%></option>
+                        <%else%>
+                            <option value="<%=u.id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
+                        <%end%>                        
+                    <%end%>
+                <%end%>
+            </select>
         </div>
+        <%end%>
+        <%= f.submit "#{submit_label}!", class: "btn btn-lg btn-primary w-100" %>
     </div>
 <% end %>

@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "addresses", force: :cascade do |t|
+    t.string "public_id"
     t.string "line1"
     t.string "line2"
     t.string "city"
@@ -55,6 +56,7 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "bank_accounts", force: :cascade do |t|
+    t.string "public_id"
     t.string "stripe_payment_method_id", null: false
     t.string "nickname"
     t.integer "last4", limit: 2
@@ -69,6 +71,7 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "document_reviews", force: :cascade do |t|
+    t.string "public_id"
     t.bigint "reviewer_id"
     t.bigint "document_id"
     t.string "verdict", default: "Waiting", null: false
@@ -82,10 +85,12 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "documents", force: :cascade do |t|
+    t.string "public_id"
     t.boolean "signed", default: false, null: false
     t.boolean "needs_signature", default: false, null: false
     t.boolean "auto_generated", default: false, null: false
     t.string "status", default: "Waiting for review", null: false
+    t.string "nickname"
     t.bigint "settlement_id"
     t.bigint "added_by_id"
     t.string "ds_envelope_id"
@@ -98,6 +103,7 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "log_book_entries", force: :cascade do |t|
+    t.string "public_id"
     t.bigint "log_book_id"
     t.bigint "user_id"
     t.string "message"
@@ -108,11 +114,24 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "log_books", force: :cascade do |t|
+    t.string "public_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "public_id"
+    t.bigint "user_id"
+    t.string "title"
+    t.string "message"
+    t.boolean "seen"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "payment_requests", force: :cascade do |t|
+    t.string "public_id"
     t.bigint "requester_id"
     t.bigint "accepter_id"
     t.bigint "settlement_id"
@@ -127,6 +146,7 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "payments", force: :cascade do |t|
+    t.string "public_id"
     t.bigint "settlement_id"
     t.bigint "source_id"
     t.bigint "destination_id"
@@ -149,16 +169,21 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "settlements", force: :cascade do |t|
+    t.string "public_id"
     t.string "claim_number"
     t.string "policy_number"
-    t.float "dollar_amount"
+    t.float "amount"
     t.string "defendant_name"
-    t.string "plaintiff_name"
+    t.string "claimant_name"
     t.string "incident_location"
     t.date "incident_date"
     t.integer "stage", default: 1, null: false
     t.integer "status", default: 1, null: false
+    t.integer "public_number"
+    t.boolean "locked", default: false, null: false
     t.boolean "completed", default: false, null: false
+    t.boolean "ready_for_payment", default: false, null: false
+    t.bigint "started_by_id"
     t.bigint "attorney_id"
     t.bigint "insurance_agent_id"
     t.bigint "log_book_id"
@@ -167,9 +192,11 @@ ActiveRecord::Schema.define(version: 100) do
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
     t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
     t.index ["log_book_id"], name: "index_settlements_on_log_book_id"
+    t.index ["started_by_id"], name: "index_settlements_on_started_by_id"
   end
 
   create_table "stripe_account_requirements", force: :cascade do |t|
+    t.string "public_id"
     t.bigint "stripe_account_id"
     t.string "status"
     t.string "required_item"
@@ -179,6 +206,7 @@ ActiveRecord::Schema.define(version: 100) do
   end
 
   create_table "stripe_accounts", force: :cascade do |t|
+    t.string "public_id"
     t.string "stripe_id"
     t.bigint "user_id"
     t.boolean "card_payments_enabled"
@@ -191,7 +219,20 @@ ActiveRecord::Schema.define(version: 100) do
     t.index ["user_id"], name: "index_stripe_accounts_on_user_id"
   end
 
+  create_table "user_settings", force: :cascade do |t|
+    t.string "public_id"
+    t.boolean "replace_unsigned_document_with_signed_document"
+    t.boolean "alert_when_settlement_ready_for_payment"
+    t.boolean "confirmation_before_document_rejection"
+    t.boolean "delete_my_documents_after_rejection"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_user_settings_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
+    t.string "public_id"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -208,6 +249,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "business_name"
     t.string "stripe_financial_account_id"
     t.boolean "stripe_account_onboarded", default: false, null: false
+    t.boolean "activated", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "organization_id"
@@ -228,6 +270,7 @@ ActiveRecord::Schema.define(version: 100) do
   add_foreign_key "documents", "users", column: "added_by_id"
   add_foreign_key "log_book_entries", "log_books"
   add_foreign_key "log_book_entries", "users"
+  add_foreign_key "notifications", "users"
   add_foreign_key "payment_requests", "log_books"
   add_foreign_key "payment_requests", "settlements"
   add_foreign_key "payment_requests", "users", column: "accepter_id"
@@ -239,7 +282,9 @@ ActiveRecord::Schema.define(version: 100) do
   add_foreign_key "settlements", "log_books"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "insurance_agent_id"
+  add_foreign_key "settlements", "users", column: "started_by_id"
   add_foreign_key "stripe_account_requirements", "stripe_accounts"
   add_foreign_key "stripe_accounts", "users"
+  add_foreign_key "user_settings", "users"
   add_foreign_key "users", "users", column: "organization_id"
 end

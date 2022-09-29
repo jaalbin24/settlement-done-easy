@@ -9,6 +9,7 @@
 #  us_bank_account_ach_payments_enabled :boolean
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  public_id                            :string
 #  stripe_id                            :string
 #  user_id                              :bigint
 #

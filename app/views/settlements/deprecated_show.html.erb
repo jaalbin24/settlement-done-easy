@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="row" style="display: table;">
+        <div class="col w-50" style="display: table-cell;">
+            <div class="card">
+                <h1 class="card-header border-0">Details</h1>
+                <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
+                <div class="row">
+                    <div class="col-auto pe-0">
+                        <div class="list-group list-group-flush border-end">
+                            <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=document_index_path(@settlement)%>">
+                                <p class="m-0 p-0">
+                                    <i class="fa-solid fa-file"></i>
+                                    Documents
+                                </p>
+                            </a>
+                            <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=payment_show_path(@settlement.active_payment)%>">
+                                <p class="m-0 p-0">
+                                    <i class="fa-solid fa-money-bill-transfer"></i>
+                                    Payment
+                                </p>
+                            </a>
+                            <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=settlement_complete_path(@settlement)%>">
+                                <p class="m-0 p-0">
+                                    <i class="fa-solid fa-handshake"></i>
+                                    Complete
+                                </p>
+                            </a>
+                            <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=settlement_destroy_path(@settlement)%>" data-method="delete">
+                                <p class="m-0 p-0">
+                                    <i class="fa-solid fa-handshake-simple-slash"></i>
+                                    Cancel
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h5 class="mt-2">Required before payment</h5>
+                        <ul class="list-unstyled pt-2 border-top">
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? ? "square-check": "square"%>"></i></h5>
+                                <p class="m-0">At least one document.</p>
+                            </li>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "square-check": "square"%>"></i></h5>
+                                <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
+                            </li>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
+                                <p class="m-0">All documents that need a signature have one.</p>
+                            </li>                            
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="col w-50" style="display: table-cell;">
+            <div class="card">
+                <h1 class="card-header border-0">Activity</h1>
+                <%# The code below is a static placeholder for the dynamic activity log that will be incorporated later%>
+                <a href=<%=status_action_path(@settlement)%> class="card-header list-group-item list-group-item-action text-center bg-warning"><strong>Status:</strong> <%=@settlement.status_message%></a>                
+                <%if @settlement.all_log_entries.exists?%>
+                    <%@settlement.all_log_entries.each do |e|%>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item py-1 d-flex justify-content-between">
+                            <p class="m-0"><%=e.message%></p>
+                            <p class="m-0 text-muted"><%=time_ago_in_words(e.created_at)%> ago</p>
+                        </li>
+                    </ul>
+                    <%end%>
+                <%else%>
+
+                <%end%>
+                <div class="form-group">
+                    <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Type message here..." aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-primary" type="button" id="button-addon2">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%if @settlement.ready_for_payment?%>
+    <%=render "modals/ready_for_payment", render_instantly: true%>
+<%end%>

@@ -56,12 +56,12 @@ class BankAccountsController < ApplicationController
     end
 
     def destroy
-        bank_account = BankAccount.find(params[:id])
+        bank_account = BankAccount.find_by!(public_id: params[:id])
         if bank_account.user.bank_accounts.size == 1
             flash[:info] = "You must keep at least one bank account. Add another bank account to delete this one."
             redirect_back(fallback_location: root_path)
             return
-        elsif bank_account.has_ongoing_payments?
+        elsif bank_account.has_processing_payments?
             flash[:info] = "You cannot delete a bank account with ongoing payments. Wait for this account's payments to settle before deleting."
             redirect_back(fallback_location: root_path)
             return

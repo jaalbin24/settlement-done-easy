@@ -1,6 +1,8 @@
 class CreateStripeAccounts < ActiveRecord::Migration[6.1]
   def change
     create_table :stripe_accounts do |t|
+      t.string      :public_id
+
       t.string      :stripe_id
       t.references  :user,   foreign_key: {to_table: :users}
 

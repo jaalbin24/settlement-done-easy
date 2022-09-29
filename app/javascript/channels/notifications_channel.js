@@ -3,6 +3,7 @@ import consumer from "./consumer"
 consumer.subscriptions.create("NotificationsChannel", {
   connected() {
     // Called when the subscription is ready for use on the server
+    console.log("Connected to the Notifications Channel!");
   },
 
   disconnected() {
@@ -10,6 +11,7 @@ consumer.subscriptions.create("NotificationsChannel", {
   },
 
   received(data) {
-    // Called when there's incoming data on the websocket for this channel
+    toaster.createAndRender(data["title"], data["message"]);
   }
 });
+

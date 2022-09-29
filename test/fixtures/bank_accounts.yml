@@ -10,6 +10,7 @@
 #  status                   :string           default("New"), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  public_id                :string
 #  stripe_payment_method_id :string           not null
 #  user_id                  :bigint           not null
 #

@@ -36,7 +36,7 @@ module DocumentGenerator
         pdf.default_leading 0
         pdf.stroke_horizontal_rule
         pdf.move_down 10
-        pdf.text "Known by all these presents that I/we, #{settlement.plaintiff_name}, for and in consideration of the sum of #{dollar_amount_humanized(settlement.dollar_amount).upcase} (#{number_to_currency(settlement.dollar_amount.to_f, delimiter: ',', unit: '$')}) do hereby for myself my heirs, executors, administrators, successors and assignees any and all other persons, firms, employers, corporations, associations or partnerships, release, acquit and forever discharge #{settlement.defendant_name} and #{settlement.insurance_agent.organization.full_name} of and from any and all claims, actions, causes of actions, liens, demands, rights, damages, costs, loss of wages, expenses, and compensation, hospital and medical expenses, accrued or un-accrued claims loss of consortium, loss of support of affection, loss of services, loss of society and companionship, wrongful death on account of, or in any way growing out of, any and all known and unknown personal injuries and other damages resulting from the incident which occurred on or about #{settlement.incident_date.strftime("%B %-d, %Y")}, at #{settlement.incident_location}. However, this release in no way discharges or releases any claim for property damage including rental coverage if applicable.", align: :justify  
+        pdf.text "Known by all these presents that I/we, #{settlement.claimant_name}, for and in consideration of the sum of #{amount_humanized(settlement.amount).upcase} (#{number_to_currency(settlement.amount.to_f, delimiter: ',', unit: '$')}) do hereby for myself my heirs, executors, administrators, successors and assignees any and all other persons, firms, employers, corporations, associations or partnerships, release, acquit and forever discharge #{settlement.defendant_name} and #{settlement.insurance_agent.organization.full_name} of and from any and all claims, actions, causes of actions, liens, demands, rights, damages, costs, loss of wages, expenses, and compensation, hospital and medical expenses, accrued or un-accrued claims loss of consortium, loss of support of affection, loss of services, loss of society and companionship, wrongful death on account of, or in any way growing out of, any and all known and unknown personal injuries and other damages resulting from the incident which occurred on or about #{settlement.incident_date.strftime("%B %-d, %Y")}, at #{settlement.incident_location}. However, this release in no way discharges or releases any claim for property damage including rental coverage if applicable.", align: :justify  
         pdf.move_down 7
         pdf.text "Interest on said sums, if any, shall begin to accrue 30 days from the execution of this document at the statutory rate.", align: :justify
         pdf.move_down 7
@@ -77,7 +77,7 @@ module DocumentGenerator
         return User.where("role=?", "Dummy").and(User.where("email=?", "doc_generator@example.com")).first
     end
 
-    def dollar_amount_humanized(amount)
+    def amount_humanized(amount)
         # returns a worded dollar amount   
         dollars = amount.floor
         cents = amount - dollars

@@ -5,6 +5,7 @@
 #  id         :bigint           not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  public_id  :string
 #
 require "test_helper"
 

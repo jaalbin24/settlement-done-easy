@@ -136,9 +136,9 @@ attorneys.each do |a|
             attorney:           a,
             insurance_agent:    insurance_agents[rand(0..insurance_agents.size-1)],
             claim_number:       "#{rand(100000..999999)}",
-            dollar_amount:      '%.02f' % rand(100000..2499900).fdiv(100),
+            amount:      '%.02f' % rand(100000..2499900).fdiv(100),
             defendant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
-            plaintiff_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
+            claimant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             incident_location:  "Memphis, TN",
             incident_date:      Date.today - rand(30..365).days,
         )
@@ -151,6 +151,10 @@ attorneys.each do |a|
             added_by: a,
         )
     end
+end
+
+User.all.each do |u|
+    u.save
 end
 
 

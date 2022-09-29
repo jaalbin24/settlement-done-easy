@@ -25,7 +25,7 @@
             <%=f.submit "Upload", class: "btn btn-primary"%>
           </div>
           <div class="col-auto">
-            <%=link_to "Generate", settlement_generate_document_path(@settlement), class: "btn btn-primary"%>
+            <%=link_to "Generate", settlement_generate_document_path(@settlement), method: :post, class: "btn btn-primary"%>
           </div>
         </div>
       </div>

@@ -36,7 +36,7 @@ class SettlementsController < ApplicationController
 
     def create
         begin
-            partner = User.find(params[:partner_id])
+            partner = User.find_by!(public_id: params[:partner_id])
         rescue
             handle_invalid_request
             return
@@ -53,9 +53,9 @@ class SettlementsController < ApplicationController
         settlement_creation_params = {
             claim_number: settlement_params[:claim_number],
             policy_number: settlement_params[:policy_number],
-            dollar_amount: settlement_params[:dollar_amount],
+            amount: settlement_params[:amount],
             defendant_name: settlement_params[:defendant_name],
-            plaintiff_name: settlement_params[:plaintiff_name],
+            claimant_name: settlement_params[:claimant_name],
             incident_date: settlement_params[:incident_date],
             incident_location: settlement_params[:incident_location],
             attorney: attorney,
@@ -73,7 +73,7 @@ class SettlementsController < ApplicationController
 
     def show
         begin
-            @settlement = Settlement.find(params[:id])
+            @settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -82,7 +82,7 @@ class SettlementsController < ApplicationController
 
     def destroy
         begin
-            settlement = Settlement.find(params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -94,7 +94,7 @@ class SettlementsController < ApplicationController
 
     def update
         begin
-            @settlement = Settlement.find(params[:id])
+            @settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -107,39 +107,9 @@ class SettlementsController < ApplicationController
         end
     end
 
-    def execute_payment
-        begin
-            settlement = Settlement.find(params[:id])
-        rescue
-            handle_invalid_request
-            return
-        end
-        if settlement.has_ongoing_payment?
-            flash[:info] = "This settlement already has an ongoing payment."
-        elsif settlement.has_completed_payment?
-            flash[:info] = "This settlement has already been paid."
-        elsif !settlement.documents.exists?
-            flash[:info] = "This settlement must have an approved document before payment can be made."
-        elsif settlement.documents.unapproved.exists?
-            flash[:info] = "All documents must be approved before payment can be made."
-        elsif settlement.documents.unsigned.need_signature.exists?
-            flash[:info] = "All documents that need a signature must be signed before payment can be made."
-        elsif !settlement.insurance_agent.organization.bank_accounts.exists?
-            flash[:info] = "You cannot make payments because #{settlement.insurance_agent.organization.full_name} has not set up payment details."
-        elsif !settlement.attorney.organization.bank_accounts.exists?
-            flash[:info] = "You cannot make payments because #{settlement.attorney.organization.full_name} has not set up payment details."
-        elsif !current_user.isInsuranceAgent?
-            flash[:info] = "#{current_user.role.pluralize.capitalize} cannot pay settlements."
-        else
-            flash[:info] = "Settlement payment initiated!"
-            settlement.initiate_payment
-        end
-        redirect_back(fallback_location: root_path)
-    end
-
     def payment_success
         begin
-            @settlement = Settlement.find(params[:id])
+            @settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -151,7 +121,7 @@ class SettlementsController < ApplicationController
 
     def complete
         begin
-            settlement = Settlement.find(params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -164,7 +134,7 @@ class SettlementsController < ApplicationController
 
     def generate_document
         begin
-            settlement = Settlement.find(params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -180,15 +150,14 @@ class SettlementsController < ApplicationController
     end
 
     def completed_index
-        user = current_user
-        if user.isAttorney?
+        if current_user.isAttorney?
             @settlements = Settlement.where("attorney_id=?", user.id).and(Settlement.where("completed=?", true)).all
-        elsif user.isInsuranceAgent?
+        elsif current_user.isInsuranceAgent?
             @settlements = Settlement.where("insurance_agent_id=?", user.id).and(Settlement.where("completed=?", true)).all
-        elsif user.isLawFirm?
+        elsif current_user.isLawFirm?
             attorney_id_array = User.where(organization_id: user.id).pluck(:id)
             @settlements = Settlement.where(attorney_id: attorney_id_array).and(Settlement.where("completed=?", true)).all
-        elsif user.isInsuranceCompany?
+        elsif current_user.isInsuranceCompany?
             agent_id_array = User.where(organization_id: user.id).pluck(:id)
             @settlements = Settlement.where(insurance_agent_id: agent_id_array).and(Settlement.where("completed=?", true)).all
         end  
@@ -198,9 +167,9 @@ class SettlementsController < ApplicationController
         params.require(:settlement).permit(
             :claim_number,
             :policy_number,
-            :dollar_amount,
+            :amount,
             :defendant_name,
-            :plaintiff_name,
+            :claimant_name,
             :incident_date,
             :incident_location
         )

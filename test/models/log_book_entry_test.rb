@@ -7,6 +7,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  log_book_id :bigint
+#  public_id   :string
 #  user_id     :bigint
 #
 # Indexes

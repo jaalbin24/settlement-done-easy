@@ -10,7 +10,7 @@ class PagesController < ApplicationController
     end
 
     def approve_or_reject
-        @document = Document.find(params[:id])
+        @document = Document.find_by!(public_id: params[:id])
         render :approve_or_reject
     end
 

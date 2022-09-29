@@ -31,10 +31,10 @@
                                     </a>
                                 <%end%>
                             <%else%>
-                                <%if @settlement.ready_for_payment?%>
-                                    <%=link_to "Send payment", settlement_execute_payment_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                <%if @settlement.active_payment.completed?%>
+                                    <button name="open-payment-confirmation-button" class="disabled btn btn-sm btn-primary" aria-label="Send payment">Send payment</button>
                                 <%else%>
-                                    <%=link_to "Send payment", nil, class: "disabled btn btn-sm btn-primary"%>
+                                    <button name="open-payment-confirmation-button" class="btn btn-sm btn-primary" aria-label="Send payment">Send payment</button>
                                 <%end%>
                             <%end%>
                             <a href="<%=payment_sync_with_stripe_path(@payment)%>" data-method="post" class="btn-sm btn btn-secondary">
@@ -66,7 +66,7 @@
                     <h3 class="m-0">Bank Accounts</h3>
                     <h6 class="card-subtitle text-muted m-0">Funds will be deposited into the selected account.</h6>
                 </div>
-                <%=form_for(@payment, url: payment_update_path(@payment.settlement), method: :patch) do |f|%>
+                <%=form_for(@payment, url: payment_update_path(@payment), method: :patch) do |f|%>
                     <ul class="list-group list-group-flush">
                         <%if current_user.organization.bank_accounts.empty?%>
                             <div class="list-group-item">
@@ -107,33 +107,11 @@
 <%=link_to "🡸 Back", :back, class: "btn btn-outline-primary"%>
 
 <%if @settlement.has_unanswered_payment_request? && @settlement.active_payment_request.accepter == current_user%>
-    <div class="modal fade" id="payment-request-modal" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Payment Request!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <%if @settlement.active_payment_request.requester.isAttorney?%>
-                        <h6><%=@settlement.active_payment_request.requester.full_name%> has requested payment!</h6>
-                    <%else%>
-                        <h6><%=@settlement.active_payment_request.requester.full_name%> has requested to send payment!</h6>
-                    <%end%>
-                    <p>Amount: $<%=@payment.amount%></p>
-                    <p>Clicking accept will automatically 
-                </div>
-                <div class="modal-footer">
-                    <%=link_to "Deny", payment_request_deny_path(@settlement.active_payment_request), method: :post, class: "btn btn-secondary"%>
-                    <%=link_to "Send payment", payment_request_accept_path(@settlement.active_payment_request), method: :post, class: "btn btn-primary"%>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        const paymentRequestModal = new bootstrap.Modal(document.getElementById('payment-request-modal'));
-        paymentRequestModal.show();
-    </script>
+    <%=render "modals/payment_requested", render_instantly: true%>
+<%end%>
+
+<%if current_user.isAttorney?%>
+    <%=render "modals/payment_request_confirmation", render_instantly: false%>
+<%elsif current_user.isInsuranceAgent?%>
+    <%=render "modals/payment_confirmation", render_instantly: false%>
 <%end%>

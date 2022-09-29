@@ -43,7 +43,7 @@ module SettlementProgress
             when 1
                 return "Waiting for #{settlement.attorney.full_name} to send signature request."
             when 2
-                return "Waiting for #{settlement.plaintiff_name}'s signature."
+                return "Waiting for #{settlement.claimant_name}'s signature."
             when 3
                 return "Waiting for final document review."
             end

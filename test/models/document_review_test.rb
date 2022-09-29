@@ -9,6 +9,7 @@
 #  updated_at  :datetime         not null
 #  document_id :bigint
 #  log_book_id :bigint
+#  public_id   :string
 #  reviewer_id :bigint
 #
 # Indexes
