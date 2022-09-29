@@ -16,7 +16,7 @@
                 <td><%=render "settlements/status", settlement: s%></td>
                 <td><%=link_to s.attorney.full_name, settlement_show_path(s)%></td>
                 <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
-                <td>$<%=s.dollar_amount%></td>
+                <td>$<%=s.amount%></td>
                 <td class="text-end">
                     <%=link_to "View", settlement_show_path(s), class: "badge rounded-pill bg-primary text-decoration-none"%>
                     <%=link_to "Cancel", settlement_destroy_path(s), class: "badge rounded-pill bg-danger text-decoration-none", method: :delete, data: {confirm: "Cancel this settlement? Are you sure?"}%>

@@ -10,6 +10,7 @@
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint
 #  log_book_id                 :bigint
+#  public_id                   :string
 #  settlement_id               :bigint
 #  source_id                   :bigint
 #  stripe_inbound_transfer_id  :string
@@ -34,6 +35,7 @@
 #  fk_rails_...  (source_id => bank_accounts.id)
 #
 class Payment < ApplicationRecord
+    include PaymentSafety
 
     scope :with_inbound_transfer_id,    ->  (stripe_id) {where(stripe_inbound_transfer_id: stripe_id)}
     scope :with_outbound_payment_id,    ->  (stripe_id) {where(stripe_outbound_payment_id: stripe_id)}
@@ -42,6 +44,8 @@ class Payment < ApplicationRecord
     scope :processing,                  ->              {where(status: "Processing")}
     scope :active,                      ->              {where.not(status: "Failed").and(where.not(status: "Canceled").and(where.not(status: "Returned")))}
     scope :completed,                   ->              {where(status: "Complete")}
+    scope :not_sent,                    ->              {where(status: "Not sent")}
+
     belongs_to(
         :settlement,
         class_name: "Settlement",
@@ -93,16 +97,26 @@ class Payment < ApplicationRecord
         errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
     end
 
-    before_validation do
-        if log_book.nil?
-            log_book = LogBook.create!
-        end
+    validate :amount_matches_settlement_amount
+    def amount_matches_settlement_amount
+        errors.add(:amount, "cannot be different from settlement amount.") unless amount == settlement.amount
+    end
+
+    before_create do
+        create_log_book_model_if_self_lacks_one
     end
 
     before_save do
-        create_log_book_model_if_self_lacks_one
-        generate_any_logs
-        log_book.save!
+        puts "❤️❤️❤️ Payment before_save block"
+        unless log_book.nil?
+            generate_any_logs
+            log_book.save
+        end
+        generate_any_notifications
+    end
+    
+    after_commit do
+        settlement.save
     end
 
     def generate_any_logs
@@ -144,25 +158,88 @@ class Payment < ApplicationRecord
         self.log_book = LogBook.create! if log_book.nil?
     end
 
+    def generate_any_notifications
+        if status_changed?
+            if processing?
+                Notification.create!(
+                    user: settlement.attorney,
+                    title: "Payment started!",
+                    message: "Click here for details."
+                )
+                Notification.create!(
+                    user: settlement.insurance_agent,
+                    title: "Payment started!",
+                    message: "Click here for details."
+                )
+            elsif failed?
+                Notification.create!(
+                    user: settlement.attorney,
+                    title: "Payment failed!",
+                    message: "Click here for details."
+                )
+                Notification.create!(
+                    user: settlement.insurance_agent,
+                    title: "Payment failed!",
+                    message: "Click here for details."
+                )
+            elsif canceled?
+                Notification.create!(
+                    user: settlement.attorney,
+                    title: "Payment canceled!",
+                    message: "Click here for details."
+                )
+                Notification.create!(
+                    user: settlement.insurance_agent,
+                    title: "Payment canceled!",
+                    message: "Click here for details."
+                )
+            elsif completed?
+                Notification.create!(
+                    user: settlement.attorney,
+                    title: "Payment completed!",
+                    message: "Click here for details."
+                )
+                Notification.create!(
+                    user: settlement.insurance_agent,
+                    title: "Payment completed!",
+                    message: "Click here for details."
+                )
+            elsif returned?
+                Notification.create!(
+                    user: settlement.attorney,
+                    title: "Payment returned!",
+                    message: "Click here for details."
+                )
+                Notification.create!(
+                    user: settlement.insurance_agent,
+                    title: "Payment returned!",
+                    message: "Click here for details."
+                )
+            end
+        end
+    end
+
     def execute_inbound_transfer
+        PaymentSafety::Payments.raise_error_unless_safe_to_execute_inbound_transfer_on self
         inbound_transfer = Stripe::Treasury::InboundTransfer.create(
             {
                 financial_account: settlement.insurance_agent.organization.stripe_financial_account_id,
                 amount: amount_in_cents,
                 currency: 'usd',
                 origin_payment_method: source.stripe_payment_method_id,
-                description: "Settlement of $#{amount} for #{settlement.plaintiff_name}",
+                description: "Settlement of $#{amount} for #{settlement.claimant_name}",
             },
             {stripe_account: settlement.insurance_agent.organization.stripe_account_id}
         )
         self.stripe_inbound_transfer_id = inbound_transfer.id
         self.status = "Processing"
-        if !self.save
+        unless self.save
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
 
     def execute_outbound_payment
+        PaymentSafety::Payments.raise_error_unless_safe_to_execute_outbound_payment_on self
         if stripe_inbound_transfer_id.blank?
             raise StandardError.new "Inbound transfer must be executed before outbound payment."
         end
@@ -175,7 +252,7 @@ class Payment < ApplicationRecord
                 financial_account: settlement.insurance_agent.organization.stripe_financial_account_id,
                 amount: amount_in_cents,
                 currency: 'usd',
-                statement_descriptor: "Settlement of $#{amount} for #{settlement.plaintiff_name}",
+                statement_descriptor: "Settlement of $#{amount} for #{settlement.claimant_name}",
                 destination_payment_method_data: {
                     type: 'financial_account',
                     financial_account: settlement.attorney.organization.stripe_financial_account_id,
@@ -184,12 +261,13 @@ class Payment < ApplicationRecord
             {stripe_account: settlement.insurance_agent.organization.stripe_account_id},
         )
         self.stripe_outbound_payment_id = outbound_payment.id
-        if !self.save
+        unless self.save
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
 
     def execute_outbound_transfer
+        PaymentSafety::Payments.raise_error_unless_safe_to_execute_outbound_transfer_on self
         if stripe_inbound_transfer_id.blank?
             raise StandardError.new "Inbound transfer must be executed before outbound payment."
         end
@@ -211,7 +289,7 @@ class Payment < ApplicationRecord
             {stripe_account: settlement.attorney.organization.stripe_account_id},
         )
         self.stripe_outbound_transfer_id = outbound_transfer.id
-        if !self.save
+        unless self.save
             puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
@@ -276,14 +354,11 @@ class Payment < ApplicationRecord
     end
 
     def complete_payment
-        if completed?
-            raise StandardError.new "Payment is already completed."
-        else
-            self.status = "Complete"
-            self.completed_at = DateTime.now
-            if !self.save
-                puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
-            end
+        PaymentSafety::Payments.raise_error_unless_safe_to_complete self
+        self.status = "Complete"
+        self.completed_at = DateTime.now
+        unless self.save
+            puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
         end
     end
 
@@ -304,7 +379,7 @@ class Payment < ApplicationRecord
             raise StandardError.new "Payment is already failed."
         else
             self.status = "Failed"
-            if !self.save
+            unless self.save
                 puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
             end
         end
@@ -315,7 +390,7 @@ class Payment < ApplicationRecord
             raise StandardError.new "Payment is already returned."
         else
             self.status = "Returned"
-            if !self.save
+            unless self.save
                 puts "⚠️⚠️⚠️ ERROR: #{self.errors.full_messages.inspect}"
             end
         end

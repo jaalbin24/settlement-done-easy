@@ -1,0 +1,25 @@
+<div class="modal fade" name="payment-confirmation-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Payment Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>You are about to send <strong>$<%=@settlement.active_payment.amount%></strong> to <strong><%=@settlement.attorney.full_name%></strong> for the settlement involving <strong><%=@settlement.active_payment.settlement.claimant_name%></strong>.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>
+                <%=link_to "Send $#{@settlement.active_payment.amount} now", payment_execute_path(@settlement.active_payment), method: :post, class: "btn btn-primary"%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%if render_instantly%>
+    <script>
+        new bootstrap.Modal(document.getElementsByName('payment-confirmation-modal')[0]).show();
+    </script>
+<%end%>

@@ -1,6 +1,8 @@
 class CreateDocumentReviews < ActiveRecord::Migration[6.1]
   def change
     create_table :document_reviews do |t|
+      t.string      :public_id
+
       t.references  :reviewer,    foreign_key: {to_table: :users}
       t.references  :document,    foreign_key: {to_table: :documents}
       t.string      :verdict,     null: false,  default: "Waiting"

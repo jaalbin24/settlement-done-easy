@@ -5,18 +5,17 @@ class StripeController < ApplicationController
     skip_before_action :verify_authenticity_token, :only => [:handle_event]
 
     def onboard_account_link
-        user = current_user
-        if user.isOrganization?
-            if user.stripe_account_onboarded?
+        if current_user.isOrganization?
+            if current_user.stripe_account_onboarded?
                 flash[:info] = "Account already onboarded. No action needed."
                 redirect_to root_path
                 return
             end
-            if user.stripe_account_id.blank?
+            if current_user.stripe_account_id.blank?
                 # Create a Stripe Connect account for the user
             end
             account_link = Stripe::AccountLink.create(
-                account: user.stripe_account_id,
+                account: current_user.stripe_account_id,
                 refresh_url: "#{Rails.configuration.URL_ROOT}/stripe_handle_return_from_onboard",
                 return_url: "#{Rails.configuration.URL_ROOT}/stripe_handle_return_from_onboard",
                 type: 'account_onboarding',
@@ -28,7 +27,7 @@ class StripeController < ApplicationController
     end
 
     def handle_return_from_onboard
-        @stripe_account = Stripe::Account.retrieve(current_user.stripe_account_id)
+        @stripe_account = Stripe::Account.retrieve(current_user.stripe_account.stripe_id)
         if @stripe_account.charges_enabled
             current_user.stripe_account_onboarded = true
             if current_user.save
@@ -54,10 +53,6 @@ class StripeController < ApplicationController
 
     def onboard_not_complete
         render :onboard_not_complete
-    end
-
-    def initiate_settlement_payment
-        
     end
 
     def handle_event

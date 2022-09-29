@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                          :bigint           not null, primary key
+#  activated                   :boolean          default(FALSE), not null
 #  business_name               :string
 #  current_sign_in_at          :datetime
 #  current_sign_in_ip          :string
@@ -21,6 +22,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  organization_id             :bigint
+#  public_id                   :string
 #  stripe_financial_account_id :string
 #
 # Indexes
@@ -169,12 +171,44 @@ class User < ApplicationRecord
         dependent: :destroy
     )
 
+    has_many(
+        :notifications,
+        class_name: "Notification",
+        foreign_key: "user_id",
+        inverse_of: :user,
+        dependent: :destroy
+    )
+
+    has_one(
+        :settings,
+        class_name: "UserSettings",
+        foreign_key: "user_id",
+        inverse_of: :user,
+        dependent: :destroy
+    )
+
+    after_commit do
+        puts "❤️❤️❤️ User after_commit block"
+        update_activated_attribute
+        if activated_changed?
+            self.save
+            puts "✔️✔️✔️ Account for #{business_name} is activated!"
+        end
+    end
+
     after_create do |user|
-        if user.isOrganization? && stripe_account.nil?
-            user.create_stripe_account
+        puts "❤️❤️❤️ User after_create block"
+        if user.isOrganization?
+            if stripe_account.nil?
+                user.create_stripe_account
+            end
+            # if stripe_financial_account.nil?
+            #     user.create_stripe_financial_account
+            # end
         end
         if user.isLawFirm? && user.stripe_financial_account_id.blank?
-            treasury_account = Stripe::Treasury::FinancialAccount.create({
+            treasury_account = Stripe::Treasury::FinancialAccount.create(
+                {
                     supported_currencies: ['usd'],
                     features: {
                         intra_stripe_flows: {requested: true}, # For recieving money from IC financial account
@@ -184,7 +218,8 @@ class User < ApplicationRecord
                 {stripe_account: user.stripe_account_id},
             )
         elsif user.isInsuranceCompany? && user.stripe_financial_account_id.blank?
-            treasury_account = Stripe::Treasury::FinancialAccount.create({
+            treasury_account = Stripe::Treasury::FinancialAccount.create(
+                {
                     supported_currencies: ['usd'],
                     features: {
                         intra_stripe_flows: {requested: true}, # For sending money to LF financial account
@@ -197,16 +232,46 @@ class User < ApplicationRecord
         user.save
     end
 
-    before_create do |user|
-        if user.organization_id == 0
-            user.organization_id = nil
+    before_create do
+        puts "❤️❤️❤️ User before_create block"
+        if organization_id == 0
+            self.organization_id = nil
         end
-        if user.role.blank? && !user.organization.blank?
-            if user.organization.isLawFirm?
+        if role.blank? && !organization.blank?
+            if organization.isLawFirm?
                 self.role = "Attorney"
             elsif user.organization.isInsuranceCompany?
                 self.role = "Insurance Agent"
             end
+        end
+        build_settings(UserSettings.default_settings)
+    end
+
+    def update_activated_attribute
+        unless isOrganization?
+            return
+        end
+        if stripe_account_onboarded? &&
+            has_bank_account? &&
+            has_two_factor_authentication_enabled? &&
+            email_is_verified? &&
+            has_member_account?
+            self.activated = true
+            return
+        end
+        self.activated = false
+        if !stripe_account_onboarded?
+            puts "❌❌❌ Account for #{business_name} not activated because stripe account is not onboarded!"
+        elsif !has_bank_account?
+            puts "❌❌❌ Account for #{business_name} not activated because there is no bank account!"
+        elsif !has_two_factor_authentication_enabled? 
+            puts "❌❌❌ Account for #{business_name} not activated because 2FA is not enabled!"
+        elsif !has_member_account?
+            puts "❌❌❌ Account for #{business_name} not activated because there is no member account!"
+        elsif !email_verified?
+            puts "❌❌❌ Account for #{business_name} not activated because email is not verified!"
+        else
+            puts "❌❌❌ Account for #{business_name} not activated for an unknown reason!"
         end
     end
 
@@ -227,11 +292,19 @@ class User < ApplicationRecord
     end
 
     def activated?
-        return stripe_account_onboarded? && has_bank_account? && has_two_factor_authentication_enabled? && has_member_account?
+        return activated
     end
 
     def stripe_account_id
         return stripe_account.stripe_id
+    end
+
+    def stripe_account_onboarded?
+        if stripe_account.nil?
+            false
+        elsif stripe_account.onboarded?
+            true
+        end
     end
 
     def self.all_attorneys
@@ -318,6 +391,15 @@ class User < ApplicationRecord
             agent_id_array = User.where(organization_id: id).pluck(:id)
             settlements = Settlement.where(insurance_agent_id: agent_id_array).all
         end
+    end
+
+    def can_access?(accessed_item)
+        AccessControl.access_authorized_for?(self, accessed_item)
+    end
+
+    def email_is_verified?
+        return true
+        # TODO: Add email verification mechanic
     end
 
     def default_bank_account

@@ -9,6 +9,7 @@
 #  updated_at  :datetime         not null
 #  document_id :bigint
 #  log_book_id :bigint
+#  public_id   :string
 #  reviewer_id :bigint
 #
 # Indexes
@@ -29,7 +30,7 @@ class DocumentReview < ApplicationRecord
     scope :unapproved,          ->          {where.not(verdict: "Approved")}
     scope :rejections,          ->          {where(verdict: "Rejected")}
     scope :waiting_for_review,  ->          {where(verdict: "Waiting")}
-    scope :authored_by,         ->  (user)  {where(reviewer: user)}
+    scope :with_reviewer,       ->  (user)  {where(reviewer: user)}
     scope :for_document,        ->  (doc)   {where(document: doc)}
     scope :have_been_reviewed,  ->          {where(verdict: "Approved").or(where(verdict: "Rejected"))}
 
@@ -61,9 +62,14 @@ class DocumentReview < ApplicationRecord
         optional: true
     )
 
+    before_create do
+        create_log_book_model_if_self_lacks_one
+    end
+
     after_save do
-        if !self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
-            if !document.save
+        puts "❤️❤️❤️ DocumentReview after_save block"
+        unless self.frozen? # The frozen? check keeps an error from being thrown when deleting settlement models
+            unless document.save
                 puts "⚠️⚠️⚠️ ERROR: #{document.errors.full_messages.inspect}"
                 raise ActiveRecord::Rollback
             end
@@ -71,9 +77,11 @@ class DocumentReview < ApplicationRecord
     end
 
     before_save do
-        create_log_book_model_if_self_lacks_one
-        generate_any_logs
-        log_book.save!
+        puts "❤️❤️❤️ DocumentReview before_save block"
+        unless log_book.nil?
+            generate_any_logs
+            log_book.save
+        end
     end
 
     def generate_any_logs
@@ -103,20 +111,17 @@ class DocumentReview < ApplicationRecord
 
     def approve
         self.verdict = "Approved"
-        return self.save
+        self.save
     end
 
     def reject
         self.verdict = "Rejected"
-        return self.save
+        self.save
     end
 
     def unreject
-        if self.is_for_approval?
-            return false
-        end
         self.verdict = "Waiting"
-        return self.save
+        self.save
     end
 
     def waiting_for_review?

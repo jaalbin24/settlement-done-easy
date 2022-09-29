@@ -10,6 +10,7 @@
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint
 #  log_book_id                 :bigint
+#  public_id                   :string
 #  settlement_id               :bigint
 #  source_id                   :bigint
 #  stripe_inbound_transfer_id  :string

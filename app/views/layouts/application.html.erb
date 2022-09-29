@@ -8,7 +8,7 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <script src="https://js.stripe.com/v3/"></script>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application'%>
     
   </head>
 
@@ -51,21 +51,30 @@
           </ul>
           <ul class="navbar-nav ms-sm-auto">
             <% if user_signed_in? %>
-              <li class="nav-item">
-                <%= link_to "Inbox", "#", class: 'nav-link'%>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
+                <div class="dropdown-menu">
+                  <%=link_to "Account", edit_user_registration_path, class: 'dropdown-item'%>
+                  <%=link_to "Settings", edit_user_registration_path, class: 'dropdown-item'%>
+                  <div class="dropdown-divider"></div>
+                  <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'dropdown-item' %>
+                </div>
               </li>
               <li class="nav-item">
-                <%= link_to "#{current_user.full_name}!", edit_user_registration_path, class: 'nav-link' %>
+                <%=link_to "Inbox", "#", class: 'nav-link'%>
               </li>
               <li class="nav-item">
-                <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' %>
+                <%=link_to "#{current_user.full_name}!", edit_user_registration_path, class: 'nav-link'%>
+              </li>
+              <li class="nav-item">
+                <%=link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link'%>
               </li>
             <% else %>
               <li class="nav-item">
-                <%= link_to 'Sign In', new_user_session_path, class: 'nav-link' %>
+                <%=link_to 'Sign In', new_user_session_path, class: 'nav-link'%>
               </li>
               <li class="nav-item">
-                <%= link_to 'Sign Up', user_type_select_path, class: 'nav-link' %>
+                <%=link_to 'Sign Up', user_type_select_path, class: 'nav-link'%>
               </li>
             <% end %>
           </ul>
@@ -81,6 +90,7 @@
       <% end %>
     </div>
     <main role="main" class="container">
+      <div id="toast-container" data-bs-toaster="" class="toast-container position-absolute m-3 top-10 end-0" aria-live="polite" style="z-index:999999;"></div>
       <br>
       <%= yield %>
       <br>

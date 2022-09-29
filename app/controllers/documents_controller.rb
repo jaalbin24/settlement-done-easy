@@ -3,18 +3,30 @@ class DocumentsController < ApplicationController
     before_action :authenticate_user!
     
     def index
-        @settlement = Settlement.find(params[:id])
+        @settlement = Settlement.find_by!(public_id: params[:id])
+        if @settlement.nil?
+            handle_invalid_request
+            return
+        end
         render :index
     end
         
     def new
-        @settlement = Settlement.find(params[:id])
+        @settlement = Settlement.find_by!(public_id: params[:id])
+        if @settlement.nil?
+            handle_invalid_request
+            return
+        end
         @document = Document.new
         render :new
     end
 
     def create
-        settlement = Settlement.find(params[:id])
+        settlement = Settlement.find_by!(public_id: params[:id])
+        if settlement.nil?
+            handle_invalid_request
+            return
+        end
         @document = settlement.documents.build(document_params)
         @document.added_by = current_user
         if @document.save
@@ -26,13 +38,12 @@ class DocumentsController < ApplicationController
         end
     end
 
-    def edit
-        @document = Document.find(params[:id])
-        render :edit
-    end
-
     def update
-        @document = Document.find(params[:id])
+        @document = Document.find_by!(public_id: params[:id])
+        if @document.nil?
+            handle_invalid_request
+            return
+        end
         if @document.update(document_params)
             flash[:info] = "Release form updated!"
             @document.update_pdf
@@ -46,20 +57,35 @@ class DocumentsController < ApplicationController
     end
 
     def destroy
-        document = Document.find(params[:id])
+        document = Document.find_by!(public_id: params[:id])
+        if document.nil?
+            handle_invalid_request
+            return
+        end
         filename = document.pdf_file_name
         settlement = document.settlement
         if document.destroy
-            flash[:info] = "#{filename} has been removed."
+            flash[:info] = "#{filename} has been deleted."
         else
             flash[:info] = "#{filename} could not be removed right now. Try again later."
         end
-        redirect_to document_index_url(settlement)
+        redirect_to settlement_show_url(settlement)
     end
 
     def show
-        @document = Document.find(params[:id])
-        @approval_progress = ((@document.reviews.approvals.size.to_f / @document.reviews.size) * 100).to_i
+        begin
+            @document = Document.find_by!(public_id: params[:id])
+            @settlement = @document.settlement
+            @approval_progress = ((@document.reviews.approvals.size.to_f / @document.reviews.size) * 100).to_i
+        rescue ActiveRecord::RecordNotFound => e
+            flash[:info] = "That document does not exist."
+            redirect_to root_path
+            return
+        rescue => e
+            flash[:info] = "An unknown error occured."
+            redirect_back(fallback_location: root_path)
+            return
+        end
         respond_to do |format|
             format.html do
                 render :show
@@ -71,13 +97,13 @@ class DocumentsController < ApplicationController
     end
     
     def ready_to_send
-        @document = Document.find(params[:id])
+        @document = Document.find_by!(public_id: params[:id])
         render :ready_to_send
     end
 
     def get_e_signature
         begin
-            @document = Document.find(params[:id])
+            @document = Document.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -92,12 +118,12 @@ class DocumentsController < ApplicationController
 
     def send_ds_signature_request
         begin
-            document = Document.find(params[:id])
+            document = Document.find_by!(public_id: params[:id])
             if params[:client_email] == nil || !params[:client_email].include?("@") || !params[:client_email].include?(".")
                 flash.now[:warning] = "You did not provide a valid client email. No email sent."
                 redirect_back(fallback_location: root_path)
                 return
-            elsif params[:client_name] != document.settlement.plaintiff_name
+            elsif params[:client_name] != document.settlement.claimant_name
                 flash[:warning] = "Client's name does not match the plaintiff name given in settlement. No email sent."
                 redirect_back(fallback_location: root_path)
                 return
@@ -130,7 +156,7 @@ class DocumentsController < ApplicationController
     end
 
     def get_ds_envelope_status
-        document = Document.find(params[:id])
+        document = Document.find_by!(public_id: params[:id])
         if !document.signed? && document.ds_envelope_id != nil
             envelope = retrieve_envelope(document.ds_envelope_id)
             status = JSON.parse(envelope.to_json)['status']
@@ -142,7 +168,7 @@ class DocumentsController < ApplicationController
                     signed: true
                 )
                 doc.pdf.attach(io: temp_file.open, filename: doc.pdf_file_name, content_type: "application/pdf")
-                doc.added_by = User.find(0)
+                doc.added_by = User.find_by!(public_id: 0)
                 doc.ds_envelope_id = document.ds_envelope_id
                 if !doc.save
                     puts "============== doc not saved! #{doc.errors.full_messages.inspect}"

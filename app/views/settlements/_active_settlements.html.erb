@@ -21,7 +21,7 @@
             <%current_user.settlements.each do |s|%>
                 <tr class="table-secondary">
                     <td><%=render "settlements/status", settlement: s%></td>
-                    <td><%=link_to s.plaintiff_name, settlement_show_path(s)%></td>
+                    <td><%=link_to s.claimant_name, settlement_show_path(s)%></td>
                     <%if current_user.isInsuranceAgent?%>
                         <td><%=s.attorney.full_name%></td>
                         <td><%=s.attorney.organization.full_name%></td>
@@ -29,7 +29,7 @@
                         <td><%=s.insurance_agent.full_name%></td>
                         <td><%=s.insurance_agent.organization.full_name%></td>
                     <%end%>
-                    <td>$<%=s.dollar_amount%></td>
+                    <td>$<%=s.amount%></td>
                 </tr>
             <%end%>
         </tbody>

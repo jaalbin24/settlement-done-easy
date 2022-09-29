@@ -2,8 +2,11 @@
 #
 
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
+
   devise_for :users, controllers: { registrations: 'user/registrations', sessions: 'user/sessions'}
 
+  
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root to: "pages#root"
 
@@ -15,11 +18,10 @@ Rails.application.routes.draw do
   get 'bank_account_secret',                    to: 'bank_accounts#secret',               as: 'bank_account_secret'
   delete 'bank_account/:id',                    to: 'bank_accounts#destroy',              as: 'bank_account_delete'
   
-  get 'documents/edit/:id',                     to: 'documents#edit',                     as: 'document_edit'
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
-  patch 'documents/:id/approve',                to: 'document_reviews#approve',           as: 'document_approve'
-  patch 'documents/:id/reject',                 to: 'document_reviews#reject',            as: 'document_reject'
-  patch 'documents/:id/unreject',               to: 'document_reviews#unreject',          as: 'document_unreject'
+  post 'documents/:id/approve',                 to: 'document_reviews#approve',           as: 'document_approve'
+  post 'documents/:id/reject',                  to: 'document_reviews#reject',            as: 'document_reject'
+  post 'documents/:id/unreject',                to: 'document_reviews#unreject',          as: 'document_unreject'
   get 'document/:id/get_e_signature',           to: 'documents#get_e_signature',          as: 'document_get_e_signature'
   patch 'documents/:id/send_ds_signature_request',  to: 'documents#send_ds_signature_request', as: 'document_send_ds_signature_request'
   get 'documents/:id/get_ds_envelope_status',   to: 'documents#get_ds_envelope_status',   as: 'document_get_ds_envelope_status'  
@@ -29,7 +31,7 @@ Rails.application.routes.draw do
 
   post 'settlements/:id/documents/new',         to: 'documents#create',                   as: 'document_create'
   get 'settlements/:id/documents/new',          to: 'documents#new',                      as: 'document_new'
-  get 'settlements/:id/generate_document',      to: 'settlements#generate_document',      as: 'settlement_generate_document'
+  post 'settlements/:id/generate_document',      to: 'settlements#generate_document',     as: 'settlement_generate_document'
   patch 'documents/:id',                        to: 'documents#update',                   as: 'document_update'
   delete 'documents/:id',                       to: 'documents#destroy',                  as: 'document_delete'
   
@@ -46,7 +48,6 @@ Rails.application.routes.draw do
   get 'settlements/:id/payment_success',              to: 'settlements#payment_success',        as: 'settlement_payment_success'
   get 'settlements/:id/complete',                     to: 'settlements#complete',               as: 'settlement_complete'
   post 'settlements',                                 to: 'settlements#create',                 as: 'settlement_create'
-  post 'settlements/:id/execute_payment',             to: 'settlements#execute_payment',        as: 'settlement_execute_payment'
   patch 'settlements/:id',                            to: 'settlements#update',                 as: 'settlement_update'
 
   patch 'settlements/:id/send_ds_signature_request',  to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
@@ -70,12 +71,15 @@ Rails.application.routes.draw do
   post 'webhook/stripe',                              to: 'stripe#handle_event',                      as: 'stripe_webhook_handle_event'
 
   get 'payments',                                     to: 'payments#index',                           as: 'payment_index'
-  get 'settlement/:id/payment',                       to: 'payments#show',                            as: 'payment_show'
-  patch 'settlement/:id/payment',                     to: 'payments#update',                          as: 'payment_update'
+  get 'payments/:id',                                 to: 'payments#show',                            as: 'payment_show'
+  patch 'payments/:id',                               to: 'payments#update',                          as: 'payment_update'
   post 'payments/:id/sync',                           to: 'payments#sync_with_stripe',                as: 'payment_sync_with_stripe'
+  post 'payments/:id/execute',                        to: 'payments#execute',                         as: 'payment_execute'
 
   post 'settlement/:id/payment_request',              to: 'payment_requests#create',                  as: 'payment_request_create'
   post 'payment_request/:id/accept',                  to: 'payment_requests#accept',                  as: 'payment_request_accept'
   post 'payment_request/:id/deny',                    to: 'payment_requests#deny',                    as: 'payment_request_deny'
+
+  post 'user_settings',                               to: 'user_settings#update',                     as: 'user_settings_update'
   
 end

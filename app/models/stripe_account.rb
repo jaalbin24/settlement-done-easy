@@ -9,6 +9,7 @@
 #  us_bank_account_ach_payments_enabled :boolean
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  public_id                            :string
 #  stripe_id                            :string
 #  user_id                              :bigint
 #
@@ -59,7 +60,10 @@ class StripeAccount < ApplicationRecord
         end
     end
 
-    before_create :sync_with_stripe
+    before_create do
+        puts "❤️❤️❤️ StripeAccount before_create block"
+        sync_with_stripe
+    end
 
     def sync_with_stripe
         puts "SYNC_WTH_STRIPE EXECUTED"

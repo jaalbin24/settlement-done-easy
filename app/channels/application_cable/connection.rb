@@ -3,9 +3,21 @@ module ApplicationCable
         identified_by :current_user
 
         def connect
-          if user_signed_in?
-              self.current_user = current_user
-          end
+            puts "🌐🌐🌐 CONNECTING..."
+            self.current_user = find_verified_user
+        end
+
+        private
+
+        def find_verified_user # this checks whether a user is authenticated with devise
+            
+            if verified_user = env['warden'].user
+                puts "🌐🌐🌐 User verified!"
+                verified_user
+            else
+                puts "🌐🌐🌐 User rejected!"
+                reject_unauthorized_connection
+            end
         end
     end
 end

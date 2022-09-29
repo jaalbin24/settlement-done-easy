@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                          :bigint           not null, primary key
+#  activated                   :boolean          default(FALSE), not null
 #  business_name               :string
 #  current_sign_in_at          :datetime
 #  current_sign_in_ip          :string
@@ -21,6 +22,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  organization_id             :bigint
+#  public_id                   :string
 #  stripe_financial_account_id :string
 #
 # Indexes

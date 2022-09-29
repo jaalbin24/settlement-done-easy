@@ -8,6 +8,7 @@
 #  updated_at    :datetime         not null
 #  accepter_id   :bigint
 #  log_book_id   :bigint
+#  public_id     :string
 #  requester_id  :bigint
 #  settlement_id :bigint
 #

@@ -10,6 +10,7 @@
 #  status                   :string           default("New"), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  public_id                :string
 #  stripe_payment_method_id :string           not null
 #  user_id                  :bigint           not null
 #
@@ -56,12 +57,17 @@ class BankAccount < ApplicationRecord
     end
 
     before_destroy do
-        if has_ongoing_payments?
+        if has_processing_payments?
             rollback
         end
     end
     
-    def has_ongoing_payments?
+    def has_processing_payments?
         return Payment.processing.where(destination: self).or(Payment.where(source: self)).exists?
+    end
+
+    # TODO: Add mechanic for bank account verification via microdeposits. Are other forms of verification needed?
+    def verified?
+        true
     end
 end

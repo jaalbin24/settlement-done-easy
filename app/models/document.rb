@@ -5,6 +5,7 @@
 #  id              :bigint           not null, primary key
 #  auto_generated  :boolean          default(FALSE), not null
 #  needs_signature :boolean          default(FALSE), not null
+#  nickname        :string
 #  signed          :boolean          default(FALSE), not null
 #  status          :string           default("Waiting for review"), not null
 #  created_at      :datetime         not null
@@ -12,6 +13,7 @@
 #  added_by_id     :bigint
 #  ds_envelope_id  :string
 #  log_book_id     :bigint
+#  public_id       :string
 #  settlement_id   :bigint
 #
 # Indexes
@@ -71,12 +73,14 @@ class Document < ApplicationRecord
 
     validates :pdf, presence: true
     validates :status, inclusion: {in: ["Approved", "Rejected", "Waiting for review"]}
+    validates :added_by, presence: true
     validate :has_exactly_two_reviews
     def has_exactly_two_reviews
         errors.add(:reviews, "must be of size=2") unless reviews.size == 2
     end
     
     before_validation do |document|
+        puts "❤️❤️❤️ Document before_validation block"
         if !document.pdf.attached?
             begin
                 document.pdf.attach(io: File.open(Rails.root.join("dummy_document.pdf")), filename: 'dummy_document.pdf')
@@ -106,22 +110,50 @@ class Document < ApplicationRecord
         end
     end
 
-    before_save do |document|
-        update_approval_status
+    before_save do 
+        puts "❤️❤️❤️ Document before_save block"
+        unless log_book.nil?
+            generate_any_logs
+            log_book.save
+        end
+    end
+
+    before_create do
+        puts "❤️❤️❤️ Document before_create block"
         create_log_book_model_if_self_lacks_one
-        generate_any_logs
-        log_book.save!
-        settlement.save
+        init_nickname
+    end
+
+    after_commit do
+        puts "❤️❤️❤️ Document after_commit block"
+        unless frozen?
+            update_approval_status
+            if self.changed?
+                self.save
+            end
+            if added_by.settings.delete_my_documents_after_rejection && rejected?
+                self.destroy
+            end
+        end
+        settlement.save!
     end
 
     def update_approval_status
         if reviews.rejections.exists?
-            self.status = "Rejected"
+            reject
         elsif reviews.approvals.size == reviews.size
-            self.status = "Approved"
+            approve
         else
             self.status = "Waiting for review"
         end
+    end
+
+    def reject
+        self.status = "Rejected"
+    end
+
+    def approve
+        self.status = "Approved"
     end
 
     def generate_any_logs
@@ -186,18 +218,26 @@ class Document < ApplicationRecord
     end
 
     def has_been_reviewed_by?(user)
-        return reviews.have_been_reviewed.authored_by(user).exists?
+        return reviews.have_been_reviewed.with_reviewer(user).exists?
     end
 
     def has_been_rejected_by?(user)
-        return reviews.rejections.authored_by(user).exists?
+        return reviews.rejections.with_reviewer(user).exists?
     end
 
     def has_been_approved_by?(user)
-        return reviews.approvals.authored_by(user).exists?
+        return reviews.approvals.with_reviewer(user).exists?
     end
 
-    def can_be_reviewed_by?(user)
-        return reviews.authored_by(user).exists?
+    def waiting_for_review_by?(user)
+        return reviews.waiting_for_review.with_reviewer(user).exists?
+    end
+
+    def init_nickname
+        self.nickname = "Release for #{settlement.claimant_name}"
+    end
+
+    def will_be_destroyed_after_rejection
+        added_by.settings.delete_my_documents_after_rejection
     end
 end

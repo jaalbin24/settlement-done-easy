@@ -5,7 +5,6 @@
 #  id         :bigint           not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  public_id  :string
 #
-<%settlements.each do |s|%>
-for_settlement_<%=s.id%>: {}
-<%end%>
+for_settlement: {}

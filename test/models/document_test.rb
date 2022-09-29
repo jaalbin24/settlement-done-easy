@@ -5,6 +5,7 @@
 #  id              :bigint           not null, primary key
 #  auto_generated  :boolean          default(FALSE), not null
 #  needs_signature :boolean          default(FALSE), not null
+#  nickname        :string
 #  signed          :boolean          default(FALSE), not null
 #  status          :string           default("Waiting for review"), not null
 #  created_at      :datetime         not null
@@ -12,6 +13,7 @@
 #  added_by_id     :bigint
 #  ds_envelope_id  :string
 #  log_book_id     :bigint
+#  public_id       :string
 #  settlement_id   :bigint
 #
 # Indexes

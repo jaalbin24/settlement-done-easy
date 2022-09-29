@@ -8,6 +8,7 @@
 #  updated_at    :datetime         not null
 #  accepter_id   :bigint
 #  log_book_id   :bigint
+#  public_id     :string
 #  requester_id  :bigint
 #  settlement_id :bigint
 #
@@ -74,6 +75,7 @@ class PaymentRequest < ApplicationRecord
     end
 
     before_validation do
+        puts "❤️❤️❤️ PaymentRequest before_validation block"
         # Initialize accepter attribute
         if requester.isAttorney?
             self.accepter = settlement.insurance_agent
@@ -83,9 +85,15 @@ class PaymentRequest < ApplicationRecord
     end
 
     before_save do
+        puts "❤️❤️❤️ PaymentRequest before_save block"
+        unless log_book.nil?
+            generate_any_logs
+            log_book.save
+        end
+    end
+
+    before_create do
         create_log_book_model_if_self_lacks_one
-        generate_any_logs
-        log_book.save!
     end
 
     def generate_any_logs
