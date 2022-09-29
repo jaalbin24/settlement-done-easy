@@ -26,8 +26,3 @@
 #  fk_rails_...  (requester_id => users.id)
 #  fk_rails_...  (settlement_id => settlements.id)
 #
-require 'rails_helper'
-
-RSpec.describe PaymentRequest, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
-end

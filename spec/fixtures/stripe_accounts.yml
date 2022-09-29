@@ -22,8 +22,21 @@
 #
 #  fk_rails_...  (user_id => users.id)
 #
-require 'rails_helper'
 
-RSpec.describe StripeAccount, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
+gkbm_connect: 
+    user: gkbm
+    stripe_id: acct_1LUMm4PvLqRcxm3z
+    card_payments_enabled: true
+    transfers_enabled: true
+    treasury_enabled: true
+    us_bank_account_ach_payments_enabled: true
+
+
+state_farm_connect: 
+    user: state_farm
+    stripe_id: acct_1LUMmEQ44dejfzxN
+    card_payments_enabled: true
+    transfers_enabled: true
+    treasury_enabled: true
+    us_bank_account_ach_payments_enabled: true
+
