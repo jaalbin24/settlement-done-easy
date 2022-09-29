@@ -13,8 +13,18 @@
 #  updated_at  :datetime         not null
 #  public_id   :string
 #
-require 'rails_helper'
+one:
+    line1: MyString
+    line2: MyString
+    city: MyString
+    postal_code: 1
+    state: MyString
+    country: MyString
 
-RSpec.describe Address, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
+two:
+    line1: MyString
+    line2: MyString
+    city: MyString
+    postal_code: 1
+    state: MyString
+    country: MyString

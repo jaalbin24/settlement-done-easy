@@ -36,8 +36,35 @@
 #
 #  fk_rails_...  (organization_id => users.id)
 #
-require 'rails_helper'
 
-RSpec.describe User, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
+gkbm: 
+    business_name: GKBM TEST
+    email: GKBM.test@example.com
+    encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
+    stripe_financial_account_id: fa_1LUMmBPvLqRcxm3zrV1FlYgb
+    stripe_account_onboarded: true
+    role: Law Firm
+
+state_farm: 
+    business_name: State Farm TEST
+    email: state_farm.test@example.com
+    encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
+    stripe_financial_account_id: fa_1LUMmLQ44dejfzxNA7hI1dQb
+    stripe_account_onboarded: true
+    role: Insurance Company
+
+gkbm_attorney: 
+    first_name: John
+    last_name: Smith
+    email: attorney.gkbm.test@example.com
+    encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
+    role: Attorney
+    organization: gkbm
+
+state_farm_insurance_agent: 
+    first_name: Jane
+    last_name: Doe
+    email: insurance_agent.state_farm.test@example.com
+    encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
+    role: Insurance Agent
+    organization: state_farm

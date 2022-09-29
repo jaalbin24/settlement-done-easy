@@ -20,8 +20,7 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (user_id => users.id)
 #
-require 'rails_helper'
 
-RSpec.describe LogBookEntry, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
+one:
+    message: Example message
+    log_book: settlement_one
