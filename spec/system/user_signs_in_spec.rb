@@ -1,11 +1,13 @@
-RSpec.describe "User signs in" do
-    fixtures :users
-    scenario "from the home page" do
-        visit root_path
-        click_on "Sign in"
-        fill_in "Email", with: "state_farm.test@example.com"
-        fill_in "Password", with: "password123"
-        click_button "Sign in"
-        expect(page).to have_text "State Farm"
-    end
+
+RSpec.describe "The user signs in", type: :system do
+    # it "from the home page" do
+    #     user = create(:law_firm)
+    #     visit root_path
+    #     click_on "Sign in"
+    #     fill_in "Email", with: user.email
+    #     fill_in "Password", with: user.password
+    #     click_button "Sign in"
+
+    #     expect(page).to have_text user.full_name
+    # end
 end

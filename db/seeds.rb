@@ -11,16 +11,6 @@ SETTLEMENTS_PER_ATTORNEY = 7
 DOCUMENTS_PER_SETTLEMENT = 1
 # Adjust NUM_USERS_OF_EACH_ROLE to increase/decrease the number of records created when calling the 'rails db:seed' command
 
-docusign_user = User.create!(
-    id: 0,
-    email: "docusign@example.com",
-    password: "password123",
-    first_name: "DocuSign",
-    last_name: "eSigning",
-    role: "Dummy"
-)
-puts "Created DocuSign user"
-
 law_firm_users = Array.new(1) {|i|
     law_firm = User.new(
         email: "law_firm#{i}@example.com",
@@ -28,7 +18,6 @@ law_firm_users = Array.new(1) {|i|
         role: "Law Firm",
         business_name: law_firms[i],
         stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
-        stripe_account_onboarded: true,
         organization: nil
     )
     law_firm.build_stripe_account(
@@ -61,7 +50,6 @@ insurance_company_users = Array.new(1) {|i|
         role: "Insurance Company",
         business_name: insurance_companies[i],
         stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
-        stripe_account_onboarded: true,
         organization: nil
     )
     insurance_company.build_stripe_account(

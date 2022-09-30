@@ -18,7 +18,6 @@
 #  reset_password_token        :string
 #  role                        :string
 #  sign_in_count               :integer          default(0), not null
-#  stripe_account_onboarded    :boolean          default(FALSE), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  organization_id             :bigint
@@ -42,7 +41,6 @@ gkbm:
     email: GKBM.test@example.com
     encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
     stripe_financial_account_id: fa_1LUMmBPvLqRcxm3zrV1FlYgb
-    stripe_account_onboarded: true
     role: Law Firm
 
 state_farm: 
@@ -50,7 +48,6 @@ state_farm:
     email: state_farm.test@example.com
     encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
     stripe_financial_account_id: fa_1LUMmLQ44dejfzxNA7hI1dQb
-    stripe_account_onboarded: true
     role: Insurance Company
 
 gkbm_attorney: 

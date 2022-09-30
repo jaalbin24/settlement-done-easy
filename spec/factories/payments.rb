@@ -34,9 +34,3 @@
 #  fk_rails_...  (settlement_id => settlements.id)
 #  fk_rails_...  (source_id => bank_accounts.id)
 #
-
-default_payment_for_settlement_one:
-    amount: 1000.00
-    source: state_farm_success1
-    destination: gkbm_success1
-    settlement: one

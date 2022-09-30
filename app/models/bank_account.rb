@@ -50,7 +50,8 @@ class BankAccount < ApplicationRecord
     )
 
     validates :stripe_payment_method_id, presence: true
-    validates :status, inclusion: {in: ["New", "Validated", "Verified", "Verification failed", "Errored"]}
+    validates :status, inclusion: {in: -> (i) {BankAccount.statuses}}
+    validates :user, presence: true
 
     after_destroy do |bank_account|
         
@@ -69,5 +70,9 @@ class BankAccount < ApplicationRecord
     # TODO: Add mechanic for bank account verification via microdeposits. Are other forms of verification needed?
     def verified?
         true
+    end
+
+    def self.statuses
+        ["New", "Validated", "Verified", "Verification failed", "Errored"]
     end
 end

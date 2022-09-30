@@ -72,10 +72,6 @@ module DocumentGenerator
         d.pdf.attach(io: StringIO.new(pdf.render), filename: "#{settlement.claim_number}_release.pdf")
         return d
     end
-    
-    def doc_generator_user
-        return User.where("role=?", "Dummy").and(User.where("email=?", "doc_generator@example.com")).first
-    end
 
     def amount_humanized(amount)
         # returns a worded dollar amount   

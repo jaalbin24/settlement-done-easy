@@ -26,10 +26,11 @@ class StripeController < ApplicationController
         end
     end
 
-    def handle_return_from_onboard
+    def handle_return_from_onboard 
+        # TODO: Revamp this whole action. There should be a stronger check for the requirements from Stripe
+        # than just checking whether charges are enabled.
         @stripe_account = Stripe::Account.retrieve(current_user.stripe_account.stripe_id)
         if @stripe_account.charges_enabled
-            current_user.stripe_account_onboarded = true
             if current_user.save
                 render :onboard_complete
             else
@@ -37,7 +38,6 @@ class StripeController < ApplicationController
                 redirect_to root_path
             end
         else
-            current_user.stripe_account_onboarded = false
             if current_user.save
                 render :onboard_not_complete
             else

@@ -110,6 +110,11 @@ GEM
     ethon (0.15.0)
       ffi (>= 1.15.0)
     execjs (2.8.1)
+    factory_bot (6.2.1)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
+      railties (>= 5.0.0)
     ffi (1.15.5)
     font-awesome-sass (6.2.0)
       sassc (~> 2.0)
@@ -285,6 +290,7 @@ DEPENDENCIES
   capybara (>= 3.26)
   devise
   docusign_esign
+  factory_bot_rails
   font-awesome-sass
   httplog
   humanize
