@@ -61,8 +61,8 @@ Rails.application.routes.draw do
   get 'stripe_dashboard',                             to: 'stripe#dashboard',                   as: 'stripe_dashboard'
 
   get 'organizations/:org_id/members/new',            to: 'organization_users#new_member',            as: 'organization_new_member'
-  get 'organizations/:org_id/settlements',            to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
-  get 'organizations/:org_id/members',                to: 'organization_users#members_index',         as: 'organization_members_index'
+  get 'organizations/settlements',                    to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
+  get 'organizations/members',                        to: 'organization_users#members_index',         as: 'organization_members_index'
   get 'organizations/:org_id/members/:mem_id',        to: 'organization_users#show_member',           as: 'organization_show_member'
   delete 'organizations/:org_id/members/:mem_id',     to: 'organization_users#remove_member',         as: 'organization_remove_member'
   patch 'organizations/:org_id/members/:mem_id',      to: 'organization_users#add_member',            as: 'organization_add_member'
