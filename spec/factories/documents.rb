@@ -28,26 +28,3 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (settlement_id => settlements.id)
 #
-
-# NAME KEY
-# [settlement fixture]_[name]
-
-one:
-    added_by: gkbm_attorney
-    auto_generated: true
-    settlement: one
-
-two:
-    added_by: gkbm_attorney
-    auto_generated: false
-    settlement: one
-
-three:
-    added_by: state_farm_insurance_agent
-    auto_generated: true
-    settlement: one
-
-four:
-    added_by: state_farm_insurance_agent
-    auto_generated: false
-    settlement: one

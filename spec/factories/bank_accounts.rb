@@ -24,38 +24,10 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-gkbm_success1: 
-    user: gkbm
-    stripe_payment_method_id: pm_1LYvHfPvLqRcxm3zIbQJcor9
-    nickname: STRIPE TEST BANK (Seeded \#1)
-    last4: 6789
-    fingerprint: nil
-    status: New
-    default: true
-
-gkbm_success2: 
-    user: gkbm
-    stripe_payment_method_id: pm_1LZILoPvLqRcxm3znJP3m131
-    nickname: STRIPE TEST BANK (Seeded \#2)
-    last4: 6789
-    fingerprint: nil
-    status: New
-    default: false
-
-state_farm_success1: 
-    user: state_farm
-    stripe_payment_method_id: pm_1LYvHGQ44dejfzxNSCCrYoET
-    nickname: STRIPE TEST BANK (Seeded \#1)
-    last4: 6789
-    fingerprint: nil
-    status: New
-    default: true
-
-state_farm_success2:
-    user: state_farm
-    stripe_payment_method_id: pm_1LZIOUQ44dejfzxNeCkdDU99
-    nickname: STRIPE TEST BANK (Seeded \#2)
-    last4: 6789
-    fingerprint: nil
-    status: New
-    default: false
+FactoryBot.define do
+    factory :bank_account, class: "BankAccount" do
+        association :user, factory: [:law_firm, :insurance_company, :attorney, :adjuster]
+        sequence(:stripe_payment_method_id) {|i| "pm_FakePaymentMethod-#{i}"}
+        status {"New"}
+    end
+end

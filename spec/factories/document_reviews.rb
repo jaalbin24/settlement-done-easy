@@ -24,25 +24,3 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (reviewer_id => users.id)
 #
-
-# Attorney added document 1 & 2, so their default approval is below.
-attorney_approval_for_doc1:
-    reviewer: gkbm_attorney
-    verdict: Approved
-    document: one
-
-attorney_approval_for_doc2:
-    reviewer: gkbm_attorney
-    verdict: Approved
-    document: two
-
-# Insurance agent added document 3 & 4, so their default approval is below.
-insurance_agent_approval_for_doc3:
-    reviewer: state_farm_insurance_agent
-    verdict: Approved
-    document: three
-
-insurance_agent_approval_for_doc4:
-    reviewer: state_farm_insurance_agent
-    verdict: Approved
-    document: four

@@ -39,10 +39,12 @@ class StripeAccount < ApplicationRecord
     )
 
     validates :stripe_id, inclusion: {in: -> (i) {[i.stripe_id_was]}, message: "cannot be changed after creation."}, on: :update
+    validates :user, presence: true
 
     before_validation do
         if stripe_id.blank?
             puts "STRIPE_ID is BLANK"
+            # TODO: If this call to Stripe fails for network reasons, add a job to ActiveJobs to retry later.
             account = Stripe::Account.create({
                 type: "custom",
                 country: "US",
@@ -62,11 +64,11 @@ class StripeAccount < ApplicationRecord
 
     before_create do
         puts "❤️❤️❤️ StripeAccount before_create block"
-        sync_with_stripe
+        sync_with_stripe unless Rails.env.test? # This 'unless' check was added to make tests run faster.
     end
 
     def sync_with_stripe
-        puts "SYNC_WTH_STRIPE EXECUTED"
+        puts "SYNC_WITH_STRIPE EXECUTED"
         if stripe_id.blank?
             raise StandardError.new "Cannot sync Stripe account without a Stripe Connect account ID."
             return
@@ -76,7 +78,7 @@ class StripeAccount < ApplicationRecord
     end
 
     def sync_with(account)
-        puts "SYNC_WTH EXECUTED"
+        puts "SYNC_WITH EXECUTED"
         if stripe_id != account.id
             raise StandardError.new "ID mismatch! Cannot sync Stripe account with an account that has a different ID."
             return

@@ -18,7 +18,6 @@
 #  reset_password_token        :string
 #  role                        :string
 #  sign_in_count               :integer          default(0), not null
-#  stripe_account_onboarded    :boolean          default(FALSE), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  organization_id             :bigint
@@ -103,13 +102,6 @@ class UserTest < ActiveSupport::TestCase
         u = users(:gkbm)
         assert u.valid?, u.errors.full_messages.inspect
         u.organization = users(:state_farm)
-        assert_not u.valid?
-    end
-
-    test "member-type users must not have an onboarded stripe account" do
-        u = users(:gkbm_attorney)
-        assert u.valid?, u.errors.full_messages.inspect
-        u.stripe_account_onboarded = true
         assert_not u.valid?
     end
 

@@ -23,20 +23,17 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-gkbm_connect: 
-    user: gkbm
-    stripe_id: acct_1LUMm4PvLqRcxm3z
-    card_payments_enabled: true
-    transfers_enabled: true
-    treasury_enabled: true
-    us_bank_account_ach_payments_enabled: true
-
-
-state_farm_connect: 
-    user: state_farm
-    stripe_id: acct_1LUMmEQ44dejfzxN
-    card_payments_enabled: true
-    transfers_enabled: true
-    treasury_enabled: true
-    us_bank_account_ach_payments_enabled: true
-
+FactoryBot.define do
+    factory :stripe_account, class: "StripeAccount" do
+        sequence(:stripe_id) {|i| "acct_FakeStripeAcctID-#{i}"}
+        association :user, factory: [:law_firm, :insurance_company, :attorney, :adjuster]
+    end
+    factory :stripe_account_for_insurance_company, class: "StripeAccount" do
+        association :user, factory: :insurance_company
+        sequence(:stripe_id) {|i| "acct_1LUMmEQ44dejfzxN-#{i}"}
+    end
+    factory :stripe_account_for_law_firm, class: "StripeAccount" do
+        association :user, factory: :law_firm
+        sequence(:stripe_id) {|i| "acct_1LUMm4PvLqRcxm3z-#{i}"}
+    end
+end

@@ -13,18 +13,3 @@
 #  updated_at  :datetime         not null
 #  public_id   :string
 #
-one:
-    line1: MyString
-    line2: MyString
-    city: MyString
-    postal_code: 1
-    state: MyString
-    country: MyString
-
-two:
-    line1: MyString
-    line2: MyString
-    city: MyString
-    postal_code: 1
-    state: MyString
-    country: MyString

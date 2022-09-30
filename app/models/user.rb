@@ -18,7 +18,6 @@
 #  reset_password_token        :string
 #  role                        :string
 #  sign_in_count               :integer          default(0), not null
-#  stripe_account_onboarded    :boolean          default(FALSE), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  organization_id             :bigint
@@ -42,19 +41,22 @@ class User < ApplicationRecord
     # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable
 
-    validates :role, inclusion: {in: ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company", "Dummy"]}
+    validates :role, inclusion: {in: -> (i) {User.roles}} # Useless i variable prevents ArgumentError from being thrown during testing. Do not remove.
+    validates :role, inclusion: {in: -> (i) {[i.role_was]}, message: "cannot be changed after creation."}, on: :update
     validates :email, :role, :encrypted_password, presence: true
-    validates :first_name, :last_name, presence: {unless: :isOrganization?}
+    validates :first_name, :last_name, presence: {if: :isMember?}
     validates :first_name, :last_name, absence: {if: :isOrganization?}
     validates :business_name, presence: {if: :isOrganization?}
-    validates :business_name, absence: {unless: :isOrganization?}
-    validates :stripe_account_onboarded, inclusion: {in: [false], if: :isMember?}
+    validates :business_name, absence: {if: :isMember?}
+    validates :stripe_account, absence: {if: :isMember?}
+    validates :stripe_account, presence: {if: :isOrganization?}
+
 
     validate :name_has_valid_characters
     def name_has_valid_characters
         if !business_name.blank? && isOrganization? && !business_name.tr(" &-", "").match?(/\A[a-zA-Z0-9'-]*\z/)
             errors.add(:business_name, "can only contain letters, numbers, ampersands (&), and hyphens (-)")
-        elsif !isOrganization?
+        elsif isMember? && !first_name.blank? && !last_name.blank?
             if !first_name.tr(" -", "").match?(/\A[a-zA-Z'-]*\z/)
                 errors.add(:first_name, "can only contain letters and hyphens (-)")
             end
@@ -192,7 +194,7 @@ class User < ApplicationRecord
         update_activated_attribute
         if activated_changed?
             self.save
-            puts "✔️✔️✔️ Account for #{business_name} is activated!"
+            puts "✔️✔️✔️ Account for #{business_name} is activated!" if activated?
         end
     end
 
@@ -245,6 +247,10 @@ class User < ApplicationRecord
             end
         end
         build_settings(UserSettings.default_settings)
+    end
+
+    def self.roles
+        ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]
     end
 
     def update_activated_attribute

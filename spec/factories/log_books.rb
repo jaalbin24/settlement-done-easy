@@ -7,4 +7,3 @@
 #  updated_at :datetime         not null
 #  public_id  :string
 #
-for_settlement: {}

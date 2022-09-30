@@ -36,18 +36,3 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (started_by_id => users.id)
 #
-DEFAULTS: &DEFAULTS
-    claim_number: C123456789
-    completed: false
-    defendant_name: Danny Defendant
-    amount: 1000.00
-    incident_date: <%=4.weeks.ago.to_s(:db)%>
-    incident_location: Memphis, TN
-    claimant_name: Patty Plaintiff
-    policy_number: P123456789
-    attorney: gkbm_attorney
-    insurance_agent: state_farm_insurance_agent
-
-# Settlement "one" is a brand new settlement, just created, not modified.
-one:
-    <<: *DEFAULTS

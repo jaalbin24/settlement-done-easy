@@ -20,7 +20,3 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (user_id => users.id)
 #
-
-one:
-    message: Example message
-    log_book: settlement_one
