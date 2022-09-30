@@ -41,9 +41,9 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Mount Action Cable outside main process or domain.
-  # config.action_cable.mount_path = nil
-  # config.action_cable.url = 'wss://example.com/cable'
-  # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
+  config.action_cable.mount_path = "/cable"
+  config.action_cable.url = 'https://settlementdoneeasy.com/cable'
+  config.action_cable.allowed_request_origins = [ 'http://settlement-done-easy.herokuapp.com', 'https://settlement-done-easy.herokuapp.com', 'http://settlementdoneeasy.com', 'https://settlementdoneeasy.com']
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -62,7 +62,7 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "mailer_testing_production"
+  # config.active_job.queue_name_prefix = "settlement_done_easy_production"
 
   config.action_mailer.perform_caching = false
 
