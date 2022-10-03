@@ -146,15 +146,32 @@ RSpec.describe "Users", type: :model do
                     expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                     expect(u.stripe_account.onboarded?).to be_truthy, "Object: #{u.stripe_account.to_json} Error message: #{u.errors.full_messages.inspect}"
                     u.stripe_account = create(:stripe_account, :not_onboarded, user: u)
+                    u.save
                     expect(u.stripe_account.onboarded?).to be_falsey
-                    # expect(u.valid?).to be_falsey, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.activated?).to be_falsey, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                 end
             end
             it "must have at least one bank account" do
-                pending "Implementation"
-                fail
+                @users.each do |u|
+                    expect(u.activated?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.bank_accounts.size).to be > 0, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    u.bank_accounts.delete_all
+                    u.save
+                    expect(u.activated?).to be_falsey
+                    expect(u.valid?).to be_truthy
+                end
             end
             it "must have 2FA enabled" do
+                @users.each do |u|
+                    expect(u.activated?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.two_factor_authentication_enabled?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    # u.two_factor_authentication.phone_number = nil
+                    # u.save
+                    # expect(u.two_factor_authentication_enabled?).to be_falsey
+                    # expect(u.activated?).to be_falsey
+                end
                 pending "Implementation"
                 fail
             end
@@ -163,43 +180,15 @@ RSpec.describe "Users", type: :model do
                 fail
             end
             it "must have at least one member account" do
-                pending "Implementation"
-                fail
-            end
-        end
-
-        context "without a bank account" do
-            it "must not be activated" do
-                pending "Implementation"
-                fail
-            end
-        end
-
-        context "with zero member accounts" do
-            it "must not be activated" do
-                pending "Implementation"
-                fail
-            end
-        end
-
-        context "without a verified email" do
-            it "must not be activated" do
-                pending "Implementation"
-                fail
-            end
-        end
-
-        context "without an onboarded stripe account" do
-            it "must not be activated" do
-                pending "Implementation"
-                fail
-            end
-        end
-
-        context "without 2FA enabled" do
-            it "must not be activated" do
-                pending "Implementation"
-                fail
+                @users.each do |u|
+                    expect(u.activated?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    expect(u.members.size).to be > 0, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
+                    u.members.destroy_all
+                    u.save
+                    expect(u.activated?).to be_falsey
+                    expect(u.valid?).to be_truthy
+                end
             end
         end
     end

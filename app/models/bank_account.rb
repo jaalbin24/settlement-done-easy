@@ -32,7 +32,8 @@ class BankAccount < ApplicationRecord
         :user,
         class_name: "User",
         foreign_key: "user_id",
-        inverse_of: :bank_accounts
+        inverse_of: :bank_accounts,
+        autosave: true
     )
 
     has_many(
@@ -56,6 +57,9 @@ class BankAccount < ApplicationRecord
     before_destroy do
         if has_processing_payments?
             rollback
+        end
+        if user.bank_accounts.size == 1
+            raise BankAccountSafetyError.new "You must keep at least one bank account. Add another bank account before deleting this one."
         end
     end
     

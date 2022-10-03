@@ -86,9 +86,7 @@ FactoryBot.define do
                 u.members = build_list(:adjuster, e.num_members, organization: u)
             end
         end
-
         
-
         factory :attorney do
             role {"Attorney"}
             first_name {random_first_name}

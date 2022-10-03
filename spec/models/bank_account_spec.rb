@@ -25,6 +25,27 @@
 #
 require 'rails_helper'
 
-RSpec.describe BankAccount, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+RSpec.describe "Bank accounts", type: :model do
+    before(:each) do
+        @bank_accounts = [create(:bank_account, :for_insurance_company), create(:bank_account, :for_law_firm)]
+    end
+    it "must have a stripe payment id" do
+        @bank_accounts.each do |ba|
+            expect(ba.stripe_payment_method_id.blank?).to be_falsey
+            expect(ba.valid?).to be_truthy
+            ba.stripe_payment_method_id = ""
+            expect(ba.valid?).to be_falsey
+            ba.reload
+            expect(ba.stripe_payment_method_id.blank?).to be_falsey
+            expect(ba.valid?).to be_truthy
+            ba.stripe_payment_method_id = nil
+            expect(ba.valid?).to be_falsey
+        end
+    end
+
+    context "" do
+        it "" do
+        
+        end
+    end
 end
