@@ -28,3 +28,18 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (settlement_id => settlements.id)
 #
+FactoryBot.define do
+    factory :document, class: "Document" do
+        added_by
+        trait :added_by_insurance_agent do
+            after(:build) do |d|
+                d.added_by = d.settlement.insurance_agent
+            end
+        end
+        trait :added_by_attorney do
+            after(:build) do |d|
+                d.added_by = d.settlement.attorney
+            end
+        end
+    end
+end

@@ -26,14 +26,15 @@
 FactoryBot.define do
     factory :stripe_account, class: "StripeAccount" do
         sequence(:stripe_id) {|i| "acct_FakeStripeAcctID-#{i}"}
-        association :user, factory: [:law_firm, :insurance_company, :attorney, :adjuster]
-    end
-    factory :stripe_account_for_insurance_company, class: "StripeAccount" do
-        association :user, factory: :insurance_company
-        sequence(:stripe_id) {|i| "acct_1LUMmEQ44dejfzxN-#{i}"}
-    end
-    factory :stripe_account_for_law_firm, class: "StripeAccount" do
-        association :user, factory: :law_firm
-        sequence(:stripe_id) {|i| "acct_1LUMm4PvLqRcxm3z-#{i}"}
+        user
+        transient do
+            num_requirements {0}
+        end
+        trait :not_onboarded do
+            num_requirements {2}
+        end
+        after(:build) do |sa, e|
+            sa.requirements = build_list(:stripe_account_requirement, e.num_requirements, stripe_account: sa)
+        end
     end
 end

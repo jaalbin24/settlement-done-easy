@@ -13,27 +13,27 @@
 #  last_name                   :string
 #  last_sign_in_at             :datetime
 #  last_sign_in_ip             :string
-#  recreated_at         :datetime
+#  remember_created_at         :datetime
 #  reset_password_sent_at      :datetime
 #  reset_password_token        :string
 #  role                        :string
 #  sign_in_count               :integer          default(0), not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
-#  id             :bigint
+#  organization_id             :bigint
 #  public_id                   :string
 #  stripe_financial_account_id :string
 #
 # Indexes
 #
 #  index_users_on_email                        (email) UNIQUE
-#  index_users_on_id              (id)
+#  index_users_on_organization_id              (organization_id)
 #  index_users_on_reset_password_token         (reset_password_token) UNIQUE
 #  index_users_on_stripe_financial_account_id  (stripe_financial_account_id) UNIQUE
 #
 # Foreign Keys
 #
-#  fk_rails_...  (id => users.id)
+#  fk_rails_...  (organization_id => users.id)
 #
 require 'rails_helper'
 
@@ -145,27 +145,62 @@ RSpec.describe "Users", type: :model do
                     expect(u.activated?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                     expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                     expect(u.stripe_account.onboarded?).to be_truthy, "Object: #{u.stripe_account.to_json} Error message: #{u.errors.full_messages.inspect}"
-                    u.stripe_account = build(:stripe_account)
-                    u.save!
+                    u.stripe_account = create(:stripe_account, :not_onboarded, user: u)
+                    expect(u.stripe_account.onboarded?).to be_falsey
                     # expect(u.valid?).to be_falsey, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                 end
             end
             it "must have at least one bank account" do
-
+                pending "Implementation"
+                fail
             end
             it "must have 2FA enabled" do
-
+                pending "Implementation"
+                fail
             end
             it "must have a verified email" do
-
+                pending "Implementation"
+                fail
             end
             it "must have at least one member account" do
-
+                pending "Implementation"
+                fail
             end
         end
 
-        context "when their account is not activated" do
+        context "without a bank account" do
+            it "must not be activated" do
+                pending "Implementation"
+                fail
+            end
+        end
 
+        context "with zero member accounts" do
+            it "must not be activated" do
+                pending "Implementation"
+                fail
+            end
+        end
+
+        context "without a verified email" do
+            it "must not be activated" do
+                pending "Implementation"
+                fail
+            end
+        end
+
+        context "without an onboarded stripe account" do
+            it "must not be activated" do
+                pending "Implementation"
+                fail
+            end
+        end
+
+        context "without 2FA enabled" do
+            it "must not be activated" do
+                pending "Implementation"
+                fail
+            end
         end
     end
 

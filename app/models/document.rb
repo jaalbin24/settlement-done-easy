@@ -72,16 +72,16 @@ class Document < ApplicationRecord
     )
 
     validates :pdf, presence: true
-    validates :status, inclusion: {in: ["Approved", "Rejected", "Waiting for review"]}
+    validates :status, inclusion: {in: -> (i) {Document.statuses}}
     validates :added_by, presence: true
     validate :has_exactly_two_reviews
     def has_exactly_two_reviews
-        errors.add(:reviews, "must be of size=2") unless reviews.size == 2
+        errors.add(:reviews, "must be of size = 2") unless reviews.size == 2
     end
 
     validate :changes_are_allowed_when_settlement_is_locked
     def changes_are_allowed_when_settlement_is_locked
-        if settlement.locked?
+        if settlement.locked? && !new_record?
             changed_attributes.keys.each do |a|
                 unless Document.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
                     raise SafetyError::DocumentSafetyError.new "This settlement is locked. You cannot modify its documents."
@@ -141,7 +141,7 @@ class Document < ApplicationRecord
     after_commit do
         puts "❤️❤️❤️ Document after_commit block"
         unless frozen?
-            update_approval_status
+            update_status_attribute
             if self.changed?
                 self.save
             end
@@ -149,10 +149,14 @@ class Document < ApplicationRecord
                 self.destroy
             end
         end
-        settlement.save!
+        settlement.save
     end
 
-    def update_approval_status
+    def self.statuses
+        ["Approved", "Rejected", "Waiting for review"]
+    end
+
+    def update_status_attribute
         if reviews.rejections.exists?
             reject
         elsif reviews.approvals.size == reviews.size

@@ -42,7 +42,10 @@ class Settlement < ApplicationRecord
     scope :ready_for_payment,           ->      {where(ready_for_payment: true)}
 
     validates :amount, presence: true
-    validates :locked, inclusion: {in: [true], if: :completed?}
+    validates :locked, inclusion: {in: [true], message: "must be true when the settlement is completed.", if: :completed?}
+    validates :locked, inclusion: {in: [true], message: "must be true when the settlement has a processing payment.", if: :has_processing_payment?}
+    validates :locked, inclusion: {in: [true], message: "must be true when the settlement has a completed payment.", if: :has_completed_payment?}
+    validates :locked, inclusion: {in: [false], message: "must be false when the settlement has no documents.", if: -> (s) {s.documents.empty?}}
     validates :ready_for_payment, inclusion: {in: [false], if: :completed?}
 
     validate :changes_are_allowed_when_settlement_is_locked
@@ -67,14 +70,18 @@ class Settlement < ApplicationRecord
 
     validate :amount_is_above_allowed_threshold
     def amount_is_above_allowed_threshold
-        errors.add(:amount, "must be greater than $#{Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS}") unless amount > Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS
+        unless amount.nil?
+            errors.add(:amount, "must be greater than $#{Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS}") unless amount > Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS
+        end
     end
     
     validate :amount_is_below_allowed_threshold
     def amount_is_below_allowed_threshold
-        errors.add(:amount, "must be less than $#{Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS}") unless amount < Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS
+        unless amount.nil?
+            errors.add(:amount, "must be less than $#{Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS}") unless amount < Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS
+        end
     end
-
+    
     # Assumes reliably incrementing primary key
     validate :completed_payment_must_be_latest_payment
     def completed_payment_must_be_latest_payment
@@ -87,12 +94,14 @@ class Settlement < ApplicationRecord
         :attorney,
         class_name: "User",
         foreign_key: "attorney_id",
+        inverse_of: :a_settlements
     )
 
     belongs_to(
         :insurance_agent,
         class_name: "User",
         foreign_key: "insurance_agent_id",
+        inverse_of: :ia_settlements
     )
 
     has_many(
@@ -147,6 +156,7 @@ class Settlement < ApplicationRecord
         puts "❤️❤️❤️ Settlement after_commit block"
         unless self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
             update_ready_for_payment_attribute
+            update_locked_attribute
             if self.changed?
                 self.save
             end
@@ -156,12 +166,22 @@ class Settlement < ApplicationRecord
     before_create do
         puts "❤️❤️❤️ Settlement before_create block"
         create_log_book_model_if_self_lacks_one
-        payments.build(
-            source: insurance_agent.organization.default_bank_account,
-            destination: attorney.organization.default_bank_account,
-            amount: amount
-        )
+        if payments.empty?
+            payments.build(
+                source: insurance_agent.organization.default_bank_account,
+                destination: attorney.organization.default_bank_account,
+                amount: amount
+            )
+        end
         self.public_number = rand(1..9999)
+    end
+
+    def update_locked_attribute
+        if has_processing_payment? ||
+            has_completed_payment? ||
+            completed?
+            self.locked = true
+        end
     end
 
     def generate_any_logs

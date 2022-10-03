@@ -53,10 +53,6 @@ class BankAccount < ApplicationRecord
     validates :status, inclusion: {in: -> (i) {BankAccount.statuses}}
     validates :user, presence: true
 
-    after_destroy do |bank_account|
-        
-    end
-
     before_destroy do
         if has_processing_payments?
             rollback

@@ -36,3 +36,40 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (started_by_id => users.id)
 #
+FactoryBot.define do
+    factory :settlement, class: "Settlement" do
+        insurance_agent
+        attorney
+        amount {1000.00}
+        transient do
+            num_documents {1}
+        end
+        trait :with_processing_payment do
+            after(:build) do |s, e|
+                s.payments = build_list(:payment, 1, 
+                    :processing,
+                    source: s.insurance_agent.organization.default_bank_account,
+                    destination: s.attorney.organization.default_bank_account,
+                    settlement: s
+                )
+            end
+        end
+
+        trait :with_completed_payment do
+            after(:build) do |s, e|
+                s.payments = build_list(:payment, 1, 
+                    :completed,
+                    source: s.insurance_agent.organization.default_bank_account,
+                    destination: s.attorney.organization.default_bank_account,
+                    settlement: s
+                )
+            end
+        end
+        after(:build) do |s, e|
+            s.documents = build_list(:document, e.num_documents,
+                :added_by_insurance_agent,
+                settlement: s
+            )
+        end
+    end
+end

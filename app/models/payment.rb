@@ -5,7 +5,7 @@
 #  id                          :bigint           not null, primary key
 #  amount                      :float            not null
 #  completed_at                :datetime
-#  status                      :string           default("Not sent"), not null
+#  status                      :string           not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  destination_id              :bigint
@@ -73,13 +73,16 @@ class Payment < ApplicationRecord
         optional: true
     )
 
-    validates :status, inclusion: {in: ["Not sent", "Processing", "Failed", "Canceled", "Complete", "Returned"]}
+    validates :status, inclusion: {in: -> (i) {Payment.statuses}}
     validates :source, :destination, :amount, presence: true
     validates :settlement_id, inclusion: {in: -> (i) {[i.settlement_id_was]}, message: "cannot be changed after creation."}, on: :update
     validates :stripe_inbound_transfer_id, inclusion: {in: -> (i) {[i.stripe_inbound_transfer_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_inbound_transfer_id_was.blank?}, on: :update
     validates :stripe_outbound_payment_id, inclusion: {in: -> (i) {[i.stripe_outbound_payment_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_outbound_payment_id_was.blank?}, on: :update
     validates :stripe_outbound_transfer_id, inclusion: {in: -> (i) {[i.stripe_outbound_transfer_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_outbound_transfer_id_was.blank?}, on: :update
 
+    def self.statuses
+        ["Not sent", "Processing", "Failed", "Canceled", "Complete", "Returned"]
+    end
     
     validate :amount_is_above_allowed_threshold
     def amount_is_above_allowed_threshold
@@ -121,6 +124,15 @@ class Payment < ApplicationRecord
     end
     def self.attributes_that_can_be_changed_when_settlement_is_locked
         [:stripe_inbound_transfer_id, :stripe_outbound_payment_id, :stripe_outbound_transfer_id, :status, :completed_at]
+    end
+
+    before_validation do
+        if status.blank?
+            self.status = "Not sent"
+        end
+        if amount != settlement.amount
+            self.amount = settlement.amount
+        end
     end
 
     before_create do

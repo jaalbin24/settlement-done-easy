@@ -25,8 +25,8 @@
 #
 
 FactoryBot.define do
-    factory :bank_account, class: "BankAccount" do
-        association :user, factory: [:law_firm, :insurance_company, :attorney, :adjuster]
+    factory :bank_account, class: "BankAccount", aliases: [:source, :destination] do
+        user
         sequence(:stripe_payment_method_id) {|i| "pm_FakePaymentMethod-#{i}"}
         status {"New"}
     end

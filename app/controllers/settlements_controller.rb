@@ -2,6 +2,18 @@ class SettlementsController < ApplicationController
     include DsEnvelope
     include DocumentGenerator
     before_action :authenticate_user!
+    before_action :ensure_organization_is_activated, only: [:new, :create, :update]
+
+    def ensure_organization_is_activated
+        unless current_user.organization.activated?
+            if ["new", "create"].include?(action_name)
+                flash[:info] = "You cannot start a settlement until #{current_user.organization.full_name}'s account is activated."
+            elsif action_name == "update"
+                flash[:info] = "You cannot modify this settlement until #{current_user.organization.full_name}'s account is activated."
+            end
+            redirect_to root_path
+        end
+    end
 
     def new
         if current_user.isAttorney?

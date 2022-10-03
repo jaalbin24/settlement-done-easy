@@ -31,10 +31,5 @@
 require "test_helper"
 
 class DocumentTest < ActiveSupport::TestCase
-    test "fixtures are valid" do
-        assert !documents.empty?, "There are no Document fixtures to test!"
-        documents.each do |d|
-            assert d.valid?, d.errors.full_messages.inspect
-        end
-    end
+
 end

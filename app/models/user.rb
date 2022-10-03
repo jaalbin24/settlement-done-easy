@@ -41,6 +41,10 @@ class User < ApplicationRecord
     # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable
 
+    scope :activated,           ->  {where(activated: true)}
+    scope :law_firms,           ->  {where(role: "Law Firm")}
+    scope :insurance_companies, ->  {where(role: "Insurance Company")}
+
     validates :role, inclusion: {in: -> (i) {User.roles}} # Useless i variable prevents ArgumentError from being thrown during testing. Do not remove.
     validates :role, inclusion: {in: -> (i) {[i.role_was]}, message: "cannot be changed after creation."}, on: :update
     validates :email, :role, :encrypted_password, presence: true
@@ -50,6 +54,8 @@ class User < ApplicationRecord
     validates :business_name, absence: {if: :isMember?}
     validates :stripe_account, absence: {if: :isMember?}
     validates :stripe_account, presence: {if: :isOrganization?}
+    validates :organization, presence: {if: :isMember?}
+    validates :members, absence: {if: :isMember?}
 
 
     validate :name_has_valid_characters
@@ -409,6 +415,11 @@ class User < ApplicationRecord
     end
 
     def default_bank_account
-        return bank_accounts.default.first
+        default = bank_accounts.default.first
+        if default.nil?
+            bank_accounts.first
+        else
+            default
+        end
     end
 end

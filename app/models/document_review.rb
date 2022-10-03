@@ -42,7 +42,7 @@ class DocumentReview < ApplicationRecord
 
     validate :changes_are_allowed_when_settlement_is_locked
     def changes_are_allowed_when_settlement_is_locked
-        if document.settlement.locked?
+        if document.settlement.locked? && !new_record?
             changed_attributes.keys.each do |a|
                 unless DocumentReview.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
                     raise SafetyError::SafetyError.new "This settlement is locked. You cannot review any documents."
