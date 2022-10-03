@@ -53,6 +53,7 @@ module SafetyError
             raise PaymentSafetyError.new "Payment cannot be sent until #{payment.destination.user.business_name}'s account is activated."   unless payment.destination.user.activated?
             raise PaymentSafetyError.new "This settlement has already been paid."                                                           if payment.settlement.has_completed_payment?
             raise PaymentSafetyError.new "Payment cannot be sent unless settlement is locked."                                              unless payment.settlement.locked?
+            # TODO: Payment cannot be sent because the bank account has been deleted.
         end
     end
 end

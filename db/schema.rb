@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.bigint "settlement_id"
     t.bigint "source_id"
     t.bigint "destination_id"
-    t.string "status", default: "Not sent", null: false
+    t.string "status", null: false
     t.string "stripe_inbound_transfer_id"
     t.string "stripe_outbound_payment_id"
     t.string "stripe_outbound_transfer_id"

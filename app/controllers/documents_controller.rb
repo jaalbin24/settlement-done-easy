@@ -30,7 +30,7 @@ class DocumentsController < ApplicationController
         @document = settlement.documents.build(document_params)
         @document.added_by = current_user
         if @document.save
-            flash[:info] = "Release form added! Click <a href=#{document_show_path(@document)}>here<a> to view it."
+            flash[:info] = "Document uploaded! Click <a href=#{document_show_path(@document)}>here<a> to view it."
             redirect_back(fallback_location: root_path)
         else
             flash.now[:error] = "Failed to upload document!"

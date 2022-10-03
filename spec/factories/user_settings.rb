@@ -20,3 +20,8 @@
 #
 #  fk_rails_...  (user_id => users.id)
 #
+FactoryBot.define do
+    factory :user_settings, class: "UserSettings" do
+        user
+    end
+end

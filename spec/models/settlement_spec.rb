@@ -38,6 +38,52 @@
 #
 require 'rails_helper'
 
-RSpec.describe Settlement, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+RSpec.describe "Settlements", type: :model do
+    before(:each) do
+        @settlement = create(:settlement)
+    end
+    it "must have an amount" do
+        expect(@settlement.valid?).to be_truthy, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+        expect(@settlement.amount.blank?).to be_falsey, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+        @settlement.amount = nil
+        expect(@settlement.valid?).to be_falsey, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+    end
+
+    context "without any documents" do
+        before(:each) do
+            @settlement = create(:settlement)
+        end
+        it "must not have a processing payment" do
+            pending "Implementation"
+            fail
+        end
+        it "must not have a complete payment" do
+            pending "Implementation"
+            fail
+        end
+    end
+
+    context "with a processing payment" do
+        before(:each) do
+            @settlement = create(:settlement, :with_processing_payment)
+        end
+        it "must be locked" do
+            expect(@settlement.valid?).to be_truthy, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+            expect(@settlement.locked?).to be_truthy, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+            @settlement.locked = false
+            expect(@settlement.valid?).to be_falsey, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+        end
+    end
+
+    context "with a completed payment" do
+        before(:each) do
+            @settlement = create(:settlement, :with_completed_payment)
+        end
+        it "must be locked" do
+            expect(@settlement.valid?).to be_truthy, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+            expect(@settlement.locked?).to be_truthy, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+            @settlement.locked = false
+            expect(@settlement.valid?).to be_falsey, "Object: #{@settlement.to_json} Error message: #{@settlement.errors.full_messages.inspect}"
+        end
+    end
 end

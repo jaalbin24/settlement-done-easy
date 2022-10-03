@@ -18,3 +18,10 @@
 #
 #  fk_rails_...  (stripe_account_id => stripe_accounts.id)
 #
+FactoryBot.define do
+    factory :stripe_account_requirement, class: "StripeAccountRequirement" do
+        stripe_account
+        status {"currently_due"}
+        required_item {"FakeRequiredItem"}
+    end
+end
