@@ -265,7 +265,7 @@ class User < ApplicationRecord
         end
         if stripe_account_onboarded? &&
             has_bank_account? &&
-            has_two_factor_authentication_enabled? &&
+            two_factor_authentication_enabled? &&
             email_is_verified? &&
             has_member_account?
             self.activated = true
@@ -276,7 +276,7 @@ class User < ApplicationRecord
             puts "❌❌❌ Account for #{business_name} not activated because stripe account is not onboarded!"
         elsif !has_bank_account?
             puts "❌❌❌ Account for #{business_name} not activated because there is no bank account!"
-        elsif !has_two_factor_authentication_enabled? 
+        elsif !two_factor_authentication_enabled? 
             puts "❌❌❌ Account for #{business_name} not activated because 2FA is not enabled!"
         elsif !has_member_account?
             puts "❌❌❌ Account for #{business_name} not activated because there is no member account!"
@@ -367,7 +367,7 @@ class User < ApplicationRecord
         return !bank_accounts.empty?
     end
 
-    def has_two_factor_authentication_enabled?
+    def two_factor_authentication_enabled?
         return true
     end
 

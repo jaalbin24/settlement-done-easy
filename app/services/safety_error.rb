@@ -1,6 +1,8 @@
 module SafetyError
     class SafetyError < StandardError
-        # These error messages are meant to be seen by the user. Only include info that is ok to be seen by anyone.
+        # These error messages and its inherited classes are meant to be seen
+        # by the user. In their messages, only include info that is ok to be 
+        # seen by anyone.
     end
 
     class PaymentSafetyError < SafetyError
@@ -10,6 +12,9 @@ module SafetyError
     end
 
     class DocumentSafetyError < SafetyError
+    end
+
+    class BankAccountSafetyError < SafetyError
     end
 
     module Settlements
