@@ -30,14 +30,15 @@
 #
 class Document < ApplicationRecord
 
-    scope :rejected,            ->  {where(status: "Rejected")}
-    scope :approved,            ->  {where(status: "Approved")}
-    scope :unapproved,          ->  {where(status: "Rejected").or(where(status: "Waiting for review"))}
-    scope :waiting_for_review,  ->  {where(status: "Waiting for review")}
-    scope :signed,              ->  {where(signed: true)}
-    scope :unsigned,            ->  {where(signed: false)}
-    scope :need_signature,      ->  {where(needs_signature: true)}
-    scope :auto_generated,      ->  {where(auto_generated: true)}
+    scope :rejected,            ->      {where(status: "Rejected")}
+    scope :approved,            ->      {where(status: "Approved")}
+    scope :unapproved,          ->      {where(status: "Rejected").or(where(status: "Waiting for review"))}
+    scope :waiting_for_review,  ->      {where(status: "Waiting for review")}
+    scope :signed,              ->      {where(signed: true)}
+    scope :unsigned,            ->      {where(signed: false)}
+    scope :need_signature,      ->      {where(needs_signature: true)}
+    scope :auto_generated,      ->      {where(auto_generated: true)}
+    scope :added_by,            ->  (i) {where(added_by: i)}
 
 
     has_one_attached :pdf
@@ -140,9 +141,9 @@ class Document < ApplicationRecord
 
     after_commit do
         puts "❤️❤️❤️ Document after_commit block"
-        unless frozen?
+        unless frozen? # The .frozen? check keeps an error from being thrown when deleting models
             update_status_attribute
-            if self.changed?
+            if changed?
                 self.save
             end
             if added_by.settings.delete_my_documents_after_rejection && rejected?

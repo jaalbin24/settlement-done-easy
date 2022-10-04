@@ -35,7 +35,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Logs outgoing HTTP requests. Used for debugging.
   gem 'httplog'
-  # Rspec for testing
+  # RSpec for testing
   gem "rspec-rails"
   # Factory Bot for dynamic test fixture generation
   gem 'factory_bot_rails'

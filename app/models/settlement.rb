@@ -154,10 +154,10 @@ class Settlement < ApplicationRecord
 
     after_commit do
         puts "❤️❤️❤️ Settlement after_commit block"
-        unless self.frozen? # The .frozen? check keeps an error from being thrown when deleting settlement models
+        unless frozen? # The .frozen? check keeps an error from being thrown when deleting models
             update_ready_for_payment_attribute
             update_locked_attribute
-            if self.changed?
+            if changed?
                 self.save
             end
         end

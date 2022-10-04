@@ -52,6 +52,9 @@ module SafetyError
         private
 
         def self.default_safety(payment)
+            raise PaymentSafetyError.new "Payment cannot be sent until a source bank account is selected."                                  if payment.source.nil?
+            raise PaymentSafetyError.new "Payment cannot be sent until a destination bank account is selected."                             if payment.destination.nil?
+
             raise PaymentSafetyError.new "Payment cannot be sent until the sending bank account is verified."                               unless payment.source.verified?
             raise PaymentSafetyError.new "Payment cannot be sent until the receiving bank account is verified."                             unless payment.destination.verified?
             raise PaymentSafetyError.new "Payment cannot be sent until #{payment.source.user.business_name}'s account is activated."        unless payment.source.user.activated?
