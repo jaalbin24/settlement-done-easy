@@ -46,20 +46,24 @@ FactoryBot.define do
         transient do
             num_members {1}
             num_bank_accounts {1}
-            num_settlements {1}
+            num_settlements {0}
         end
         after(:create) do |u|
+            puts "🤖🤖🤖 user after(:create) block"
             puts "========> #{u.full_name} created!\n"+
                 "========> Members: #{u.members.size}\n"+
                 "========> BankAccounts: #{u.bank_accounts.size}\n"+
                 "========> settlements: #{u.settlements.size}\n"+
                 "========> settings.blank?: #{u.settings.blank?}\n"+
-                "========> settings.to_json: #{u.settings.to_json}\n"
+                "========> settings.to_json: #{u.settings.to_json}\n"+
+                "========> # of law firms: #{User.law_firms.size}\n"+
+                "========> # of insurance companies: #{User.insurance_companies.size}\n"+
+                "========> # of attorneys: #{User.attorneys.size}\n"+
+                "========> # of adjusters: #{User.insurance_agents.size}\n"
         end
 
         trait :not_activated do
             transient do
-                num_members {1}
                 num_bank_accounts {0}
                 num_settlements {0}
             end
@@ -67,23 +71,37 @@ FactoryBot.define do
 
         factory :law_firm do
             role {"Law Firm"}
-            business_name {"GKBM"}
+            business_name {random_law_firm_name}
             sequence(:stripe_financial_account_id) {|i| "fa_1LUMmBPvLqRcxm3zrV1FlYgb-#{i}"}
             after(:build) do |u, e|
-                u.stripe_account = build(:stripe_account, user: u)
-                u.bank_accounts = build_list(:bank_account, e.num_bank_accounts, user: u)
-                u.members = build_list(:attorney, e.num_members, organization: u)
+                puts "🤖🤖🤖 law_firm after(:build) block"
+                u.stripe_account = build(:stripe_account, user: u) if u.stripe_account.nil?
+            end
+            after(:create) do |u, e|
+                puts "🤖🤖🤖 law_firm after(:create) block"
+                u.bank_accounts = create_list(:bank_account_for_law_firm, e.num_bank_accounts, user: u)  if u.bank_accounts.empty? && e.num_bank_accounts > 0
+                u.members = create_list(:attorney, e.num_members, organization: u)                       if u.members.empty? && e.num_members > 0
+                u.touch
+            end
+
+            trait :with_valid_stripe_data do
+                stripe_financial_account_id {}
             end
         end
 
         factory :insurance_company do
             role {"Insurance Company"}
-            business_name {"State Farm"}
+            business_name {random_insurance_company_name}
             sequence(:stripe_financial_account_id) {|i| "fa_1LUMmLQ44dejfzxNA7hI1dQb-#{i}"}
             after(:build) do |u, e|
-                u.stripe_account = build(:stripe_account, user: u)
-                u.bank_accounts = build_list(:bank_account, e.num_bank_accounts, user: u)
-                u.members = build_list(:adjuster, e.num_members, organization: u)
+                puts "🤖🤖🤖 insurance_company after(:build) block"
+                u.stripe_account = build(:stripe_account, user: u) if u.stripe_account.nil?
+            end
+            after(:create) do |u, e|
+                puts "🤖🤖🤖 insurance_company after(:create) block"
+                u.bank_accounts = create_list(:bank_account_for_insurance_company, e.num_bank_accounts, user: u) if u.bank_accounts.empty? && e.num_bank_accounts > 0
+                u.members = create_list(:adjuster, e.num_members, organization: u)                               if u.members.empty? && e.num_members > 0
+                u.touch
             end
         end
         
@@ -95,13 +113,17 @@ FactoryBot.define do
                 transient do
                     num_settlements {0}
                 end
-                after(:build) do |u, e|
-                    u.organization = build(:law_firm, :not_activated)
+                association :organization, factory: :law_firm, num_members: 0, traits: [:not_activated]
+            end
+            association :organization, factory: :law_firm, num_members: 0
+            after(:create) do |u, e|
+                puts "🤖🤖🤖 attorney after(:create) block"
+                if u.settlements.empty? && e.num_settlements > 0
+                    u.a_settlements = create_list(:settlement, e.num_settlements, attorney: u, insurance_agent: select_random_insurance_agent_or_create_one_if_none_exist)
                 end
             end
-            association :organization, factory: :law_firm
-            after(:create) do |u, e|
-                u.a_settlements = create_list(:settlement, e.num_settlements, attorney: u, insurance_agent: select_random_insurance_agent_or_create_one_if_none_exist)
+            before(:build) do |u, e|
+                puts "🤖🤖🤖 attorney before(:build) block"
             end
         end
 
@@ -113,15 +135,17 @@ FactoryBot.define do
                 transient do
                     num_settlements {0}
                 end
-                after(:build) do |u, e|
-                    u.organization = build(:insurance_company, :not_activated)
+                association :organization, factory: :insurance_company, num_members: 0, traits: [:not_activated]
+            end
+            association :organization, factory: :insurance_company, num_members: 0
+            after(:create) do |u, e|
+                puts "🤖🤖🤖 adjuster after(:create) block"
+                if u.settlements.empty? && e.num_settlements > 0
+                    u.ia_settlements = create_list(:settlement, e.num_settlements, attorney: select_random_attorney_or_create_one_if_none_exist, insurance_agent: u)
                 end
             end
-            association :organization, factory: :insurance_company
-            after(:create) do |u, e|
-                if u.settlements.empty?
-                    u.ia_settlements = create_list(:settlement, e.num_settlements, insurance_agent: u, attorney: select_random_attorney_or_create_one_if_none_exist)
-                end
+            before(:build) do |u, e|
+                puts "🤖🤖🤖 adjuster before(:build) block"
             end
         end
     end
@@ -153,6 +177,30 @@ def select_random_attorney_or_create_one_if_none_exist
     end
 end
 
+def select_random_law_firm_or_create_one_if_none_exist
+    count = User.law_firms.activated.count
+    if count == 0
+        law_firm = create(:law_firm)
+        law_firm
+    else
+        random_offset = rand(count)
+        random_activated_law_firm = User.law_firms.activated.offset(random_offset).first
+        random_activated_law_firm
+    end
+end
+
+def select_random_insurance_company_or_create_one_if_none_exist
+    count = User.insurance_company.activated.count
+    if count == 0
+        insurance_company = create(:insurance_company)
+        insurance_company
+    else
+        random_offset = rand(count)
+        random_activated_insurance_company = User.insurance_companies.activated.offset(random_offset).first
+        random_activated_insurance_company
+    end
+end
+
 def random_attorney
     count = User.where(role: "Attorney").count
     raise StandardError.new "Cannot select a random attorney because there are no attorneys." if count == 0
@@ -177,4 +225,20 @@ end
 def random_last_name
     top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy", "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey", "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson", "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza", "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers", "Long", "Ross", "Foster", "Jimenez", "Powell"]
     top_100_last_names[rand(top_100_last_names.size - 1)]
+end
+
+def random_law_firm_name
+    ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims", "Smith & Doe"].sample
+end
+
+def random_insurance_company_name
+    ["State Farm", "Geico", "Progressive", "Allstate", "Liberty Mutual"].sample
+end
+
+def law_firms
+
+end
+
+def insurance_companies
+    {"State Farm"=>"", "Geico"=>"", "Progressive"=>"", "Allstate"=>"", "Liberty Mutual"=>""}
 end

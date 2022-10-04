@@ -27,7 +27,7 @@ require 'rails_helper'
 
 RSpec.describe "Bank accounts", type: :model do
     before(:each) do
-        @bank_accounts = [create(:bank_account, :for_insurance_company), create(:bank_account, :for_law_firm)]
+        @bank_accounts = [create(:bank_account_for_insurance_company), create(:bank_account_for_law_firm)]
     end
     it "must have a stripe payment id" do
         @bank_accounts.each do |ba|

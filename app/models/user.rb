@@ -44,6 +44,8 @@ class User < ApplicationRecord
     scope :activated,           ->  {where(activated: true)}
     scope :law_firms,           ->  {where(role: "Law Firm")}
     scope :insurance_companies, ->  {where(role: "Insurance Company")}
+    scope :attorneys,           ->  {where(role: "Attorney")}
+    scope :insurance_agents,    ->  {where(role: "Insurance Agent")}
 
     validates :role, inclusion: {in: -> (i) {User.roles}} # Useless i variable prevents ArgumentError from being thrown during testing. Do not remove.
     validates :role, inclusion: {in: -> (i) {[i.role_was]}, message: "cannot be changed after creation."}, on: :update
@@ -88,23 +90,33 @@ class User < ApplicationRecord
 
     validate :role_must_match_organization_type
     def role_must_match_organization_type
-        if !organization.blank? && !role.blank?
+        if !organization.blank? && !role.blank? && !organization.role.blank?
             errors.add(:organization, "member must have appropriate user role. The role of '#{role}' is invalid for members of #{organization.role.pluralize}") unless (organization.isLawFirm? && isAttorney?) || (organization.isInsuranceCompany? && isInsuranceAgent?)
         end
     end
 
     has_many(
+        :documents,
+        class_name: "Document",
+        foreign_key: "added_by_id",
+        inverse_of: :added_by,
+        dependent: :nullify
+    )
+
+    has_many(
         :a_settlements,
         class_name: 'Settlement',
         foreign_key: 'attorney_id',
-        inverse_of: :attorney
+        inverse_of: :attorney,
+        dependent: :destroy
     )
 
     has_many(
         :ia_settlements,
         class_name: 'Settlement',
         foreign_key: 'insurance_agent_id',
-        inverse_of: :insurance_agent
+        inverse_of: :insurance_agent,
+        dependent: :destroy
     )
 
     has_many(
@@ -197,10 +209,12 @@ class User < ApplicationRecord
 
     after_commit do
         puts "❤️❤️❤️ User after_commit block"
-        update_activated_attribute
-        if activated_changed?
-            self.save
-            puts "✔️✔️✔️ Account for #{business_name} is activated!" if activated?
+        unless frozen? # The .frozen? check keeps an error from being thrown when deleting models
+            update_activated_attribute
+            if activated_changed?
+                self.save
+                puts "✔️✔️✔️ Account for #{business_name} is activated!" if activated?
+            end
         end
     end
 
@@ -421,5 +435,10 @@ class User < ApplicationRecord
         else
             default
         end
+    end
+
+    def destroy # Needed so that child models (namely the last bank account) can know when the user is being deleted and delete itself.
+        self.mark_for_destruction
+        super
     end
 end

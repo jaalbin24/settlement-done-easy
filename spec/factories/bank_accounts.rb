@@ -27,13 +27,33 @@
 FactoryBot.define do
     factory :bank_account, class: "BankAccount", aliases: [:source, :destination] do
         user
-        trait :for_law_firm do
-            association :user, factory: :law_firm
-        end
-        trait :for_insurance_company do
-            association :user, factory: :insurance_company
-        end
         sequence(:stripe_payment_method_id) {|i| "pm_FakePaymentMethod-#{i}"}
         status {"New"}
+
+        after(:create) do |ba|
+            puts "🤖🤖🤖 bank_account after(:create) block"
+            puts "========> BANK ACCOUNT created!\n"+
+                "========> user: #{ba.user.full_name}\n"+
+                "========> # of bank accounts: #{BankAccount.all.size}\n"
+        end
+
+        factory :bank_account_for_law_firm do
+            association :user, factory: :law_firm
+            before(:build) do |ba, e|
+                puts "🤖🤖🤖 bank_account_for_law_firm before(:build) block"
+                if e.user.nil?
+                    ba.user = select_random_law_firm_or_create_one_if_none_exist
+                end
+            end
+        end
+        factory :bank_account_for_insurance_company do
+            association :user, factory: :insurance_company
+            before(:build) do |ba, e|
+                puts "🤖🤖🤖 bank_account_for_insurance_company before(:build) block"
+                if e.user.nil?
+                    ba.user = select_random_insurance_company_or_create_one_if_none_exist
+                end
+            end
+        end
     end
 end

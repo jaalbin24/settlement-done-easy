@@ -40,14 +40,16 @@ class BankAccount < ApplicationRecord
         :payments_out,
         class_name: "Payment",
         foreign_key: "source_id",
-        inverse_of: :source
+        inverse_of: :source,
+        dependent: :nullify
     )
 
     has_many(
         :payments_in,
         class_name: "Payment",
         foreign_key: "destination_id",
-        inverse_of: :destination
+        inverse_of: :destination,
+        dependent: :nullify
     )
 
     validates :stripe_payment_method_id, presence: true
@@ -55,16 +57,21 @@ class BankAccount < ApplicationRecord
     validates :user, presence: true
 
     before_destroy do
+        puts "❤️❤️❤️ BankAccount before_destroy block"
         if has_processing_payments?
-            rollback
+            raise SafetyError::BankAccountSafetyError.new "You cannot delete this bank account because it has #{"processing payment".pluralize(num_processing_payments)}."
         end
-        if user.bank_accounts.size == 1
-            raise BankAccountSafetyError.new "You must keep at least one bank account. Add another bank account before deleting this one."
+        if user.bank_accounts.size == 1 && !user.mark_for_destruction
+            raise SafetyError::BankAccountSafetyError.new "You must keep at least one bank account. Add another bank account before deleting this one."
         end
     end
     
     def has_processing_payments?
-        return Payment.processing.where(destination: self).or(Payment.where(source: self)).exists?
+        Payment.processing.where(destination: self).or(Payment.processing.where(source: self)).exists?
+    end
+
+    def num_processing_payments
+        Payment.processing.where(destination: self).or(Payment.processing.where(source: self)).count
     end
 
     # TODO: Add mechanic for bank account verification via microdeposits. Are other forms of verification needed?

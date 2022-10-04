@@ -40,15 +40,19 @@ class Payment < ApplicationRecord
     scope :with_outbound_transfer_id,   ->  (stripe_id) {where(stripe_outbound_transfer_id: stripe_id)}
 
     scope :processing,                  ->              {where(status: "Processing")}
+    scope :not_processing,              ->              {where.not(status: "Processing")}
     scope :active,                      ->              {where.not(status: "Failed").and(where.not(status: "Canceled").and(where.not(status: "Returned")))}
     scope :completed,                   ->              {where(status: "Complete")}
+    scope :not_completed,               ->              {where.not(status: "Complete")}
     scope :not_sent,                    ->              {where(status: "Not sent")}
+    scope :sent,                        ->              {where.not(status: "Not sent")}
 
     belongs_to(
         :settlement,
         class_name: "Settlement",
         foreign_key: "settlement_id",
-        inverse_of: :payments
+        inverse_of: :payments,
+        autosave: true
     )
 
     belongs_to(
@@ -74,11 +78,17 @@ class Payment < ApplicationRecord
     )
 
     validates :status, inclusion: {in: -> (i) {Payment.statuses}}
-    validates :source, :destination, :amount, presence: true
+    validates :amount, presence: true
+    validates :amount, inclusion: {in: -> (i) {[i.settlement.amount]}, message: "must be equal to the settlement amount."}
     validates :settlement_id, inclusion: {in: -> (i) {[i.settlement_id_was]}, message: "cannot be changed after creation."}, on: :update
     validates :stripe_inbound_transfer_id, inclusion: {in: -> (i) {[i.stripe_inbound_transfer_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_inbound_transfer_id_was.blank?}, on: :update
     validates :stripe_outbound_payment_id, inclusion: {in: -> (i) {[i.stripe_outbound_payment_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_outbound_payment_id_was.blank?}, on: :update
     validates :stripe_outbound_transfer_id, inclusion: {in: -> (i) {[i.stripe_outbound_transfer_id_was]}, message: "cannot be changed once set."}, unless: -> (i) {i.stripe_outbound_transfer_id_was.blank?}, on: :update
+
+    validates :stripe_inbound_transfer_id, presence: {if: :sent?}
+    validates :stripe_inbound_transfer_id, absence: {unless: :sent?}
+    validates :stripe_outbound_payment_id, absence: {unless: :sent?}
+    validates :stripe_outbound_transfer_id, absence: {unless: :sent?}
 
     def self.statuses
         ["Not sent", "Processing", "Failed", "Canceled", "Complete", "Returned"]
@@ -95,12 +105,16 @@ class Payment < ApplicationRecord
     end
     validate :source_belongs_to_insurance_company
     def source_belongs_to_insurance_company
-        errors.add(:source, "must belong to an Insurance Company.") unless source.user.isInsuranceCompany?
+        unless source.nil?
+            errors.add(:source, "must belong to an Insurance Company.") unless source.user.isInsuranceCompany?
+        end
     end
 
     validate :destination_belongs_to_law_firm
     def destination_belongs_to_law_firm
-        errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
+        unless source.nil?
+            errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
+        end
     end
 
     validate :amount_matches_settlement_amount
@@ -135,6 +149,10 @@ class Payment < ApplicationRecord
         end
     end
 
+    before_destroy do
+        puts "❤️❤️❤️ Payment before_destroy block"
+    end
+
     before_create do
         create_log_book_model_if_self_lacks_one
     end
@@ -149,6 +167,7 @@ class Payment < ApplicationRecord
     end
     
     after_commit do
+        puts "❤️❤️❤️ Payment after_commit block"
         settlement.save
     end
 
@@ -324,7 +343,7 @@ class Payment < ApplicationRecord
     end
 
     def amount_in_cents
-        return (amount * 100).round
+        (amount * 100).round
     end
 
     def sync_with_stripe
@@ -425,23 +444,27 @@ class Payment < ApplicationRecord
         end
     end
 
+    def sent?
+        status != "Not sent"
+    end
+
     def processing?
-        return status == "Processing"
+        status == "Processing"
     end
 
     def canceled?
-        return status == "Canceled"
+        status == "Canceled"
     end
 
     def failed?
-        return status == "Failed"
+        status == "Failed"
     end
 
     def returned?
-        return status == "Returned"
+        status == "Returned"
     end
 
     def completed?
-        return status == "Complete"
+        status == "Complete"
     end
 end

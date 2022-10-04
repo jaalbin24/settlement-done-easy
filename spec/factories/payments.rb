@@ -36,28 +36,129 @@
 #
 FactoryBot.define do
     factory :payment, class: "Payment" do
-        source
-        destination
-        settlement
+        association :source, factory: :bank_account_for_insurance_company
+        association :destination, factory: :bank_account_for_law_firm
+        association :settlement
         amount {}
-        status {}
-        stripe_inbound_transfer_id {"FakeInboundTransferId"}
-        stripe_outbound_payment_id {"FakeOutboundPaymentId"}
-        stripe_outbound_transfer_id {"FakeOutboundTransferId"}
+        status {"Not sent"}
+        stripe_inbound_transfer_id {}
+        stripe_outbound_payment_id {}
+        stripe_outbound_transfer_id {}
 
-        after(:build) do |p, e|
-            p.amount = p.settlement.amount
+        after(:create) do |p, e|
+            puts "🤖🤖🤖 payment after(:create) block"
+            if p.settlement.payments.size > 1
+                p.settlement.payments.without(p).each do |p|
+                    p.destroy!
+                end
+                p.settlement.touch
+            end
+            puts "========> PAYMENT created!\n"+
+                "========> source: #{p.source.user.full_name}\n"+
+                "========> destination: #{p.destination.user.full_name}\n"+
+                "========> p.to_json: #{p.to_json}\n"+
+                "========> p.settlement.to_json: #{p.settlement.to_json}\n"+
+                "========> p.settlement.payments.size: #{p.settlement.payments.size}\n"+
+                "========> status: #{p.status}\n"+
+                "========> Payment.all.size: #{Payment.all.size}\n"
+        end
+
+        # from_the_ground_up controls the creation of additional models necessary for more realistic 
+        # testing such as settlements, users, and bank accounts
+        trait :from_the_ground_up do
+            before(:build) do |p, e|
+                puts "🤖🤖🤖 payment:from_the_ground_up before(:build) block"
+                if e.settlement.nil?
+                    @attorney = select_random_attorney_or_create_one_if_none_exist
+                    @adjuster = select_random_insurance_agent_or_create_one_if_none_exist
+                    p.settlement = build(:settlement, attorney: @attorney, insurance_agent: @adjuster) 
+                end
+            end
+            after(:create) do |p, e|
+                puts "🤖🤖🤖 payment:from_the_ground_up after(:create) block"
+                # Ensure this payment model is the only one attached to the settlement
+                destination = p.settlement.attorney.organization.default_bank_account
+                source = p.settlement.insurance_agent.organization.default_bank_account
+                p.settlement.payments.excluding(p).each do |p|
+                    p.destroy!
+                end
+                noahs_ark = [p.settlement.attorney, p.settlement.insurance_agent, p.settlement.attorney.organization, p.settlement.insurance_agent.organization]
+                User.all.excluding(noahs_ark).each do |u|
+                    u.destroy!
+                end
+                p.settlement.touch # Touch the settlement to make self-correcting callbacks run
+            end
+        end
+
+        before(:build) do |p, e|
+            puts "🤖🤖🤖 payment before(:build) block"
+            if e.settlement.nil? # If creation started from the payment factory
+                @attorney = select_random_attorney_or_create_one_if_none_exist
+                @adjuster = select_random_insurance_agent_or_create_one_if_none_exist
+                p.settlement = build(:settlement, attorney: @attorney, insurance_agent: @adjuster) 
+            end
+            if e.source.nil?
+                p.source = build(:bank_account_for_insurance_company, user: @attorney.organization)
+            end
+            if e.destination.nil?
+                p.destination = build(:bank_account_for_law_firm, user: @attorney.organization)
+            end
+            puts "========> PAYMENT before building!\n"+
+            "========> source: #{p.source.user.full_name}\n"+
+            "========> destination: #{p.destination.user.full_name}\n"+
+            "========> p.to_json: #{p.to_json}\n"+
+            "========> p.settlement.to_json: #{p.settlement.to_json}\n"+
+            "========> p.settlement.payments.size: #{p.settlement.payments.size}\n"+
+            "========> status: #{p.status}\n"+
+            "========> Payment.all.size: #{Payment.all.size}\n"
         end
 
         trait :processing do
-            stripe_inbound_transfer_id {"FakeStripeInboundTransferId"}
+            stripe_inbound_transfer_id {"FakeInboundTransferId"}
             status {"Processing"}
+            after(:create) do |p, e|
+                puts "🤖🤖🤖 payment:processing after(:create) block"
+                # Ensure this payment model is the only one attached to the settlement
+                destination = p.settlement.attorney.organization.default_bank_account
+                source = p.settlement.insurance_agent.organization.default_bank_account
+                atties = p.attributes
+                atties[:source] = source
+                atties[:destination] = destination
+                p.settlement.payments.without(p).each do |p|
+                    p.destroy!
+                end
+                p.settlement.touch # Touch the settlement to make self-correcting callbacks run
+            end
         end
 
         trait :completed do
-            stripe_inbound_transfer_id {"FakeStripeInboundTransferId"}
+            stripe_inbound_transfer_id {"FakeInboundTransferId"}
+            stripe_outbound_payment_id {"FakeOutboundPaymentId"}
+            stripe_outbound_transfer_id {"FakeOutboundTransferId"}
             status {"Complete"}
+            after(:create) do |p, e|
+                puts "🤖🤖🤖 payment:completed after(:create) block"
+                # Ensure this payment model is the only one attached to the settlement
+                destination = p.settlement.attorney.organization.default_bank_account
+                source = p.settlement.insurance_agent.organization.default_bank_account
+                atties = p.attributes
+                atties[:source] = source
+                atties[:destination] = destination
+                p.settlement.payments.without(p).each do |p|
+                    p.destroy!
+                end
+                p.settlement.touch # Touch the settlement to make self-correcting callbacks run
+            end
         end
 
+        trait :failed do
+            stripe_inbound_transfer_id {"FakeInboundTransferId"}
+            status {"Failed"}
+        end
+
+        trait :canceled do
+            stripe_inbound_transfer_id {"FakeInboundTransferId"}
+            status {"Canceled"}
+        end
     end
 end
