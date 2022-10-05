@@ -228,17 +228,17 @@ def random_last_name
 end
 
 def random_law_firm_name
-    ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims", "Smith & Doe"].sample
+    law_firm_stripe_ids.keys.sample
 end
 
 def random_insurance_company_name
-    ["State Farm", "Geico", "Progressive", "Allstate", "Liberty Mutual"].sample
+    insurance_company_stripe_ids.keys.sample
 end
 
-def law_firms
-
+def law_firm_stripe_ids
+    {"GKBM"=>"", "Morgan & Morgan"=>"", "Adams & Reece"=>"", "Bass Berry & Sims"=>"", "Smith & Doe"=>""}
 end
 
-def insurance_companies
+def insurance_company_stripe_ids
     {"State Farm"=>"", "Geico"=>"", "Progressive"=>"", "Allstate"=>"", "Liberty Mutual"=>""}
 end
