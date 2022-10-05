@@ -32,7 +32,11 @@ require 'rails_helper'
 
 RSpec.describe "Documents", type: :model do
     context "belonging to a locked settlement" do
+        before(:each) do
+            @document = create(:document)
+        end
         it "must not be rejected" do
+
             pending "Implementation"
             fail
         end

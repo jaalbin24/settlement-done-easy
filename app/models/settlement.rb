@@ -161,6 +161,7 @@ class Settlement < ApplicationRecord
                 self.save
             end
         end
+        active_payment.save
     end
 
     before_create do
