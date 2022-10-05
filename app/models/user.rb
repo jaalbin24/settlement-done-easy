@@ -55,7 +55,7 @@ class User < ApplicationRecord
     validates :business_name, presence: {if: :isOrganization?}
     validates :business_name, absence: {if: :isMember?}
     validates :stripe_account, absence: {if: :isMember?}
-    validates :stripe_account, presence: {if: :isOrganization?}
+    validates :stripe_account, presence: {if: :isOrganization?}, on: :update
     validates :organization, presence: {if: :isMember?}
     validates :members, absence: {if: :isMember?}
 
@@ -77,9 +77,6 @@ class User < ApplicationRecord
     # Organization-type users cannot belong to an organization.
     validates :organization, absence: {if: :isOrganization?, message: "must be nil for organization-type users, not '%{value}'"}
     
-    # Stripe data constraints.
-    validates :stripe_account, absence: {unless: :isOrganization?, message: "must be nil for non-organization-type users, not '%{value}'"}
-
     # Member-type users cannot belong to another member-type user.
     validate :member_cannot_belong_to_member
     def member_cannot_belong_to_member
@@ -220,14 +217,6 @@ class User < ApplicationRecord
 
     after_create do |user|
         puts "❤️❤️❤️ User after_create block"
-        if user.isOrganization?
-            if stripe_account.nil?
-                user.create_stripe_account
-            end
-            # if stripe_financial_account.nil?
-            #     user.create_stripe_financial_account
-            # end
-        end
         if user.isLawFirm? && user.stripe_financial_account_id.blank?
             treasury_account = Stripe::Treasury::FinancialAccount.create(
                 {
@@ -265,6 +254,14 @@ class User < ApplicationRecord
             elsif user.organization.isInsuranceCompany?
                 self.role = "Insurance Agent"
             end
+        end
+        if isOrganization?
+            if stripe_account.nil?
+                build_stripe_account
+            end
+            # if stripe_financial_account.nil?
+            #     user.create_stripe_financial_account
+            # end
         end
         build_settings(UserSettings.default_settings)
     end
