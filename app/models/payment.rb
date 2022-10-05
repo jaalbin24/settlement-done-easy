@@ -168,7 +168,9 @@ class Payment < ApplicationRecord
     
     after_commit do
         puts "❤️❤️❤️ Payment after_commit block"
-        settlement.save
+        if changed?
+            settlement.save
+        end
     end
 
     def generate_any_logs
