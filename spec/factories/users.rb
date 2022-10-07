@@ -40,7 +40,7 @@ FactoryBot.define do
     # The user factory exists as an abstract factory. It is not meant to be used to create fixtures. 
     # It is meant to be inherited by the other user types. Running 'create(:user)' will throw validation errors because a generic
     # user with no role (ie, attorney, adjuster) will never exist in this application.
-    factory :user, class: "User", aliases: [:added_by] do
+    factory :user, class: "User", aliases: [:added_by, :reviewer] do
         password {"password123"}
         sequence(:email) { |i| "user.#{i}@example.com" }
         transient do
@@ -82,10 +82,6 @@ FactoryBot.define do
                 u.bank_accounts = create_list(:bank_account_for_law_firm, e.num_bank_accounts, user: u)  if u.bank_accounts.empty? && e.num_bank_accounts > 0
                 u.members = create_list(:attorney, e.num_members, organization: u)                       if u.members.empty? && e.num_members > 0
                 u.touch
-            end
-
-            trait :with_valid_stripe_data do
-                stripe_financial_account_id {}
             end
         end
 

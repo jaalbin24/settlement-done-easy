@@ -17,11 +17,11 @@ law_firm_users = Array.new(1) {|i|
         password: "password123",
         role: "Law Firm",
         business_name: law_firms[i],
-        stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
+        #stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
         organization: nil
     )
     law_firm.build_stripe_account(
-        stripe_id: "acct_1LUMm4PvLqRcxm3z"
+        #stripe_id: "acct_1LUMm4PvLqRcxm3z"
     )
     if law_firm.save
         puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
@@ -30,13 +30,13 @@ law_firm_users = Array.new(1) {|i|
     end
 
     law_firm.bank_accounts.create!(
-        stripe_payment_method_id: "pm_1LYvHfPvLqRcxm3zIbQJcor9",
+        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #1)",
         last4: 6789,
         default: true
     )
     law_firm.bank_accounts.create!(
-        stripe_payment_method_id: "pm_1LZILoPvLqRcxm3znJP3m131",
+        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #2)",
         last4: 6789,
     )
@@ -49,11 +49,11 @@ insurance_company_users = Array.new(1) {|i|
         password: "password123",
         role: "Insurance Company",
         business_name: insurance_companies[i],
-        stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
+        #stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
         organization: nil
     )
     insurance_company.build_stripe_account(
-        stripe_id: "acct_1LUMmEQ44dejfzxN"
+        #stripe_id: "acct_1LUMmEQ44dejfzxN"
     )
     if insurance_company.save
         puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"
@@ -62,35 +62,18 @@ insurance_company_users = Array.new(1) {|i|
     end
 
     insurance_company.bank_accounts.create!(
-        stripe_payment_method_id: "pm_1LYvHGQ44dejfzxNSCCrYoET",
+        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #1)",
         last4: 6789,
         default: true
     )
     insurance_company.bank_accounts.create!(
-        stripe_payment_method_id: "pm_1LZIOUQ44dejfzxNeCkdDU99",
+        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #2)",
         last4: 6789,
     )
     insurance_company
 }
-
-shannon_elsea = User.new(
-    email: "shannon.elsea@example.com",
-    password: "password123",
-    role: "Law Firm",
-    business_name: "Shannon Elsea",
-    stripe_financial_account_id: "XXXXXXXXXXXXX",
-    organization: nil
-)
-shannon_elsea.build_stripe_account(
-    stripe_id: "acct_1LZzCJPvVAkLezlo"
-)
-if shannon_elsea.save
-    puts "Created Shannon Elsea user"
-else
-    raise StandardError.new "⚠️⚠️⚠️ ERROR creating Shannon Elsea user: #{shannon_elsea.errors.full_messages.inspect}"
-end
 
 attorneys = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
     a = User.create!(
@@ -124,7 +107,7 @@ attorneys.each do |a|
             attorney:           a,
             insurance_agent:    insurance_agents[rand(0..insurance_agents.size-1)],
             claim_number:       "#{rand(100000..999999)}",
-            amount:      '%.02f' % rand(100000..2499900).fdiv(100),
+            amount:      '%.02f' % rand(100000..1999900).fdiv(100),
             defendant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             claimant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             incident_location:  "Memphis, TN",
@@ -132,7 +115,7 @@ attorneys.each do |a|
         )
         if !settlement.save
             puts "ERRORS: #{settlement.errors.full_messages.inspect}"
-            # puts "ERRORS: #{settlement.payments.first.errors.full_messages.inspect}"
+            puts "ERRORS: #{settlement.payments.first.errors.full_messages.inspect}"
             # puts "ERRORS: #{settlement.documents.first.errors.full_messages.inspect}"
         end
         doc = settlement.documents.create!(

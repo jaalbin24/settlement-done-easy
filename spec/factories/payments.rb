@@ -79,8 +79,8 @@ FactoryBot.define do
                 # Ensure this payment model is the only one attached to the settlement
                 destination = p.settlement.attorney.organization.default_bank_account
                 source = p.settlement.insurance_agent.organization.default_bank_account
-                p.settlement.payments.excluding(p).each do |p|
-                    p.destroy!
+                p.settlement.payments.excluding(p).each do |destroy_me|
+                    destroy_me.destroy!
                 end
                 noahs_ark = [p.settlement.attorney, p.settlement.insurance_agent, p.settlement.attorney.organization, p.settlement.insurance_agent.organization]
                 User.all.excluding(noahs_ark).each do |u|

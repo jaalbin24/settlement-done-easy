@@ -31,10 +31,13 @@ class DocumentReview < ApplicationRecord
     scope :rejections,          ->          {where(verdict: "Rejected")}
     scope :waiting_for_review,  ->          {where(verdict: "Waiting")}
     scope :with_reviewer,       ->  (user)  {where(reviewer: user)}
+    scope :without_reviewer,    ->  (user)  {where.not(reviewer: user)}
     scope :for_document,        ->  (doc)   {where(document: doc)}
     scope :have_been_reviewed,  ->          {where(verdict: "Approved").or(where(verdict: "Rejected"))}
 
     validates :verdict, inclusion: {in: ["Approved", "Rejected", "Waiting"]}
+    validates :verdict, inclusion: {in: ["Approved"], message: "must be 'Approved' when the reviewer is also the user that added the document.",if: -> (i) {document.added_by == reviewer}}
+    
     validate :reviewer_is_affiliated_with_document
     def reviewer_is_affiliated_with_document
         errors.add(:reviewer, "must be affiliated with this document's settlement.") unless document.settlement.in?(reviewer.settlements)
@@ -76,17 +79,20 @@ class DocumentReview < ApplicationRecord
         optional: true
     )
 
+    before_validation do
+        if reviewer == document.added_by
+            self.verdict = "Approved"
+        end
+    end
+
     before_create do
         create_log_book_model_if_self_lacks_one
     end
 
-    after_save do
-        puts "❤️❤️❤️ DocumentReview after_save block"
-        unless self.frozen? # The frozen? check keeps an error from being thrown when deleting settlement models
-            unless document.save
-                puts "⚠️⚠️⚠️ ERROR: #{document.errors.full_messages.inspect}"
-                raise ActiveRecord::Rollback
-            end
+    after_commit do
+        puts "❤️❤️❤️ DocumentReview after_commit block"
+        unless self.frozen? # The frozen? check keeps an error from being thrown when deleting document_review models
+            document.save!
         end
     end
 

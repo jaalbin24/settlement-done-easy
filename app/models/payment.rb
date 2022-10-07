@@ -168,7 +168,7 @@ class Payment < ApplicationRecord
     
     after_commit do
         puts "❤️❤️❤️ Payment after_commit block"
-        if changed?
+        if changed? && !new_record?
             settlement.save
         end
     end

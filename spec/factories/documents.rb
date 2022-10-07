@@ -31,14 +31,32 @@
 FactoryBot.define do
     factory :document, class: "Document" do
         added_by
+        settlement
         trait :added_by_insurance_agent do
-            after(:build) do |d|
-                d.added_by = d.settlement.insurance_agent
-            end
+            association :added_by, factory: :insurance_agent
         end
         trait :added_by_attorney do
-            after(:build) do |d|
-                d.added_by = d.settlement.attorney
+            association :added_by, factory: :attorney
+        end
+        trait :from_the_ground_up do
+            added_by_attorney
+            after(:create) do |d, e|
+                d.settlement.documents.excluding(d).each do |destroy_me|
+                    destroy_me.destroy!
+                end
+                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.insurance_agent
+
+                noahs_ark = [d.settlement.attorney, d.settlement.insurance_agent, d.settlement.attorney.organization, d.settlement.insurance_agent.organization]
+                User.all.excluding(noahs_ark).each do |u|
+                    u.destroy!
+                end
+            end
+        end
+        after(:create) do |d, e|
+            d.reviews.destroy_all
+            d.reviews = [build(:document_review, document: d, reviewer: d.settlement.insurance_agent), build(:document_review, document: d, reviewer: d.settlement.attorney)]
+            d.reviews.each do |r|
+                r.save
             end
         end
     end

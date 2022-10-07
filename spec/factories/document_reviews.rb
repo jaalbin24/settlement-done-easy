@@ -24,3 +24,15 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (reviewer_id => users.id)
 #
+FactoryBot.define do
+    factory :document_review, class: "DocumentReview" do
+        document
+        verdict {"Waiting"}
+        trait :for_approval do
+            verdict {"Approved"}
+        end
+        trait :for_rejection do
+            verdict {"Approved"}
+        end
+    end
+end

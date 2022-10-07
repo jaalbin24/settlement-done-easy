@@ -46,6 +46,10 @@ FactoryBot.define do
         end
 
         after(:create) do |s, e|
+            s.documents = create_list(:document, e.num_documents,
+                added_by: rand(1..2).odd? ? s.attorney : s.insurance_agent,
+                settlement: s
+            )
             puts "🤖🤖🤖 settlement after(:create) block"
             puts "========> SETTLEMENT created!\n"+
                 "========> adjuster: #{s.insurance_agent.full_name}\n"+
@@ -90,10 +94,7 @@ FactoryBot.define do
 
         after(:build) do |s, e|
             puts "🤖🤖🤖 settlement after(:build) block"
-            s.documents = build_list(:document, e.num_documents,
-                :added_by_insurance_agent,
-                settlement: s
-            )
+
         end
     end
 end
