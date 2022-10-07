@@ -161,7 +161,7 @@ class Settlement < ApplicationRecord
                 self.save
             end
         end
-        active_payment.save
+        active_payment.save unless active_payment.nil?
     end
 
     before_create do

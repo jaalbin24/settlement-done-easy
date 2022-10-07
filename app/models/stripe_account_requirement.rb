@@ -24,9 +24,11 @@ class StripeAccountRequirement < ApplicationRecord
     scope :eventually_due,              ->      {where(status: "eventually_due")}
     scope :pending_verification,        ->      {where(status: "pending_verification")}
     scope :with_required_item,          ->  (i) {where(required_item: i)}
+    scope :without_required_item,       ->  (i) {where.not(required_item: i)}
+    scope :with_status,                 ->  (i) {where(status: i)}
     scope :besides_external_account,    ->      {where.not(required_item: "external_account")}
 
-    validates :status, inclusion: {in: ["past_due", "currently_due", "eventually_due", "pending_verification"]}
+    validates :status, inclusion: {in: -> (i) {StripeAccountRequirement.statuses}}
 
     belongs_to(
         :stripe_account,
@@ -34,4 +36,10 @@ class StripeAccountRequirement < ApplicationRecord
         foreign_key: "stripe_account_id",
         inverse_of: :requirements
     )
+
+    # IMPORTANT: Do not implement callbacks on this model. Delete_all is called on this model at least once.
+
+    def self.statuses
+        ["past_due", "currently_due", "eventually_due", "pending_verification"]
+    end
 end

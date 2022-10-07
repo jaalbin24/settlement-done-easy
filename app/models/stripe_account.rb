@@ -111,41 +111,24 @@ class StripeAccount < ApplicationRecord
 
     def sync_requirements(account)
         puts "SYNC REQUIREMENTS"
-        requirements.delete_all
-        account.requirements.currently_due.each do |r|
-            unless requirements.currently_due.with_required_item(r).exists?
-                requirements.build(
-                    status: "currently_due",
-                    required_item: r
-                )
-                puts "BUILT currently_due: #{r}"
-            end
-        end
-        account.requirements.past_due.each do |r|
-            unless requirements.past_due.with_required_item(r).exists?
-                requirements.build(
-                    status: "past_due",
-                    required_item: r
-                )
-                puts "BUILT past_due: #{r}"
-            end
-        end
-        account.requirements.eventually_due.each do |r|
-            unless requirements.eventually_due.with_required_item(r).exists?
-                requirements.build(
-                    status: "eventually_due",
-                    required_item: r
-                )
-                puts "BUILT eventually_due: #{r}"
-            end
-        end
-        account.requirements.pending_verification.each do |r|
-            unless requirements.pending_verification.with_required_item(r).exists?
-                requirements.build(
-                    status: "pending_verification",
-                    required_item: r
-                )
-                puts "BUILT pending_verification: #{r}"
+        # Get a hash of all Stripe-side requirements
+        account_requirements_hash = account.requirements.to_h
+        account_requirements_hash.keys.each do |status|
+            # The hash will contain keys that do not contain requirements such as "current_deadline" and "alternatives". This
+            # if-statement ensures the key is one that is expected to have required_items in it.
+            if StripeAccountRequirement.statuses.include?(status.to_s)
+                stripe_side_required_items_array = account_requirements_hash[status].to_a
+                # Remove any SDE-side requirements that do not exist Stripe-side.
+                requirements.with_status(status.to_s).without_required_item(stripe_side_required_items_array).delete_all
+                unless requirements.with_status(status.to_s).count == account_requirements_hash[status].length
+                    # Add any Stripe-side requirements that do not already exist SDE-side
+                    sde_side_required_items_array = requirements.with_status(status.to_s).pluck(:required_item).to_a
+                    additional_required_items_array = stripe_side_required_items_array - sde_side_required_items_array
+                    new_requirements_array = Array.new(additional_required_items_array.length) do |i|
+                        {required_item: additional_required_items_array[i], status: status.to_s}
+                    end
+                    requirements.build(new_requirements_array)
+                end
             end
         end
     end
