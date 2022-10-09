@@ -90,6 +90,14 @@ class Settlement < ApplicationRecord
         end
     end
 
+    has_many(
+        :settings,
+        class_name: "SettlementSettings",
+        foreign_key: :settlement_id,
+        inverse_of: :settlement,
+        dependent: :destroy
+    )
+
     belongs_to(
         :attorney,
         class_name: "User",
@@ -174,6 +182,14 @@ class Settlement < ApplicationRecord
                 amount: amount
             )
         end
+        if settings.empty?
+            settings.build(
+                user: attorney
+            )
+            settings.build(
+                user: insurance_agent
+            )
+        end
         self.public_number = rand(1..9999)
     end
 
@@ -241,7 +257,7 @@ class Settlement < ApplicationRecord
     end
 
     def update_ready_for_payment_attribute
-        if documents.empty? # If settlement has no documents
+        if documents.first.nil? # If settlement has no documents
             puts "📝📝📝 documents.empty?"
             self.ready_for_payment = false
         elsif documents.rejected.exists? # If settlement has rejected documents
@@ -322,5 +338,9 @@ class Settlement < ApplicationRecord
 
     def locked?
         locked
+    end
+
+    def settings_for(user)
+        settings.for_user(user).first
     end
 end

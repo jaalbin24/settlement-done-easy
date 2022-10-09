@@ -5,12 +5,12 @@
         <thead class="border-bottom border-secondary">
             <tr>
                 <th>Status</th>
+                <th>Number</th>
+                <th>Claimant Name</th>
                 <%if current_user.isAttorney?%>
-                    <th>Client Name</th>
                     <th>Agent Name</th>
                     <th>Company</th>
                 <%elsif current_user.isInsuranceAgent?%>
-                    <th>Claimant Name</th>
                     <th>Attorney Name</th>
                     <th>Firm</th>
                 <%end%>
@@ -21,6 +21,7 @@
             <%current_user.settlements.each do |s|%>
                 <tr class="table-secondary">
                     <td><%=render "settlements/status", settlement: s%></td>
+                    <td><%="%04d" % s.public_number%></td>
                     <td><%=link_to s.claimant_name, settlement_show_path(s)%></td>
                     <%if current_user.isInsuranceAgent?%>
                         <td><%=s.attorney.full_name%></td>

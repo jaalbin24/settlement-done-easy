@@ -146,7 +146,7 @@ class Document < ApplicationRecord
             if changed?
                 self.save
             end
-            if added_by.settings.delete_my_documents_after_rejection && rejected?
+            if will_be_deleted_after_rejection? && rejected?
                 self.destroy
             end
         end
@@ -256,7 +256,7 @@ class Document < ApplicationRecord
         self.nickname = "Release for #{settlement.claimant_name}"
     end
 
-    def will_be_destroyed_after_rejection
-        added_by.settings.delete_my_documents_after_rejection
+    def will_be_deleted_after_rejection?
+        settlement.settings_for(added_by).delete_my_documents_after_rejection?
     end
 end

@@ -120,11 +120,17 @@
                                                 <i class="fa-solid fa-thumbs-up"></i>
                                                 Approve
                                             </a>
-                                            <button name="open-document-reject-confirmation-button" class="btn btn-lg btn-danger" aria-label="Reject this document">
-                                                <i class="fa-solid fa-thumbs-down"></i>
-                                                Reject
-                                            </button>
-                                            
+                                            <%if @document.will_be_deleted_after_rejection?%>
+                                                <button name="open-document-reject-confirmation-button" class="btn btn-lg btn-danger" aria-label="Reject this document">
+                                                    <i class="fa-solid fa-thumbs-down"></i>
+                                                    Reject
+                                                </button>
+                                            <%else%>
+                                                <a class="btn btn-lg btn-danger" aria-label="Reject this document" href="<%=document_reject_path(@document)%>">
+                                                    <i class="fa-solid fa-thumbs-down"></i>
+                                                    Reject
+                                                </a>
+                                            <%end%>   
                                         <%elsif @document.has_been_rejected_by?(current_user)%>
                                             <a class="btn btn-lg btn-success" href="<%=document_approve_path(@document)%>" data-method="post">
                                                 <i class="fa-solid fa-thumbs-up"></i>
@@ -202,6 +208,4 @@
     <%=render "modals/ready_for_payment", render_instantly: true%>
 <%end%>
 
-<%unless @document.has_been_reviewed_by?(current_user)%>
-    <%=render "modals/document_reject_confirmation", render_instantly: false%>
-<%end%>
+<%=render "modals/document_reject_confirmation"%>

@@ -1,5 +1,5 @@
 class PaymentsController < ApplicationController
-    before_action :authenticate_user!, :ensure_user_is_authorized
+    before_action :authenticate_user!, :ensure_user_is_authorized, except: :index
 
     def ensure_user_is_authorized
         payment = Payment.find_by!(public_id: params[:id])

@@ -21,6 +21,8 @@ module GeneratePublicId
             id_prefix = "pmnt"
         when "Settlement"
             id_prefix = "sett"
+        when "SettlementSettings"
+            id_prefix = "sset"
         when "StripeAccountRequirement"
             id_prefix = "sreq"
         when "StripeAccount"
