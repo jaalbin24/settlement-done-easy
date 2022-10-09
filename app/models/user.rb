@@ -36,7 +36,7 @@
 #  fk_rails_...  (organization_id => users.id)
 #
 class User < ApplicationRecord
-    include EnglishLanguageSupport
+    include EnglishLanguage
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable

@@ -160,10 +160,9 @@
                                                     <%elsif current_user.isInsuranceAgent?%>
                                                         <%=f.select(:source_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
                                                     <%end%>
-                                                    
-                                                </div>
-                                                <div class="text-end">
-                                                    <%=f.submit "Update bank account", class: "btn btn-sm btn-primary me-2"%>
+                                                    <div class="text-end mt-2">
+                                                        <%=f.submit "Update bank account", class: "btn btn-sm btn-primary"%>
+                                                    </div>
                                                 </div>
                                             <%end%>
                                         <%end%>
@@ -172,19 +171,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-auto pe-0">
-                        <div class="list-group list-group-flush border-end">
-                            <a class="list-group-item list-group-item-action d-flex gap-1" href="<%=settlement_destroy_path(@settlement)%>" data-method="delete">
-                                <p class="m-0 p-0">
-                                    <i class="fa-solid fa-handshake-simple-slash"></i>
-                                    Cancel
-                                </p>
-                            </a>
-                        </div>
-                    </div>
-                </div>                
+                </div>        
             </div>
         </div>
         <div class="col">
@@ -248,11 +235,13 @@
     </div>
 </div>
 
+<%=render "modals/ready_for_payment"%>
+
+
 <%if @settlement.ready_for_payment?%>
-    <%=render "modals/ready_for_payment", render_instantly: true%>
     <%if current_user.isAttorney?%>
-        <%=render "modals/payment_request_confirmation", render_instantly: false%>
+        <%=render "modals/payment_request_confirmation"%>
     <%elsif current_user.isInsuranceAgent?%>
-        <%=render "modals/payment_confirmation", render_instantly: false%>
+        <%=render "modals/payment_confirmation"%>
     <%end%>
 <%end%>

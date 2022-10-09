@@ -36,7 +36,7 @@ class DocumentReview < ApplicationRecord
     scope :have_been_reviewed,  ->          {where(verdict: "Approved").or(where(verdict: "Rejected"))}
 
     validates :verdict, inclusion: {in: ["Approved", "Rejected", "Waiting"]}
-    validates :verdict, inclusion: {in: ["Approved"], message: "must be 'Approved' when the reviewer is also the user that added the document.",if: -> (i) {document.added_by == reviewer}}
+    validates :verdict, inclusion: {in: ["Approved"], message: "must be 'Approved' when the reviewer is also the user that added the document.", if: -> (i) {document.added_by == reviewer}}
     
     validate :reviewer_is_affiliated_with_document
     def reviewer_is_affiliated_with_document

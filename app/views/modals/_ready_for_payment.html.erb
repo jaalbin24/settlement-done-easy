@@ -1,7 +1,5 @@
-<%
-# This settlement is ready for payment! Click here to initiate payment.
-%>
-<%if current_user.settings.alert_when_settlement_ready_for_payment%>
+
+<%if @settlement.settings_for(current_user).alert_when_settlement_ready_for_payment && @settlement.ready_for_payment%>
     <div class="modal fade" name="ready-for-payment-modal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -38,16 +36,14 @@
         </div>
     </div>
 
-    <%if render_instantly%>
-        <script>
-            new bootstrap.Modal(document.getElementsByName('ready-for-payment-modal')[0]).show();
-        </script>
-    <%end%>
+    <script>
+        new bootstrap.Modal(document.getElementsByName('ready-for-payment-modal')[0]).show();
+    </script>
 
     <%if current_user.isAttorney?%>
-        <%=render "modals/payment_request_confirmation", render_instantly: false%>
+        <%=render "modals/payment_request_confirmation"%>
     <%elsif current_user.isInsuranceAgent?%>
-        <%=render "modals/payment_confirmation", render_instantly: false%>
+        <%=render "modals/payment_confirmation"%>
     <%end%>
 <%end%>
 

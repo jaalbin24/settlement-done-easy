@@ -48,7 +48,9 @@
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     <span class="badge bg-primary rounded-pill me-2" style="width: 2rem; margin-right: 0.5rem;"><%=@payable_settlements.size%></span>
-                    <%="Payment".pluralize(@payable_settlements.size)%> can be made.
+                    <%if current_user.isAttorney?%>
+                        <%="Payment".pluralize(@payable_settlements.size)%> can be made.
+                    <%end%>
                 </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">

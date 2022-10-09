@@ -1,27 +1,25 @@
-<div class="modal fade" name="document-reject-confirmation-modal" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger">Reject This Document!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h6>Are you sure you want to reject <%=@document.pdf.filename%>?</h6>
-                <p>The file will be automatically deleted. This cannot be undone.</p>
-                <p>If you do not want rejected documents to be automatically deleted, you can change your settings <a href="">here</a>.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Not now">Cancel</button>
-                <%=link_to "Reject", document_reject_path(@document), method: :post, class: "btn btn-danger"%>
+<%if @document.will_be_deleted_after_rejection? && !@document.has_been_reviewed_by?(current_user)%>
+
+    <div class="modal fade" name="document-reject-confirmation-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">Reject This Document!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>Are you sure you want to reject <%=@document.pdf.filename%>?</h6>
+                    <p>The file will be automatically deleted. This cannot be undone.</p>
+                    <p>If you do not want rejected documents to be automatically deleted, you can change your settings <a href="">here</a>.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Not now">Cancel</button>
+                    <%=link_to "Reject", document_reject_path(@document), method: :post, class: "btn btn-danger"%>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<%if render_instantly%>
-    <script>
-        new bootstrap.Modal(document.getElementsByName('document-reject-confirmation-modal')[0]).show();
-    </script>
 <%end%>

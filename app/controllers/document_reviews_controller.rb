@@ -10,8 +10,8 @@ class DocumentReviewsController < ApplicationController
         begin
             document = Document.find_by!(public_id: params[:id])
             review = document.reviews.with_reviewer(current_user).first
-            if review.reject
-                if document.will_be_destroyed_after_rejection
+            if review.reject && !document.nil?
+                if document.will_be_deleted_after_rejection? || document.nil?
                     flash[:info] = "The document was rejected and automatically deleted."
                     redirect_to settlement_show_path(document.settlement)
                     return
@@ -23,13 +23,18 @@ class DocumentReviewsController < ApplicationController
             else
                 flash[:info] = "The document could not be rejected right now. Try again later."
                 puts "⚠️⚠️⚠️ ERROR: #{review.errors.full_messages.inspect}"
+                redirect_back(fallback_location: root_path)
             end
         rescue ActiveRecord::RecordNotFound => e
             flash[:info] = "The document you tried to reject does not exist."
+            puts "⚠️⚠️⚠️ Error: #{e.message}"
+            puts "⚠️⚠️⚠️ Backtrace: #{e.backtrace}"
         rescue => e
             flash[:info] = "An unknown error occured."
+            puts "⚠️⚠️⚠️ Error: #{e.message}"
+            puts "⚠️⚠️⚠️ Backtrace: #{e.backtrace}"
         end
-        redirect_back(fallback_location: root_path)
+        redirect_to root_path
     end
 
     def unreject
