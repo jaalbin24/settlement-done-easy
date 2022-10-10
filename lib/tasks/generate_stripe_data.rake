@@ -8,10 +8,10 @@ unless Rails.env.production?
             num_of_each_organization = 1 if num_of_each_organization.nil?
             organizations = {}
             organizations[:law_firms] = generate_law_firms(num_of_each_organization)
-            puts "Registered #{num_of_each_organization} law firms with Stripe!"
-            organizations[:insurance_comapanies] = generate_insurance_companies(num_of_each_organization)
-            puts "Registered #{num_of_each_organization} insurance companies with Stripe!"
-
+            puts "Registered #{"law firm".pluralize(num_of_each_organization)} with Stripe!"
+            organizations[:insurance_companies] = generate_insurance_companies(num_of_each_organization)
+            puts "Registered #{"insurance company".pluralize(num_of_each_organization)} with Stripe!"
+            write_to_stripe_test_data_file(organizations)
             puts organizations
 
         end
@@ -36,7 +36,7 @@ def generate_law_firms_hash(num_law_firms)
                     "postal_code"=>"38103",
                     "state"=>"TN",
                 },
-                "name"=>cn.gsub(/_&/, "")[0, 10],
+                "name"=>cn,
                 "phone"=>"7316147141",
                 "tax_id"=>"0000000000"
             },
@@ -44,7 +44,9 @@ def generate_law_firms_hash(num_law_firms)
                 "sole_owner"=>{
                     "first_name"=>first_name_of_owner,
                     "last_name"=>last_name_of_owner,
-                    "email"=>"#{first_name_of_owner}.#{last_name_of_owner}@example.com",
+                    "email"=>"#{first_name_of_owner.downcase}.#{last_name_of_owner.downcase}@example.com",
+                    "id_number"=>"0000000000",
+                    "phone"=>"0000000000",
                     "dob"=>{
                         "day"=> rand(1..28),
                         "month"=> rand(1..12),
@@ -58,15 +60,26 @@ def generate_law_firms_hash(num_law_firms)
                         "state"=>"TN",
                     },
                     "relationship"=>{
-                        "director"=>true,
+                        "director"=>false,
                         "executive"=>true,
                         "owner"=>true,
                         "percent_ownership"=>100,
                         "representative"=>true,
                         "title"=>"Founder"
                     },
-                    "id_number"=>"00000000"
                 },
+            },
+            "settings"=>{
+                "treasury"=>{
+                    "tos_acceptance"=>{
+                        "date"=>Time.now.to_i,
+                        "ip"=>"127.0.0.1",
+                    },
+                },
+            },
+            "tos_acceptance"=>{
+                "date"=>Time.now.to_i,
+                "ip"=>"127.0.0.1",
             },
         }
     end
@@ -103,6 +116,18 @@ def generate_law_firms(num_law_firms)
                 name: law_firms_hash[lf]["company"]["name"],
                 phone: law_firms_hash[lf]["company"]["phone"],
                 tax_id: law_firms_hash[lf]["company"]["tax_id"],
+            },
+            settings: {
+                treasury: {
+                    tos_acceptance: {
+                        ip: law_firms_hash[lf]["settings"]["treasury"]["tos_acceptance"]["ip"],
+                        date: law_firms_hash[lf]["settings"]["treasury"]["tos_acceptance"]["date"],
+                    },
+                },
+            },
+            tos_acceptance: {
+                ip: law_firms_hash[lf]["tos_acceptance"]["ip"],
+                date: law_firms_hash[lf]["tos_acceptance"]["date"],
             }
         })
         owner = Stripe::Account.create_person(
@@ -111,6 +136,8 @@ def generate_law_firms(num_law_firms)
                 first_name: law_firms_hash[lf]["owners"]["sole_owner"]["first_name"],
                 last_name: law_firms_hash[lf]["owners"]["sole_owner"]["last_name"],
                 email: law_firms_hash[lf]["owners"]["sole_owner"]["email"],
+                phone: law_firms_hash[lf]["owners"]["sole_owner"]["phone"],
+                id_number: law_firms_hash[lf]["owners"]["sole_owner"]["id_number"],
                 dob: {
                     day:  law_firms_hash[lf]["owners"]["sole_owner"]["dob"]["day"],
                     month:  law_firms_hash[lf]["owners"]["sole_owner"]["dob"]["month"],
@@ -133,6 +160,17 @@ def generate_law_firms(num_law_firms)
                 },
             }
         )
+        Stripe::Account.update_person(
+            account.id,
+            owner.id,
+            {
+                verification: {
+                    document: {
+                        front: "file_identity_document_success",
+                    },
+                },
+            },
+        )
         treasury_account = Stripe::Treasury::FinancialAccount.create(
             {
                 supported_currencies: ['usd'],
@@ -143,25 +181,27 @@ def generate_law_firms(num_law_firms)
             },
             {stripe_account: account.id},
         )
+        
         # Register the bank accounts w/ Stripe using Capybara.
-        Rspec.describe do
-            user = create(:law_firm, :with_valid_stripe_data)
-            sign_in user
-            visit root_path
-            click_on "Add account"
-            click_on "Agree"
-            click_on "Test Institution"
-            click_on "Success"
-            click_on "Link account"
-            click_on "Done"
-            click_on "Accept"
-            sleep(3)
-            visit current_path
-            expect(page).to have_text "STRIPE TEST BANK"
-        end
-        return_value[lf] = {
+        # Rspec.describe do
+        #     user = create(:law_firm)
+        #     sign_in user
+        #     visit root_path
+        #     click_on "Add account"
+        #     click_on "Agree"
+        #     click_on "Test Institution"
+        #     click_on "Success"
+        #     click_on "Link account"
+        #     click_on "Done"
+        #     click_on "Accept"
+        #     sleep(3)
+        #     visit current_path
+        #     expect(page).to have_text "STRIPE TEST BANK"
+        # end
+        return_value[lf.parameterize.underscore.to_sym] = {
+            business_name: lf,
             stripe_id: account.id,
-            financial_account_id: treasury_account.id,
+            stripe_financial_account_id: treasury_account.id,
             external_accounts: {
                 bank_account_1_payment_method_id: "",
                 bank_account_2_payment_method_id: "",
@@ -189,7 +229,7 @@ def generate_insurance_companies_hash(num_insurance_companies)
                     "postal_code"=>"38103",
                     "state"=>"TN",
                 },
-                "name"=>cn.gsub(/_&/, "")[0, 10],
+                "name"=>cn,
                 "phone"=>"7316147141",
                 "tax_id"=>"0000000000"
             },
@@ -197,7 +237,9 @@ def generate_insurance_companies_hash(num_insurance_companies)
                 "sole_owner"=>{
                     "first_name"=>first_name_of_owner,
                     "last_name"=>last_name_of_owner,
-                    "email"=>"#{first_name_of_owner}.#{last_name_of_owner}@example.com",
+                    "email"=>"#{first_name_of_owner.downcase}.#{last_name_of_owner.downcase}@example.com",
+                    "id_number"=>"0000000000",
+                    "phone"=>"0000000000",
                     "dob"=>{
                         "day"=> rand(1..28),
                         "month"=> rand(1..12),
@@ -211,15 +253,26 @@ def generate_insurance_companies_hash(num_insurance_companies)
                         "state"=>"TN",
                     },
                     "relationship"=>{
-                        "director"=>true,
+                        "director"=>false,
                         "executive"=>true,
                         "owner"=>true,
                         "percent_ownership"=>100,
                         "representative"=>true,
                         "title"=>"Founder"
                     },
-                    "id_number"=>"00000000"
                 },
+            },
+            "settings"=>{
+                "treasury"=>{
+                    "tos_acceptance"=>{
+                        "date"=>Time.now.to_i,
+                        "ip"=>"127.0.0.1",
+                    },
+                },
+            },
+            "tos_acceptance"=>{
+                "date"=>Time.now.to_i,
+                "ip"=>"127.0.0.1",
             },
         }
     end
@@ -256,6 +309,18 @@ def generate_insurance_companies(num_insurance_companies)
                 name: insurance_companies_hash[ic]["company"]["name"],
                 phone: insurance_companies_hash[ic]["company"]["phone"],
                 tax_id: insurance_companies_hash[ic]["company"]["tax_id"],
+            },
+            settings: {
+                treasury: {
+                    tos_acceptance: {
+                        ip: insurance_companies_hash[ic]["settings"]["treasury"]["tos_acceptance"]["ip"],
+                        date: insurance_companies_hash[ic]["settings"]["treasury"]["tos_acceptance"]["date"],
+                    },
+                },
+            },
+            tos_acceptance: {
+                ip: insurance_companies_hash[ic]["tos_acceptance"]["ip"],
+                date: insurance_companies_hash[ic]["tos_acceptance"]["date"],
             }
         })
         owner = Stripe::Account.create_person(
@@ -264,6 +329,8 @@ def generate_insurance_companies(num_insurance_companies)
                 first_name: insurance_companies_hash[ic]["owners"]["sole_owner"]["first_name"],
                 last_name: insurance_companies_hash[ic]["owners"]["sole_owner"]["last_name"],
                 email: insurance_companies_hash[ic]["owners"]["sole_owner"]["email"],
+                phone: insurance_companies_hash[ic]["owners"]["sole_owner"]["phone"],
+                id_number: insurance_companies_hash[ic]["owners"]["sole_owner"]["id_number"],
                 dob: {
                     day:  insurance_companies_hash[ic]["owners"]["sole_owner"]["dob"]["day"],
                     month:  insurance_companies_hash[ic]["owners"]["sole_owner"]["dob"]["month"],
@@ -286,8 +353,51 @@ def generate_insurance_companies(num_insurance_companies)
                 },
             }
         )
-        return_value[ic] = {
+        Stripe::Account.update_person(
+            account.id,
+            owner.id,
+            {
+                verification: {
+                    document: {
+                        front: "file_identity_document_success",
+                    },
+                },
+            },
+        )
+        treasury_account = Stripe::Treasury::FinancialAccount.create(
+            {
+                supported_currencies: ['usd'],
+                features: {
+                    intra_stripe_flows: {requested: true}, # For sending money to LF financial account
+                    inbound_transfers: {ach: {requested: true}}, # For transferring from IC bank account to IC financial account
+                },
+            },
+            {stripe_account: account.id},
+        )
+        # Register the bank accounts w/ Stripe using Capybara.
+        # Rspec.describe "using Capybara w/ RSpec to interact with the browser automatically." do
+        #     user = create(:law_firm, stripe_financial_account_id: treasury_account.id, stripe_id: account.id)
+        #     sign_in user
+        #     visit root_path
+        #     click_on "Add account"
+        #     click_on "Agree"
+        #     click_on "Test Institution"
+        #     click_on "Success"
+        #     click_on "Link account"
+        #     click_on "Done"
+        #     click_on "Accept"
+        #     sleep(3)
+        #     visit current_path
+        #     expect(page).to have_text "STRIPE TEST BANK"
+        # end
+        return_value[ic.parameterize.underscore.to_sym] = {
+            buisness_name: ic,
             stripe_id: account.id,
+            stripe_financial_account_id: treasury_account.id,
+            external_accounts: {
+                bank_account_1_payment_method_id: "",
+                bank_account_2_payment_method_id: "",
+            },
         }
     end
     return_value
@@ -305,7 +415,7 @@ def generate_random_law_firm_name
     when 9
         "Law #{random_noun.pluralize.capitalize}"
     when 10
-        "#{random_last_name} #{random_last_name} & #{random_animal_name.singularize.capitalize.indefinite_articleize(word)}"
+        "#{random_last_name} #{random_last_name} & #{indefinite_articleize(random_animal_name.singularize.capitalize)}"
     else
         raise StandardError.new "Something broke your algorithm. The random number is not between 1 and 10."
     end
@@ -317,7 +427,7 @@ def generate_random_insurance_company_name
     when 1, 2, 3, 4, 5
         "#{random_adjective.capitalize} Insurance"
     when 6, 7
-        "#Very #{random_adjective.capitalize} Insurance"
+        "Very #{random_adjective.capitalize} Insurance"
     when 8
         "Insurance #{random_noun.pluralize.capitalize}"
     when 9
@@ -327,4 +437,39 @@ def generate_random_insurance_company_name
     else
         raise StandardError.new "Something broke your algorithm. The random number is not between 1 and 10."
     end
+end
+
+def write_to_stripe_test_data_file(content)
+    Dir.chdir "lib"
+    File.delete("stripe_test_data.rb") if File.exist?("stripe_test_data.rb")
+
+    File.open("stripe_test_data.rb", "w+") do |file|
+        file.write "module StripeTestData\n"
+        file.write "\tdef stripe_test_data_hash\n"
+        file.write "\t\t{\n"
+        file.write "#{pretty_printed_hash(content, 3)}\n"
+        file.write "\t\t}\n"
+        file.write "\tend\n"
+        file.write "end"
+    end
+
+    puts "Wrote hash to lib/stripe_test_data.rb"
+end
+
+def pretty_printed_hash(hash, num_tabs=0)
+    tabs = "\t" * num_tabs
+    return_value = ""
+    hash.keys.each do |key|
+        if hash[key].is_a?(Hash)
+            return_value += "#{tabs}#{key}: {\n"
+            return_value += "#{pretty_printed_hash(hash[key], num_tabs + 1)}\n"
+            return_value += "#{tabs}}"
+        else
+            return_value += "#{tabs}#{key}: \"#{hash[key]}\""
+        end
+        unless hash.keys.last == key
+            return_value += ",\n"
+        end
+    end
+    return_value
 end

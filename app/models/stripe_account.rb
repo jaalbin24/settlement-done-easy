@@ -62,6 +62,12 @@ class StripeAccount < ApplicationRecord
         end
     end
 
+    after_commit do
+        if changed?
+            user.save
+        end
+    end
+
     before_create do
         puts "❤️❤️❤️ StripeAccount before_create block"
         sync_with_stripe unless Rails.env.test? # This 'unless' check was added to make tests run faster.

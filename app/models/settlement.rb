@@ -258,22 +258,20 @@ class Settlement < ApplicationRecord
 
     def update_ready_for_payment_attribute
         if documents.first.nil? # If settlement has no documents
-            puts "📝📝📝 documents.empty?"
             self.ready_for_payment = false
         elsif documents.rejected.exists? # If settlement has rejected documents
-            puts "📝📝📝 documents.rejected.exists?"
             self.ready_for_payment = false
         elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
-            puts "📝📝📝 documents.waiting_for_review.exists?"
             self.ready_for_payment = false
         elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
-            puts "📝📝📝 documents.unsigned.need_signature.exists?"
             self.ready_for_payment = false
         elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
-            puts "📝📝📝 !payments.not_sent.exists?"
             self.ready_for_payment = false
         elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
-            puts "📝📝📝 !documents.first.persisted?"
+            self.ready_for_payment = false
+        elsif has_processing_payment?
+            self.ready_for_payment = false
+        elsif has_completed_payment?
             self.ready_for_payment = false
         else
             self.ready_for_payment = true

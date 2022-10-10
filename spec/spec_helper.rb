@@ -13,6 +13,7 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'capybara/rspec'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -92,4 +93,9 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  # These Capybara attributes are set so that the Stripe can interface with the app's webhook during testing.
+  Capybara.app_host = "http://localhost:3000"
+  Capybara.server_host = "localhost"
+  Capybara.server_port = "3000"
 end

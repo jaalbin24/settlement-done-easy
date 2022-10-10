@@ -59,14 +59,16 @@ class Payment < ApplicationRecord
         :source,
         class_name: "BankAccount",
         foreign_key: "source_id",
-        inverse_of: :payments_out
+        inverse_of: :payments_out,
+        required: false
     )
 
     belongs_to(
         :destination,
         class_name: "BankAccount",
         foreign_key: "destination_id",
-        inverse_of: :payments_in
+        inverse_of: :payments_in,
+        required: false
     )
 
     belongs_to(
@@ -112,7 +114,7 @@ class Payment < ApplicationRecord
 
     validate :destination_belongs_to_law_firm
     def destination_belongs_to_law_firm
-        unless source.nil?
+        unless destination.nil?
             errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
         end
     end

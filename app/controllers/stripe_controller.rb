@@ -122,7 +122,6 @@ class StripeController < ApplicationController
         when "setup_intent.succeeded"
         when "payment_method.attached"
             payment_method = event.data.object
-            user = StripeAccount.find_by(stripe_id:event.account).user
             bank_account = BankAccount.with_stripe_id(payment_method.id).first
             if !bank_account.nil?
                 bank_account.update(
@@ -131,12 +130,12 @@ class StripeController < ApplicationController
                     last4: payment_method.us_bank_account.last4,
                 )
             else
-                bank_account = user.bank_accounts.build(
+                user = StripeAccount.find_by(stripe_id: event.account).user
+                bank_account = user.bank_accounts.create(
                     stripe_payment_method_id: event.data.object.id,
                     nickname: payment_method.us_bank_account.bank_name,
                     last4: payment_method.us_bank_account.last4,
                 )
-                bank_account.save
             end
         when "treasury.inbound_transfer.created"
         when "treasury.inbound_transfer.failed"
