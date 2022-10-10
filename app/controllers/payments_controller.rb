@@ -28,6 +28,7 @@ class PaymentsController < ApplicationController
             flash[:info] = flash_message
         else
             flash[:info] = "Payment data could not be updated. Try again later."
+            puts "⚠️⚠️⚠️ ERROR: #{payment.errors.full_messages.inspect}"
         end
         redirect_back(fallback_location: root_path)
     end

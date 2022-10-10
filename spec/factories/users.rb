@@ -36,6 +36,12 @@
 #  fk_rails_...  (organization_id => users.id)
 #
 
+
+require "english_language"
+require "stripe_test_data"
+include EnglishLanguage
+include StripeTestData
+
 FactoryBot.define do
     # The user factory exists as an abstract factory. It is not meant to be used to create fixtures. 
     # It is meant to be inherited by the other user types. Running 'create(:user)' will throw validation errors because a generic
@@ -47,6 +53,7 @@ FactoryBot.define do
             num_members {1}
             num_bank_accounts {1}
             num_settlements {0}
+            stripe_id {}
         end
         after(:create) do |u|
             puts "🤖🤖🤖 user after(:create) block"
@@ -82,6 +89,17 @@ FactoryBot.define do
                 u.bank_accounts = create_list(:bank_account_for_law_firm, e.num_bank_accounts, user: u)  if u.bank_accounts.empty? && e.num_bank_accounts > 0
                 u.members = create_list(:attorney, e.num_members, organization: u)                       if u.members.empty? && e.num_members > 0
                 u.touch
+            end
+
+            trait :with_valid_stripe_data do
+                transient do
+                    stripe_id {stripe_test_data_hash[:law_firms][stripe_test_data_hash[:law_firms].keys.first][:stripe_id]}
+                end
+                stripe_financial_account_id {stripe_test_data_hash[:law_firms][stripe_test_data_hash[:law_firms].keys.first][:stripe_financial_account_id]}
+                after(:build) do |u, e|
+                    puts "🤖🤖🤖 law_firm after(:build) block"
+                    u.stripe_account = build(:stripe_account, user: u, stripe_id: e.stripe_id)
+                end
             end
         end
 

@@ -1,3 +1,5 @@
+require "stripe_test_data"
+include StripeTestData
 puts "Beginning DB seed..."
 
 top_100_first_names = ["Michael", "Christopher", "Jessica", "Matthew", "Ashley", "Jennifer", "Joshua", "Amanda", "Daniel", "David", "James", "Robert", "John", "Joseph", "Andrew", "Ryan", "Brandon", "Jason", "Justin", "Sarah", "William", "Jonathan", "Stephanie", "Brian", "Nicole", "Nicholas", "Anthony", "Heather", "Eric", "Elizabeth", "Adam", "Megan", "Melissa", "Kevin", "Steven", "Thomas", "Timothy", "Christina", "Kyle", "Rachel", "Laura", "Lauren", "Amber", "Brittany", "Danielle", "Richard", "Kimberly", "Jeffrey", "Amy", "Crystal", "Michelle", "Tiffany", "Jeremy", "Benjamin", "Mark", "Emily", "Aaron", "Charles", "Rebecca", "Jacob", "Stephen", "Patrick", "Sean", "Erin", "Zachary", "Jamie", "Kelly", "Samantha", "Nathan", "Sara", "Dustin", "Paul", "Angela", "Tyler", "Scott", "Katherine", "Andrea", "Gregory", "Erica", "Mary", "Travis", "Lisa", "Kenneth", "Bryan", "Lindsey", "Kristen", "Jose", "Alexander", "Jesse", "Katie", "Lindsay", "Shannon", "Vanessa", "Courtney", "Christine", "Alicia", "Cody", "Allison", "Bradley", "Samuel"]
@@ -17,14 +19,14 @@ law_firm_users = Array.new(1) {|i|
         password: "password123",
         role: "Law Firm",
         business_name: law_firms[i],
-        #stripe_financial_account_id: "fa_1LUMmBPvLqRcxm3zrV1FlYgb",
+        stripe_financial_account_id: stripe_test_data_hash[:law_firms][stripe_test_data_hash[:law_firms].keys.first][:stripe_financial_account_id],
         organization: nil
     )
     law_firm.build_stripe_account(
-        #stripe_id: "acct_1LUMm4PvLqRcxm3z"
+        stripe_id: stripe_test_data_hash[:law_firms][stripe_test_data_hash[:law_firms].keys.first][:stripe_id]
     )
     if law_firm.save
-        puts "Created Law Firm i=#{i}: #{law_firm.business_name}"
+        puts "Created Law Firm i=#{i}: #{stripe_test_data_hash[:law_firms][stripe_test_data_hash[:law_firms].keys.first][:business_name]}"
     else
         raise StandardError.new "⚠️⚠️⚠️ ERROR creating law firm user: #{law_firm.errors.full_messages.inspect}"
     end
@@ -49,11 +51,11 @@ insurance_company_users = Array.new(1) {|i|
         password: "password123",
         role: "Insurance Company",
         business_name: insurance_companies[i],
-        #stripe_financial_account_id: "fa_1LUMmLQ44dejfzxNA7hI1dQb",
+        stripe_financial_account_id: stripe_test_data_hash[:insurance_companies][stripe_test_data_hash[:insurance_companies].keys.first][:stripe_financial_account_id],
         organization: nil
     )
     insurance_company.build_stripe_account(
-        #stripe_id: "acct_1LUMmEQ44dejfzxN"
+        stripe_id: stripe_test_data_hash[:insurance_companies][stripe_test_data_hash[:insurance_companies].keys.first][:stripe_id]
     )
     if insurance_company.save
         puts "Created Insurance Company i=#{i}: #{insurance_company.business_name}"
