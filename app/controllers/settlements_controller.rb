@@ -89,29 +89,24 @@ class SettlementsController < ApplicationController
 
     def update
         begin
-            @settlement = Settlement.find_by!(public_id: params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
         end
-        if @settlement.update(settlement_params)
-            flash.now[:info] = "Settlement updated."
-            render :show
+        if settlement.locked?
+            flash[:info] = "This settlement cannot be modified right now because it is locked. No changes were made."
         else
-            flash.now[:error] = "Settlement could not be updated."
+            begin
+                settlement.update(settlement_params)
+                flash[:info] = "Settlement updated."
+            rescue SafetyError::SafetyError => e
+                flash[:info] = e.message
+            rescue
+                flash[:error] = "Settlement could not be updated. Try again later."
+            end
         end
-    end
-
-    def payment_success
-        begin
-            @settlement = Settlement.find_by!(public_id: params[:id])
-        rescue
-            handle_invalid_request
-            return
-        end
-        @settlement.payment_made = true
-        @settlement.save
-        render :payment_success
+        redirect_back(fallback_location: root_path)
     end
 
     def complete
@@ -134,12 +129,15 @@ class SettlementsController < ApplicationController
             handle_invalid_request
             return
         end
-        document = generate_document_for_settlement(settlement)
-        if document.save
+        begin
+            document = generate_document_for_settlement(settlement)
+            document.save!
             flash[:info] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
-        else
-            flash[:info] = "A document could not be generated. Try again later."
-            puts "⚠️⚠️⚠️ ERROR: #{document.errors.full_messages.inspect}"
+        rescue SafetyError::SafetyError => e
+            flash[:info] = e.message
+        rescue
+            flash[:info] = "There was a problem generating the document. Please try again later."
+            puts "⚠️⚠️⚠️ ERROR: #{e.message}"
         end
         redirect_back(fallback_location: root_path)
     end

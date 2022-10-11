@@ -27,7 +27,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Not now">Not now</button>
                     <%if current_user.isAttorney?%>
-                        <button name="open-payment-request-confirmation-button" class="btn btn-secondary" aria-label="Not now">Yes</button>
+                        <button name="open-payment-request-confirmation-button" class="btn btn-primary" aria-label="Not now">Yes</button>
                     <%elsif current_user.isInsuranceAgent?%>
                         <button name="open-payment-confirmation-button" class="btn btn-primary" aria-label="Not now">Yes</button>
                     <%end%>

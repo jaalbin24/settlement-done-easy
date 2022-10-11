@@ -42,7 +42,7 @@ RSpec.describe "Documents", type: :model do
             expect(@document.status).to eq("Approved")
         end
         it "changes the status to 'Rejected' if any attached document reviews have a verdict of 'Rejected'" do
-            @document.reviews.without_reviewer(@document.added_by).update(verdict: "Rejected")
+            @document.reviews.not_by(@document.added_by).update(verdict: "Rejected")
             @document.update_status_attribute
             expect(@document.status).to eq("Rejected")
         end

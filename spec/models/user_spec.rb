@@ -138,7 +138,7 @@ RSpec.describe "Users", type: :model do
         end
         context "and an activated account" do
             before(:each) do
-                @users = [create(:law_firm, activated: true), create(:insurance_company, activated: true)]
+                @users = [create(:law_firm), create(:insurance_company)]
             end
             it "must have an onboarded stripe account" do
                 @users.each do |u|

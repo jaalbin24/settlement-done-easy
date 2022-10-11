@@ -62,7 +62,7 @@ class DocumentsController < ApplicationController
             handle_invalid_request
             return
         end
-        filename = document.pdf_file_name
+        filename = document.filename
         settlement = document.settlement
         if document.destroy
             flash[:info] = "#{filename} has been deleted."
@@ -92,7 +92,7 @@ class DocumentsController < ApplicationController
                 render :show
             end
             format.pdf do
-                send_data @document.pdf.download, filename: @document.pdf_file_name
+                send_data @document.pdf.download, filename: @document.filename
             end
         end
     end
@@ -168,7 +168,7 @@ class DocumentsController < ApplicationController
                 doc = document.settlement.documents.build(
                     signed: true
                 )
-                doc.pdf.attach(io: temp_file.open, filename: doc.pdf_file_name, content_type: "application/pdf")
+                doc.pdf.attach(io: temp_file.open, filename: doc.filename, content_type: "application/pdf")
                 doc.added_by = User.find_by!(public_id: 0)
                 doc.ds_envelope_id = document.ds_envelope_id
                 if !doc.save

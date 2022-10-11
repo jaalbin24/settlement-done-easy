@@ -137,6 +137,9 @@ class Document < ApplicationRecord
         puts "❤️❤️❤️ Document before_create block"
         create_log_book_model_if_self_lacks_one
         init_nickname
+        if settlement.locked?
+            raise SafetyError::DocumentSafetyError.new "You cannot add documents to this settlement right now because it is locked."
+        end
     end
 
     after_commit do
@@ -179,7 +182,7 @@ class Document < ApplicationRecord
         if status_changed?
             if approved?
                 log_book.entries.build(
-                    message: "Document #{pdf_file_name} is 100% approved."
+                    message: "Document #{filename} is 100% approved."
                 )
             end
         end
@@ -208,7 +211,7 @@ class Document < ApplicationRecord
         self.log_book = LogBook.create! if log_book.nil?
     end
   
-    def pdf_file_name
+    def filename
         if pdf.attached?
             return pdf.filename.to_s
         else
@@ -237,19 +240,19 @@ class Document < ApplicationRecord
     end
 
     def has_been_reviewed_by?(user)
-        return reviews.have_been_reviewed.with_reviewer(user).exists?
+        return reviews.have_been_reviewed.by(user).exists?
     end
 
     def has_been_rejected_by?(user)
-        return reviews.rejections.with_reviewer(user).exists?
+        return reviews.rejections.by(user).exists?
     end
 
     def has_been_approved_by?(user)
-        return reviews.approvals.with_reviewer(user).exists?
+        return reviews.approvals.by(user).exists?
     end
 
     def waiting_for_review_by?(user)
-        return reviews.waiting_for_review.with_reviewer(user).exists?
+        return reviews.waiting_for_review.by(user).exists?
     end
 
     def init_nickname

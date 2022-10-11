@@ -57,6 +57,7 @@ class User < ApplicationRecord
     validates :stripe_account, absence: {if: :isMember?}
     validates :stripe_account, presence: {if: :isOrganization?}, on: :update
     validates :organization, presence: {if: :isMember?}
+    validates :organization, absence: {if: :isOrganization?}
     validates :members, absence: {if: :isMember?}
 
 
@@ -215,9 +216,9 @@ class User < ApplicationRecord
         end
     end
 
-    after_create do |user|
+    after_create do
         puts "❤️❤️❤️ User after_create block"
-        if user.isLawFirm? && user.stripe_financial_account_id.blank?
+        if isLawFirm? && stripe_financial_account_id.blank?
             treasury_account = Stripe::Treasury::FinancialAccount.create(
                 {
                     supported_currencies: ['usd'],
@@ -226,9 +227,10 @@ class User < ApplicationRecord
                         outbound_transfers: {ach: {requested: true}}, # For transferring from LF financial account to LF bank account
                     },
                 },
-                {stripe_account: user.stripe_account_id},
+                {stripe_account: stripe_account_id},
             )
-        elsif user.isInsuranceCompany? && user.stripe_financial_account_id.blank?
+            self.stripe_financial_account_id = treasury_account.id
+        elsif isInsuranceCompany? && stripe_financial_account_id.blank?
             treasury_account = Stripe::Treasury::FinancialAccount.create(
                 {
                     supported_currencies: ['usd'],
@@ -237,10 +239,11 @@ class User < ApplicationRecord
                         inbound_transfers: {ach: {requested: true}}, # For transferring from IC bank account to IC financial account
                     },
                 },
-                {stripe_account: user.stripe_account_id},
+                {stripe_account: stripe_account_id},
             )
+            self.stripe_financial_account_id = treasury_account.id
         end
-        user.save
+        self.save if stripe_financial_account_id_changed?
     end
 
     before_create do
@@ -260,7 +263,7 @@ class User < ApplicationRecord
                 build_stripe_account
             end
             # if stripe_financial_account.nil?
-            #     user.create_stripe_financial_account
+            #     build_stripe_financial_account
             # end
         end
         build_settings(UserSettings.default_settings)
@@ -324,9 +327,12 @@ class User < ApplicationRecord
 
     def stripe_account_onboarded?
         if stripe_account.nil?
+            raise StandardError.new "NO STRIPE ACCOUNT FOR USER #{full_name}"
             false
         elsif stripe_account.onboarded?
             true
+        else
+            false
         end
     end
 

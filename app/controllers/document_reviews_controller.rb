@@ -9,7 +9,7 @@ class DocumentReviewsController < ApplicationController
         # documents/:id/reject
         begin
             document = Document.find_by!(public_id: params[:id])
-            review = document.reviews.with_reviewer(current_user).first
+            review = document.reviews.by(current_user).first
             if review.reject && !document.nil?
                 if document.will_be_deleted_after_rejection? || document.nil?
                     flash[:info] = "The document was rejected and automatically deleted."
@@ -41,7 +41,7 @@ class DocumentReviewsController < ApplicationController
         # documents/:id/unreject
         begin
             document = Document.find_by!(public_id: params[:id])
-            review = document.reviews.with_reviewer(current_user).first
+            review = document.reviews.by(current_user).first
             if !review.is_for_rejection?
                 flash[:info] = "You cannot unreject this document because it has not been rejected."
                 redirect_back(fallback_location: root_path)
@@ -65,7 +65,7 @@ class DocumentReviewsController < ApplicationController
         # documents/:id/approve
         begin
             document = Document.find_by!(public_id: params[:id])
-            review = document.reviews.with_reviewer(current_user).first
+            review = document.reviews.by(current_user).first
             if review.approve
                 flash[:info] = "Document approved!"
             else

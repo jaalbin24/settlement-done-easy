@@ -14,13 +14,25 @@ class PaymentsController < ApplicationController
         payment = Payment.find_by!(public_id: params[:id])
         if !payment_params[:source_id].blank?
             source = BankAccount.find_by!(public_id: payment_params[:source_id])
-            flash_message = "Source bank account updated."
+            if source == payment.source
+                flash[:info] = "That bank account is already the source bank account."
+                redirect_back(fallback_location: root_path)
+                return
+            else
+                flash_message = "Source bank account updated."
+            end
         else
             source = payment.source
         end
         if !payment_params[:destination_id].blank?
             destination = BankAccount.find_by!(public_id: payment_params[:destination_id])
-            flash_message = "Destination bank account updated."
+            if destination == payment.destination
+                flash[:info] = "That bank account is already the destination bank account."
+                redirect_back(fallback_location: root_path)
+                return
+            else
+                flash_message = "Destination bank account updated."
+            end
         else
             destination = payment.destination
         end

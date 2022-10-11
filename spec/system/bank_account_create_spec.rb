@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "A law firm" do
     include_context "devise"
     before(:each) do
-        @user = create(:law_firm, :with_valid_stripe_data)
+        @user = create(:law_firm)
     end
     it "creates a bank account" do
         sign_in @user
@@ -20,7 +20,7 @@ RSpec.describe "A law firm" do
         expect(page).to have_text "Bank Account Mandate"
         sleep(1) # Give modal time to load
         click_button "mandate-accept-button"
-        sleep(1)
+        sleep(1) # Give Stripe CLI time to trigger bank account creation.
         visit current_path
         expect(page).to have_text "STRIPE TEST BANK"
     end

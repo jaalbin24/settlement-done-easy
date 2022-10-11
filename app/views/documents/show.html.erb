@@ -86,7 +86,7 @@
                                 </div>
                             </div>
                             <%if @document.rejected?%>
-                                <%if @document.reviews.rejections.with_reviewer(current_user).exists?%>
+                                <%if @document.reviews.rejections.by(current_user).exists?%>
                                 <p class="text-center text-muted">You have rejected this document. The settlement cannot continue until this document is removed or approved.</p>
                                 <%else%>
                                 <p class="text-center text-muted"><%=@document.reviews.rejections.first.reviewer.full_name%> has rejected this document. The settlement cannot continue until it is removed or approved.</p>
@@ -94,7 +94,7 @@
                             <%elsif @document.approved?%>
                             <p class="text-center text-muted">This document has been approved by all parties.</p>
                             <%else%>
-                                <%if @document.reviews.waiting_for_review.with_reviewer(current_user).exists?%>
+                                <%if @document.reviews.waiting_for_review.by(current_user).exists?%>
                                     <p class="text-center text-muted">You must approve or reject this document for the settlement to continue.</p>
                                 <%else%>
                                     <p class="text-center text-muted"><%=@document.reviews.waiting_for_review.first.reviewer.full_name%> must approve this document for the settlement to continue.</p>

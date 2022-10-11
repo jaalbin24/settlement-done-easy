@@ -13,18 +13,17 @@ class PaymentRequestsController < ApplicationController
     def create
         # POST settlement/:id/payment_request
         settlement = Settlement.find_by!(public_id: params[:id])
-        if settlement.has_unanswered_payment_request?
-            flash[:info] = "Payment has already been requested."
-        else
-            payment_request = settlement.payment_requests.build(
-                requester: current_user
+        begin
+            settlement.payment_requests.create!(
+                requester:  settlement.attorney,
+                accepter:   settlement.insurance_agent
             )
-            if payment_request.save
-                flash[:info] = "Payment requested."
-            else
-                flash[:info] = "Payment request failed."
-                puts "⚠️⚠️⚠️ ERROR: #{payment_request.errors.full_messages.inspect}"
-            end
+            flash[:info] = "Payment requested"
+        rescue SafetyError::SafetyError => e
+            flash[:info] = e.message
+        rescue => e
+            flash[:info] = "Payment not requested. Please try again later."
+            puts "⚠️⚠️⚠️ ERROR: #{e.message}"
         end
         redirect_back(fallback_location: root_path)
     end
