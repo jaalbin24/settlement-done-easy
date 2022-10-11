@@ -24,7 +24,14 @@
 #  fk_rails_...  (user_id => users.id)
 #
 FactoryBot.define do
-  factory :settlement_settings do
-    
-  end
+    factory :settlement_settings do
+        settlement
+        trait :for_attorney do
+            association :user, factory: :attorney
+        end
+
+        trait :for_adjuster do
+            association :user, factory: :insurance_agent
+        end
+    end
 end

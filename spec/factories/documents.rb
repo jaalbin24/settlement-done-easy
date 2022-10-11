@@ -30,7 +30,6 @@
 #
 FactoryBot.define do
     factory :document, class: "Document" do
-        added_by
         settlement
         trait :added_by_insurance_agent do
             association :added_by, factory: :insurance_agent
@@ -38,21 +37,37 @@ FactoryBot.define do
         trait :added_by_attorney do
             association :added_by, factory: :attorney
         end
+        trait :approved do
+            after(:create) do |d, e|
+                puts "🤖🤖🤖 document:approved after(:create) block"
+                d.reviews.each do |dr|
+                    dr.approve
+                end
+            end
+        end
+        trait :rejected do
+            after(:create) do |d, e|
+                d.reviews.not_by(d.added_by).reject
+            end
+        end
         trait :from_the_ground_up do
-            added_by_attorney
             after(:create) do |d, e|
                 d.settlement.documents.excluding(d).each do |destroy_me|
                     destroy_me.destroy!
                 end
-                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.insurance_agent
+                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.insurance_agent if d.added_by.nil?
 
                 noahs_ark = [d.settlement.attorney, d.settlement.insurance_agent, d.settlement.attorney.organization, d.settlement.insurance_agent.organization]
                 User.all.excluding(noahs_ark).each do |u|
                     u.destroy!
                 end
             end
+            after(:build) do |d, e|
+                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.insurance_agent if d.added_by.nil?
+            end
         end
         after(:create) do |d, e|
+            puts "🤖🤖🤖 document after(:create) block"
             d.reviews.destroy_all
             d.reviews = [build(:document_review, document: d, reviewer: d.settlement.insurance_agent), build(:document_review, document: d, reviewer: d.settlement.attorney)]
             d.reviews.each do |r|

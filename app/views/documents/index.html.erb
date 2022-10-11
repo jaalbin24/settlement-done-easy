@@ -51,7 +51,7 @@
                     <a class="link-primary text-decoration-none" href="<%=rails_blob_path(d.pdf, disposition: "attachment")%>">
                         <h5 class="m-0 p-0"><i class="fa-solid fa-file-arrow-down"></i></h5>
                     </a>
-                    <a class="link-primary text-decoration-none" href="<%=document_delete_path(d)%>" data-method="delete" data-confirm="Are you sure you want to delete <%=d.pdf_file_name%>?">
+                    <a class="link-primary text-decoration-none" href="<%=document_delete_path(d)%>" data-method="delete" data-confirm="Are you sure you want to delete <%=d.filename%>?">
                         <h5 class="m-0 p-0"><i class="fa-solid fa-trash-can"></i></h5>
                     </a>
                 </td>

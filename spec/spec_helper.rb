@@ -95,7 +95,7 @@ RSpec.configure do |config|
 =end
 
   # These Capybara attributes are set so that the Stripe can interface with the app's webhook during testing.
-  Capybara.app_host = "http://localhost:3000"
+  Capybara.app_host = "http://localhost:3001"
   Capybara.server_host = "localhost"
-  Capybara.server_port = "3000"
+  Capybara.server_port = "3001"
 end

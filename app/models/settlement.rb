@@ -54,7 +54,7 @@ class Settlement < ApplicationRecord
             changed_attributes.keys.each do |a|
                 puts "=========>>>> a=#{a}"
                 unless Settlement.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
-                    raise SafetyError::SafetyError.new "This settlement is locked. It cannot be changed."
+                    raise SafetyError::SafetyError.new "This settlement cannot be modified right now because it is locked. No changes were made."
                 end
             end
         end

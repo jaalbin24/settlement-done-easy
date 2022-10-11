@@ -45,11 +45,17 @@ FactoryBot.define do
             num_documents {1}
         end
 
+        trait :delete_my_documents_after_rejection do
+            after(:create) do |s, e|
+                s.settings.each do |setting|
+                    setting.delete_my_documents_after_rejection = true
+                    setting.save
+                end
+            end
+        end
+
         after(:create) do |s, e|
-            s.documents = create_list(:document, e.num_documents,
-                added_by: rand(1..2).odd? ? s.attorney : s.insurance_agent,
-                settlement: s
-            )
+            s.settings = [create(:settlement_settings, :for_attorney, user: s.attorney, settlement: s), create(:settlement_settings, :for_adjuster, user: s.insurance_agent, settlement: s)]
             puts "🤖🤖🤖 settlement after(:create) block"
             puts "========> SETTLEMENT created!\n"+
                 "========> adjuster: #{s.insurance_agent.full_name}\n"+
@@ -62,13 +68,26 @@ FactoryBot.define do
 
         trait :with_processing_payment do
             after(:build) do |s, e|
-                puts "🤖🤖🤖 settlement after(:build) block"
+                puts "🤖🤖🤖 settlement:with_processing_payment after(:build) block"
                 s.payments = build_list(:payment, 1, 
                     :processing,
                     source: s.insurance_agent.organization.default_bank_account,
                     destination: s.attorney.organization.default_bank_account,
                     settlement: s
                 )
+                s.documents = build_list(:document, e.num_documents,
+                    :approved,
+                    added_by: rand(1..2).odd? ? s.attorney : s.insurance_agent,
+                    settlement: s
+                )
+            end
+            after(:create) do |s, e|
+                puts "🤖🤖🤖 settlement:with_processing_payment after(:create) block"
+                s.documents.each do |d|
+                    d.reviews.each do |dr|
+                        dr.approve
+                    end
+                end
             end
         end
         trait :with_completed_payment do
@@ -79,10 +98,27 @@ FactoryBot.define do
                     destination: s.attorney.organization.default_bank_account,
                     settlement: s
                 )
+                s.documents = build_list(:document, e.num_documents,
+                    :approved,
+                    added_by: rand(1..2).odd? ? s.attorney : s.insurance_agent,
+                    settlement: s
+                )
+            end
+            after(:create) do |s, e|
+                puts "🤖🤖🤖 settlement:with_completed_payment after(:create) block"
+                s.documents.each do |d|
+                    d.reviews.each do |dr|
+                        dr.approve
+                    end
+                end
             end
         end
 
         before(:build) do |s, e|
+            s.documents = build_list(:document, e.num_documents,
+                added_by: rand(1..2).odd? ? s.attorney : s.insurance_agent,
+                settlement: s
+            )
             puts "🤖🤖🤖 settlement before(:build) block"
             if e.insurance_agent.nil?
                 s.insurance_agent = select_random_insurance_agent_or_create_one_if_none_exist

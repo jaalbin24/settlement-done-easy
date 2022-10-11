@@ -93,6 +93,10 @@ class PaymentRequest < ApplicationRecord
     end
 
     before_create do
+        if settlement.has_unanswered_payment_request?
+            raise SafetyError::SettlementSafetyError.new "You have already requested payment for this settlement. Wait until that request is answered before requesting payment again."
+        end
+        settlement.lock unless settlement.locked?
         create_log_book_model_if_self_lacks_one
     end
 

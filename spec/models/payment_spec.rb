@@ -133,7 +133,7 @@ RSpec.describe "Payments", type: :model do
     
     context "that are processing" do
         before(:each) do
-            @payment = create(:payment, :processing)
+            @payment = create(:settlement, :with_processing_payment).active_payment
         end
         it "must have an inbound transfer id" do
             expect(@payment.processing?).to be_truthy
@@ -152,7 +152,6 @@ RSpec.describe "Payments", type: :model do
         it "must belong to a locked settlement" do
             expect(@payment.processing?).to be_truthy
             expect(@payment.valid?).to be_truthy
-            @payment.settlement.save!
             expect(@payment.settlement.locked?).to be_truthy
             @payment.settlement.locked = false
             expect(@payment.settlement.locked?).to be_falsey
@@ -162,7 +161,7 @@ RSpec.describe "Payments", type: :model do
 
     context "that are completed" do
         before(:each) do
-            @payment = create(:payment, :completed)
+            @payment = create(:settlement, :with_completed_payment).active_payment
         end
         it "must have an inbound transfer id" do
             expect(@payment.completed?).to be_truthy
@@ -207,8 +206,12 @@ RSpec.describe "Payments", type: :model do
         end
 
         it "must belong to a locked settlement" do
-            pending "Needs to be implemented"
-            fail
+            expect(@payment.completed?).to be_truthy
+            expect(@payment.valid?).to be_truthy
+            expect(@payment.settlement.locked?).to be_truthy
+            @payment.settlement.locked = false
+            expect(@payment.settlement.locked?).to be_falsey
+            expect(@payment.valid?).to be_falsey
         end
     end
 

@@ -5,7 +5,12 @@ unless Rails.env.production?
     include EnglishLanguage
     namespace :stripe_data do
         task :generate, [:num_of_each_organization] => :environment do |task, args|
-            num_of_each_organization = 1 if num_of_each_organization.nil?
+            if args[:num_of_each_organization].nil?
+                num_of_each_organization = 1
+            else
+                num_of_each_organization = args[:num_of_each_organization].to_i
+            end
+
             organizations = {}
             organizations[:law_firms] = generate_law_firms(num_of_each_organization)
             puts "Registered #{"law firm".pluralize(num_of_each_organization)} with Stripe!"

@@ -30,8 +30,8 @@ class DocumentReview < ApplicationRecord
     scope :unapproved,          ->          {where.not(verdict: "Approved")}
     scope :rejections,          ->          {where(verdict: "Rejected")}
     scope :waiting_for_review,  ->          {where(verdict: "Waiting")}
-    scope :with_reviewer,       ->  (user)  {where(reviewer: user)}
-    scope :without_reviewer,    ->  (user)  {where.not(reviewer: user)}
+    scope :by,                  ->  (user)  {where(reviewer: user)}
+    scope :not_by,              ->  (user)  {where.not(reviewer: user)}
     scope :for_document,        ->  (doc)   {where(document: doc)}
     scope :have_been_reviewed,  ->          {where(verdict: "Approved").or(where(verdict: "Rejected"))}
 
