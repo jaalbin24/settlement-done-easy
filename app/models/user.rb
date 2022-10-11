@@ -280,7 +280,7 @@ class User < ApplicationRecord
         if stripe_account_onboarded? &&
             has_bank_account? &&
             two_factor_authentication_enabled? &&
-            email_is_verified? &&
+            email_verified? &&
             has_member_account?
             self.activated = true
             return
@@ -426,7 +426,7 @@ class User < ApplicationRecord
         AccessControl.access_authorized_for?(self, accessed_item)
     end
 
-    def email_is_verified?
+    def email_verified?
         return true
         # TODO: Add email verification mechanic
     end

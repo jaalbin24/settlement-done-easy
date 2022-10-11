@@ -1,3 +1,5 @@
+# This file is regularly overwritten by the rake task stripe_data:generate.
+# Do not put anything in this file that you intend to be permanent.
 module StripeTestData
 	def stripe_test_data_hash
 		{

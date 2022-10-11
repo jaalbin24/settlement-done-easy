@@ -449,6 +449,8 @@ def write_to_stripe_test_data_file(content)
     File.delete("stripe_test_data.rb") if File.exist?("stripe_test_data.rb")
 
     File.open("stripe_test_data.rb", "w+") do |file|
+        file.write "# This file is regularly overwritten by the rake task stripe_data:generate.\n"
+        file.write "# Do not put anything in this file that you intend to be permanent.\n"
         file.write "module StripeTestData\n"
         file.write "\tdef stripe_test_data_hash\n"
         file.write "\t\t{\n"
