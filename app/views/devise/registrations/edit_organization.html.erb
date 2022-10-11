@@ -103,6 +103,13 @@
                                 <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Add a bank account</p>
                             <%end%>
                         </a>
+                        <a class="py-1 list-group-item list-group-item-action" href="<%=organization_new_member_path(current_user)%>">
+                            <%if current_user.has_member_account?%>
+                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Create a Member account</p>
+                            <%else%>
+                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Create a Member account</p>
+                            <%end%>
+                        </a>
                         <a class="py-1 list-group-item list-group-item-action" href="">
                             <%if current_user.two_factor_authentication_enabled?%>
                                 <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Enable 2FA</p>
@@ -110,11 +117,11 @@
                                 <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Enable 2FA</p>
                             <%end%>
                         </a>
-                        <a class="py-1 list-group-item list-group-item-action" href="<%=organization_new_member_path(current_user)%>">
-                            <%if current_user.has_member_account?%>
-                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Create a Member account</p>
+                        <a class="py-1 list-group-item list-group-item-action" href="">
+                            <%if current_user.email_verified?%>
+                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Verify email</p>
                             <%else%>
-                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Create a Member account</p>
+                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Verify email</p>
                             <%end%>
                         </a>
                     </div>

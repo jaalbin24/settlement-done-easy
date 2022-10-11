@@ -183,6 +183,18 @@
                 <div class="card-body">
                     <p class="text-muted text-center border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required before payment</span></p>
                     <ul class="list-unstyled m-0">
+                        <%unless @settlement.attorney.organization.activated? || @settlement.completed?%>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="fa-regular fa-square text-danger"></i></h5>
+                                <p class="m-0 text-danger"><%=@settlement.attorney.organization.full_name%>'s account must be activated.</p>
+                            </li>
+                        <%end%>
+                        <%unless @settlement.insurance_agent.organization.activated? || @settlement.completed?%>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="fa-regular fa-square text-danger"></i></h5>
+                                <p class="m-0 text-danger"><%=@settlement.insurance_agent.organization.full_name%>'s account must be activated.</p>
+                            </li>
+                        <%end%>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? ? "square-check": "square"%>"></i></h5>
                             <p class="m-0">At least one document.</p>

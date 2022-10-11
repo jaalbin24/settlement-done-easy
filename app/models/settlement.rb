@@ -165,6 +165,7 @@ class Settlement < ApplicationRecord
         unless frozen? # The .frozen? check keeps an error from being thrown when deleting models
             update_ready_for_payment_attribute
             update_locked_attribute
+            update_completed_attribute
             if changed?
                 self.save
             end
@@ -198,6 +199,14 @@ class Settlement < ApplicationRecord
             has_completed_payment? ||
             completed?
             self.locked = true
+        end
+    end
+
+    def update_completed_attribute
+        if has_completed_payment?
+            self.completed = true
+        else
+            self.completed = false
         end
     end
 
@@ -273,6 +282,10 @@ class Settlement < ApplicationRecord
             self.ready_for_payment = false
         elsif has_completed_payment?
             self.ready_for_payment = false
+        elsif !attorney.organization.activated?
+            self.ready_for_payment = false
+        elsif !insurance_agent.organization.activated?
+            self.ready_for_payment = false
         else
             self.ready_for_payment = true
         end
@@ -323,7 +336,14 @@ class Settlement < ApplicationRecord
             lock
             self.save
         end
-        active_payment.execute_inbound_transfer
+        # This begin-rescue block ensures the settlement gets unlocked again if the settlement fails to start for some reason.
+        begin
+            active_payment.execute_inbound_transfer
+        rescue => e
+            unlock
+            self.save
+            raise e
+        end
     end
 
     def lock
