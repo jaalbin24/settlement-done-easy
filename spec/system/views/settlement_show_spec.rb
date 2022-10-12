@@ -9,11 +9,19 @@ RSpec.describe "The settlement show page" do
                 context "and has an active payment request" do
                     context "and has settings set to" do
                         context "alert the user when the settlement is ready for payment" do
-                            it "will not display a ready-for-payment modal" do
-
+                            before(:each) do
+                                @user = create(:attorney, :with_unactivated_organization)
+                                @settlement = create(:settlement, attorney: @user)
                             end
-                            it "will not display a payment-requested modal" do
-        
+                            it "will not display a ready-for-payment modal" do # Because the attorney's organization is not activated
+                                
+                            end
+                            it "will not display a payment-requested modal" do # Because this is an attorney
+                                sign_in @user
+                                visit settlement_show_path(@settlement)
+                                expect(page).to_not have_css("div", name: "payment-request-modal")
+                                pending "Waiting for more complete implementation of the payment request feature"
+                                fail
                             end
                             it "will have a disabled 'Upload' button" do
         
@@ -46,10 +54,10 @@ RSpec.describe "The settlement show page" do
                     end
                 end
                 context "and completed" do
-                    it "will not display a ready-for-payment modal" do
+                    it "will not display a ready-for-payment modal" do # Because the attorney's organization is not activated
 
                     end
-                    it "will not display a payment-requested modal" do
+                    it "will not display a payment-requested modal" do # Because this is an attorney
 
                     end
                     it "will have a disabled 'Upload' button" do
@@ -72,10 +80,10 @@ RSpec.describe "The settlement show page" do
                     end
                 end
                 context "and has a processing payment" do
-                    it "will not display a ready-for-payment modal" do
+                    it "will not display a ready-for-payment modal" do # Because the attorney's organization is not activated
 
                     end
-                    it "will not display a payment-requested modal" do
+                    it "will not display a payment-requested modal" do # Because this is an attorney
 
                     end
                     it "will have a disabled 'Upload' button" do
@@ -102,11 +110,10 @@ RSpec.describe "The settlement show page" do
                 context "and ready for payment" do
                     context "and has settings set to" do
                         context "alert the user when the settlement is ready for payment" do
-                            it "will not display a ready-for-payment modal" do
-                                # Because the settlement 
+                            it "will not display a ready-for-payment modal" do # Because the attorney's organization is not activated
 
                             end
-                            it "will not display a payment-requested modal" do
+                            it "will not display a payment-requested modal" do # Because this is an attorney
         
                             end
                             it "will have an 'Upload' button that takes the user to the document upload page" do
@@ -132,7 +139,7 @@ RSpec.describe "The settlement show page" do
                             it "will not display a ready-for-payment modal" do
 
                             end
-                            it "will not display a payment-requested modal" do
+                            it "will not display a payment-requested modal" do # Because this is an attorney
         
                             end
                             it "will have an 'Upload' button that takes the user to the document upload page" do
@@ -158,7 +165,7 @@ RSpec.describe "The settlement show page" do
                             it "will not display a ready-for-payment modal" do
 
                             end
-                            it "will not display a payment-requested modal" do
+                            it "will not display a payment-requested modal" do # Because this is an attorney
         
                             end
                             it "will have an 'Upload' button that takes the user to the document upload page" do
