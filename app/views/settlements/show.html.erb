@@ -57,9 +57,18 @@
                             <div class="accordion-body p-0">
                                 <div class="d-flex">
                                     <div class="d-flex align-items-center border-end">
-                                        <div class="d-grid gap-2 p-3">
-                                            <%=link_to "Upload", document_new_path(@settlement), class: "btn btn-sm btn-primary"%>
-                                            <%=link_to "Generate", settlement_generate_document_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                        <div class="p-3">
+                                        <%if @settlement.locked?%>
+                                            <div class="d-grid gap-2" data-bs-toggle="tooltip" data-bs-placement="top" title="You can't add documents to a locked settlement">
+                                                <button id="disabled-upload-document-button" class="disabled btn btn-sm btn-primary">Upload</button>
+                                                <button id= "disabled-generate-document-button" class="disabled btn btn-sm btn-primary">Generate</button>
+                                            </div>
+                                        <%else%>
+                                            <div class="d-grid gap-2">
+                                                <%=link_to "Upload", document_new_path(@settlement), class: "btn btn-sm btn-primary"%>
+                                                <%=link_to "Generate", settlement_generate_document_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
+                                            </div>
+                                        <%end%>
                                         </div>
                                     </div>
                                     <div class="w-100">
@@ -196,8 +205,10 @@
                             </li>
                         <%end%>
                         <li class="d-flex gap-2">
-                            <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? ? "square-check": "square"%>"></i></h5>
-                            <p class="m-0">At least one document.</p>
+                            <a class="m-0 text-decoration-none text-black" href="">
+                                <i class="h5 pe-1 fa-regular fa-<%=@settlement.documents.exists? ? "square-check": "square"%>"></i>
+                                At least one document.
+                            </a>
                         </li>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "square-check": "square"%>"></i></h5>

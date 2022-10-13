@@ -108,20 +108,15 @@ class Document < ApplicationRecord
         if reviews.size != 2
             # Create document reviews for the two required reviewers (insurance agent and attorney)
             reviews.destroy_all
-            attorney = settlement.attorney
-            insurance_agent = settlement.insurance_agent
 
-            insurance_agent_review = reviews.build(
+            reviews.build(
                 document: document,
-                reviewer: insurance_agent
+                reviewer: settlement.insurance_agent
             )
-            attorney_review = reviews.build(
+            reviews.build(
                 document: document,
-                reviewer: attorney
+                reviewer: settlement.attorney
             )
-
-            attorney_review.verdict = "Approved" if added_by == attorney
-            insurance_agent_review.verdict = "Approved" if added_by == insurance_agent
         end
     end
 

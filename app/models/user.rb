@@ -42,6 +42,7 @@ class User < ApplicationRecord
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable
 
     scope :activated,           ->  {where(activated: true)}
+    scope :not_activated,       ->  {where(activated: false)}
     scope :law_firms,           ->  {where(role: "Law Firm")}
     scope :insurance_companies, ->  {where(role: "Insurance Company")}
     scope :attorneys,           ->  {where(role: "Attorney")}
