@@ -28,8 +28,8 @@
 #
 class PaymentRequest < ApplicationRecord
 
-    scope :active,      ->      {where(status: "Requested").or(where(status: "Postponed").or(where(status: "Accepted")))}
-    scope :unanswered,  ->      {where(status: "Requested").or(where(status: "Postponed"))}
+    scope :active,      ->      {where(status: "Requested").or(where(status: "Accepted"))}
+    scope :unanswered,  ->      {where(status: "Requested")}
 
     belongs_to(
         :requester,
@@ -57,11 +57,11 @@ class PaymentRequest < ApplicationRecord
         optional: true
     )
 
-    validates :status, inclusion: {in: ["Requested", "Postponed", "Denied", "Accepted"]}
+    validates :status, inclusion: {in: ["Requested", "Denied", "Accepted"]}
     validates :requester, :accepter, presence: true
     validate :requester_is_affiliated_with_settlement
     def requester_is_affiliated_with_settlement
-        errors.add(:requester, "is not affiliated with that settlement.") unless settlement.insurance_agent == requester || settlement.attorney == requester
+        errors.add(:requester, "is not affiliated with that settlement.") unless [settlement.insurance_agent, settlement.attorney].include?(requester)
     end
 
     validate :settlement_has_one_or_less_unanswered_payment_request
@@ -76,7 +76,7 @@ class PaymentRequest < ApplicationRecord
 
     before_validation do
         puts "❤️❤️❤️ PaymentRequest before_validation block"
-        # Initialize accepter attribute
+        # Initialize accepter reference
         if requester.isAttorney?
             self.accepter = settlement.insurance_agent
         elsif requester.isInsuranceAgent?
@@ -93,11 +93,16 @@ class PaymentRequest < ApplicationRecord
     end
 
     before_create do
+        puts "❤️❤️❤️ PaymentRequest before_create block"
         if settlement.has_unanswered_payment_request?
             raise SafetyError::SettlementSafetyError.new "You have already requested payment for this settlement. Wait until that request is answered before requesting payment again."
         end
-        settlement.lock unless settlement.locked?
         create_log_book_model_if_self_lacks_one
+    end
+    
+    after_commit do
+        puts "❤️❤️❤️ PaymentRequest after_commit block"
+        settlement.save
     end
 
     def generate_any_logs

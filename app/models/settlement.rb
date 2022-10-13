@@ -197,6 +197,7 @@ class Settlement < ApplicationRecord
     def update_locked_attribute
         if has_processing_payment? ||
             has_completed_payment? ||
+            has_unanswered_payment_request? ||
             completed?
             self.locked = true
         end
