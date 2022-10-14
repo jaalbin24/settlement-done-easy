@@ -39,7 +39,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string      :first_name
       t.string      :last_name
       t.string      :business_name
-      t.string      :stripe_financial_account_id      # TODO: Deprecated! Move this into its own StripeFinancialAccount model
+      t.string      :stripe_financial_account_id      # TODO: Move this into its own StripeFinancialAccount model
       t.boolean     :activated,                     null: false, default: false
       t.timestamps null: false
     end

@@ -8,6 +8,8 @@ RSpec.describe "A member uploading a document", type: :system do
             @members = [create(:attorney, num_settlements: 1), create(:adjuster, num_settlements: 1)]
         end
         it "will be shown the document upload page" do
+            pending "This test is being saved for future reference, but it is very likely to be deleted in the future."
+            fail
             @members.each do |u|
                 settlement = u.settlements.first
                 sign_in u
@@ -29,6 +31,8 @@ RSpec.describe "A member uploading a document", type: :system do
             @members = [create(:attorney, num_settlements: 1), create(:adjuster, num_settlements: 1)]
         end
         it "will be shown the document show page" do
+            pending "This test is being saved for future reference, but it is very likely to be deleted in the future."
+            fail
             @members.each do |u|
                 settlement = u.settlements.first
                 sign_in u
@@ -44,5 +48,4 @@ RSpec.describe "A member uploading a document", type: :system do
             end
         end
     end
-
 end

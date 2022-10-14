@@ -3,13 +3,13 @@
         <div class="row">
             <div class="col">
                 <div class="mb-3">
-                    <%= f.label "Claimant name", { class: "form-label"} %>
+                    <%= f.label "Claimant name", { class: "form-label mb-1"} %>
                     <%= f.text_field :claimant_name, { class: "form-control", placeholder: "Claimant", :required => true }%>
                 </div>
             </div>
             <div class="col">
                 <div class="mb-3">
-                    <%= f.label "Policy holder name", { class: "form-label"} %>
+                    <%= f.label "Policy holder name", { class: "form-label mb-1"} %>
                     <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
                 </div>
             </div>
@@ -17,13 +17,13 @@
         <div class="row">
             <div class="col">
                 <div class="mb-3">
-                    <%= f.label "Date of incident", { class: "form-label"} %>
+                    <%= f.label "Date of incident", { class: "form-label mb-1"} %>
                     <%= f.date_field :incident_date, { class: "form-control", :required => true } %>
                 </div>
             </div>
             <div class="col">
                 <div class="mb-3">
-                    <%= f.label "Location of incident", { class: "form-label"} %>
+                    <%= f.label "Location of incident", { class: "form-label mb-1"} %>
                     <%= f.text_field :incident_location, { class: "form-control", placeholder: "Location", :required => true } %>
                 </div>
             </div>
@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col">
                 <div class="mb-3">
-                    <%= f.label "Amount", { class: "form-label"} %>
+                    <%= f.label "Amount", { class: "form-label mb-1"} %>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
                         <input class="form-control" step="0.01" required="required" type="number" value="<%=@settlement.amount%>" name="settlement[amount]" id="settlement_amount">
@@ -40,7 +40,7 @@
             </div>
             <div class="col">
                 <div class="mb-3">
-                    <%= f.label "Claim number", { class: "form-label"} %>
+                    <%= f.label "Claim number", { class: "form-label mb-1"} %>
                     <%= f.text_field :claim_number, { class: "form-control", placeholder: "Claim number", :required => true } %>
                 </div>
             </div>
@@ -48,9 +48,9 @@
         <%if submit_label == "Start"%>
         <div class="mb-3">
             <%if current_user.isAttorney?%>
-                <%= f.label "Insurance agent", {class: "form-label"} %>
+                <%= f.label "Insurance agent", {class: "form-label mb-1"} %>
             <%else%>
-                <%= f.label "Attorney", {class: "form-label"} %>
+                <%= f.label "Attorney", {class: "form-label mb-1"} %>
             <%end%>
             <select class="form-select" name="partner_id" required>
                 <option disabled selected value>Select here</option>
@@ -66,6 +66,14 @@
             </select>
         </div>
         <%end%>
-        <%= f.submit "#{submit_label}!", class: "btn btn-lg btn-primary w-100" %>
+        <div class="d-flex align-items-right">
+            <%if @settlement.locked?%>
+                <div class="ms-auto" data-bs-toggle="tooltip" data-bs-placement="top" title="This settlement is locked">
+                    <button id="disabled-update-settlement-button" class="btn btn-sm btn-primary disabled"><%=submit_label%> settlement</button>
+                </div>
+            <%else%>
+                <%= f.submit "#{submit_label} settlement", class: "btn btn-sm btn-primary" %>
+            <%end%>
+        </div>
     </div>
 <% end %>
