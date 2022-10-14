@@ -174,8 +174,10 @@ ActiveRecord::Schema.define(version: 100) do
     t.bigint "settlement_id"
     t.boolean "replace_unsigned_document_with_signed_document"
     t.boolean "alert_when_settlement_ready_for_payment"
+    t.boolean "alert_when_payment_requested"
     t.boolean "confirmation_before_document_rejection"
     t.boolean "delete_my_documents_after_rejection"
+    t.boolean "automatically_accept_payment_requests"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["settlement_id"], name: "index_settlement_settings_on_settlement_id"
@@ -235,8 +237,10 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "public_id"
     t.boolean "replace_unsigned_document_with_signed_document"
     t.boolean "alert_when_settlement_ready_for_payment"
+    t.boolean "alert_when_payment_requested"
     t.boolean "confirmation_before_document_rejection"
     t.boolean "delete_my_documents_after_rejection"
+    t.boolean "automatically_accept_payment_requests"
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

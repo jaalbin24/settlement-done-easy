@@ -31,9 +31,11 @@ class UserSettings < ApplicationRecord
     def self.default_settings
         {
             alert_when_settlement_ready_for_payment:        true,
+            alert_when_payment_requested:                   true,
             confirmation_before_document_rejection:         false,
             delete_my_documents_after_rejection:            false,
-            replace_unsigned_document_with_signed_document: true
+            replace_unsigned_document_with_signed_document: true,
+            automatically_accept_payment_requests:          false,
         }
     end
 end

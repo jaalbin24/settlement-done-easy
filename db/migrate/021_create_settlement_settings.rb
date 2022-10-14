@@ -8,8 +8,10 @@ class CreateSettlementSettings < ActiveRecord::Migration[6.1]
 
       t.boolean     :replace_unsigned_document_with_signed_document
       t.boolean     :alert_when_settlement_ready_for_payment
+      t.boolean     :alert_when_payment_requested
       t.boolean     :confirmation_before_document_rejection
       t.boolean     :delete_my_documents_after_rejection
+      t.boolean     :automatically_accept_payment_requests
 
       t.timestamps
     end

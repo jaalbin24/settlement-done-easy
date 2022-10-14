@@ -1,13 +1,13 @@
 <div class="container">
-    <div class="row">
-        <div class="col">
+    <div class="d-flex flex-wrap justify-content-between">
+        <div class="w-50 p-2">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
                     <div>
                         <h3 class="m-0">Settlement #<%=@settlement.public_number%></h3>
                         <p class="m-0">$<%=@settlement.amount%> for <%=@settlement.claimant_name%></p>
                     </div>
-                    <div class="col-auto d-flex align-items-center gap-2 pe-1">
+                    <div class="d-flex align-items-center gap-2 pe-1">
                         <a href="<%=payment_sync_with_stripe_path(@settlement.active_payment)%>" data-method="post" class="btn-sm btn btn-secondary">
                             <i class="fa-solid fa-arrows-rotate"></i>
                         </a>
@@ -18,10 +18,12 @@
                                     Request payment
                                 </a>
                             <%else%>
-                                <a class="disabled btn btn-sm btn-primary" href="">
-                                    <i class="fa-solid fa-hand-holding-dollar"></i>
-                                    Request payment
-                                </a>
+                                <div data-bs-toggle="tooltip" data-bs-placement="top" title="Complete the checklist first">
+                                    <button id="disabled-request-payment-button" class="disabled btn btn-sm btn-primary">
+                                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                                        Request payment
+                                    </button>
+                                </div>
                             <%end%>
                         <%else%>
                             <%if @settlement.ready_for_payment?%>
@@ -65,7 +67,7 @@
                                             </div>
                                         <%else%>
                                             <div class="d-grid gap-2">
-                                                <%=link_to "Upload", document_new_path(@settlement), class: "btn btn-sm btn-primary"%>
+                                                <button name="open-document-upload-button" class="btn btn-sm btn-primary">Upload</button>
                                                 <%=link_to "Generate", settlement_generate_document_path(@settlement), method: :post, class: "btn btn-sm btn-primary"%>
                                             </div>
                                         <%end%>
@@ -74,29 +76,29 @@
                                     <div class="w-100">
                                         <ul class="list-group list-group-flush overflow-auto" style="max-height: 12rem;">
                                             <%@settlement.documents.each do |d|%>
-                                                <li class="py-1 list-group-item">
-                                                    <div class="row">
-                                                        <div class="col">
+                                                <li class="py-1 px-3 list-group-item">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="flex-fill d-flex align-items-center">
                                                             <%if d.rejected?%>
-                                                                <p class="m-0 text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="This document has been rejected"><strong>Filename:</strong> <%=d.pdf.filename%></p>
+                                                                <p class="m-0 text-danger text-truncate" style="max-width: 16rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="This document has been rejected"><strong>Filename:</strong> <%=d.pdf.filename%></p>
                                                             <%elsif d.approved?%>
-                                                                <p class="m-0 text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="This document is 100% approved"><strong>Filename:</strong> <%=d.pdf.filename%></p>
+                                                                <p class="m-0 text-success text-truncate" style="max-width: 16rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="This document is 100% approved"><strong>Filename:</strong> <%=d.pdf.filename%></p>
                                                             <%else%>
-                                                                <p class="m-0"><strong>Filename:</strong> <%=d.pdf.filename%></p>
+                                                                <p class="m-0 flex-fill text-truncate" style="max-width: 16rem;"><strong>Filename:</strong> <%=d.pdf.filename%></p>
                                                             <%end%>
                                                         </div>
-                                                        <div class="col-auto d-flex gap-2 align-items-center">
+                                                        <div class="d-flex gap-2 align-items-center">
                                                             <%if d.waiting_for_review_by?(current_user)%>
-                                                                <a href="<%=document_show_path(d)%>">
+                                                                <a id="document-needs-your-review-indicator-for-<%=d.public_id%>" href="<%=document_show_path(d)%>">
                                                                     <h4 class="m-0 p-0 text-success"><i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="This document is waiting for your approval"></i></h4>
                                                                 </a>
                                                             <%end%>
                                                             <%if d.rejected?%>
-                                                                <a href="<%=document_delete_path(d)%>" data-method="delete">
+                                                                <a id="document-rejected-indicator-for-<%=d.public_id%>" href="<%=document_delete_path(d)%>" data-method="delete">
                                                                     <h4 class="m-0 p-0"><i class="fa-solid fa-trash-can" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete this document"></i></h4>
                                                                 </a>
                                                             <%end%>
-                                                            <a href="<%=document_show_path(d)%>">
+                                                            <a id="document-show-link-for-<%=d.public_id%>" href="<%=document_show_path(d)%>">
                                                                 <h4 class="m-0 p-0 text-primary"><i class="fa-solid fa-circle-arrow-right" data-bs-toggle="tooltip" data-bs-placement="top" title="View this document"></i></h4>
                                                             </a>
                                                         </div>
@@ -118,7 +120,7 @@
                         <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
                             <div class="accordion-body p-0">
                                 <div class="d-flex gap-0">
-                                    <div class="border-end">
+                                    <div class="flex-fill border-end">
                                         <div class="card-header">
                                             <h5 class="m-0">History</h5>
                                             <h6 class="card-subtitle text-muted m-0">
@@ -146,7 +148,7 @@
                                             <%end%>
                                         </ul>
                                     </div>
-                                    <div class="">
+                                    <div class="flex-fill">
                                         <div class="card-header">
                                             <h5 class="m-0">Bank account</h5>
                                             <h6 class="card-subtitle text-muted m-0">
@@ -162,17 +164,26 @@
                                                 <p class="m-0 text-center text-muted">There are no bank accounts to <%=current_user.isAttorney? ? "deposit into" : "withdraw from"%>.</p>
                                             </div>
                                         <%else%>
-                                            <%=form_for(@settlement.active_payment, url: payment_update_path(@settlement.active_payment), method: :patch) do |f|%>
-                                                <div class="form-group m-2">
-                                                    <%if current_user.isAttorney?%>
-                                                        <%=f.select(:destination_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
-                                                    <%elsif current_user.isInsuranceAgent?%>
-                                                        <%=f.select(:source_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
-                                                    <%end%>
+                                            <%if @settlement.locked?%>
+                                                <div class="form-group m-2" data-bs-toggle="tooltip" data-bs-placement="top" title="You can't change bank accounts on a locked settlement">
+                                                    <input class="form-select" placeholder="<%="#{@settlement.active_payment.destination.nickname} XXXXX#{@settlement.active_payment.destination.last4}"%>" readonly>
                                                     <div class="text-end mt-2">
-                                                        <%=f.submit "Update bank account", class: "btn btn-sm btn-primary"%>
+                                                        <button id="disabled-update-bank-account-button" class="btn btn-sm btn-primary disabled">Update bank account</button>
                                                     </div>
                                                 </div>
+                                            <%else%>
+                                                <%=form_for(@settlement.active_payment, url: payment_update_path(@settlement.active_payment), method: :patch) do |f|%>
+                                                    <div class="form-group m-2">
+                                                        <%if current_user.isAttorney?%>
+                                                            <%=f.select(:destination_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
+                                                        <%elsif current_user.isInsuranceAgent?%>
+                                                            <%=f.select(:source_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
+                                                        <%end%>
+                                                        <div class="text-end mt-2">
+                                                            <%=f.submit "Update bank account", class: "btn btn-sm btn-primary"%>
+                                                        </div>
+                                                    </div>
+                                                <%end%>
                                             <%end%>
                                         <%end%>
                                     </div>
@@ -183,13 +194,13 @@
                 </div>        
             </div>
         </div>
-        <div class="col">
+        <div class="w-50 p-2">
             <div class="card">
                 <div class="card-header">
                     <h3 class="m-0">Checklist</h3>
                     <p class="m-0">The following requirements must be met to complete this settlement.</p>
                 </div>
-                <div class="card-body">
+                <div id="settlement-checklist" class="card-body">
                     <p class="text-muted text-center border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required before payment</span></p>
                     <ul class="list-unstyled m-0">
                         <%unless @settlement.attorney.organization.activated? || @settlement.completed?%>
@@ -259,6 +270,7 @@
 </div>
 
 <%=render "modals/ready_for_payment"%>
+<%=render "modals/document_upload"%>
 
 
 <%if @settlement.ready_for_payment?%>

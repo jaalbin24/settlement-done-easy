@@ -54,6 +54,7 @@ FactoryBot.define do
             num_bank_accounts {1}
             num_settlements {0}
             stripe_id {}
+            
         end
         after(:create) do |u|
             puts "🤖🤖🤖 user after(:create) block"
@@ -69,10 +70,24 @@ FactoryBot.define do
                 "========> # of adjusters: #{User.insurance_agents.size}\n"
         end
 
-        trait :not_activated do
+        trait :not_activated_due_to_lack_of_bank_account do
             transient do
                 num_bank_accounts {0}
                 num_settlements {0}
+            end
+        end
+
+        trait :do_not_alert_when_settlement_ready_for_payment do
+            after(:create) do |u, e|
+                u.settings.alert_when_settlement_ready_for_payment = false
+                u.settings.save
+            end
+        end
+
+        trait :do_not_alert_when_payment_requested do
+            after(:create) do |u, e|
+                u.settings.alert_when_payment_requested = false
+                u.settings.save
             end
         end
 
@@ -158,11 +173,11 @@ FactoryBot.define do
             role {"Attorney"}
             first_name {random_first_name}
             last_name {random_last_name}
-            trait :with_unactivated_organization do
+            trait :with_unactivated_organization_due_to_lack_of_bank_account do
                 transient do
                     num_settlements {0}
                 end
-                association :organization, :not_activated, factory: :law_firm, num_members: 0
+                association :organization, :not_activated_due_to_lack_of_bank_account, factory: :law_firm, num_members: 0
             end
             association :organization, factory: :law_firm, num_members: 0
             after(:create) do |u, e|
@@ -178,11 +193,11 @@ FactoryBot.define do
             role {"Insurance Agent"}
             first_name {random_first_name}
             last_name {random_last_name}
-            trait :with_unactivated_organization do
+            trait :with_unactivated_organization_due_to_lack_of_bank_account do
                 transient do
                     num_settlements {0}
                 end
-                association :organization, :not_activated, factory: :insurance_company, num_members: 0
+                association :organization, :not_activated_due_to_lack_of_bank_account, factory: :insurance_company, num_members: 0
             end
             association :organization, factory: :insurance_company, num_members: 0
             after(:create) do |u, e|

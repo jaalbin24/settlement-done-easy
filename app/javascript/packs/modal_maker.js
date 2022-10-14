@@ -5,9 +5,10 @@
 // So for example, the change password modal would have the name "change-password-modal" (assuming the key is set to "change-password")
 
 const KEYS = {
-    PAYMENT_CONFIRMATION: "payment-confirmation",
-    PAYMENT_REQUEST_CONFIRMATION: "payment-request-confirmation",
-    DOCUMENT_REJECT_CONFIRMATION: "document-reject-confirmation"
+    PAYMENT_CONFIRMATION:           "payment-confirmation",
+    PAYMENT_REQUEST_CONFIRMATION:   "payment-request-confirmation",
+    DOCUMENT_REJECT_CONFIRMATION:   "document-reject-confirmation",
+    DOCUMENT_UPLOAD:                "document-upload"
 }
 
 export default class ModalMaker {
