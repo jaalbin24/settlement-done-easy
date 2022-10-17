@@ -46,25 +46,32 @@ RSpec.describe "The User Factory" do
             expect(Settlement.all.count).to eq(0)
         end
         context "with an unactivated organization" do
-            it "must create exactly one law_firm" do
-                expect(User.law_firms.count).to eq(0)
-                create(:attorney, :with_unactivated_organization)
-                expect(User.law_firms.count).to eq(1)
-            end
-            it "must create a deactivated law_firm" do
-                expect(User.law_firms.not_activated.count).to eq(0)
-                create(:attorney, :with_unactivated_organization)
-                expect(User.law_firms.not_activated.count).to eq(1)
-            end
-            it "must create exactly one attorney" do
-                expect(User.attorneys.count).to eq(0)
-                create(:attorney, :with_unactivated_organization)
-                expect(User.attorneys.count).to eq(1)
-            end
-            it "must not create any settlements" do
-                expect(Settlement.all.count).to eq(0)
-                create(:attorney, :with_unactivated_organization)
-                expect(Settlement.all.count).to eq(0)
+            context "due to a lack of a bank account" do
+                it "must create exactly one law_firm" do
+                    expect(User.law_firms.count).to eq(0)
+                    create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                    expect(User.law_firms.count).to eq(1)
+                end
+                it "must create a deactivated law_firm" do
+                    expect(User.law_firms.not_activated.count).to eq(0)
+                    create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                    expect(User.law_firms.not_activated.count).to eq(1)
+                end
+                it "must create exactly one attorney" do
+                    expect(User.attorneys.count).to eq(0)
+                    create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                    expect(User.attorneys.count).to eq(1)
+                end
+                it "must not create any settlements" do
+                    expect(Settlement.all.count).to eq(0)
+                    create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                    expect(Settlement.all.count).to eq(0)
+                end
+                it "must not create any bank accounts" do
+                    expect(BankAccount.all.count).to eq(0)
+                    create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                    expect(BankAccount.all.count).to eq(0)
+                end
             end
         end
     end

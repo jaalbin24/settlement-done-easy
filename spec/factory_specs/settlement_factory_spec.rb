@@ -244,5 +244,150 @@ RSpec.describe "The Settlement Factory" do
                 expect(DocumentReview.approvals.count).to eq(2)
             end
         end
+        context "with a completed payment" do
+            it "must create a locked settlement" do
+                settlement = create(:settlement, :with_completed_payment)
+                expect(settlement.locked?).to be_truthy
+            end
+            it "must create a payment with a status of 'Completed'" do
+                settlement = create(:settlement, :with_completed_payment)
+                expect(settlement.payments.completed.exists?).to be_truthy
+            end
+            it "must create exactly one settlement" do
+                expect(Settlement.all.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(Settlement.all.count).to eq(1)
+            end
+            it "must create exactly one payment" do
+                expect(Payment.all.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(Payment.all.count).to eq(1)
+            end
+            it "must create exactly one law firm" do
+                expect(User.law_firms.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(User.law_firms.count).to eq(1)
+            end
+            it "must create exactly one insurance company" do
+                expect(User.insurance_companies.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(User.insurance_companies.count).to eq(1)
+            end
+            it "must create exactly one attorney" do
+                expect(User.attorneys.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(User.attorneys.count).to eq(1)
+            end
+            it "must create exactly one insurance agent" do
+                expect(User.insurance_agents.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(User.insurance_agents.count).to eq(1)
+            end
+            it "must create exactly two stripe accounts" do
+                expect(StripeAccount.all.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(StripeAccount.all.count).to eq(2)
+            end
+            it "must create exactly two bank accounts" do
+                expect(BankAccount.all.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(BankAccount.all.count).to eq(2)
+            end
+            it "must create exactly one document with status set to 'Approved'" do
+                expect(Document.all.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(Document.all.count).to eq(1)
+                expect(Document.approved.count).to eq(1)
+            end
+            it "must create exactly two document reviews with verdict set to 'Approved'" do
+                expect(DocumentReview.all.count).to eq(0)
+                create(:settlement, :with_completed_payment)
+                expect(DocumentReview.all.count).to eq(2)
+                expect(DocumentReview.approvals.count).to eq(2)
+            end
+            context "and a supplied attorney" do
+                context "with an organization that lacks a bank account" do
+                    it "must create a deactivated law_firm" do
+                        expect(User.law_firms.not_activated.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(User.law_firms.not_activated.count).to eq(1)
+                    end
+                    it "must create a locked settlement" do
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(settlement.locked?).to be_truthy
+                    end
+                    it "must create a payment with a status of 'Completed'" do
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(settlement.payments.completed.exists?).to be_truthy
+                    end
+                    it "must create exactly one settlement" do
+                        expect(Settlement.all.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(Settlement.all.count).to eq(1)
+                    end
+                    it "must create exactly one payment" do
+                        expect(Payment.all.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(Payment.all.count).to eq(1)
+                    end
+                    it "must create exactly one law firm" do
+                        expect(User.law_firms.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(User.law_firms.count).to eq(1)
+                    end
+                    it "must create exactly one insurance company" do
+                        expect(User.insurance_companies.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(User.insurance_companies.count).to eq(1)
+                    end
+                    it "must create exactly one attorney" do
+                        expect(User.attorneys.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(User.attorneys.count).to eq(1)
+                    end
+                    it "must create exactly one insurance agent" do
+                        expect(User.insurance_agents.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(User.insurance_agents.count).to eq(1)
+                    end
+                    it "must create exactly two stripe accounts" do
+                        expect(StripeAccount.all.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(StripeAccount.all.count).to eq(2)
+                    end
+                    it "must create exactly one bank account" do # Because only the insurance company will have a bank account. The law firm intentionally lacks one.
+                        expect(BankAccount.all.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(BankAccount.all.count).to eq(1)
+                    end
+                    it "must create exactly one document with status set to 'Approved'" do
+                        expect(Document.all.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(Document.all.count).to eq(1)
+                        expect(Document.approved.count).to eq(1)
+                    end
+                    it "must create exactly two document reviews with verdict set to 'Approved'" do
+                        expect(DocumentReview.all.count).to eq(0)
+                        user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
+                        settlement = create(:settlement, :with_completed_payment, attorney: user)
+                        expect(DocumentReview.all.count).to eq(2)
+                        expect(DocumentReview.approvals.count).to eq(2)
+                    end
+                end
+            end
+        end
+        
     end
 end
