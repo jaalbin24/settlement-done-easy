@@ -3,7 +3,9 @@
 # Table name: settlement_settings
 #
 #  id                                             :bigint           not null, primary key
+#  alert_when_payment_requested                   :boolean
 #  alert_when_settlement_ready_for_payment        :boolean
+#  automatically_accept_payment_requests          :boolean
 #  confirmation_before_document_rejection         :boolean
 #  delete_my_documents_after_rejection            :boolean
 #  replace_unsigned_document_with_signed_document :boolean

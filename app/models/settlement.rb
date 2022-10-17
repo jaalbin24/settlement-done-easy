@@ -151,12 +151,21 @@ class Settlement < ApplicationRecord
         optional: true
     )
 
+    has_many(
+        :attribute_reviews,
+        class_name: "SettlementAttributesReview",
+        foreign_key: :settlement,
+        inverse_of: :settlement,
+        dependent: :destroy
+    )
+
     before_save do
         puts "❤️❤️❤️ Settlement before_save block"
         unless log_book.nil?
             generate_any_logs
             log_book.save
         end
+        update_attribute_reviews
         generate_any_notifications
     end
 
@@ -176,120 +185,14 @@ class Settlement < ApplicationRecord
     before_create do
         puts "❤️❤️❤️ Settlement before_create block"
         create_log_book_model_if_self_lacks_one
-        if payments.empty?
-            payments.build(
-                source: insurance_agent.organization.default_bank_account,
-                destination: attorney.organization.default_bank_account,
-                amount: amount
-            )
-        end
-        if settings.empty?
-            settings.build(
-                user: attorney
-            )
-            settings.build(
-                user: insurance_agent
-            )
-        end
+        build_default_payment
+        build_settings
+        build_attribute_reviews
         self.public_number = rand(1..9999)
     end
 
-    def update_locked_attribute
-        if has_processing_payment? ||
-            has_completed_payment? ||
-            has_unanswered_payment_request? ||
-            completed?
-            self.locked = true
-        end
-    end
-
-    def update_completed_attribute
-        if has_completed_payment?
-            self.completed = true
-        else
-            self.completed = false
-        end
-    end
-
-    def generate_any_logs
-        if new_record?
-            log_book.entries.build(
-                message: "New settlement started."
-            )
-        end
-        if completed_changed?
-            log_book.entries.build(
-                message: "Settlement completed."
-            )
-        end
-        if locked_changed?
-            if locked?
-                log_book.entries.build(
-                    message: "Settlement locked."
-                )
-            else
-                log_book.entries.build(
-                    message: "Settlement unlocked."
-                )
-            end
-        end
-    end
-
-    def create_log_book_model_if_self_lacks_one
-        self.log_book = LogBook.create! if log_book.nil?
-    end
-
-    def generate_any_notifications
-        if new_record?
-            Notification.create!(
-                user: insurance_agent,
-                title: "New Settlement!",
-                message: "A new settlement was started with #{attorney.full_name}. Click here to view it."
-            )
-            Notification.create!(
-                user: attorney,
-                title: "New Settlement!",
-                message: "A new settlement was started with #{insurance_agent.full_name}. Click here to view it."
-            )
-        end
-        if ready_for_payment?
-            Notification.create!(
-                user: insurance_agent,
-                title: "A settlement is ready for payment!",
-                message: "Click here to make the payment."
-            )
-            Notification.create!(
-                user: attorney,
-                title: "A settlement is ready for payment!",
-                message: "Click here to request payment."
-            )
-        end
-    end
-
-    def update_ready_for_payment_attribute
-        if documents.first.nil? # If settlement has no documents
-            self.ready_for_payment = false
-        elsif documents.rejected.exists? # If settlement has rejected documents
-            self.ready_for_payment = false
-        elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
-            self.ready_for_payment = false
-        elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
-            self.ready_for_payment = false
-        elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
-            self.ready_for_payment = false
-        elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
-            self.ready_for_payment = false
-        elsif has_processing_payment?
-            self.ready_for_payment = false
-        elsif has_completed_payment?
-            self.ready_for_payment = false
-        elsif !attorney.organization.activated?
-            self.ready_for_payment = false
-        elsif !insurance_agent.organization.activated?
-            self.ready_for_payment = false
-        else
-            self.ready_for_payment = true
-        end
+    def self.reviewable_attributes
+        [:claimant_name, :defendant_name, :policy_number, :claim_number, :incident_date, :incident_location, :amount]
     end
 
     def ready_for_payment?
@@ -361,5 +264,147 @@ class Settlement < ApplicationRecord
 
     def settings_for(user)
         settings.for_user(user).first
+    end
+
+    private
+
+    def build_default_payment
+        if payments.empty?
+            payments.build(
+                source: insurance_agent.organization.default_bank_account,
+                destination: attorney.organization.default_bank_account,
+                amount: amount
+            )
+        end
+    end
+
+    def build_attribute_reviews
+        if attribute_reviews.empty?
+            attribute_reviews.build(
+                reviewer: attorney
+            )
+            attribute_reviews.build(
+                reviewer: insurance_agent
+            )
+        end
+    end
+
+    def build_settings
+        if settings.empty?
+            settings.build(
+                user: attorney
+            )
+            settings.build(
+                user: insurance_agent
+            )
+        end
+    end
+
+    def generate_any_logs
+        if new_record?
+            log_book.entries.build(
+                message: "New settlement started."
+            )
+        end
+        if completed_changed?
+            log_book.entries.build(
+                message: "Settlement completed."
+            )
+        end
+        if locked_changed?
+            if locked?
+                log_book.entries.build(
+                    message: "Settlement locked."
+                )
+            else
+                log_book.entries.build(
+                    message: "Settlement unlocked."
+                )
+            end
+        end
+    end
+
+    def create_log_book_model_if_self_lacks_one
+        self.log_book = LogBook.create! if log_book.nil?
+    end
+
+    def generate_any_notifications
+        if new_record?
+            Notification.create!(
+                user: insurance_agent,
+                title: "New Settlement!",
+                message: "A new settlement was started with #{attorney.full_name}. Click here to view it."
+            )
+            Notification.create!(
+                user: attorney,
+                title: "New Settlement!",
+                message: "A new settlement was started with #{insurance_agent.full_name}. Click here to view it."
+            )
+        end
+        if ready_for_payment?
+            Notification.create!(
+                user: insurance_agent,
+                title: "A settlement is ready for payment!",
+                message: "Click here to make the payment."
+            )
+            Notification.create!(
+                user: attorney,
+                title: "A settlement is ready for payment!",
+                message: "Click here to request payment."
+            )
+        end
+    end
+
+    def update_completed_attribute
+        if has_completed_payment?
+            self.completed = true
+        else
+            self.completed = false
+        end
+    end
+
+    def update_attribute_reviews
+        Settlement.reviewable_attributes.each do |reviewable_attr|
+            if attribute_changed?(reviewable_attr) && !new_record?
+                reformatted_attribute = (reviewable_attribute.to_s + "_approved").to_sym
+                attribute_reviews.by(current_user).write_attribute(reformatted_attribute, true)
+                attribute_reviews.not_by(current_user).write_attribute(reformatted_attribute, false)
+            end
+        end
+    end
+
+    def update_ready_for_payment_attribute
+        if documents.first.nil? # If settlement has no documents
+            self.ready_for_payment = false
+        elsif documents.rejected.exists? # If settlement has rejected documents
+            self.ready_for_payment = false
+        elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
+            self.ready_for_payment = false
+        elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
+            self.ready_for_payment = false
+        elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
+            self.ready_for_payment = false
+        elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
+            self.ready_for_payment = false
+        elsif has_processing_payment?
+            self.ready_for_payment = false
+        elsif has_completed_payment?
+            self.ready_for_payment = false
+        elsif !attorney.organization.activated?
+            self.ready_for_payment = false
+        elsif !insurance_agent.organization.activated?
+            self.ready_for_payment = false
+        else
+            self.ready_for_payment = true
+        end
+    end
+
+    def update_locked_attribute
+        if has_processing_payment? ||
+            has_completed_payment? ||
+            has_unanswered_payment_request? ||
+            completed?
+            self.locked = true
+        end
     end
 end
