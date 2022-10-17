@@ -168,6 +168,23 @@ ActiveRecord::Schema.define(version: 100) do
     t.index ["stripe_outbound_transfer_id"], name: "index_payments_on_stripe_outbound_transfer_id", unique: true
   end
 
+  create_table "settlement_attributes_reviews", force: :cascade do |t|
+    t.string "public_id"
+    t.bigint "settlement_id"
+    t.bigint "user_id"
+    t.boolean "amount_approved"
+    t.boolean "claimant_name_approved"
+    t.boolean "defendant_name_approved"
+    t.boolean "claim_number_approved"
+    t.boolean "policy_number_approved"
+    t.boolean "incident_date_approved"
+    t.boolean "incident_location_approved"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["settlement_id"], name: "index_settlement_attributes_reviews_on_settlement_id"
+    t.index ["user_id"], name: "index_settlement_attributes_reviews_on_user_id"
+  end
+
   create_table "settlement_settings", force: :cascade do |t|
     t.string "public_id"
     t.bigint "user_id"
@@ -294,6 +311,8 @@ ActiveRecord::Schema.define(version: 100) do
   add_foreign_key "payments", "bank_accounts", column: "source_id"
   add_foreign_key "payments", "log_books"
   add_foreign_key "payments", "settlements"
+  add_foreign_key "settlement_attributes_reviews", "settlements"
+  add_foreign_key "settlement_attributes_reviews", "users"
   add_foreign_key "settlement_settings", "settlements"
   add_foreign_key "settlement_settings", "users"
   add_foreign_key "settlements", "log_books"
