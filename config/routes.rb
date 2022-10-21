@@ -81,5 +81,8 @@ Rails.application.routes.draw do
   post 'payment_request/:id/deny',                    to: 'payment_requests#deny',                    as: 'payment_request_deny'
 
   post 'user_settings',                               to: 'user_settings#update',                     as: 'user_settings_update'
+
+
+  post 'settlement_attribute_reviews/:id/update',     to: 'settlement_attributes_reviews#update',     as: 'settlement_attributes_review_update'
   
 end

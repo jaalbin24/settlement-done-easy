@@ -70,7 +70,7 @@ class StripeAccount < ApplicationRecord
 
     before_create do
         puts "❤️❤️❤️ StripeAccount before_create block"
-        sync_with_stripe unless Rails.env.test? # This 'unless' check was added to make tests run faster.
+        #sync_with_stripe unless Rails.env.test? # This 'unless' check was added to make tests run faster.
     end
 
     def sync_with_stripe

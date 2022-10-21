@@ -7,10 +7,10 @@
 #  claim_number       :string
 #  claimant_name      :string
 #  completed          :boolean          default(FALSE), not null
-#  defendant_name     :string
 #  incident_date      :date
 #  incident_location  :string
 #  locked             :boolean          default(FALSE), not null
+#  policy_holder_name :string
 #  policy_number      :string
 #  public_number      :integer
 #  ready_for_payment  :boolean          default(FALSE), not null
@@ -140,6 +140,7 @@ FactoryBot.define do
                 added_by: rand(1..2).odd? ? s.attorney : s.insurance_agent,
                 settlement: s
             )
+            s.started_by = s.attorney if s.started_by.nil?
             puts "🤖🤖🤖 settlement before(:build) block"
             if e.insurance_agent.nil?
                 s.insurance_agent = select_random_insurance_agent_or_create_one_if_none_exist

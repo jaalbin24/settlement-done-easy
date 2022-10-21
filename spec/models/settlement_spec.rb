@@ -7,10 +7,10 @@
 #  claim_number       :string
 #  claimant_name      :string
 #  completed          :boolean          default(FALSE), not null
-#  defendant_name     :string
 #  incident_date      :date
 #  incident_location  :string
 #  locked             :boolean          default(FALSE), not null
+#  policy_holder_name :string
 #  policy_number      :string
 #  public_number      :integer
 #  ready_for_payment  :boolean          default(FALSE), not null

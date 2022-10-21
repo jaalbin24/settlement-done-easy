@@ -12,6 +12,7 @@ class CreateSettlementSettings < ActiveRecord::Migration[6.1]
       t.boolean     :confirmation_before_document_rejection
       t.boolean     :delete_my_documents_after_rejection
       t.boolean     :automatically_accept_payment_requests
+      t.boolean     :generate_document_at_settlement_start
 
       t.timestamps
     end

@@ -5,7 +5,7 @@ RSpec.describe "A member starting a settlement", type: :system do
     context "from their dashboard" do
         context "when their organization's account is not activated" do
             before(:each) do
-                @members = [create(:attorney, :with_unactivated_organization), create(:adjuster, :with_unactivated_organization)]
+                @members = [create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account), create(:adjuster, :with_unactivated_organization_due_to_lack_of_bank_account)]
             end
             
             it "will be sent to their dashboard and see an error message" do
@@ -45,7 +45,7 @@ RSpec.describe "A member starting a settlement", type: :system do
     context "from the 'Start a New Settlement' page" do
         context "when their organization's account is not activated" do
             before(:each) do
-                @members = [create(:attorney, :with_unactivated_organization), create(:adjuster, :with_unactivated_organization)]
+                @members = [create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account), create(:adjuster, :with_unactivated_organization_due_to_lack_of_bank_account)]
             end
             it "will be sent to their dashboard and see an error message" do
                 @members.each do |u|
@@ -74,7 +74,7 @@ RSpec.describe "A member starting a settlement", type: :system do
                     sign_in u
                     visit settlement_new_path
                     fill_in "settlement[claimant_name]",        with: "Cleo Claimant"
-                    fill_in "settlement[defendant_name]",       with: "Patty Policyholder"
+                    fill_in "settlement[policy_holder_name]",       with: "Patty Policyholder"
                     fill_in "settlement[incident_date]",        with: rand(10..1000).days.ago
                     fill_in "settlement[incident_location]",    with: "Earth"
                     fill_in "settlement[amount]",               with: rand(Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS..Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS)

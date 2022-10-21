@@ -143,6 +143,7 @@ class Payment < ApplicationRecord
     end
 
     before_validation do
+        puts "❤️❤️❤️ Payment before_validation block"
         if status.blank?
             self.status = "Not sent"
         end
@@ -156,6 +157,7 @@ class Payment < ApplicationRecord
     end
 
     before_create do
+        puts "❤️❤️❤️ Payment before_create block"
         create_log_book_model_if_self_lacks_one
     end
 

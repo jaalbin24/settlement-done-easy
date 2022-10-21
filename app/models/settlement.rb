@@ -7,10 +7,10 @@
 #  claim_number       :string
 #  claimant_name      :string
 #  completed          :boolean          default(FALSE), not null
-#  defendant_name     :string
 #  incident_date      :date
 #  incident_location  :string
 #  locked             :boolean          default(FALSE), not null
+#  policy_holder_name :string
 #  policy_number      :string
 #  public_number      :integer
 #  ready_for_payment  :boolean          default(FALSE), not null
@@ -90,6 +90,12 @@ class Settlement < ApplicationRecord
         end
     end
 
+    belongs_to(
+        :started_by,
+        class_name: "User",
+        foreign_key: :started_by_id
+    )
+
     has_many(
         :settings,
         class_name: "SettlementSettings",
@@ -154,7 +160,7 @@ class Settlement < ApplicationRecord
     has_many(
         :attribute_reviews,
         class_name: "SettlementAttributesReview",
-        foreign_key: :settlement,
+        foreign_key: :settlement_id,
         inverse_of: :settlement,
         dependent: :destroy
     )
@@ -188,11 +194,12 @@ class Settlement < ApplicationRecord
         build_default_payment
         build_settings
         build_attribute_reviews
+        self.started_by = attorney if started_by.nil?
         self.public_number = rand(1..9999)
     end
 
     def self.reviewable_attributes
-        [:claimant_name, :defendant_name, :policy_number, :claim_number, :incident_date, :incident_location, :amount]
+        [:claimant_name, :policy_holder_name, :policy_number, :claim_number, :incident_date, :incident_location, :amount]
     end
 
     def ready_for_payment?
@@ -264,6 +271,14 @@ class Settlement < ApplicationRecord
 
     def settings_for(user)
         settings.for_user(user).first
+    end
+
+    def partner_of(user)
+        if user.isAttorney?
+            insurance_agent
+        else
+            attorney
+        end
     end
 
     private

@@ -42,10 +42,11 @@ class SettlementsController < ApplicationController
             insurance_agent = current_user
         end
         settlement_creation_params = {
+            started_by: current_user,
             claim_number: settlement_params[:claim_number],
             policy_number: settlement_params[:policy_number],
             amount: settlement_params[:amount],
-            defendant_name: settlement_params[:defendant_name],
+            policy_holder_name: settlement_params[:policy_holder_name],
             claimant_name: settlement_params[:claimant_name],
             incident_date: settlement_params[:incident_date],
             incident_location: settlement_params[:incident_location],
@@ -65,7 +66,9 @@ class SettlementsController < ApplicationController
     def show
         begin
             @settlement = Settlement.find_by!(public_id: params[:id])
-        rescue
+            @attr_review_by_current_user = @settlement.attribute_reviews.by(current_user).first
+        rescue => e
+            puts "⚠️⚠️⚠️ ERROR: #{e.message}"
             handle_invalid_request
             return
         end
@@ -157,7 +160,7 @@ class SettlementsController < ApplicationController
             :claim_number,
             :policy_number,
             :amount,
-            :defendant_name,
+            :policy_holder_name,
             :claimant_name,
             :incident_date,
             :incident_location
