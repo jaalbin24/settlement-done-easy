@@ -127,6 +127,33 @@ RSpec.describe "The settlement show page" do
                                     pending "eSignature feature needs to be more flushed out"
                                     fail
                                 end
+                                it "will displayed 'approved' indicators for all attributes for both attorney and adjuster" do
+                                    click_on "Details"
+                                    expect(page).to have_button "reject-claim-number-button"
+                                    expect(page).to have_button "reject-claimant-name-button"
+                                    expect(page).to have_button "reject-policy-holder-name-button"
+                                    expect(page).to have_button "reject-incident-date-button"
+                                    expect(page).to have_button "reject-incident-location-button"
+                                    expect(page).to have_button "reject-amount-button"
+                                    expect(page).to_not have_button "approve-claim-number-button"
+                                    expect(page).to_not have_button "approve-claimant-name-button"
+                                    expect(page).to_not have_button "approve-policy-holder-name-button"
+                                    expect(page).to_not have_button "approve-incident-date-button"
+                                    expect(page).to_not have_button "approve-incident-location-button"
+                                    expect(page).to_not have_button "approve-amount-button"
+                                    expect(page).to have_css "i[name='claim-number-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to have_css "i[name='claimant-name-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to have_css "i[name='policy-holder-name-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to have_css "i[name='incident-date-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to have_css "i[name='incident-location-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to have_css "i[name='amount-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to_not have_css "i[name='claim-number-not-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to_not have_css "i[name='claimant-name-not-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to_not have_css "i[name='policy-holder-name-not-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to_not have_css "i[name='incident-date-not-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to_not have_css "i[name='incident-location-not-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                    expect(page).to_not have_css "i[name='amount-not-approved-by-#{@settlement.partner_of(@user).public_id}']"
+                                end
                             end
                             context "not alert the user when the settlement is ready for payment" do
                                 before(:each) do
