@@ -51,9 +51,11 @@ class SettlementAttributesReview < ApplicationRecord
 
     after_commit do
         puts "❤️❤️❤️ SettlementAttributesReview after_commit block"
-        update_status_attribute
-        if changed?
-            self.save
+        unless frozen?
+            update_status_attribute
+            if changed?
+                self.save
+            end
         end
     end
     

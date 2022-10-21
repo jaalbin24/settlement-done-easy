@@ -88,6 +88,10 @@ FactoryBot.define do
                         dr.approve
                     end
                 end
+                s.attribute_reviews.each do |ar|
+                    ar.approve_all
+                    ar.save
+                end
             end
         end
         trait :with_completed_payment do
@@ -112,6 +116,10 @@ FactoryBot.define do
                         dr.approve
                     end
                 end
+                s.attribute_reviews.each do |ar|
+                    ar.approve_all
+                    ar.save
+                end
             end
         end
 
@@ -132,6 +140,10 @@ FactoryBot.define do
                     end
                 end
                 s.payment_requests = [create(:payment_request, requester: s.attorney, accepter: s.insurance_agent, settlement: s)]
+                s.attribute_reviews.each do |ar|
+                    ar.approve_all
+                    ar.save
+                end
             end
         end
 

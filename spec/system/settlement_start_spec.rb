@@ -74,13 +74,13 @@ RSpec.describe "A member starting a settlement", type: :system do
                     sign_in u
                     visit settlement_new_path
                     fill_in "settlement[claimant_name]",        with: "Cleo Claimant"
-                    fill_in "settlement[policy_holder_name]",       with: "Patty Policyholder"
+                    fill_in "settlement[policy_holder_name]",   with: "Patty Policyholder"
                     fill_in "settlement[incident_date]",        with: rand(10..1000).days.ago
                     fill_in "settlement[incident_location]",    with: "Earth"
                     fill_in "settlement[amount]",               with: rand(Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS..Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS)
                     fill_in "settlement[claim_number]",         with: "C-xxxTESTxxx"
                     select "#{partner.full_name} (#{partner.organization.full_name})", from: "partner_id"
-                    click_on "Start!"
+                    click_on "Start settlement"
                     expect(page).to have_text("The following requirements must be met to complete this settlement.")
                     expect(page).to have_text("Started a new settlement with #{partner.full_name}! Click here to view it.")
                 end

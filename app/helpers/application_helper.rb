@@ -472,6 +472,6 @@ module ApplicationHelper
         when :h1, :h2, :h3, :h4, :h5, :h6
             css_classes.push(args[:text_size].to_s)
         end
-        "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end
 end
