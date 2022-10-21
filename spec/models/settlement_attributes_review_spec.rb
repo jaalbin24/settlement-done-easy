@@ -2,19 +2,20 @@
 #
 # Table name: settlement_attributes_reviews
 #
-#  id                         :bigint           not null, primary key
-#  amount_approved            :boolean
-#  claim_number_approved      :boolean
-#  claimant_name_approved     :boolean
-#  defendant_name_approved    :boolean
-#  incident_date_approved     :boolean
-#  incident_location_approved :boolean
-#  policy_number_approved     :boolean
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#  public_id                  :string
-#  settlement_id              :bigint
-#  user_id                    :bigint
+#  id                          :bigint           not null, primary key
+#  amount_approved             :boolean
+#  claim_number_approved       :boolean
+#  claimant_name_approved      :boolean
+#  incident_date_approved      :boolean
+#  incident_location_approved  :boolean
+#  policy_holder_name_approved :boolean
+#  policy_number_approved      :boolean
+#  status                      :string
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  public_id                   :string
+#  settlement_id               :bigint
+#  user_id                     :bigint
 #
 # Indexes
 #

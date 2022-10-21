@@ -10,7 +10,7 @@
             <div class="col">
                 <div class="mb-3">
                     <%= f.label "Policy holder name", { class: "form-label mb-1"} %>
-                    <%= f.text_field :defendant_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
+                    <%= f.text_field :policy_holder_name, { class: "form-control", placeholder: "Policy holder", :required => true } %>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                     <%= f.label "Amount", { class: "form-label mb-1"} %>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input class="form-control" step="0.01" required="required" type="number" value="<%=@settlement.amount%>" name="settlement[amount]" id="settlement_amount">
+                        <input class="form-control" step="0.01" required="required" type="number" name="settlement[amount]" id="settlement_amount">
                     </div>
                 </div>
             </div>
@@ -67,13 +67,7 @@
         </div>
         <%end%>
         <div class="d-flex align-items-right">
-            <%if @settlement.locked?%>
-                <div class="ms-auto" data-bs-toggle="tooltip" data-bs-placement="top" title="This settlement is locked">
-                    <button id="disabled-update-settlement-button" class="btn btn-sm btn-primary disabled"><%=submit_label%> settlement</button>
-                </div>
-            <%else%>
-                <%= f.submit "#{submit_label} settlement", class: "btn btn-sm btn-primary" %>
-            <%end%>
+            <%= f.submit "#{submit_label} settlement", class: "btn btn-sm btn-primary" %>
         </div>
     </div>
 <% end %>

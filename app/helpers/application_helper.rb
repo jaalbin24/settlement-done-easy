@@ -424,4 +424,54 @@ module ApplicationHelper
             return "have been completed!"
         end    
     end
+
+    def thumbs_up_icon(args=nil)
+        css_classes = ["fa-solid", "fa-thumbs-up", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        css_classes.push("fa-flip-horizontal") if args[:flip_horizontal]
+        "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
+    end
+
+    def thumbs_down_icon(args=nil)
+        css_classes = ["fa-solid", "fa-thumbs-down", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        css_classes.push("fa-flip-horizontal") if args[:flip_horizontal]
+        "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
+    end
+
+    def circle_icon(args=nil)
+        css_classes = ["fa-solid", "fa-circle", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
+    end
 end

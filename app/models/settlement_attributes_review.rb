@@ -2,19 +2,20 @@
 #
 # Table name: settlement_attributes_reviews
 #
-#  id                         :bigint           not null, primary key
-#  amount_approved            :boolean
-#  claim_number_approved      :boolean
-#  claimant_name_approved     :boolean
-#  defendant_name_approved    :boolean
-#  incident_date_approved     :boolean
-#  incident_location_approved :boolean
-#  policy_number_approved     :boolean
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#  public_id                  :string
-#  settlement_id              :bigint
-#  user_id                    :bigint
+#  id                          :bigint           not null, primary key
+#  amount_approved             :boolean
+#  claim_number_approved       :boolean
+#  claimant_name_approved      :boolean
+#  incident_date_approved      :boolean
+#  incident_location_approved  :boolean
+#  policy_holder_name_approved :boolean
+#  policy_number_approved      :boolean
+#  status                      :string
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  public_id                   :string
+#  settlement_id               :bigint
+#  user_id                     :bigint
 #
 # Indexes
 #
@@ -28,8 +29,11 @@
 #
 class SettlementAttributesReview < ApplicationRecord
 
-    scope :by,      ->  (i) {where(reviewer: i)}
-    scope :not_by,  ->  (i) {where.not(reviewer: i)}
+    scope :by,                  ->  (i) {where(reviewer: i)}
+    scope :not_by,              ->  (i) {where.not(reviewer: i)}
+    scope :not_fully_approved,  ->      {where(status: "Needs approval")}
+    scope :approved,            ->      {where(status: "Approved")}
+
     belongs_to(
         :settlement,
         class_name: "Settlement",
@@ -43,19 +47,57 @@ class SettlementAttributesReview < ApplicationRecord
         foreign_key: :user_id
     )
 
+    validates :status, inclusion: {in: ["Approved", "Needs approval"]}, on: :update
+
+    after_commit do
+        puts "❤️❤️❤️ SettlementAttributesReview after_commit block"
+        update_status_attribute
+        if changed?
+            self.save
+        end
+    end
+    
     before_create do
         puts "❤️❤️❤️ SettlementAttributesReview before_create block"
-        if reviewer == settlement.added_by
+        if reviewer == settlement.started_by
             attributes.each do |attribute|
-                if [TrueClass, FalseClass].include?(attribute.class)
-                    write_attribute(attribute.to_sym, true)
+                if attribute[0].to_s.include?("_approved")
+                    write_attribute(attribute[0].to_sym, true)
                 end
             end
         else
             attributes.each do |attribute|
-                if [TrueClass, FalseClass].include?(attribute.class)
-                    write_attribute(attribute.to_sym, false)
+                if attribute[0].to_s.include?("_approved")
+                    write_attribute(attribute[0].to_sym, false)
                 end
+            end
+        end
+    end
+
+    def update_status_attribute
+        attributes.each do |attribute|
+            if attribute[0].to_s.include?("_approved")
+                unless attribute[1]
+                    self.status = "Needs approval"
+                    return
+                end
+            end
+        end
+        self.status = "Approved"
+    end
+
+    def approve_all
+        attributes.each do |attribute|
+            if attribute[0].to_s.include?("_approved")
+                write_attribute(attribute[0].to_sym, true)
+            end
+        end
+    end
+
+    def reject_all
+        attributes.each do |attribute|
+            if attribute[0].to_s.include?("_approved")
+                write_attribute(attribute[0].to_sym, false)
             end
         end
     end

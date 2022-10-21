@@ -170,11 +170,12 @@ ActiveRecord::Schema.define(version: 100) do
 
   create_table "settlement_attributes_reviews", force: :cascade do |t|
     t.string "public_id"
+    t.string "status"
     t.bigint "settlement_id"
     t.bigint "user_id"
     t.boolean "amount_approved"
     t.boolean "claimant_name_approved"
-    t.boolean "defendant_name_approved"
+    t.boolean "policy_holder_name_approved"
     t.boolean "claim_number_approved"
     t.boolean "policy_number_approved"
     t.boolean "incident_date_approved"
@@ -195,6 +196,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.boolean "confirmation_before_document_rejection"
     t.boolean "delete_my_documents_after_rejection"
     t.boolean "automatically_accept_payment_requests"
+    t.boolean "generate_document_at_settlement_start"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["settlement_id"], name: "index_settlement_settings_on_settlement_id"
@@ -206,7 +208,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "claim_number"
     t.string "policy_number"
     t.float "amount"
-    t.string "defendant_name"
+    t.string "policy_holder_name"
     t.string "claimant_name"
     t.string "incident_location"
     t.date "incident_date"
@@ -258,6 +260,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.boolean "confirmation_before_document_rejection"
     t.boolean "delete_my_documents_after_rejection"
     t.boolean "automatically_accept_payment_requests"
+    t.boolean "generate_document_at_settlement_start"
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

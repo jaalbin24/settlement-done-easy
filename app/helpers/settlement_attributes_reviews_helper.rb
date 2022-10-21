@@ -1,0 +1,2 @@
+module SettlementAttributesReviewsHelper
+end

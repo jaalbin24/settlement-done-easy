@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
                     <div>
-                        <h3 class="m-0">Settlement #<%=@settlement.public_number%></h3>
+                        <h3 class="m-0">Settlement #<%="%04d" % @settlement.public_number%></h3>
                         <p class="m-0">$<%=@settlement.amount%> for <%=@settlement.claimant_name%></p>
                     </div>
                     <div class="d-flex align-items-center gap-2 pe-1">
@@ -45,7 +45,7 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
                             <div class="accordion-body p-0">
-                                <%=render "form", path: settlement_update_path(@settlement), submit_label: "Update"%>
+                                <%=render "update_form"%>
                             </div>
                         </div>
                     </div>
@@ -221,13 +221,19 @@
                                 At least one document.
                             </a>
                         </li>
+                        <%if @settlement.documents.need_signature.exists?%>
+                            <li class="d-flex gap-2">
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
+                                <p class="m-0">All documents that need a signature have one.</p>
+                            </li>
+                        <%end%>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "square-check": "square"%>"></i></h5>
                             <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
                         </li>
                         <li class="d-flex gap-2">
-                            <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
-                            <p class="m-0">All documents that need a signature have one.</p>
+                            <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.attribute_reviews.approved.count == 2 ? "square-check": "square"%>"></i></h5>
+                            <p class="m-0">All details are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
                         </li>
                         <p class="text-muted text-center mt-2 border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required to complete settlement</span></p>
                         <li class="d-flex gap-2">

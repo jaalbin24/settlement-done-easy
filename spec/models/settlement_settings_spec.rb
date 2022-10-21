@@ -8,6 +8,7 @@
 #  automatically_accept_payment_requests          :boolean
 #  confirmation_before_document_rejection         :boolean
 #  delete_my_documents_after_rejection            :boolean
+#  generate_document_at_settlement_start          :boolean
 #  replace_unsigned_document_with_signed_document :boolean
 #  created_at                                     :datetime         not null
 #  updated_at                                     :datetime         not null

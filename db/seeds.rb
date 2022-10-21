@@ -110,10 +110,11 @@ attorneys.each do |a|
             insurance_agent:    insurance_agents[rand(0..insurance_agents.size-1)],
             claim_number:       "#{rand(100000..999999)}",
             amount:      '%.02f' % rand(100000..1999900).fdiv(100),
-            defendant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
+            policy_holder_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             claimant_name:     "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
             incident_location:  "Memphis, TN",
             incident_date:      Date.today - rand(30..365).days,
+            started_by:         a
         )
         if !settlement.save
             puts "ERRORS: #{settlement.errors.full_messages.inspect}"

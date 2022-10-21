@@ -6,7 +6,7 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
       t.string      :claim_number
       t.string      :policy_number
       t.float       :amount
-      t.string      :defendant_name
+      t.string      :policy_holder_name
       t.string      :claimant_name
       t.string      :incident_location
       t.date        :incident_date
