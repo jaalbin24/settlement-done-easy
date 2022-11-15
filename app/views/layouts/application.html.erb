@@ -12,7 +12,7 @@
     
   </head>
 
-  <body>
+  <body id="page-container">
     <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
       <div class="container-fluid">
         <%= image_tag "sde-cube-logo.png", height: 40, class: "mx-2"%>
@@ -89,11 +89,14 @@
         </div>
       <% end %>
     </div>
-    <main role="main" class="container">
+    <main role="main" class="container" id="main-content-wrap">
       <div id="toast-container" data-bs-toaster="" class="toast-container position-absolute m-3 top-10 end-0" aria-live="polite" style="z-index:999999;"></div>
       <br>
       <%= yield %>
       <br>
     </main>
+    <footer class="bg-light navbar d-flex align-items-center justify-content-center" id="footer">
+      <p class="m-0">If you have any questions or comments, you can reach us at <a href=""><%=Rails.configuration.CUSTOMER_SUPPORT_EMAIL_ADDRESS%></a> or <a href=""><%=Rails.configuration.CUSTOMER_SUPPORT_PHONE_NUMBER%></a>.</p>
+    </footer>
   </body>
 </html>
