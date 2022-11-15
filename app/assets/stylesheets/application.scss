@@ -41,3 +41,20 @@
 
 
 
+// For the app-wide footer containing customer support info
+#page-container {
+    position: relative;
+    min-height: 100vh;
+}
+#main-content-wrap {
+    padding-bottom: 5rem; // Footer height
+}
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 5rem;         // Footer height
+}
+
+
+
