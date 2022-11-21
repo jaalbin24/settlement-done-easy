@@ -237,6 +237,14 @@ RSpec.describe "The account section of the user settings page" do
                     pending "Implementation"
                     fail
                 end
+                it "must have a button labeled 'Resend code' that resends the SMS verification code" do
+                    pending "Implementation"
+                    fail
+                end
+                it "must disable the 'Resend code' button for 10 seconds then enable it" do
+                    pending "Implementation"
+                    fail
+                end
                 context "if phone number verification succeeds" do
                     it "must have directions for the user" do
                         pending "Implementation"
@@ -260,12 +268,8 @@ RSpec.describe "The account section of the user settings page" do
                         pending "Implementation"
                         fail
                     end
-                    it "must have a button labeled 'Resend code' that resends the SMS verification code" do
-                        pending "Implementation"
-                        fail
-                    end
                 end
-                context "if the 'Resend code' button is pressed" do
+                context "after the 'Resend code' button is pressed" do
                     context "and the code is successfully sent" do
                         it "must have a message saying the code was resent" do
                             pending "Implementation"
