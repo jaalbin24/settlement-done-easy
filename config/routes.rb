@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   root to: "pages#root"
 
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
-  get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
-  get 'testing',                                to: 'pages#testing',                      as: 'testing'    
+  # get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
+  # get 'testing',                                to: 'pages#testing',                      as: 'testing'    
 
   post 'bank_account',                          to: 'bank_accounts#create',               as: 'bank_account_create'
   get 'bank_account_secret',                    to: 'bank_accounts#secret',               as: 'bank_account_secret'
@@ -81,6 +81,7 @@ Rails.application.routes.draw do
   post 'payment_request/:id/deny',                    to: 'payment_requests#deny',                    as: 'payment_request_deny'
 
   post 'user_settings',                               to: 'user_settings#update',                     as: 'user_settings_update'
+  get 'settings',                                     to: 'pages#settings',                           as: 'settings'
 
 
   post 'settlement_attribute_reviews/:id/update',     to: 'settlement_attributes_reviews#update',     as: 'settlement_attributes_review_update'

@@ -31,4 +31,4 @@
 </table>
 
 <%=link_to "🡸 Back", :back, class: "btn btn-outline-primary"%>
-<%=link_to "Add #{member_role_name}", organization_new_member_path, class: "btn btn-primary"%>
+<%=link_to "Add #{member_role_name}", organization_new_member_path(current_user), class: "btn btn-primary"%>

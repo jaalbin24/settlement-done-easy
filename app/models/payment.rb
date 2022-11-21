@@ -5,6 +5,7 @@
 #  id                          :bigint           not null, primary key
 #  amount                      :float            not null
 #  completed_at                :datetime
+#  started_at                  :datetime
 #  status                      :string           not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
@@ -291,6 +292,7 @@ class Payment < ApplicationRecord
         )
         self.stripe_inbound_transfer_id = inbound_transfer.id
         self.status = "Processing"
+        self.started_at = DateTime.now
         unless self.save
             # TODO: An inbound transfer failed! Send yourself an email with the following info:
             # - inbound_transfer_id

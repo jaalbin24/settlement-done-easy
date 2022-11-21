@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "stripe_outbound_transfer_id"
     t.float "amount", null: false
     t.datetime "completed_at"
+    t.datetime "started_at"
     t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
