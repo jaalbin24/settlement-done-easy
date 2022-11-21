@@ -30,4 +30,8 @@ class PagesController < ApplicationController
     def testing
         render :testing
     end
+
+    def settings
+        render :settings
+    end
 end

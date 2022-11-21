@@ -194,8 +194,25 @@ class Settlement < ApplicationRecord
         build_default_payment
         build_settings
         build_attribute_reviews
+        init_public_number
         self.started_by = attorney if started_by.nil?
-        self.public_number = rand(1..9999)
+    end
+
+    # Public number is assigned by generating a random integer 1-9999. If that number is already assigned to a settlement used by the attorney or adjuster, a different
+    # number will be assigned by iterating either forward or backwards from that first number until an unused number is found.
+    def init_public_number
+        unacceptable_nums = Settlement.where(insurance_agent: insurance_agent).or(Settlement.where(attorney: attorney)).and(Settlement.where(completed: false)).pluck(:public_number)
+        pn = rand(1..9999)
+        counter = 0
+        asc_or_desc = [-1, 1].sample
+        while unacceptable_nums.include?(pn) && counter < 20 do
+            if pn < 1 || pn > 9999
+                pn = rand(1..9999)
+            end
+            pn += asc_or_desc
+            counter += 1
+        end
+        self.public_number = pn
     end
 
     def self.reviewable_attributes

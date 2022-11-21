@@ -22,7 +22,12 @@
             <%else%>
                 <tr>
             <%end%>
-                    <td><%=p.created_at.in_time_zone("Central Time (US & Canada)").strftime("%-d %b, %Y at %l:%M%P %Z")%></td>
+                    <td>
+                        <%if p.started_at.nil?%>
+                            N/A
+                        <%else%>
+                            <%=p.started_at.in_time_zone("Central Time (US & Canada)").strftime("%-d %b, %Y at %l:%M%P %Z")%></td>
+                        <%end%>
                     <td>
                         <%if p.completed_at.nil?%>
                             N/A
