@@ -2,35 +2,39 @@ require "rails_helper"
 
 RSpec.describe "The account section of the user settings page" do
     include_context "devise"
+    before do
+        @user = create(:law_firm)
+        sign_in @user
+        visit settings_path
+    end
     it "must have a nav-bar button labeled 'Account'" do
-        pending "Implementation"
-        fail
+        expect(page).to have_css "li.nav-button[name='settings-nav-bar-account-button']"
     end
     it "must have a Details section" do
-        pending "Implementation"
-        fail
+        expect(page).to have_css "div.card[name='details-section']"
     end
     it "must have a Requirements section" do
-        pending "Implementation"
-        fail
+        expect(page).to have_css "div.card[name='requirements-section']"
     end
 
     context "in the Details section" do
+        before do
+            @user = create(:law_firm)
+            sign_in @user
+            visit settings_path
+        end
         it "must have a field to edit the user's email" do
-            pending "Implementation"
-            fail
+            expect(page).to have_css "input[name='user[email]']"
         end
         it "must have a read-only field with astericks representing the user's password" do
-            pending "Implementation"
-            fail
+            expect(page).to have_css "input[name='user[password]'][readonly='readonly']"
         end
-        it "must have a button that opens the change password modal" do
+        it "must have a button labeled 'Change password' that opens the change password modal" do
             pending "Implementation"
             fail
         end
         it "must have a field to edit the user's phone number" do
-            pending "Implementation"
-            fail
+            expect(page).to have_css "input[name='user[phone_number]']"
         end
         it "must have a button labeled 'Update' that opens the password confirmation modal" do
             pending "Implementation"
