@@ -285,6 +285,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "last_name"
     t.string "business_name"
     t.string "stripe_financial_account_id"
+    t.integer "phone_number"
     t.boolean "activated", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

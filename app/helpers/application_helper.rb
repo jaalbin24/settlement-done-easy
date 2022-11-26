@@ -474,4 +474,26 @@ module ApplicationHelper
         end
         "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end
+
+    def checkbox_icon(args=nil)
+        css_classes = ["fa-regular", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        case args[:checked]
+        when true
+            css_classes.push("fa-square-check")
+        when false
+            css_classes.push("fa-square")
+        end
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
+    end
 end

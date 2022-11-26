@@ -13,6 +13,7 @@
 #  last_name                   :string
 #  last_sign_in_at             :datetime
 #  last_sign_in_ip             :string
+#  phone_number                :integer
 #  remember_created_at         :datetime
 #  reset_password_sent_at      :datetime
 #  reset_password_token        :string
