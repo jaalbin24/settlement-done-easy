@@ -20,13 +20,67 @@ RSpec.describe "The account section of the user settings page" do
             pending "Implementation"
             fail
         end
+        it "must have a read-only field with astericks representing the user's password" do
+            pending "Implementation"
+            fail
+        end
+        it "must have a button that opens the change password modal" do
+            pending "Implementation"
+            fail
+        end
         it "must have a field to edit the user's phone number" do
             pending "Implementation"
             fail
         end
-        it "must have a button that causes the change password modal to be shown" do
+        it "must have a button labeled 'Update' that opens the password confirmation modal" do
             pending "Implementation"
             fail
+        end
+        context "after clicking the 'Update' button" do
+            context "if the email is changed" do
+                it "must show a visual indicator that the email is not verified" do
+                    pending "Implementation"
+                    fail
+                end
+            end
+            context "if the update succeeds" do
+                it "must show a message saying the account was updated" do
+                    pending "Implementation"
+                    fail
+                end
+            end
+            context "if the update fails" do
+                context "because the phone number is invalid" do
+                    it "must show a message saying the phone number is invalid" do
+                        pending "Implementation"
+                        fail
+                    end
+                end
+                context "because the email is invalid" do
+                    it "must show a message saying the email is invalid" do
+                        pending "Implementation"
+                        fail
+                    end
+                end
+                context "for an unhandled reason" do
+                    it "must show a generic error message" do
+                        pending "Implementation"
+                        fail
+                    end
+                end
+            end
+        end
+        context "when the user's email is verified" do
+            it "must have a stamp saying the user's email is verified" do
+                pending "Implementation"
+                fail
+            end
+        end
+        context "when the user's email is not verified" do
+            it "must have a stamp saying the user's email is not verified" do
+                pending "Implementation"
+                fail
+            end
         end
         context "when 2FA is enabled" do
             it "must have a link to disable 2FA" do
@@ -245,6 +299,10 @@ RSpec.describe "The account section of the user settings page" do
                     pending "Implementation"
                     fail
                 end
+                it "must show a 10 second timer on the 'Resend code' button" do
+                    pending "Implementation"
+                    fail
+                end
                 context "if phone number verification succeeds" do
                     it "must have directions for the user" do
                         pending "Implementation"
@@ -284,6 +342,18 @@ RSpec.describe "The account section of the user settings page" do
                     end
                 end
             end
+        end
+    end
+    
+    # This modal is just a way to gather the user's password before updating their account.
+    context "in the password confirmation modal" do
+        it "must have a field to enter the user's password" do
+            pending "Implementation"
+            fail
+        end
+        it "must have a button labeled 'Update' that submits the user edit form" do
+            pending "Implementation"
+            fail
         end
     end
 end

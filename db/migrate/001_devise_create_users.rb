@@ -40,14 +40,16 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string      :last_name
       t.string      :business_name
       t.string      :stripe_financial_account_id      # TODO: Move this into its own StripeFinancialAccount model
+      t.integer     :phone_number
+
       t.boolean     :activated,                     null: false, default: false
-      t.timestamps null: false
+      t.timestamps                                  null: false
     end
 
     add_index :users, :email,                           unique: true
     add_index :users, :reset_password_token,            unique: true
     add_index :users, :stripe_financial_account_id,     unique: true
-    # add_index :users, :confirmation_token,   unique: true
-    # add_index :users, :unlock_token,         unique: true
+    # add_index :users, :confirmation_token,            unique: true
+    # add_index :users, :unlock_token,                  unique: true
   end
 end
