@@ -2,19 +2,21 @@ require "rails_helper"
 
 RSpec.describe "The account section of the user settings page" do
     include_context "devise"
-    before do
-        @user = create(:law_firm)
-        sign_in @user
-        visit settings_path
-    end
-    it "must have a nav-bar button labeled 'Account'" do
-        expect(page).to have_css "li.nav-button[name='settings-nav-bar-account-button']"
-    end
-    it "must have a Details section" do
-        expect(page).to have_css "div.card[name='details-section']"
-    end
-    it "must have a Requirements section" do
-        expect(page).to have_css "div.card[name='requirements-section']"
+    context do
+        before do
+            @user = create(:law_firm)
+            sign_in @user
+            visit settings_path
+        end
+        it "must have a nav-bar button labeled 'Account'" do
+            expect(page).to have_button "settings-nav-bar-account-button"
+        end
+        it "must have a Details section" do
+            expect(page).to have_text "Account Details"
+        end
+        it "must have a Requirements section" do
+            expect(page).to have_text "Requirements"
+        end
     end
 
     context "in the Details section" do
@@ -30,8 +32,10 @@ RSpec.describe "The account section of the user settings page" do
             expect(page).to have_css "input[name='user[password]'][readonly='readonly']"
         end
         it "must have a button labeled 'Change password' that opens the change password modal" do
-            pending "Implementation"
-            fail
+            expect(page).to_not have_text "Change Your Password"
+            expect(page).to have_button "Change password"
+            click_on "Change password"
+            expect(page).to have_text "Change Your Password"
         end
         it "must have a field to edit the user's phone number" do
             expect(page).to have_css "input[name='user[phone_number]']"
@@ -42,15 +46,28 @@ RSpec.describe "The account section of the user settings page" do
         end
         context "after clicking the 'Update' button" do
             context "if the email is changed" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    fill_in "Email", with: "xyz123@example.com"
+                    click_on "Update"
+                end
                 it "must show a visual indicator that the email is not verified" do
                     pending "Implementation"
                     fail
                 end
             end
             context "if the update succeeds" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    fill_in "Email", with: "xyz123@example.com"
+                    click_on "Update"
+                end
                 it "must show a message saying the account was updated" do
-                    pending "Implementation"
-                    fail
+                    expect(page).to have_text "Account details updated."
                 end
             end
             context "if the update fails" do
@@ -71,6 +88,12 @@ RSpec.describe "The account section of the user settings page" do
                         pending "Implementation"
                         fail
                     end
+                end
+            end
+            context "if nothing was changed" do
+                it "must show a message saying nothing was changed" do
+                    pending "Implementation"
+                    fail
                 end
             end
         end

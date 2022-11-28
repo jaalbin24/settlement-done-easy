@@ -8,7 +8,8 @@ const KEYS = {
     PAYMENT_CONFIRMATION:           "payment-confirmation",
     PAYMENT_REQUEST_CONFIRMATION:   "payment-request-confirmation",
     DOCUMENT_REJECT_CONFIRMATION:   "document-reject-confirmation",
-    DOCUMENT_UPLOAD:                "document-upload"
+    DOCUMENT_UPLOAD:                "document-upload",
+    CHANGE_PASSWORD:                "change-password"
 }
 
 export default class ModalMaker {
@@ -69,14 +70,14 @@ export default class ModalMaker {
         }
     }
 
-    static submitFormInModalEl(modalEl) {
-        var formEl = modalEl.getElementsByTagName("form")[0];
-        if (formEl == null) {
-            return null;
-        }
-        formEl.submit();
-        console.log("User settings form submitted!");
-    }
+    // static submitFormInModalEl(modalEl) {
+    //     var formEl = modalEl.getElementsByTagName("form")[0];
+    //     if (formEl == null) {
+    //         return null;
+    //     }
+    //     formEl.submit();
+    //     console.log("User settings form submitted!");
+    // }
 
     static modalName(key) {
         return key + "-modal";
