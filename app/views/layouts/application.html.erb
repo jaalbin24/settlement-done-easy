@@ -11,7 +11,7 @@
     <%= javascript_pack_tag 'application'%>
   </head>
 
-  <body id="page-container">
+  <body id="page-container" style="background-color: #edf4ff;">
     <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
       <div class="container-fluid">
         <%= image_tag "sde-cube-logo.png", height: 40, class: "mx-2"%>
@@ -90,7 +90,6 @@
     </div>
     <main role="main" class="container" id="main-content-wrap">
       <div id="toast-container" data-bs-toaster="" class="toast-container position-absolute m-3 top-10 end-0" aria-live="polite" style="z-index:999999;"></div>
-      <br>
       <%= yield %>
       <br>
     </main>

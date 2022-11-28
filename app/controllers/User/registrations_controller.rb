@@ -89,6 +89,10 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   protected
 
+  def update_resource(resource, params)
+    resource.update_without_password(params)
+  end
+
   # If you have extra params to permit, append them to the sanitizer in the keys array.
   def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: [:role, :first_name, :last_name, :organization_id, :business_name])
