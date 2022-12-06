@@ -1,0 +1,10 @@
+<h1 class="text-center text-primary">Upload your document here!</h1>
+<p class="text-center">Settlement Done Easy currently only supports PDFs</p>
+
+<div class="w-50 mx-auto">
+    <%=render "form", path: document_create_path%>
+</div>
+
+<div class="text-center mt-3">
+    <%=link_to "🡸 Back", :back, class: "btn btn-outline-primary"%>
+</div>

@@ -1,0 +1,66 @@
+<h1 class="text-center">This is the member show page</h1>
+
+<div class="container mx-auto w-50">
+    <div class="row">
+        <div class="col">
+            Name:
+        </div>
+        <div class="col">
+            <%=@member.full_name%>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Email:
+        </div>
+        <div class="col">
+            <%=@member.email%>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Last sign-in:
+        </div>
+        <div class="col">
+            <%if @member.last_sign_in_at != nil%>
+                <%=@member.last_sign_in_at.in_time_zone("Central Time (US & Canada)").strftime("%l:%M%P %Z | %B %-d, %Y")%>
+            <%else%>
+                Never
+            <%end%>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Settlements completed:
+        </div>
+        <div class="col">
+            X
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Settlements canceled:
+        </div>
+        <div class="col">
+            Y
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Total settlement amount:
+        </div>
+        <div class="col">
+            Z
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Average settlement amount:
+        </div>
+        <div class="col">
+            A
+        </div>
+    </div>
+    <%=link_to "🡸 Back", :back, class: "btn btn-outline-primary mt-4"%>
+</div>
+

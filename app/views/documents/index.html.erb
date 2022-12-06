@@ -1,0 +1,83 @@
+<h1 class="text-center">Documents Index</h1>
+
+<%if @settlement.documents.size == 0%>
+    <p class="text-center">This settlement has no documents! Click <%=link_to "here", document_new_path(@settlement)%> to add one.</p>
+<%else%>
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Filename</td>
+            <td>Added by</td>
+            <td>Date added</td>
+            <td>Approval</td>
+            <td>Signature</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <%@settlement.documents.order(status: :asc).each do |d|%>
+        <%if d.rejected?%>
+            <tr class="table-danger">
+        <%elsif d.approved?%>
+            <tr class="table-success">
+        <%else%>
+            <tr>
+        <%end%>
+                <td><%=d.pdf.filename%></td>
+                <%if d.auto_generated?%>
+                    <td><%="#{d.added_by.full_name} (Auto-generated)"%></td>
+                <%else%>
+                    <td><%=d.added_by.full_name%></td>
+                <%end%>
+                <td><%=d.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y")%></td>
+                <%if d.approved?%>
+                    <td>✔️</td>
+                <%elsif d.rejected?%>
+                    <td>❌</td>
+                <%else%>
+                    <td>⌛</td>
+                <%end%>
+                <%if d.signed?%>
+                    <td>✔️</td>
+                <%elsif !d.ds_envelope_id.blank?%>
+                    <td>⌛</td>
+                <%else%>
+                    <td>❌</td>
+                <%end%>
+                <td class="d-flex gap-2 justify-content-end">
+                    <a class="link-primary text-decoration-none" href="<%=document_show_path(d)%>">
+                        <h5 class="m-0 p-0"><i class="fa-solid fa-file-pdf"></i></h5>
+                    </a>
+                    <a class="link-primary text-decoration-none" href="<%=rails_blob_path(d.pdf, disposition: "attachment")%>">
+                        <h5 class="m-0 p-0"><i class="fa-solid fa-file-arrow-down"></i></h5>
+                    </a>
+                    <a class="link-primary text-decoration-none" href="<%=document_delete_path(d)%>" data-method="delete" data-confirm="Are you sure you want to delete <%=d.filename%>?">
+                        <h5 class="m-0 p-0"><i class="fa-solid fa-trash-can"></i></h5>
+                    </a>
+                </td>
+            </tr>
+        <%end%>
+    </tbody>
+</table>
+<%end%>
+
+<div class="row">
+    <div class="text-end col">
+        <a class="btn btn-outline-primary" href=<%=settlement_show_path(@settlement)%>>
+            <i class="fa-solid fa-arrow-left-long"></i>
+            To settlement
+        </a>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-primary" href=<%=document_new_path(@settlement)%>>
+            <i class="fa-solid fa-file-arrow-up"></i>
+            Upload
+        </a>
+    </div>
+    <div class="text-start col">
+        <a class="btn btn-primary" href=<%=settlement_generate_document_path(@settlement)%> data-method="post">
+            <i class="fa-solid fa-file-circle-plus"></i>
+            Generate
+        </a>
+    </div>
+</div>

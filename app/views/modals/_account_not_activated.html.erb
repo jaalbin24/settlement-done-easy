@@ -1,0 +1,18 @@
+
+
+
+
+
+
+YOUR ACCOUNT IS NOT ACTIVATED! CLICK HERE TO ACTIVATE IT!
+
+
+
+
+
+<%form_for(url: settings_update_path) do |f|%>
+    <div class="form-check">
+        <%=f.label "Do not show this message again.", class: "text-muted"%>
+        <%=f.check_box :alert_when_settlement_ready_for_payment, class: "form-check-input"%>
+    </div>
+<%end%>

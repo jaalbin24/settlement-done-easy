@@ -1,0 +1,49 @@
+
+<%if @settlement.settings_for(current_user).alert_when_settlement_ready_for_payment && @settlement.ready_for_payment%>
+    <div class="modal fade" name="ready-for-payment-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">This Settlement is Ready for Payment!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <%if current_user.isAttorney?%>
+                        <h6>Would you like to request payment?</h6>
+                        <p>Clicking Yes will trigger a payment request confirmation modal.</p>
+                    <%elsif current_user.isInsuranceAgent?%>
+                        <h6>Would you like to send payment?</h6>
+                        <p>Clicking Yes will trigger a payment comfirmation modal.</p>
+                    <%end%>
+                    <%=form_for(current_user.settings, url: user_settings_update_path, method: :post) do |f|%>
+                        <div class="form-check">
+                            <%=f.label "Alert me when a settlement is ready for payment", class: "text-muted"%>
+                            <%=f.check_box :alert_when_settlement_ready_for_payment, class: "form-check-input"%>
+                        </div>
+                    <%end%>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Not now">Not now</button>
+                    <%if current_user.isAttorney?%>
+                        <button name="open-payment-request-confirmation-button" class="btn btn-primary" aria-label="Not now">Yes</button>
+                    <%elsif current_user.isInsuranceAgent?%>
+                        <button name="open-payment-confirmation-button" class="btn btn-primary" aria-label="Not now">Yes</button>
+                    <%end%>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new bootstrap.Modal(document.getElementsByName('ready-for-payment-modal')[0]).show();
+    </script>
+
+    <%if current_user.isAttorney?%>
+        <%=render "modals/payment_request_confirmation"%>
+    <%elsif current_user.isInsuranceAgent?%>
+        <%=render "modals/payment_confirmation"%>
+    <%end%>
+<%end%>
+

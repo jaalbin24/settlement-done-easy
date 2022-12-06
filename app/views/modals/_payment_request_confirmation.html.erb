@@ -1,0 +1,22 @@
+<div class="modal fade" name="payment-request-confirmation-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Request Payment!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>You are about to request <strong>$<%=@settlement.amount%></strong> from <%=@settlement.insurance_agent.full_name%></h6>
+                <p>This will lock the settlement. You will not be able to add any documents or change settlement details after requesting payment.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Not now">Cancel</button>
+                <%if current_user.isAttorney?%>
+                    <%=link_to "Request payment", nil, class: "btn btn-primary"%>
+                <%end%>
+            </div>
+        </div>
+    </div>
+</div>
