@@ -1,0 +1,24 @@
+<%# This page is deprecated. It might be reimplemented in the future.%>
+
+
+
+<h1 class="text-center text-primary">Start a New Settlement</h1>
+<p class="text-center">Who would you like to start this settlement with?</p>
+
+<%= bootstrap_form_with model: @settlement, url: settlement_partner_selected_path, local: true do |f| %>
+    <div class="card mx-auto w-50 border-dark border-2">
+        <div class="card-body">
+
+            <div class="mb-3">
+                <%if current_user.isAttorney?%>
+                    <%= f.select :insurance_agent, User.all_insurance_agents.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:class => "form-select"}%>
+                <%else%>
+                    <%= f.select :attorney, User.all_attorneys.map { |user| ["#{user.full_name} (#{user.organization})", user.id] }, {}, {:class => "form-select"}%>
+                <%end%>
+            </div>
+
+
+            <%= f.submit "Start", class: "btn btn-primary" %>
+        </div>
+    </div>
+<% end %>

@@ -1,0 +1,93 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <h3 class="card-header">Payments</h3>
+                <%if @payments.empty?%>
+                <div class="card-body text-muted text-center">No payments recorded</div>
+                <%else%>
+                <table class="table table-sm table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <td>Claimant</td>
+                            <td>Account</td>
+                            <td>Amount</td>
+                            <td>ETA</td>
+                            <td>Status</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%@payments.each do |p|%>
+                        <tr>
+                            <td><%=p.settlement.claimant_name%></td>
+                            <td>XXXXX<%=current_user.isLawFirm? ? p.destination.last4 : p.source.last4%></td>
+                            <td>$<%=p.amount%></td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-<%=p.completed? ? "success" : "info"%>"><%=p.status%></span></td>
+                        </tr>
+                        <%end%>
+                    </tbody>
+                </table>
+                <%end%>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <h3 class="card-header">Linked Bank Accounts</h3>
+                <ul class="list-group list-group-flush">
+                    <%if current_user.bank_accounts.empty?%>
+                    <div class="list-group-item">
+                        <h5 class="m-0 text-center text-muted">No bank accounts have been linked to SDE.</h5>
+                    </div>
+                    <%else%>
+                    <%current_user.bank_accounts.each do |ba|%>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title"><%=ba.nickname%></h5>
+                                <h6 class="card-subtitle text-muted">XXXXX<%=ba.last4%></h6>
+                            </div>
+                            <div class="col-auto text-end">
+                                <h5><%=link_to "❌", bank_account_delete_path(ba), method: :delete, class: "text-decoration-none"%></h5>
+                                <h6 class="card-subtitle text-muted">Status: <%=ba.status%></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <%end%>
+                    <%end%>
+                </ul>
+                <div class="card-body">
+                    <%=form_with(url: bank_account_create_path, local: true) do |f|%>
+                        <%# This is here to generate a CSRF token that will be used to authenticate a potential POST request %>
+                    <%end%>
+                    <button id="add-bank-account-button" type="button" class="btn btn-sm btn-primary">Add account</button> 
+                </div>
+                <div class="card-footer text-muted">
+                    2 days ago
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mandate-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bank Account Mandate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                By clicking Accept, you authorize Settlement Done Easy (SDE) to debit the bank account specified above for any amount owed for charges arising from your use of SDE’s services and/or purchase of products from SDE, pursuant to SDE's website and terms, until this authorization is revoked. You may amend or cancel this authorization at any time by providing notice to SDE with 30 (thirty) days notice.
+                If you use SDE's services, you authorize SDE to debit your bank account periodically. Payments that fall outside of the regular debits authorized above will only be debited after your authorization is obtained.
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="mandate-accept-button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+                <button type="button" id="mandate-reject-button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+# == Schema Information
+#
+# Table name: document_reviews
+#
+#  id          :bigint           not null, primary key
+#  reason      :string
+#  verdict     :string           default("Waiting"), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  document_id :bigint
+#  log_book_id :bigint
+#  public_id   :string
+#  reviewer_id :bigint
+#
+# Indexes
+#
+#  index_document_reviews_on_document_id  (document_id)
+#  index_document_reviews_on_log_book_id  (log_book_id)
+#  index_document_reviews_on_reviewer_id  (reviewer_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (document_id => documents.id)
+#  fk_rails_...  (log_book_id => log_books.id)
+#  fk_rails_...  (reviewer_id => users.id)
+#
+
+# Attorney added document 1 & 2, so their default approval is below.
+attorney_approval_for_doc1:
+    reviewer: gkbm_attorney
+    verdict: Approved
+    document: one
+
+attorney_approval_for_doc2:
+    reviewer: gkbm_attorney
+    verdict: Approved
+    document: two
+
+# Insurance agent added document 3 & 4, so their default approval is below.
+insurance_agent_approval_for_doc3:
+    reviewer: state_farm_insurance_agent
+    verdict: Approved
+    document: three
+
+insurance_agent_approval_for_doc4:
+    reviewer: state_farm_insurance_agent
+    verdict: Approved
+    document: four
