@@ -298,7 +298,7 @@ DEPENDENCIES
   jwt
   listen (~> 3.3)
   mail
-  pg (~> 1.1)
+  pg
   prawn
   puma (~> 5.6.4)
   rack-mini-profiler (~> 2.0)
@@ -315,11 +315,7 @@ DEPENDENCIES
   webpacker (~> 5.0)
 
 RUBY VERSION
-<<<<<<< HEAD
    ruby 3.0.4p208
-=======
-   ruby 3.0.2p107
->>>>>>> e47c8a4173539e404d714abd402fb27bfab8a9c8
 
 BUNDLED WITH
-   2.3.6
+   2.3.26
