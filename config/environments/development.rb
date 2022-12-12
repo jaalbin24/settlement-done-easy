@@ -88,9 +88,7 @@ Rails.application.configure do
     read_timeout:         5 }
 
   # Required for the Devise mailer to work
-  config.action_mailer.default_url_options = { host: "https://#{Rails.configuration.URL_DOMAIN}/", port: 25 }
-
-
+  config.action_mailer.default_url_options = { host: "#{Rails.configuration.URL_ROOT}/", port: 25 }
   
 end
 

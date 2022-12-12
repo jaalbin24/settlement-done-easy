@@ -1,0 +1,13 @@
+<h1 class="text-center mb-4"><%=current_user.role.titleize%> Dashboard</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col overflow-auto">
+            <%=render "settlements/action_needed"%>
+            <%=render "settlements/waiting_on"%>
+        </div>
+        <div class="col">
+            <%=render "settlements/active_settlements"%>
+        </div>
+    </div>
+</div>

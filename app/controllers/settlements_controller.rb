@@ -1,12 +1,16 @@
 class SettlementsController < ApplicationController
-    include SettlementProgress
     include DsEnvelope
+    include DocumentGenerator
     before_action :authenticate_user!
+    before_action :ensure_organization_is_activated, only: [:new, :create]
 
-    def dashboard
-        render :dashboard
+    def ensure_organization_is_activated
+        unless current_user.organization.activated?
+            flash[:info] = "You cannot start a settlement until #{current_user.organization.full_name}'s account is activated."
+            redirect_to root_path
+        end
     end
-    
+
     def new
         if current_user.isAttorney?
             @settlement = Settlement.new
@@ -21,25 +25,9 @@ class SettlementsController < ApplicationController
         end
     end
 
-    def need_index
-        @stage = params[:stage].to_i
-        @status = params[:status].to_i
-        if SettlementProgress.statusValid?(@stage, @status)
-            if current_user.isAttorney?
-                @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("attorney_id=?", current_user.id)))
-            elsif current_user.isInsuranceAgent?
-                @settlements = Settlement.where("stage=?", @stage).and(Settlement.where("status=?", @status).and(Settlement.where("insurance_agent_id=?", current_user.id)))
-            end
-            render :need_index
-        else
-            flash[:error] = "That status is not valid! Stage = #{@stage} Status = #{@status}"
-            redirect_to root_path
-        end
-    end
-
     def create
         begin
-            partner = User.find(params[:partner_id])
+            partner = User.find_by!(public_id: params[:partner_id])
         rescue
             handle_invalid_request
             return
@@ -54,11 +42,12 @@ class SettlementsController < ApplicationController
             insurance_agent = current_user
         end
         settlement_creation_params = {
+            started_by: current_user,
             claim_number: settlement_params[:claim_number],
             policy_number: settlement_params[:policy_number],
-            settlement_amount: settlement_params[:settlement_amount],
-            defendant_name: settlement_params[:defendant_name],
-            plaintiff_name: settlement_params[:plaintiff_name],
+            amount: settlement_params[:amount],
+            policy_holder_name: settlement_params[:policy_holder_name],
+            claimant_name: settlement_params[:claimant_name],
             incident_date: settlement_params[:incident_date],
             incident_location: settlement_params[:incident_location],
             attorney: attorney,
@@ -66,18 +55,20 @@ class SettlementsController < ApplicationController
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
-            flash[:info] = "Started a new settlement with #{partner.full_name}!"
-            redirect_to settlement_show_path(settlement)
+            flash[:info] = "Started a new settlement with #{partner.full_name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
+            redirect_to settlement_show_url(settlement)
         else
-            flash.now[:error] = "Settlement not created!"
+            flash.now[:error] = "#{settlement.errors.full_messages.inspect}"
             render :new
         end
     end
 
     def show
         begin
-            @settlement = Settlement.find(params[:id])
-        rescue
+            @settlement = Settlement.find_by!(public_id: params[:id])
+            @attr_review_by_current_user = @settlement.attribute_reviews.by(current_user).first
+        rescue => e
+            puts "⚠️⚠️⚠️ ERROR: #{e.message}"
             handle_invalid_request
             return
         end
@@ -85,66 +76,41 @@ class SettlementsController < ApplicationController
 
     def destroy
         begin
-            settlement = Settlement.find(params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
         end
         settlement.destroy
         flash[:info] = "Settlement canceled!"
-        redirect_back(fallback_location: root_path)
+        redirect_to root_path
     end
 
     def update
         begin
-            @settlement = Settlement.find(params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
         end
-        if @settlement.update(settlement_params)
-            flash.now[:info] = "Settlement updated."
-            render :show
+        if settlement.locked?
+            flash[:info] = "This settlement cannot be modified right now because it is locked. No changes were made."
         else
-            flash.now[:error] = "Settlement could not be updated."
-        end
-    end
-
-    def review_document
-        begin
-            settlement = Settlement.find(params[:id])
-        rescue
-            handle_invalid_request
-            return
-        end
-        if !settlement.has_documents?
-            flash[:error] = "This settlement does not have a document to review."
-            redirect_back(fallback_location: root_path)
-        else
-            redirect_to document_show_url(settlement.first_waiting_document)
-        end
-    end
-
-    def payment_success
-        begin
-            @settlement = Settlement.find(params[:id])
-        rescue
-            handle_invalid_request
-            return
-        end
-        stripe_payment_intent = Stripe::PaymentIntent.retrieve(@settlement.stripe_payment_intent_id)
-        if stripe_payment_intent.status == "processing" || stripe_payment_intent.status == "succeeded"
-            @settlement.payment_made = true
-            if !@settlement.save
-                puts "====================== ERROR SAVING: #{@settlement.errors.full_messages.inspect}"
+            begin
+                settlement.update(settlement_params)
+                flash[:info] = "Settlement updated."
+            rescue SafetyError::SafetyError => e
+                flash[:info] = e.message
+            rescue
+                flash[:error] = "Settlement could not be updated. Try again later."
             end
-            render :payment_success
         end
+        redirect_back(fallback_location: root_path)
     end
 
     def complete
         begin
-            settlement = Settlement.find(params[:id])
+            settlement = Settlement.find_by!(public_id: params[:id])
         rescue
             handle_invalid_request
             return
@@ -152,16 +118,50 @@ class SettlementsController < ApplicationController
         settlement.completed = true
         settlement.save
         flash[:success] = "Settlement completed!"
-        redirect_to settlement_show_url(settlement)
+        redirect_back(fallback_location: root_path)
+    end
+
+    def generate_document
+        begin
+            settlement = Settlement.find_by!(public_id: params[:id])
+        rescue
+            handle_invalid_request
+            return
+        end
+        begin
+            document = generate_document_for_settlement(settlement)
+            document.save!
+            flash[:info] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
+        rescue SafetyError::SafetyError => e
+            flash[:info] = e.message
+        rescue
+            flash[:info] = "There was a problem generating the document. Please try again later."
+            puts "⚠️⚠️⚠️ ERROR: #{e.message}"
+        end
+        redirect_back(fallback_location: root_path)
+    end
+
+    def completed_index
+        if current_user.isAttorney?
+            @settlements = Settlement.where("attorney_id=?", user.id).and(Settlement.where("completed=?", true)).all
+        elsif current_user.isInsuranceAgent?
+            @settlements = Settlement.where("insurance_agent_id=?", user.id).and(Settlement.where("completed=?", true)).all
+        elsif current_user.isLawFirm?
+            attorney_id_array = User.where(organization_id: user.id).pluck(:id)
+            @settlements = Settlement.where(attorney_id: attorney_id_array).and(Settlement.where("completed=?", true)).all
+        elsif current_user.isInsuranceCompany?
+            agent_id_array = User.where(organization_id: user.id).pluck(:id)
+            @settlements = Settlement.where(insurance_agent_id: agent_id_array).and(Settlement.where("completed=?", true)).all
+        end  
     end
 
     def settlement_params
         params.require(:settlement).permit(
             :claim_number,
             :policy_number,
-            :settlement_amount,
-            :defendant_name,
-            :plaintiff_name,
+            :amount,
+            :policy_holder_name,
+            :claimant_name,
             :incident_date,
             :incident_location
         )

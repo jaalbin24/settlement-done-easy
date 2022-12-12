@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.2'
+ruby '3.0.4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.6'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 1.1'
+gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 5.6.4'
 # Use SCSS for stylesheets
@@ -15,8 +15,7 @@ gem 'sass-rails', '>= 6'
 gem 'webpacker', '~> 5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -26,9 +25,20 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
+group :production do
+  # Use Redis adapter to run Action Cable in production
+  gem 'redis', '< 5'
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # Logs outgoing HTTP requests. Used for debugging.
+  gem 'httplog'
+  # RSpec for testing
+  gem "rspec-rails"
+  # Factory Bot for dynamic test fixture generation
+  gem 'factory_bot_rails'
 end
 
 group :development do
@@ -80,11 +90,9 @@ gem 'docusign_esign'
 # For authenticating with the DocuSign API
 gem 'jwt'
 
-# Job scheduler for running cron jobs at regular intervals
-gem 'whenever'
-
 # Payment Processor
-gem 'stripe', '~> 5.47.0'
+gem 'stripe' #, '~> 5.47.0'
 
-# Logs outgoing HTTP requests. Used for debugging.
-gem 'httplog'
+# For icons
+gem "font-awesome-sass"
+

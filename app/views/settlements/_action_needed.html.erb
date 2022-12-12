@@ -1,15 +1,92 @@
 <div class="card mb-4">
-    <div class="card-header"><h4 class="m-0">Action Needed</h4></div>
-    <div class="list-group">
-        <%if current_user.isAttorney?%>
-            <%=settlements_need_approval(current_user)%>
-            <%=settlements_ready_to_be_signed(current_user)%>
-            <%=settlements_need_final_approval%>
-            <%=settlements_need_payment_review(current_user)%>
-        <%elsif current_user.isInsuranceAgent?%>
-            <%=settlements_need_document(current_user)%>
-            <%=settlements_need_adjustment(current_user)%>
-            <%=settlements_need_payment(current_user)%>
-        <%end%>
+    <div class="card-header">
+        <h4 class="m-0">Action Needed</h4>
+    </div>
+
+    <%  
+        document_review_ids = current_user.document_reviews.waiting_for_review.includes(:document).pluck(:document_id)
+        @reviewable_documents = Document.where(id: document_review_ids).all
+
+        @payable_settlements = current_user.settlements.ready_for_payment.all
+
+        settlement_ids = current_user.settlements.pluck(:id)
+        @rejected_documents = Document.rejected.where(settlement_id: settlement_ids).all
+
+        @settlements_with_zero_documents = current_user.settlements.left_outer_joins(:documents).where(documents: {id: nil})
+    %>
+
+    <div class="accordion accordion-flush" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header d-flex" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <span class="badge bg-primary rounded-pill me-2" style="width: 2rem; margin-right: 0.5rem;"><%=@reviewable_documents.size%></span>
+                    <%="Document".pluralize(@reviewable_documents.size)%> can be reviewed.
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                <div class="accordion-body p-0">
+                    <ul class="list-group list-group-flush overflow-auto" style="max-height: 12rem;">
+                        <%@reviewable_documents.each do |d|%>
+                            <li class="py-1 list-group-item">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <p class="m-0"><strong class="m-0">Filename:</strong> <%=d.pdf.filename%></p>
+                                    </div>
+                                    <div class="col-auto d-flex align-items-center">
+                                        <a href="<%=document_show_path(d)%>">
+                                            <h4 class="m-0 p-0 text-primary"><i class="fa-solid fa-circle-arrow-right"></i></h4>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        <%end%>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <span class="badge bg-primary rounded-pill me-2" style="width: 2rem; margin-right: 0.5rem;"><%=@payable_settlements.size%></span>
+                    <%="Payment".pluralize(@payable_settlements.size)%> can be made.
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                <div class="accordion-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <%@payable_settlements.each do |s|%>
+                            <li class="py-1 list-group-item d-flex justify-content-between align-items-center">
+                                <p class="m-0"><strong>$<%=s.amount%></strong> to <%=s.attorney.full_name%> for <%=s.claimant_name%></p>
+                                <a class="link-primary" href="<%=payment_show_path(s.active_payment)%>">
+                                    <h4 class="m-0 p-0 text-primary"><i class="fa-solid fa-circle-arrow-right"></i></h4>
+                                </a>
+                            </li>
+                        <%end%>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <span class="badge bg-primary rounded-pill me-2" style="width: 2rem; margin-right: 0.5rem;"><%=@settlements_with_zero_documents.size%></span>
+                    <%="#{"Settlement".pluralize(@settlements_with_zero_documents.size)} #{@settlements_with_zero_documents.size == 1 ? "needs" : "need"}"%> a document.
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
+                <div class="accordion-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <%@settlements_with_zero_documents.each do |s|%>
+                            <li class="py-1 list-group-item d-flex justify-content-between align-items-center">
+                                <p class="m-0">Settlement #<strong><%=s.public_number%></strong> needs a document.</p>
+                                <a class="link-primary" href="<%=settlement_show_path(s)%>">
+                                    <h4 class="m-0 p-0 text-primary"><i class="fa-solid fa-circle-arrow-right"></i></h4>
+                                </a>
+                            </li>
+                        <%end%>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

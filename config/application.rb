@@ -6,7 +6,7 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module MailerTesting
+module SettlementDoneEasy
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
@@ -18,9 +18,9 @@ module MailerTesting
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    DOCUSIGN_CONFIG = YAML.load_file("#{Rails.root.to_s}/config/appsettings.yml")[Rails.env]
-     DOCUSIGN_CONFIG.map do |k,v|
-       config.send("#{k}=", v)
-     end
+    CONFIG = YAML.load_file("#{Rails.root.to_s}/config/appsettings.yml")[Rails.env]
+    CONFIG.map do |k,v|
+      config.send("#{k}=", v)
+    end
   end
 end

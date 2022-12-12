@@ -7,10 +7,6 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-*
-
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -42,4 +38,12 @@ yarn-debug.log*
 # Ignore sensitive credentials
 /config/appsettings.yml
 /config/docusign_private_key.txt
+<<<<<<< HEAD
 /config/docusign_public_key.txt
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+=======
+/config/docusign_public_key.txt
+>>>>>>> e47c8a4173539e404d714abd402fb27bfab8a9c8

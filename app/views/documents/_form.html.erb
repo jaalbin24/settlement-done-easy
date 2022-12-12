@@ -1,28 +1,35 @@
-
-
-
-<%= form_with model: @document, url: path, local: true do |f| %>
-  <div class="card">
-    <div class="card-body form-group">
-      <%=f.label "Choose a file"%>
-      <%=f.file_field :pdf, class: "form-control", required: true%>
-      <br>
-      
-      <%=f.label "Has this document been signed by the claimant?"%>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="document[signed]" id="document_signed_true" value="true">
-          Yes
-        </label>
-      </div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="document[signed]" id="document_signed_false" value="false">
-          No
-        </label>
-      </div>
-      <br>
-      <%=f.submit "Upload", class: "btn btn-primary"%>
+<%=form_with model: @document, url: path, local: true do |f| %>
+    <div class="card">
+        <div class="card-body form-group">
+            <%=f.label "Choose a file"%>
+            <%=f.file_field :pdf, class: "form-control", required: true%>
+            <br>
+            
+            <%=f.label "Has this document been signed by the claimant?"%>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="document[signature]" id="document_signature_true" value="true">
+                    Yes
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="document[signature]" id="document_signature_false" value="false">
+                    No
+                </label>
+            </div>
+            <br>
+            <div class="container">
+                <div class="row">
+                    <div class="col-auto px-0">
+                        <%=f.submit "Upload", class: "btn btn-primary"%>
+                    </div>
+                    <div class="col-auto">
+                        <%=link_to "Generate", settlement_generate_document_path(@settlement), method: :post, class: "btn btn-primary"%>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
     </div>
-  </div>
-<% end %>
+<%end%>

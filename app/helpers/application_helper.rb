@@ -26,49 +26,27 @@ module ApplicationHelper
         bootstrap_alert_class[level]
     end
 
-    # Used for the status link on the settlement show that can lead anywhere depending on the status of a settlement.
-    def status_action_path(settlement)
-        status = settlement.status
-        case settlement.stage
-        when 1
-            case status
-            when 1
-                return document_new_path(settlement)
-            when 2
-                return settlement_review_document_path(settlement)
-            when 3
-                return document_new_path(settlement)
-            end
-        when 2
-            case status
-            when 1
-                return document_get_e_signature_path(settlement.document_that_needs_signature)
-            when 2
-                return document_get_ds_envelope_status_path(settlement.document_with_signature_request)
-            when 3
-                return settlement_review_final_document_path(settlement)
-            end
-        when 3
-            case status
-            when 1
-                return stripe_settlement_checkout_session_path(settlement)
-            when 2
-                return stripe_get_payment_status_path(settlement)
-            when 3
-                return "#"
-            when 4
-                return settlement_complete_path(settlement)
-            end
-        when 4
-            return "#"
-        end
+    def green_checked_box_icon
+        `<i class="fa-regular fa-square-check bg-success"></i>`
     end
 
+    def checked_box_icon
+        `<i class="fa-regular fa-square-check"></i>`
+    end
+
+    def red_unchecked_box_icon
+        `<i class="fa-regular fa-square bg-danger"></i>`
+    end
+
+    def unchecked_box_icon
+        `<i class="fa-regular fa-square"></i>`
+    end
+    
     def settlements_need_approval(user)
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 1 && s.status == 2
+            if 1 == 1 && 1 == 2
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -84,15 +62,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements need approval."
+                message = "Documents need approval."
             else
-                message = "Settlement needs approval."
+                message = "Document needs approval."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements waiting for approval."
+                message = "Documents waiting for approval."
             else
-                message = "Settlement waiting for approval."
+                message = "Document waiting for approval."
             end
         end
         if count != 0 && count != 1
@@ -108,7 +86,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 2 && s.status == 1
+            if 1 == 2 && 1 == 1
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -124,15 +102,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements need a signature request."
+                message = "Documents need a signature."
             else
-                message = "Settlement needs a signature request."
+                message = "Document needs a signature."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements waiting to be sent to claimant."
+                message = "Documents waiting for signature."
             else
-                message = "Settlement waiting to be sent to claimant."
+                message = "Document waiting for signature."
             end
         end
         if count != 0 && count != 1
@@ -148,7 +126,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 1 && s.status == 3
+            if 1 == 1 && 1 == 3
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -164,15 +142,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements waiting for adjustment."
+                message = "Documents waiting for adjustment."
             else
-                message = "Settlement waiting for adjustment."
+                message = "Document waiting for adjustment."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements need adjustment."
+                message = "Documents need adjustment."
             else
-                message = "Settlement needs adjustment."
+                message = "Document needs adjustment."
             end
         end
         if count != 0 && count != 1
@@ -188,7 +166,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 3 && s.status == 1
+            if 1 == 3 && 1 == 1
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -228,7 +206,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 1 && s.status == 1
+            if 1 == 1 && 1 == 1
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -268,7 +246,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 3 && s.status == 2
+            if 1 == 3 && 1 == 2
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -308,7 +286,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         user.settlements.each do |s|
-            if s.stage == 2 && s.status == 2
+            if 1 == 2 && 1 == 2
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -320,15 +298,15 @@ module ApplicationHelper
         end
         if user.isAttorney?
             if count != 1
-                message = "Settlements waiting for client signature."
+                message = "Documents waiting for client signature."
             else
-                message = "Settlement waiting for client signature."
+                message = "Document waiting for client signature."
             end
         elsif user.isInsuranceAgent?
             if count != 1
-                message = "Settlements waiting for claimant signature."
+                message = "Documents waiting for claimant signature."
             else
-                message = "Settlement waiting for claimant signature."
+                message = "Document waiting for claimant signature."
             end
         end
         if count != 0 && count != 1
@@ -344,7 +322,7 @@ module ApplicationHelper
         count = 0
         path = "#"
         current_user.settlements.each do |s|
-            if s.stage == 2 && s.status == 3
+            if 1 == 2 && 1 == 3
                 path = settlement_show_path(s)
                 count += 1
             end
@@ -445,5 +423,77 @@ module ApplicationHelper
         when 4
             return "have been completed!"
         end    
+    end
+
+    def thumbs_up_icon(args=nil)
+        css_classes = ["fa-solid", "fa-thumbs-up", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        css_classes.push("fa-flip-horizontal") if args[:flip_horizontal]
+        "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
+    end
+
+    def thumbs_down_icon(args=nil)
+        css_classes = ["fa-solid", "fa-thumbs-down", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        css_classes.push("fa-flip-horizontal") if args[:flip_horizontal]
+        "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
+    end
+
+    def circle_icon(args=nil)
+        css_classes = ["fa-solid", "fa-circle", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
+    end
+
+    def checkbox_icon(args=nil)
+        css_classes = ["fa-regular", "m-0"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        end
+        case args[:text_size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:text_size].to_s)
+        end
+        case args[:checked]
+        when true
+            css_classes.push("fa-square-check")
+        when false
+            css_classes.push("fa-square")
+        end
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end
 end

@@ -2,13 +2,13 @@
     <div class="row">
         <div class="col">
             <div class="accordion" id="accordionExample">
-                <div class="accordion-item open">
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                             Document Info
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <div class="container">
                                 <div class="row">
@@ -41,11 +41,11 @@
                                     </div>
                                     <div class="col">
                                         <%if @document.signed?%>
-                                            <td>✔️</td>
-                                        <%elsif @document.ds_envelope_id != nil%>
-                                            <td>⌛</td>
+                                            Signed
+                                        <%elsif @document.needs_signature?%>
+                                            Needs signature
                                         <%else%>
-                                            <td>❌</td>
+                                            Not needed
                                         <%end%>
                                     </div>
                                 </div>
@@ -54,12 +54,10 @@
                                         Approval:
                                     </div>
                                     <div class="col">
-                                        <%if @document.approved?%>
-                                            ✔️
-                                        <%elsif @document.rejected?%>
-                                            ❌
+                                        <%if @approval_progress == 100%>
+                                            <p class="m-0 text-success"><%=@approval_progress%>%</p>
                                         <%else%>
-                                            ⌛
+                                            <p class="m-0"><%=@approval_progress%>%</p>
                                         <%end%>
                                     </div>
                                 </div>
@@ -69,46 +67,109 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Approve or Reject
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Approval
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                         <div class="accordion-body">
-                            <div class="row text-center">
-                                <%if !@document.approved? && !@document.rejected?%>
-                                <div class="col">
-                                    <%=link_to "Approve", document_approve_path(@document), method: :post, class: "btn btn-lg btn-success w-100"%>
+                            <div class="text-center">
+                                <h2 class="text-center fs-bold">Approval progress: <%=@approval_progress%>%</h2>
+                                <div class="progress w-75 mx-auto my-3">
+                                    <%if @document.rejected?%>
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="<%=@approval_progress%>" aria-valuemin="0" aria-valuemax="100" style="width: <%=@approval_progress%>%;"></div>
+                                    <%elsif @document.approved?%>
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="<%=@approval_progress%>" aria-valuemin="0" aria-valuemax="100" style="width: <%=@approval_progress%>%;"></div>
+                                    <%else%>
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" aria-valuenow="<%=@approval_progress%>" aria-valuemin="0" aria-valuemax="100" style="width: <%=@approval_progress%>%;"></div>
+                                    <%end%>
                                 </div>
-                                <div class="col">
-                                    <%=link_to "Reject", document_reject_path(@document), method: :post, class: "btn btn-lg btn-danger w-100"%>
-                                </div>
-                                <%else%>
-                                <div class="col">
-                                    <%=link_to "Approve", "#", method: :post, class: "btn btn-lg btn-success disabled w-100"%>
-                                </div>
-                                <div class="col">
-                                    <%=link_to "Reject", "#", method: :post, class: "btn btn-lg btn-danger disabled w-100"%>
-                                </div>
-                                <%end%>
                             </div>
-                            <h6 class="mt-2 mb-0 text-center">Once approved/rejected, the document cannot be modified.</h6>
+                            <%if @document.rejected?%>
+                                <%if @document.reviews.rejections.by(current_user).exists?%>
+                                <p class="text-center text-muted">You have rejected this document. The settlement cannot continue until this document is removed or approved.</p>
+                                <%else%>
+                                <p class="text-center text-muted"><%=@document.reviews.rejections.first.reviewer.full_name%> has rejected this document. The settlement cannot continue until it is removed or approved.</p>
+                                <%end%>
+                            <%elsif @document.approved?%>
+                            <p class="text-center text-muted">This document has been approved by all parties.</p>
+                            <%else%>
+                                <%if @document.reviews.waiting_for_review.by(current_user).exists?%>
+                                    <p class="text-center text-muted">You must approve or reject this document for the settlement to continue.</p>
+                                <%else%>
+                                    <p class="text-center text-muted"><%=@document.reviews.waiting_for_review.first.reviewer.full_name%> must approve this document for the settlement to continue.</p>
+                                <%end%>
+                            <%end%>
+                            <div class="row">
+                                <div class="col border-end">
+                                    <h5 class="fs-bold">Approvals gathered:</h5>
+                                    <%@document.reviews.approvals.each do |review|%>
+                                        <h6><i class="fa-regular fa-square-check"></i> <%=@document.added_by == review.reviewer ? "#{review.reviewer.full_name} (Automatically)" : review.reviewer.full_name%></h6>
+                                    <%end%>
+                                    <%@document.reviews.rejections.each do |review|%>
+                                        <h6 class="text-danger"><i class="fa-regular fa-square"></i> <%=review.reviewer.full_name%></h6>
+                                    <%end%>
+                                    <%@document.reviews.waiting_for_review.each do |review|%>
+                                        <h6><i class="fa-regular fa-square"></i> <%=review.reviewer.full_name%></h6>
+                                    <%end%>
+                                </div>
+                                <div class="col">
+                                    <div class="d-grid gap-2">
+                                        <%if !@document.has_been_reviewed_by?(current_user)%>
+                                            <a class="btn btn-lg btn-success" href="<%=document_approve_path(@document)%>" data-method="post">
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                Approve
+                                            </a>
+                                            <%if @document.will_be_deleted_after_rejection?%>
+                                                <button name="open-document-reject-confirmation-button" class="btn btn-lg btn-danger" aria-label="Reject this document">
+                                                    <i class="fa-solid fa-thumbs-down"></i>
+                                                    Reject
+                                                </button>
+                                            <%else%>
+                                                <a class="btn btn-lg btn-danger" aria-label="Reject this document" href="<%=document_reject_path(@document)%>" data-method="post">
+                                                    <i class="fa-solid fa-thumbs-down"></i>
+                                                    Reject
+                                                </a>
+                                            <%end%>   
+                                        <%elsif @document.has_been_rejected_by?(current_user)%>
+                                            <a class="btn btn-lg btn-success" href="<%=document_approve_path(@document)%>" data-method="post">
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                Approve
+                                            </a>
+                                            <a class="btn btn-lg btn-info" href="<%=document_unreject_path(@document)%>" data-method="post">
+                                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                                Unreject
+                                            </a>
+                                        <%elsif @document.has_been_approved_by?(current_user)%>
+                                            <a class="disabled btn btn-lg btn-success" href="">
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                Approve
+                                            </a>
+                                            <a class="disabled btn btn-lg btn-danger" href="">
+                                                <i class="fa-solid fa-thumbs-down"></i>
+                                                Reject
+                                            </a>
+                                        <%end%>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <%if @document.needs_signature?%>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                             Get eSignature
                         </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
                         <div class="accordion-body">
-                            <p class="card-text text-center"><%=@document.settlement.plaintiff_name%> will receive an email with instructions to eSign this document.</p>
-                            <%= form_with url: document_send_ds_signature_request_path(@document), method: :patch, local: true do |f| %>
+                            <p class="card-text text-center"><%=@document.settlement.claimant_name%> will receive an email from DocuSign with instructions to eSign this document.</p>
+                            <%=form_with url: document_send_ds_signature_request_path(@document), method: :patch, local: true do |f| %>
                             <div class="mb-3">
                                 <%= f.label "Client name", { class: "form-label"} %>
-                                <%= f.text_field :client_name, class: "form-control", placeholder: "Client name", value: @document.settlement.plaintiff_name, readonly: true%>
+                                <%= f.text_field :client_name, class: "form-control", placeholder: "Client name", value: @document.settlement.claimant_name, readonly: true%>
                             </div>
                             <div class="mb-3">
                                 <%= f.label "Client email", { class: "form-label"} %>
@@ -119,16 +180,22 @@
                                     <%=link_to "Send Later", root_path, class: "btn btn-lg btn-secondary w-100"%>
                                 </div>
                                 <div class="col">
-                                        <%=f.submit "Send Now", class: "btn btn-lg btn-primary w-100"%>
+                                    <%=f.submit "Send Now", class: "btn btn-lg btn-primary w-100"%>
                                 </div>
                             </div>
-                            <% end %>
+                            <%end%>
                         </div>
                     </div>
                 </div>
+                <%end%>
             </div>
-            <div class="mt-3">
-                <%=link_to "🡸 Back to document index", document_index_path(@document.settlement), class: "btn btn-lg btn-outline-primary"%>
+            <div class="mt-3 row">
+                <div class="col">
+                    <%=link_to "Settlement", settlement_show_path(@document.settlement), class: "btn btn-outline-primary"%>
+                </div>
+                <div class="col text-end">
+                    <%=link_to "Download (PDF)", rails_blob_path(@document.pdf, disposition: "attachment"), class: "btn btn-primary"%>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -136,3 +203,9 @@
         </div>
     </div>
 </div>
+
+<%if @document.settlement.ready_for_payment?%>
+    <%=render "modals/ready_for_payment", render_instantly: true%>
+<%end%>
+
+<%=render "modals/document_reject_confirmation"%>

@@ -1,0 +1,41 @@
+
+<%unless @settlement.locked?%>
+    <div class="modal fade" name="document-upload-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload a document</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body pt-0">
+                    <p class="my-2">Settlement Done Easy currently only supports PDFs.</p>
+                    <%=form_for(@settlement.documents.build, url: document_create_path(@settlement), method: :post) do |f|%>
+                        <div class="form-check p-0 mb-2">
+                            <%=f.label "Choose a file"%>
+                            <%=f.file_field :pdf, class: "form-control", required: true%>
+                        </div>
+                        <%=f.label "Does this document need to be electronically signed?"%>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="document[needs_signature]" id="document_needs_signature_true" value="true">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="document[needs_signature]" id="document_needs_signature_false" value="false">
+                                No
+                            </label>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>
+                    <%=f.submit "Upload", class: "btn btn-primary"%>
+                    <%end%>
+                </div>
+            </div>
+        </div>
+    </div>
+<%end%>

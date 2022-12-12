@@ -61,7 +61,11 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/edit
   def edit
-    super
+    if current_user.isMember?
+      render :edit_member
+    elsif current_user.isOrganization?
+      render :edit_organization
+    end
   end
 
   # PUT /resource
@@ -83,7 +87,11 @@ class User::RegistrationsController < Devise::RegistrationsController
     super
   end
 
-  # protected
+  protected
+
+  def update_resource(resource, params)
+    resource.update_without_password(params)
+  end
 
   # If you have extra params to permit, append them to the sanitizer in the keys array.
   def configure_sign_up_params
@@ -92,7 +100,7 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer in the keys array.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:role, :first_name, :last_name, :organization_id, :business_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:phone_number, :first_name, :last_name, :organization_id, :business_name])
   end
 
   # The path used after sign up.
@@ -105,5 +113,9 @@ class User::RegistrationsController < Devise::RegistrationsController
     super(resource)
   end
 
-
+  # The default url to be used after updating a resource. You need to overwrite
+  # this method in your own RegistrationsController.
+  def after_update_path_for(resource)
+    sign_in_after_change_password? ? settings_path : new_session_path(resource_name)
+  end
 end

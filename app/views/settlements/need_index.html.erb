@@ -26,7 +26,7 @@
                     <td><%=link_to s.insurance_agent.full_name, settlement_show_path(s)%></td>
                     <td><%=s.insurance_agent.organization.full_name%></td>
                 <%end%>
-                <td>$<%=s.settlement_amount%></td>
+                <td>$<%=s.amount%></td>
             </tr>
         <%end%>
     </tbody>

@@ -1,16 +1,13 @@
 require "test_helper"
 
 class PagesControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  include Devise::Test::IntegrationHelpers
+
+  # was the web request successful?
+  # was the user redirected to the right page?
+  # was the user successfully authenticated?
+  # was the correct object stored in the response template?
+  # was the appropriate message displayed to the user in the view?
+
   
-  test "sign in as attorney" do
-    get root_path
-    assert_response :redirect
-    post "/users/sign_in", params: {"user"=>{"email"=>"attorney1@example.com", "password"=>"password123", "remember_me"=>"0"}, "commit"=>"Log in"}
-    assert_response :found
-    get settlement_dashboard_url
-    assert_response :success
-  end
 end

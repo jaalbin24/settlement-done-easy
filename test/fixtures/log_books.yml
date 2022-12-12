@@ -1,0 +1,10 @@
+# == Schema Information
+#
+# Table name: log_books
+#
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  public_id  :string
+#
+for_settlement: {}
