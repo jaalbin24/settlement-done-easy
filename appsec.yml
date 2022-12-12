@@ -1,0 +1,3 @@
+hooks:
+AfterInstall:
+- location: scripts/dependencies_install.sh
