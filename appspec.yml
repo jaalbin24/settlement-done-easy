@@ -5,3 +5,5 @@ os: linux
 hooks:
   BeforeInstall:
     - location: scripts/update_postgres.sh
+  AfterInstall:
+    - location: scripts/migrate_db.sh

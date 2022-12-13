@@ -187,22 +187,6 @@ def generate_law_firms(num_law_firms)
             {stripe_account: account.id},
         )
         
-        # Register the bank accounts w/ Stripe using Capybara.
-        # Rspec.describe do
-        #     user = create(:law_firm)
-        #     sign_in user
-        #     visit root_path
-        #     click_on "Add account"
-        #     click_on "Agree"
-        #     click_on "Test Institution"
-        #     click_on "Success"
-        #     click_on "Link account"
-        #     click_on "Done"
-        #     click_on "Accept"
-        #     sleep(3)
-        #     visit current_path
-        #     expect(page).to have_text "STRIPE TEST BANK"
-        # end
         return_value[lf.parameterize.underscore.to_sym] = {
             business_name: lf,
             stripe_id: account.id,
@@ -379,22 +363,6 @@ def generate_insurance_companies(num_insurance_companies)
             },
             {stripe_account: account.id},
         )
-        # Register the bank accounts w/ Stripe using Capybara.
-        # Rspec.describe "using Capybara w/ RSpec to interact with the browser automatically." do
-        #     user = create(:law_firm, stripe_financial_account_id: treasury_account.id, stripe_id: account.id)
-        #     sign_in user
-        #     visit root_path
-        #     click_on "Add account"
-        #     click_on "Agree"
-        #     click_on "Test Institution"
-        #     click_on "Success"
-        #     click_on "Link account"
-        #     click_on "Done"
-        #     click_on "Accept"
-        #     sleep(3)
-        #     visit current_path
-        #     expect(page).to have_text "STRIPE TEST BANK"
-        # end
         return_value[ic.parameterize.underscore.to_sym] = {
             buisness_name: ic,
             stripe_id: account.id,
