@@ -1,1 +1,4 @@
 # This file is required by AWS. CodeDeploy will fail to deploy the application unless a file named "appspec.yml" exists in the root directory.
+
+version: 0.0
+os: linux
