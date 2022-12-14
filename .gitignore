@@ -28,6 +28,11 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore other sensitive credentials
+/config/docusign_private_key.txt
+/config/docusign_public_key.txt
+/config/credentials/*.key
+
 /public/packs
 /public/packs-test
 /node_modules
@@ -35,9 +40,6 @@
 yarn-debug.log*
 .yarn-integrity
 
-# Ignore sensitive credentials
-/config/docusign_private_key.txt
-/config/docusign_public_key.txt
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
