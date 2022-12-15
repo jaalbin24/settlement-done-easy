@@ -19,6 +19,7 @@ module SettlementDoneEasy
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     CONFIG = YAML.load_file("#{Rails.root.to_s}/config/appsettings.yml")[Rails.env]
+
     CONFIG.map do |k,v|
       config.send("#{k}=", v)
     end
