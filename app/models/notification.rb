@@ -28,7 +28,11 @@ class Notification < ApplicationRecord
     )
 
     after_create do
-        broadcast_to_user
+        begin
+            broadcast_to_user
+        rescue Redis::CannotConnectError => e
+            # TODO: SOMETHING! What should it do?
+        end
     end
 
     def broadcast_to_user
