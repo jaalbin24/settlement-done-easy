@@ -9,7 +9,8 @@ const KEYS = {
     PAYMENT_REQUEST_CONFIRMATION:   "payment-request-confirmation",
     DOCUMENT_REJECT_CONFIRMATION:   "document-reject-confirmation",
     DOCUMENT_UPLOAD:                "document-upload",
-    CHANGE_PASSWORD:                "change-password"
+    CHANGE_PASSWORD:                "change-password",
+    PASSWORD_CONFIRMATION:          "password-confirmation"
 }
 
 export default class ModalMaker {

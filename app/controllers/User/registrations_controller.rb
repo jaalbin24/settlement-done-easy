@@ -30,7 +30,12 @@ class User::RegistrationsController < Devise::RegistrationsController
     yield resource if block_given?
     if resource.persisted?
       if resource.active_for_authentication?
-        set_flash_message! :notice, :signed_up # Equivalent to flash[:notice] = "[whatever the signup message is]"
+        if resource.activated?
+          # TODO: Send yourself an email because this should never happen.
+        else
+          flash[:warning] = "You have signed up, but your account is not activated. Click <a href=\"#{settings_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
+        end
+        # set_flash_message! :notice, :signed_up # Equivalent to flash[:notice] = "[whatever the signup message is]"
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)
       else
@@ -45,16 +50,16 @@ class User::RegistrationsController < Devise::RegistrationsController
       clean_up_passwords resource
       set_minimum_password_length
       @role = params[:user][:role]
-      if @role == "Insurance Agent"
-        @organizations = User.all_insurance_companies
-      elsif @role == "Attorney"
-        @organizations = User.all_law_firms
-      elsif @role == "Law Firm" || @role == "Insurance Company"
-        @organizations = nil
-      else
-        redirect_to user_type_select_url
-        return
-      end
+      # if @role == "Insurance Agent"
+      #   @organizations = User.all_insurance_companies
+      # elsif @role == "Attorney"
+      #   @organizations = User.all_law_firms
+      # elsif @role == "Law Firm" || @role == "Insurance Company"
+      #   @organizations = nil
+      # else
+      #   redirect_to user_type_select_url
+      #   return
+      # end
       respond_with resource
     end
   end
@@ -70,7 +75,21 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # PUT /resource
   def update
-    super
+    self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+    prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
+
+    resource_updated = update_resource(resource, account_update_params)
+    yield resource if block_given?
+    if resource_updated
+      set_flash_message_for_update(resource, prev_unconfirmed_email)
+      bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
+
+      respond_with resource, location: after_update_path_for(resource)
+    else
+      clean_up_passwords resource
+      set_minimum_password_length
+      respond_with resource
+    end
   end
 
   # DELETE /resource
@@ -90,7 +109,7 @@ class User::RegistrationsController < Devise::RegistrationsController
   protected
 
   def update_resource(resource, params)
-    resource.update_without_password(params)
+    resource.update_with_password(params)
   end
 
   # If you have extra params to permit, append them to the sanitizer in the keys array.

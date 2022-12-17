@@ -382,5 +382,8 @@ RSpec.describe "The account section of the user settings page" do
             pending "Implementation"
             fail
         end
+        it "must list the planned changes to the user's account" do
+
+        end
     end
 end

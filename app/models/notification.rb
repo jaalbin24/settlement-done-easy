@@ -31,7 +31,9 @@ class Notification < ApplicationRecord
         begin
             broadcast_to_user
         rescue Redis::CannotConnectError => e
-            # TODO: SOMETHING! What should it do?
+            puts "⚠️⚠️⚠️ Something is wrong with the connection to Redis. A Redis::CannotConnectError was raised when a notification was created"
+            puts "⚠️⚠️⚠️ Notification: #{public_id}"
+            puts "⚠️⚠️⚠️ Error message: #{e.message}"
         end
     end
 
