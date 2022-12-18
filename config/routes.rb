@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
 
   devise_for :users, controllers: { registrations: 'user/registrations', sessions: 'user/sessions'}
+  devise_scope :user do
+    put 'users/validate',                        to: 'user/registrations#validate_password'
+  end
 
   
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

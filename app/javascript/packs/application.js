@@ -21,6 +21,8 @@ import Toaster from 'packs/toaster'
 import ModalMaker from 'packs/modal_maker'
 
 
+import PasswordConfirmation from 'packs/password_confirmation'
+
 import AttributeReview from 'packs/settlement_attribute_review'
 import EnglishLanguage from 'packs/english_language'
 
@@ -30,6 +32,7 @@ window.toaster = new Toaster();
 window.modalMaker = new ModalMaker();
 window.settlementAttributeReview = new AttributeReview();
 window.englishLanguage = new EnglishLanguage();
+window.passwordConfirmation = new PasswordConfirmation();
 
 // For bootstrap popovers
 document.addEventListener("DOMContentLoaded", () => {

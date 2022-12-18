@@ -86,9 +86,10 @@ class User::RegistrationsController < Devise::RegistrationsController
 
       respond_with resource, location: after_update_path_for(resource)
     else
+      flash[:info] = "Account details could not be updated at this time. Please try again later."
       clean_up_passwords resource
       set_minimum_password_length
-      respond_with resource
+      redirect_to settings_url
     end
   end
 
@@ -104,6 +105,17 @@ class User::RegistrationsController < Devise::RegistrationsController
   # removing all OAuth session data.
   def cancel
     super
+  end
+
+
+  # GET /users/validate
+  def validate_password
+    puts "================================> current_password: #{params["user[current_password]"]}"
+    if current_user.valid_password?(params["user[current_password]"])
+      head 200
+    else
+      head 401
+    end
   end
 
   protected

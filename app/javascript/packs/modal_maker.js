@@ -21,12 +21,11 @@ export default class ModalMaker {
                 if (buttons.length == 0) {
                     continue;
                 } else {
-                    // storing key in memory so it can be accessed by the anonymous function in the button event-listener when it's called.
-                    var key = KEYS[KEY];
                     for (let i = 0; i < buttons.length; i++) {
                         console.log("buttons[%s]=%O", i, buttons[i]);
                         buttons[i].addEventListener("click", (e) => {
                             e.preventDefault();
+                            var key = ModalMaker.convertNameToKey(e.target.name);
                             console.log("Click registered!");
                             ModalMaker.renderModalWithName(ModalMaker.modalName(key));
                         });
@@ -34,6 +33,10 @@ export default class ModalMaker {
                 }
             }
         });
+    }
+
+    static convertNameToKey(name) {
+        return name.replace("open-", "").replace("-button","");
     }
 
     // hideActiveModal() will throw an error if no modal is currently shown.

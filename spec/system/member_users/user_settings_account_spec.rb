@@ -4,7 +4,7 @@ RSpec.describe "The account section of the user settings page" do
     include_context "devise"
     context do
         before do
-            @user = create(:law_firm)
+            @user = create(:attorney)
             sign_in @user
             visit settings_path
         end
@@ -14,14 +14,11 @@ RSpec.describe "The account section of the user settings page" do
         it "must have a Details section" do
             expect(page).to have_text "Account Details"
         end
-        it "must have a Requirements section" do
-            expect(page).to have_text "Requirements"
-        end
     end
 
     context "in the Details section" do
         before do
-            @user = create(:law_firm)
+            @user = create(:attorney)
             sign_in @user
             visit settings_path
         end
@@ -29,7 +26,7 @@ RSpec.describe "The account section of the user settings page" do
             expect(page).to have_css "input[name='user[email]']"
         end
         it "must have a read-only field with astericks representing the user's password" do
-            expect(page).to have_css "input[name='user[password]'][readonly='readonly']"
+            expect(page).to have_css "input[id='password-placeholder'][readonly='readonly']"
         end
         it "must have a button labeled 'Change password' that opens the change password modal" do
             expect(page).to_not have_text "Change Your Password"
@@ -45,56 +42,15 @@ RSpec.describe "The account section of the user settings page" do
             fail
         end
         context "after clicking the 'Update' button" do
-            context "if the email is changed" do
-                before do
-                    @user = create(:law_firm)
-                    sign_in @user
-                    visit settings_path
-                    fill_in "Email", with: "xyz123@example.com"
-                    click_on "Update"
-                end
-                it "must show a visual indicator that the email is not verified" do
-                    pending "Implementation"
-                    fail
-                end
+            before do
+                @user = create(:attorney)
+                sign_in @user
+                visit settings_path
+                click_on "Update"
             end
-            context "if the update succeeds" do
-                before do
-                    @user = create(:law_firm)
-                    sign_in @user
-                    visit settings_path
-                    fill_in "Email", with: "xyz123@example.com"
-                    click_on "Update"
-                end
-                it "must show a message saying the account was updated" do
-                    expect(page).to have_text "Account details updated."
-                end
-            end
-            context "if the update fails" do
-                context "because the phone number is invalid" do
-                    it "must show a message saying the phone number is invalid" do
-                        pending "Implementation"
-                        fail
-                    end
-                end
-                context "because the email is invalid" do
-                    it "must show a message saying the email is invalid" do
-                        pending "Implementation"
-                        fail
-                    end
-                end
-                context "for an unhandled reason" do
-                    it "must show a generic error message" do
-                        pending "Implementation"
-                        fail
-                    end
-                end
-            end
-            context "if nothing was changed" do
-                it "must show a message saying nothing was changed" do
-                    pending "Implementation"
-                    fail
-                end
+            it "must open the password confirmation modal" do
+                pending "Implementation"
+                fail
             end
         end
         context "when the user's email is verified" do
@@ -121,121 +77,6 @@ RSpec.describe "The account section of the user settings page" do
                 fail
             end
         end
-    end
-
-    context "in the Requirements section" do
-        context "when 2FA is enabled" do
-            it "must have a checked box icon next to the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must not do anything when 'Enable 2FA' is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when 2FA is disabled" do
-            it "must have an unchecked box icon next to the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the 2FA activation modal when the 'Enable 2FA' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user has a bank account" do
-            it "must have a checked box icon next to the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the Stripe pop-up when the 'Add a bank account' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user does not have a bank account" do
-            it "must have an unchecked box icon next to the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the Stripe pop-up when the 'Add a bank account' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user has an onboarded Stripe account" do
-            it "must have a checked box icon next to the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must not do anything when 'Complete onboarding with Stripe' is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user does not have an onboarded Stripe account" do
-            it "must have an unchecked box icon next to the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the Stripe pop-up when the 'Complete onboarding with Stripe' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user has at least one member account" do
-            it "must have a checked box icon next to the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must not do anything when 'Create a member account' is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user does not have at least one member account" do
-            it "must have an unchecked box icon next to the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the new member page when the 'Create a member account' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end 
     end
 
     context "in the change password modal" do
@@ -384,6 +225,90 @@ RSpec.describe "The account section of the user settings page" do
         end
         it "must list the planned changes to the user's account" do
 
+        end
+        context "when the 'Update' button is clicked" do
+            it "must disable the 'Update' button" do
+                pending "Implementation"
+                fail
+            end
+            context "if the email was changed" do
+                before do
+                    @user = create(:attorney)
+                    sign_in @user
+                    visit settings_path
+                    fill_in "Email", with: "xyz123@example.com"
+                    click_on "Update"
+                    fill_in "user_current_password", with: "password123"
+                    click_on "submit-edit-user-button"
+                end
+                it "must show a visual indicator that the email is not verified" do
+                    pending "Implementation"
+                    fail
+                end
+            end
+            context "if the update succeeds" do
+                before do
+                    @user = create(:attorney)
+                    sign_in @user
+                    visit settings_path
+                    fill_in "Email", with: "xyz123@example.com"
+                    click_on "Update"
+                    fill_in "user_current_password", with: "password123"
+                    click_on "submit-edit-user-button"
+                end
+                it "must show a message saying the account was updated" do
+                    expect(page).to have_text "Account details updated."
+                end
+                it "must reflect the new changes" do
+                    expect(page).to have_field("user_email", with: "xyz123@example.com")
+                end
+            end
+            context "if the password is incorrect" do
+                before do
+                    @user = create(:attorney)
+                    sign_in @user
+                    visit settings_path
+                    fill_in "Email", with: "xyz123@example.com"
+                    click_on "Update"
+                    fill_in "user_current_password", with: "invalid_password999"
+                    click_on "submit-edit-user-button"
+                end
+                it "must change the styling of the input to invalid" do
+                    expect(page).to have_css "input.is-invalid[name='user[current_password]']"
+                end
+                it "must reenable the 'Update' button" do
+                    expect(page).to have_css "button[name='submit-edit-user-button']:enabled"
+                end
+                it "must show a red notice under the input saying 'Incorrect password'" do
+                    expect(page).to have_css "div.invalid-feedback[name='incorrect-password-error-message']"
+                end
+            end
+            context "if the update fails" do
+                context "because the phone number is invalid" do
+                    it "must show a message saying the phone number is invalid" do
+                        pending "Implementation"
+                        fail
+                    end
+                end
+                context "because the email is invalid" do
+                    it "must show a message saying the email is invalid" do
+                        pending "Implementation"
+                        fail
+                    end
+                end
+                context "for an unhandled reason" do
+                    it "must show a generic error message" do
+                        pending "Implementation"
+                        fail
+                    end
+                end
+            end
+            context "if nothing was changed" do
+                it "must show a message saying nothing was changed" do
+                    pending "Implementation"
+                    fail
+                end
+            end
         end
     end
 end
