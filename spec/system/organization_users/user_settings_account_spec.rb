@@ -46,7 +46,7 @@ RSpec.describe "The account section of the user settings page" do
         end
         context "after clicking the 'Update' button" do
             before do
-                @user = create(:attorney)
+                @user = create(:law_firm)
                 sign_in @user
                 visit settings_path
                 click_on "Update"
@@ -85,7 +85,7 @@ RSpec.describe "The account section of the user settings page" do
     context "in the Requirements section" do
         context "when 2FA is enabled" do
             before do
-                @user = create(:attorney)
+                @user = create(:law_firm)
                 sign_in @user
                 visit settings_path
                 click_on "Update"
@@ -224,10 +224,6 @@ RSpec.describe "The account section of the user settings page" do
             pending "Implementation"
             fail
         end
-        it "must not allow the form to be submitted when the confirmation password and the new password do not match" do
-            pending "Implementation"
-            fail
-        end
         context "after the 'Change password' button has been pressed" do
             context "if the password was successfully changed" do
                 it "must have a message saying the password was changed" do
@@ -244,9 +240,124 @@ RSpec.describe "The account section of the user settings page" do
                 end
             end
             context "if the current password was not correct" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    @change_password_form = find("form[id='change-password-form']")
+                    click_on "Change password"
+                    fill_in "Current password", with: "incorrectPassword123"
+                    fill_in "New password", with: "Password123"
+                    fill_in "New password again", with: "Password123"                    
+                    click_on "Submit"
+                end
+                it "must reenable the 'Update' button" do
+                    expect(@change_password_form).to have_css "button[name='submit-change-password-button']:enabled"
+                end
+                it "must change the styling of the input field to invalid" do
+                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                end
                 it "must have a message saying the password was incorrect" do
-                    pending "Implementation"
-                    fail
+                    expect(@change_password_form).to have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to have_text "Incorrect password"
+                end
+            end
+            context "if the new password and confirmation password did not match" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    @change_password_form = find("form[id='change-password-form']")
+                    click_on "Change password"
+                    fill_in "Current password", with: "incorrectPassword123"
+                    fill_in "New password", with: "Password123"
+                    fill_in "New password again", with: "Password123"                    
+                    click_on "Submit"
+                end
+                it "must reenable the 'Submit' button" do
+                    expect(@change_password_form).to have_css "button[name='submit-change-password-button']:enabled"
+                end
+                it "must change the styling of the input field to invalid" do
+                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                end
+                it "must have a message saying the passwords did not match" do
+                    expect(@change_password_form).to have_css "div.invalid-feedback[name='mismatch-password-error-message']"
+                    expect(@change_password_form).to have_text "Does not match the new password"
+                end
+                it "must not have a message saying the password must be less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='short-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Must have 8 or more characters"
+                end
+                it "must not have a message saying the password cannot be blank" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Cannot be blank"
+                end
+                it "must not have a message saying the password was incorrect" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Incorrect password"
+                end
+            end
+            context "if the new password field was blank" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    @change_password_form = find("form[id='change-password-form']")
+                    click_on "Change password"
+                    fill_in "Current password", with: "password123"
+                    click_on "Submit"
+                end
+                it "must reenable the 'Submit' button" do
+                    expect(@change_password_form).to have_css "button[name='submit-change-password-button']:enabled"
+                end
+                it "must change the styling of the input field to invalid" do
+                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                end
+                it "must have a message saying the field cannot be blank" do
+                    expect(@change_password_form).to have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to have_text "Cannot be blank"
+                end
+                it "must not have a message saying the password must be less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='short-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Must have 8 or more characters"
+                end
+                it "must not have a message saying the password was incorrect" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Incorrect password"
+                end
+                it "must not have a message saying the passwords did not match" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='mismatch-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Does not match the new password"
+                end
+            end
+            context "if the new password was less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    @change_password_form = find("form[id='change-password-form']")
+                    click_on "Change password"
+                    fill_in "Current password", with: "password123"
+                    fill_in "New password", with: "1234567"
+                    click_on "Submit"
+                end
+                it "must reenable the 'Submit' button" do
+                    expect(@change_password_form).to have_css "button[name='submit-edit-user-button']:enabled"
+                end
+                it "must change the styling of the input field to invalid" do
+                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                end
+                it "must have a message saying the password must be less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
+                    expect(@change_password_form).to have_css "div.invalid-feedback[name='short-password-error-message']"
+                    expect(@change_password_form).to have_text "Must have 8 or more characters"
+                end
+                it "must not have a message saying the field cannot be blank" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Cannot be blank"
+                end
+                it "must not have a message saying the password was incorrect" do
+                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(@change_password_form).to_not have_text "Incorrect password"
                 end
             end
         end

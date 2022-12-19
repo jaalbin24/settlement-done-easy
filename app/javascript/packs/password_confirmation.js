@@ -13,7 +13,7 @@ export default class PasswordConfirmation {
                 for(const e of passwordConfirmationFormData) {
                     if (e[0] == "user[current_password]") {
                         let currentPassword = String(e[1]);
-                        if (await PasswordConfirmation.passwordIsValid(currentPassword)) {
+                        if (await PasswordConfirmation.currentPasswordIsValid(currentPassword)) {
                             console.log("PW valid");
                             var currentPasswordField = document.createElement("input");
                             currentPasswordField.type = "hidden";
@@ -24,7 +24,7 @@ export default class PasswordConfirmation {
                         } else {
                             console.log("PW invalid");
                             var currentPasswordInputField = document.getElementById("user_current_password");
-                            var incorrectPasswordErrorMessageElement = document.getElementsByName("incorrect-password-error-message")[0];
+                            var incorrectPasswordErrorMessageElement = passwordConfirmationForm.getElementsByName("incorrect-password-error-message")[0];
                             currentPasswordInputField.classList.add("is-invalid");
                             incorrectPasswordErrorMessageElement.style.display = "block";
                             currentPasswordInputField.focus();
@@ -35,14 +35,7 @@ export default class PasswordConfirmation {
                 }
             });
 
-
-
-
-
-
-
-
-
+            // This event listener controls error messages when changing the user's password
             var changePasswordButton = document.getElementsByName("submit-change-password-button")[0];
             changePasswordButton.addEventListener("click", async event => {
                 event.preventDefault();
@@ -55,37 +48,57 @@ export default class PasswordConfirmation {
                 let newPassword = newPasswordInputElement.value;
                 let confirmNewPasswordInputElement = document.querySelector("input[id='change-password-password-confirmation-field']");
                 let confirmNewPassword = confirmNewPasswordInputElement.value;
-                if (newPassword != confirmNewPassword) {
-                    var mismatchPasswordErrorMessageElement = document.getElementsByName("mismatch-password-error-message")[0];
-                    confirmNewPasswordInputElement.classList.add("is-invalid");
-                    confirmNewPasswordInputElement.focus();
-                    mismatchPasswordErrorMessageElement.style.display = "block";
-                    event.target.disabled = false;
-                } else if (newPassword == "") {
-                    var blankPasswordErrorMessageElement = document.getElementsByName("blank-password-error-message")[0];
-                    newPasswordInputElement.classList.add("is-invalid");
-                    newPasswordInputElement.focus();
-                    blankPasswordErrorMessageElement.style.display = "block";
-                    event.target.disabled = false;
+
+                console.log("1");
+                PasswordConfirmation.removeAllErrorsFromForm(changePasswordForm);
+                console.log("2");
+                let incorrectPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='incorrect-password-error-message']");
+                console.log("3");
+                console.log("incorrectPasswordErrorMessageElement=%O", incorrectPasswordErrorMessageElement);
+                currentPasswordInputElement.classList.remove("is-invalid");
+                // incorrectPasswordErrorMessageElement.style.display = "none";
+
+
+                if (newPassword != confirmNewPassword || newPassword == "" || newPassword.length < 8) {
+                    var newPasswordInputElementHasError = false;
+                    var shortPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='short-password-error-message']");
+                    if (newPassword.length < 8 && newPassword != "") {
+                        newPasswordInputElementHasError = true;
+                        shortPasswordErrorMessageElement.style.display = "block";
+                        newPasswordInputElement.focus();
+                    }
+                    var blankPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='blank-password-error-message']");
+                    if (newPassword == "") {
+                        newPasswordInputElementHasError = true;
+                        newPasswordInputElement.focus();
+                        blankPasswordErrorMessageElement.style.display = "block";
+                    }
+                    var mismatchPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='mismatch-password-error-message']");
+                    if (newPassword != confirmNewPassword && !newPasswordInputElementHasError) {
+                        confirmNewPasswordInputElement.classList.add("is-invalid");
+                        confirmNewPasswordInputElement.focus();
+                        mismatchPasswordErrorMessageElement.style.display = "block";
+                    }
                 } else {
-                    if (await PasswordConfirmation.passwordIsValid(currentPassword)) {
+                    if (await PasswordConfirmation.currentPasswordIsValid(currentPassword)) {
                         console.log("PW valid");
                         changePasswordForm.submit();
                     } else {
                         console.log("PW invalid");
-                        var currentPasswordInputField = document.getElementById("user_current_password");
-                        var incorrectPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback");
                         currentPasswordInputElement.classList.add("is-invalid");
                         incorrectPasswordErrorMessageElement.style.display = "block";
                         currentPasswordInputElement.focus();
-                        event.target.disabled = false;    
                     }
                 }
+                if (newPasswordInputElementHasError) {
+                    newPasswordInputElement.classList.add("is-invalid");
+                }
+                event.target.disabled = false;
             });
         });
     }
 
-    static async passwordIsValid(plaintext_password) {
+    static async currentPasswordIsValid(plaintext_password) {
         let bodyContent = {
             "user[current_password]": String(plaintext_password),
             "authenticity_token": document.querySelector("input[name='authenticity_token']").value
@@ -108,6 +121,18 @@ export default class PasswordConfirmation {
         } else {
             console.log("Returning FALSE");
             return false;
+        }
+    }
+
+    static removeAllErrorsFromForm(form) {
+        let errorMessages = form.querySelectorAll("div.invalid-feedback");
+        let inputs = form.querySelectorAll("input");
+
+        for(const message of errorMessages) {
+            message.style.display = "none";
+        }
+        for(const input of inputs) {
+            input.classList.remove("is-invalid");
         }
     }
 }
