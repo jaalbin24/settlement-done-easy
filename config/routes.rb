@@ -89,4 +89,8 @@ Rails.application.routes.draw do
 
   post 'settlement_attribute_reviews/:id/update',     to: 'settlement_attributes_reviews#update',     as: 'settlement_attributes_review_update'
   
+  get 'requirements',                                 to: 'pages#requirements',                       as: 'requirements'
+
+
+  delete 'multi_factor_authentication',               to: 'multi_factor_authentication#disable',      as: 'mfa_disable'
 end

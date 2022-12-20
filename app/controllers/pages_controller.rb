@@ -38,4 +38,20 @@ class PagesController < ApplicationController
             render :mem_settings
         end
     end
+
+    def requirements
+        if current_user.isOrganization?
+            @activation_progress = 0
+            @activation_progress += 1 if current_user.stripe_account.onboarded?
+            @activation_progress += 1 if current_user.has_bank_account?
+            @activation_progress += 1 if current_user.has_member_account?
+            @activation_progress += 1 if current_user.two_factor_authentication_enabled?
+            @activation_progress += 1 if current_user.email_verified?
+            @activation_progress = @activation_progress * 100 / 5
+            render :requirements
+        else
+            flash[:info] = "You cannot access that page."
+            redirect_to root_path
+        end
+    end
 end

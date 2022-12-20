@@ -65,14 +65,14 @@ RSpec.describe "The account section of the user settings page" do
                 fail
             end
         end
-        context "when 2FA is enabled" do
-            it "must have a link to disable 2FA" do
+        context "when MFA is enabled" do
+            it "must have a link to disable MFA" do
                 pending "Implementation"
                 fail
             end
         end
-        context "when 2FA is disabled" do
-            it "must have a button that opens the 2FA activation modal" do
+        context "when MFA is disabled" do
+            it "must have a button that opens the MFA activation modal" do
                 pending "Implementation"
                 fail
             end
@@ -124,7 +124,7 @@ RSpec.describe "The account section of the user settings page" do
         end
     end
 
-    context "in the 2FA activation modal" do
+    context "in the MFA activation modal" do
         it "must have a tab for authentication via SMS" do
             pending "Implementation"
             fail

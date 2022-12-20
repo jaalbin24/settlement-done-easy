@@ -163,7 +163,7 @@ RSpec.describe "Users", type: :model do
                     expect(u.valid?).to be_truthy
                 end
             end
-            it "must have 2FA enabled" do
+            it "must have MFA enabled" do
                 @users.each do |u|
                     expect(u.activated?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                     expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"

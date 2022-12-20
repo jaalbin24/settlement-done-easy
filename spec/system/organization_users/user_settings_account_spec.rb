@@ -19,7 +19,7 @@ RSpec.describe "The account section of the user settings page" do
         end
     end
 
-    context "in the Details section" do
+    describe "in the Details section" do
         before do
             @user = create(:law_firm)
             sign_in @user
@@ -35,7 +35,7 @@ RSpec.describe "The account section of the user settings page" do
             expect(page).to_not have_text "Change Your Password"
             expect(page).to have_button "Change password"
             click_on "Change password"
-            expect(page).to have_text "Change Your Password"
+            expect(page).to have_css "div.modal.fade[name='change-password-modal']"
         end
         it "must have a field to edit the user's phone number" do
             expect(page).to have_css "input[name='user[phone_number]']"
@@ -52,8 +52,7 @@ RSpec.describe "The account section of the user settings page" do
                 click_on "Update"
             end
             it "must open the password confirmation modal" do
-                pending "Implementation"
-                fail
+                expect(page).to have_css "div.modal.fade[name='password-confirmation-modal']"
             end
         end
         context "when the user's email is verified" do
@@ -68,146 +67,21 @@ RSpec.describe "The account section of the user settings page" do
                 fail
             end
         end
-        context "when 2FA is enabled" do
-            it "must have a link to disable 2FA" do
+        context "when MFA is enabled" do
+            it "must have a link to disable MFA" do
                 pending "Implementation"
                 fail
             end
         end
-        context "when 2FA is disabled" do
-            it "must have a button that opens the 2FA activation modal" do
+        context "when MFA is disabled" do
+            it "must have a button that opens the MFA activation modal" do
                 pending "Implementation"
                 fail
             end
         end
     end
 
-    context "in the Requirements section" do
-        context "when 2FA is enabled" do
-            before do
-                @user = create(:law_firm)
-                sign_in @user
-                visit settings_path
-                click_on "Update"
-            end
-            it "must open the password confirmation modal" do
-                pending "Implementation"
-                fail
-            end
-            it "must have a checked box icon next to the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must not do anything when 'Enable 2FA' is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when 2FA is disabled" do
-            it "must have an unchecked box icon next to the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the 2FA activation modal when the 'Enable 2FA' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Enable 2FA' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user has a bank account" do
-            it "must have a checked box icon next to the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the Stripe pop-up when the 'Add a bank account' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user does not have a bank account" do
-            it "must have an unchecked box icon next to the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the Stripe pop-up when the 'Add a bank account' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Add a bank account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user has an onboarded Stripe account" do
-            it "must have a checked box icon next to the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must not do anything when 'Complete onboarding with Stripe' is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user does not have an onboarded Stripe account" do
-            it "must have an unchecked box icon next to the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must open the Stripe pop-up when the 'Complete onboarding with Stripe' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Complete onboarding with Stripe' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user has at least one member account" do
-            it "must have a checked box icon next to the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must not do anything when 'Create a member account' is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end
-        context "when the user does not have at least one member account" do
-            it "must have an unchecked box icon next to the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the new member page when the 'Create a member account' requirement is clicked" do
-                pending "Implementation"
-                fail
-            end
-            it "must show the right tooltip when hovering over the 'Create a member account' requirement" do
-                pending "Implementation"
-                fail
-            end
-        end 
-    end
-
-    context "in the change password modal" do
+    describe "in the change password modal" do
         it "must have a field to enter the current password" do
             pending "Implementation"
             fail
@@ -220,12 +94,22 @@ RSpec.describe "The account section of the user settings page" do
             pending "Implementation"
             fail
         end
-        it "must have a submit button labeled 'Change password' that submits the form" do
+        it "must have a submit button labeled 'Submit' that submits the form" do
             pending "Implementation"
             fail
         end
-        context "after the 'Change password' button has been pressed" do
+        context "after the 'Submit' button has been pressed" do
             context "if the password was successfully changed" do
+                before do
+                    @user = create(:law_firm)
+                    sign_in @user
+                    visit settings_path
+                    click_on "Change password"
+                    fill_in "user[current_password]", with: "password123"
+                    fill_in "user[password]", with: "newPassword123"
+                    fill_in "user[password_confirmation]", with: "newPassword123"                    
+                    click_on "Submit"
+                end
                 it "must have a message saying the password was changed" do
                     pending "Implementation"
                     fail
@@ -244,22 +128,21 @@ RSpec.describe "The account section of the user settings page" do
                     @user = create(:law_firm)
                     sign_in @user
                     visit settings_path
-                    @change_password_form = find("form[id='change-password-form']")
                     click_on "Change password"
-                    fill_in "Current password", with: "incorrectPassword123"
-                    fill_in "New password", with: "Password123"
-                    fill_in "New password again", with: "Password123"                    
+                    fill_in "user[current_password]", with: "incorrectPassword123"
+                    fill_in "user[password]", with: "newPassword123"
+                    fill_in "user[password_confirmation]", with: "newPassword123"                    
                     click_on "Submit"
                 end
                 it "must reenable the 'Update' button" do
-                    expect(@change_password_form).to have_css "button[name='submit-change-password-button']:enabled"
+                    expect(page).to have_css "button[name='submit-change-password-button']:enabled"
                 end
                 it "must change the styling of the input field to invalid" do
-                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                    expect(page).to have_css "input.is-invalid[name='user[current_password]']"
                 end
                 it "must have a message saying the password was incorrect" do
-                    expect(@change_password_form).to have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to have_text "Incorrect password"
+                    expect(page).to have_css "div.invalid-feedback[name='incorrect-password-error-message']"
+                    expect(page).to have_text "Incorrect password"
                 end
             end
             context "if the new password and confirmation password did not match" do
@@ -267,34 +150,33 @@ RSpec.describe "The account section of the user settings page" do
                     @user = create(:law_firm)
                     sign_in @user
                     visit settings_path
-                    @change_password_form = find("form[id='change-password-form']")
                     click_on "Change password"
-                    fill_in "Current password", with: "incorrectPassword123"
-                    fill_in "New password", with: "Password123"
-                    fill_in "New password again", with: "Password123"                    
+                    fill_in "user[current_password]", with: "password123"
+                    fill_in "user[password]", with: "newPasswordABC"
+                    fill_in "user[password_confirmation]", with: "newPasswordXYZ"                     
                     click_on "Submit"
                 end
                 it "must reenable the 'Submit' button" do
-                    expect(@change_password_form).to have_css "button[name='submit-change-password-button']:enabled"
+                    expect(page).to have_css "button[name='submit-change-password-button']:enabled"
                 end
-                it "must change the styling of the input field to invalid" do
-                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                it "must change the styling of the password confirmation input field to invalid" do
+                    expect(page).to have_css "input.is-invalid[name='user[password_confirmation]']"
                 end
                 it "must have a message saying the passwords did not match" do
-                    expect(@change_password_form).to have_css "div.invalid-feedback[name='mismatch-password-error-message']"
-                    expect(@change_password_form).to have_text "Does not match the new password"
+                    expect(page).to have_css "div.invalid-feedback[name='mismatch-password-error-message']"
+                    expect(page).to have_text "Does not match the new password"
                 end
                 it "must not have a message saying the password must be less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='short-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Must have 8 or more characters"
+                    expect(page).to_not have_css "div.invalid-feedback[name='short-password-error-message']"
+                    expect(page).to_not have_text "Must have 8 or more characters"
                 end
                 it "must not have a message saying the password cannot be blank" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Cannot be blank"
+                    expect(page).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(page).to_not have_text "Cannot be blank"
                 end
                 it "must not have a message saying the password was incorrect" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Incorrect password"
+                    expect(page).to_not have_css "div.invalid-feedback[name='incorrect-password-error-message']"
+                    expect(page).to_not have_text "Incorrect password"
                 end
             end
             context "if the new password field was blank" do
@@ -302,32 +184,31 @@ RSpec.describe "The account section of the user settings page" do
                     @user = create(:law_firm)
                     sign_in @user
                     visit settings_path
-                    @change_password_form = find("form[id='change-password-form']")
                     click_on "Change password"
-                    fill_in "Current password", with: "password123"
+                    fill_in "user[current_password]", with: "password123"
                     click_on "Submit"
                 end
                 it "must reenable the 'Submit' button" do
-                    expect(@change_password_form).to have_css "button[name='submit-change-password-button']:enabled"
+                    expect(page).to have_css "button[name='submit-change-password-button']:enabled"
                 end
                 it "must change the styling of the input field to invalid" do
-                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                    expect(page).to have_css "input.is-invalid[name='user[password]']"
                 end
                 it "must have a message saying the field cannot be blank" do
-                    expect(@change_password_form).to have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to have_text "Cannot be blank"
+                    expect(page).to have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(page).to have_text "Cannot be blank"
                 end
                 it "must not have a message saying the password must be less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='short-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Must have 8 or more characters"
+                    expect(page).to_not have_css "div.invalid-feedback[name='short-password-error-message']"
+                    expect(page).to_not have_text "Must have 8 or more characters"
                 end
                 it "must not have a message saying the password was incorrect" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Incorrect password"
+                    expect(page).to_not have_css "div.invalid-feedback[name='incorrect-password-error-message']"
+                    expect(page).to_not have_text "Incorrect password"
                 end
                 it "must not have a message saying the passwords did not match" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='mismatch-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Does not match the new password"
+                    expect(page).to_not have_css "div.invalid-feedback[name='mismatch-password-error-message']"
+                    expect(page).to_not have_text "Does not match the new password"
                 end
             end
             context "if the new password was less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
@@ -335,35 +216,35 @@ RSpec.describe "The account section of the user settings page" do
                     @user = create(:law_firm)
                     sign_in @user
                     visit settings_path
-                    @change_password_form = find("form[id='change-password-form']")
                     click_on "Change password"
-                    fill_in "Current password", with: "password123"
-                    fill_in "New password", with: "1234567"
+                    fill_in "user[current_password]", with: "password123"
+                    fill_in "user[password]", with: "n3wPass"
+                    fill_in "user[password_confirmation]", with: "n3wPass"
                     click_on "Submit"
                 end
                 it "must reenable the 'Submit' button" do
-                    expect(@change_password_form).to have_css "button[name='submit-edit-user-button']:enabled"
+                    expect(page).to have_css "button[name='submit-change-password-button']:enabled"
                 end
                 it "must change the styling of the input field to invalid" do
-                    expect(@change_password_form).to have_css "input.is-invalid[name='user[new_password]']"
+                    expect(page).to have_css "input.is-invalid[name='user[password]']"
                 end
                 it "must have a message saying the password must be less than #{Rails.configuration.MINIMUM_PASSWORD_LENGTH} characters" do
-                    expect(@change_password_form).to have_css "div.invalid-feedback[name='short-password-error-message']"
-                    expect(@change_password_form).to have_text "Must have 8 or more characters"
+                    expect(page).to have_css "div.invalid-feedback[name='short-password-error-message']"
+                    expect(page).to have_text "Must have 8 or more characters"
                 end
                 it "must not have a message saying the field cannot be blank" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Cannot be blank"
+                    expect(page).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
+                    expect(page).to_not have_text "Cannot be blank"
                 end
                 it "must not have a message saying the password was incorrect" do
-                    expect(@change_password_form).to_not have_css "div.invalid-feedback[name='blank-password-error-message']"
-                    expect(@change_password_form).to_not have_text "Incorrect password"
+                    expect(page).to_not have_css "div.invalid-feedback[name='incorrect-password-error-message']"
+                    expect(page).to_not have_text "Incorrect password"
                 end
             end
         end
     end
 
-    context "in the 2FA activation modal" do
+    describe "in the MFA activation modal" do
         it "must have a tab for authentication via SMS" do
             pending "Implementation"
             fail
@@ -372,7 +253,7 @@ RSpec.describe "The account section of the user settings page" do
             pending "Implementation"
             fail
         end
-        context "in the SMS tab" do
+        describe "in the SMS tab" do
             it "must have directions for the user" do
                 pending "Implementation"
                 fail
@@ -453,7 +334,7 @@ RSpec.describe "The account section of the user settings page" do
     end
     
     # This modal is just a way to gather the user's password before updating their account.
-    context "in the password confirmation modal" do
+    describe "in the password confirmation modal" do
         it "must have a field to enter the user's password" do
             pending "Implementation"
             fail

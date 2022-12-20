@@ -293,7 +293,7 @@ class User < ApplicationRecord
         elsif !has_bank_account?
             puts "❌❌❌ Account for #{business_name} not activated because there is no bank account!"
         elsif !two_factor_authentication_enabled? 
-            puts "❌❌❌ Account for #{business_name} not activated because 2FA is not enabled!"
+            puts "❌❌❌ Account for #{business_name} not activated because MFA is not enabled!"
         elsif !has_member_account?
             puts "❌❌❌ Account for #{business_name} not activated because there is no member account!"
         elsif !email_verified?

@@ -23,8 +23,8 @@ export default class PasswordConfirmation {
                             editUserForm.submit();
                         } else {
                             console.log("PW invalid");
-                            var currentPasswordInputField = document.getElementById("user_current_password");
-                            var incorrectPasswordErrorMessageElement = passwordConfirmationForm.getElementsByName("incorrect-password-error-message")[0];
+                            var currentPasswordInputField = passwordConfirmationForm.querySelector("input[name='user[current_password]']");
+                            var incorrectPasswordErrorMessageElement = passwordConfirmationForm.querySelector("div[name='incorrect-password-error-message']");
                             currentPasswordInputField.classList.add("is-invalid");
                             incorrectPasswordErrorMessageElement.style.display = "block";
                             currentPasswordInputField.focus();
@@ -42,11 +42,11 @@ export default class PasswordConfirmation {
                 event.target.disabled = true;
 
                 var changePasswordForm = document.getElementById("change-password-form");
-                let currentPasswordInputElement = document.querySelector("input[id='change-password-current-password-field']");
+                let currentPasswordInputElement = changePasswordForm.querySelector("input[name='user[current_password]']");
                 let currentPassword = currentPasswordInputElement.value;
-                let newPasswordInputElement = document.querySelector("input[id='change-password-new-password-field']");
+                let newPasswordInputElement = document.querySelector("input[name='user[password]']");
                 let newPassword = newPasswordInputElement.value;
-                let confirmNewPasswordInputElement = document.querySelector("input[id='change-password-password-confirmation-field']");
+                let confirmNewPasswordInputElement = document.querySelector("input[name='user[password_confirmation]']");
                 let confirmNewPassword = confirmNewPasswordInputElement.value;
 
                 console.log("1");

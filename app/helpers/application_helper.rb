@@ -434,9 +434,9 @@ module ApplicationHelper
         when :red
             css_classes.push("text-danger")
         end
-        case args[:text_size]
+        case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
-            css_classes.push(args[:text_size].to_s)
+            css_classes.push(args[:size].to_s)
         end
         css_classes.push("fa-flip-horizontal") if args[:flip_horizontal]
         "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
@@ -451,9 +451,9 @@ module ApplicationHelper
         when :red
             css_classes.push("text-danger")
         end
-        case args[:text_size]
+        case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
-            css_classes.push(args[:text_size].to_s)
+            css_classes.push(args[:size].to_s)
         end
         css_classes.push("fa-flip-horizontal") if args[:flip_horizontal]
         "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe
@@ -468,31 +468,69 @@ module ApplicationHelper
         when :red
             css_classes.push("text-danger")
         end
-        case args[:text_size]
+        case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
-            css_classes.push(args[:text_size].to_s)
+            css_classes.push(args[:size].to_s)
         end
         "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end
 
     def checkbox_icon(args=nil)
-        css_classes = ["fa-regular", "m-0"]
-        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        css_classes = ["m-0"]
+        return "<i class=\"fa-regular #{css_classes.join(" ")}\"></i>".html_safe if args.nil?
         case args[:color]
         when :green
             css_classes.push("text-success")
         when :red
             css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
         end
-        case args[:text_size]
+        case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
-            css_classes.push(args[:text_size].to_s)
+            css_classes.push(args[:size].to_s)
         end
         case args[:checked]
         when true
             css_classes.push("fa-square-check")
         when false
             css_classes.push("fa-square")
+        end
+        case args[:solid]
+        when true
+            css_classes.push("fa-solid")
+        else
+            css_classes.push("fa-regular")
+        end
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
+    end
+
+    def chevron_icon(args=nil)
+        css_classes = ["m-0", "fa-solid"]
+        return "<i class=\"#{css_classes.join(" ")} fa-chevron-right\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green
+            css_classes.push("text-success")
+        when :red
+            css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
+        end
+        case args[:size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:size].to_s)
+        end
+        case args[:direction]
+        when :right
+            css_classes.push("fa-chevron-right")
+        when :left
+            css_classes.push("fa-chevron-left")
+        when :up
+            css_classes.push("fa-chevron-up")
+        when :down
+            css_classes.push("fa-chevron-down")
+        else
+            css_classes.push("fa-chevron-right") # Default to right-pointing chevron when none specified
         end
         "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end
