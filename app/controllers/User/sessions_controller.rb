@@ -14,7 +14,7 @@ class User::SessionsController < Devise::SessionsController
     if resource.activated?
       flash[:info] = "You have signed in."
     else
-      flash[:warning] = "You have signed in, but your account is not activated. Click <a href=\"#{settings_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
+      flash[:warning] = "You have signed in, but your account is not activated. Click <a href=\"#{requirements_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
     end
     # set_flash_message!(:notice, :signed_in)
     sign_in(resource_name, resource)

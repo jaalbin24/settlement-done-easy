@@ -13,7 +13,7 @@
 #  last_name                   :string
 #  last_sign_in_at             :datetime
 #  last_sign_in_ip             :string
-#  phone_number                :integer
+#  phone_number                :bigint
 #  remember_created_at         :datetime
 #  reset_password_sent_at      :datetime
 #  reset_password_token        :string
@@ -74,6 +74,21 @@ FactoryBot.define do
         trait :not_activated_due_to_lack_of_bank_account do
             transient do
                 num_bank_accounts {0}
+                num_settlements {0}
+            end
+        end
+
+        trait :not_activated_due_to_lack_of_onboarded_stripe_account do
+            transient do
+                num_settlements {0}
+            end
+            after(:create) do |u, e|
+                u.stripe_account.requirements = create_list(:stripe_account_requirement, 1, stripe_account: u.stripe_account)
+            end
+        end
+        trait :not_activated_due_to_lack_of_members do
+            transient do
+                num_members {0}
                 num_settlements {0}
             end
         end

@@ -33,7 +33,7 @@ class User::RegistrationsController < Devise::RegistrationsController
         if resource.activated?
           # TODO: Send yourself an email because this should never happen.
         else
-          flash[:warning] = "You have signed up, but your account is not activated. Click <a href=\"#{settings_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
+          flash[:warning] = "You have signed up, but your account is not activated. Click <a href=\"#{requirements_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
         end
         # set_flash_message! :notice, :signed_up # Equivalent to flash[:notice] = "[whatever the signup message is]"
         sign_up(resource_name, resource)

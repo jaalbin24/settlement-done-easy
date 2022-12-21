@@ -40,7 +40,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string      :last_name
       t.string      :business_name
       t.string      :stripe_financial_account_id      # TODO: Move this into its own StripeFinancialAccount model
-      t.integer     :phone_number
+      t.bigint      :phone_number
 
       t.boolean     :activated,                     null: false, default: false
       t.timestamps                                  null: false

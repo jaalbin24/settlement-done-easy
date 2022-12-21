@@ -6,7 +6,7 @@ RSpec.describe "The account section of the user settings page" do
         before do
             @user = create(:law_firm)
             sign_in @user
-            visit settings_path
+            visit settings_path(section: "account")
         end
         it "must have a nav-bar button labeled 'Account'" do
             expect(page).to have_button "settings-nav-bar-account-button"
@@ -40,9 +40,8 @@ RSpec.describe "The account section of the user settings page" do
         it "must have a field to edit the user's phone number" do
             expect(page).to have_css "input[name='user[phone_number]']"
         end
-        it "must have a button labeled 'Update' that opens the password confirmation modal" do
-            pending "Implementation"
-            fail
+        it "must have a button labeled 'Update'" do
+            expect(page).to have_css "button[name='open-password-confirmation-button']", text: "Update"
         end
         context "after clicking the 'Update' button" do
             before do
@@ -53,6 +52,62 @@ RSpec.describe "The account section of the user settings page" do
             end
             it "must open the password confirmation modal" do
                 expect(page).to have_css "div.modal.fade[name='password-confirmation-modal']"
+            end
+            context "and submitting the password confirmation form" do
+                context "if the email was changed" do
+                    before do
+                        @user = create(:law_firm)
+                        sign_in @user
+                        visit settings_path
+                        fill_in "user[email]", with: "new.email@example.com"
+                        click_on "Update"
+                        fill_in "user[current_password]", with: "password123"
+                        click_on "submit-edit-user-button"
+                    end
+                    it "must show the new email in the email input field" do
+                        expect(page).to have_css "input[name='user[email]'][value='new.email@example.com']"
+                    end
+                end
+                context "if the email was not changed" do
+                    before do
+                        @user = create(:law_firm)
+                        sign_in @user
+                        visit settings_path
+                        click_on "Update"
+                        fill_in "user[current_password]", with: "password123"
+                        click_on "submit-edit-user-button"
+                    end
+                    it "must show the original email in the email input field" do
+                        expect(page).to have_css "input[name='user[email]'][value='#{@user.email}']"
+                    end
+                end
+                context "if the phone number was changed" do
+                    before do
+                        @user = create(:law_firm)
+                        sign_in @user
+                        visit settings_path
+                        fill_in "user[phone_number]", with: "9184944752"
+                        click_on "Update"
+                        fill_in "user[current_password]", with: "password123"
+                        click_on "submit-edit-user-button"
+                    end
+                    it "must show the new phone number in the phone number input field" do
+                        
+                    end
+                end
+                context "if the phone number was not changed" do
+                    before do
+                        @user = create(:law_firm)
+                        sign_in @user
+                        visit settings_path
+                        click_on "Update"
+                        fill_in "user[current_password]", with: "password123"
+                        click_on "submit-edit-user-button"
+                    end
+                    it "must show the original phone number in the phone number input field" do
+                        expect(page).to have_css "input[name='user[phone_number]'][value='#{ActiveSupport::NumberHelper.number_to_phone(@user.phone_number, area_code: true)}']"
+                    end
+                end
             end
         end
         context "when the user's email is verified" do
