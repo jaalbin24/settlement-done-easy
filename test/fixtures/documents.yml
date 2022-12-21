@@ -43,11 +43,11 @@ two:
     settlement: one
 
 three:
-    added_by: state_farm_insurance_agent
+    added_by: state_farm_adjuster
     auto_generated: true
     settlement: one
 
 four:
-    added_by: state_farm_insurance_agent
+    added_by: state_farm_adjuster
     auto_generated: false
     settlement: one

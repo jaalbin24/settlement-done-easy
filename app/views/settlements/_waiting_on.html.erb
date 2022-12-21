@@ -5,7 +5,7 @@
             <%=settlements_need_adjustment(current_user)%>
             <%=settlements_need_document(current_user)%>
             <%=settlements_need_payment(current_user)%>
-        <%elsif current_user.isInsuranceAgent?%>
+        <%elsif current_user.isAdjuster?%>
             <%=settlements_need_approval(current_user)%>
         <%end%>
             <%=settlements_need_signature(current_user)%>

@@ -83,9 +83,9 @@ RSpec.describe "The User Factory" do
             expect(User.insurance_companies.count).to eq(1)
         end
         it "must create exactly one adjuster" do
-            expect(User.insurance_agents.count).to eq(0)
+            expect(User.adjusters.count).to eq(0)
             create(:insurance_company)
-            expect(User.insurance_agents.count).to eq(1)
+            expect(User.adjusters.count).to eq(1)
         end
         it "must create exactly one bank account" do
             expect(BankAccount.all.count).to eq(0)
@@ -111,9 +111,9 @@ RSpec.describe "The User Factory" do
             expect(User.insurance_companies.count).to eq(1)
         end
         it "must create exactly one adjuster" do
-            expect(User.insurance_agents.count).to eq(0)
+            expect(User.adjusters.count).to eq(0)
             create(:adjuster)
-            expect(User.insurance_agents.count).to eq(1)
+            expect(User.adjusters.count).to eq(1)
         end
         it "must not create any settlements" do
             expect(Settlement.all.count).to eq(0)

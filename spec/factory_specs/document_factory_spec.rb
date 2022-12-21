@@ -33,9 +33,9 @@ RSpec.describe "The Document Factory" do
             expect(User.attorneys.size).to eq(1)
         end
         it "must create exactly one insurance agent" do
-            expect(User.insurance_agents.size).to eq(0)
+            expect(User.adjusters.size).to eq(0)
             create(:document, :from_the_ground_up)
-            expect(User.insurance_agents.size).to eq(1)
+            expect(User.adjusters.size).to eq(1)
         end
         it "must create exactly two stripe accounts" do
             expect(StripeAccount.all.size).to eq(0)

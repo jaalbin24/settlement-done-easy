@@ -69,7 +69,7 @@ RSpec.describe "A member starting a settlement", type: :system do
             it "will be sent to the new settlement's show page and see a confirmation message" do
                 @members.each do |u|
                     expect(u.organization.activated?).to be_truthy
-                    partner = random_attorney if u.isInsuranceAgent?
+                    partner = random_attorney if u.isAdjuster?
                     partner = random_adjuster if u.isAttorney?
                     sign_in u
                     visit settlement_new_path

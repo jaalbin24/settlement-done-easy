@@ -10,7 +10,7 @@
                 <%if current_user.isAttorney?%>
                     <th>Agent Name</th>
                     <th>Company</th>
-                <%elsif current_user.isInsuranceAgent?%>
+                <%elsif current_user.isAdjuster?%>
                     <th>Attorney Name</th>
                     <th>Firm</th>
                 <%end%>
@@ -23,12 +23,12 @@
                     <td><%=render "settlements/status", settlement: s%></td>
                     <td><%="%04d" % s.public_number%></td>
                     <td><%=link_to s.claimant_name, settlement_show_path(s)%></td>
-                    <%if current_user.isInsuranceAgent?%>
+                    <%if current_user.isAdjuster?%>
                         <td><%=s.attorney.full_name%></td>
                         <td><%=s.attorney.organization.full_name%></td>
                     <%elsif current_user.isAttorney?%>
-                        <td><%=s.insurance_agent.full_name%></td>
-                        <td><%=s.insurance_agent.organization.full_name%></td>
+                        <td><%=s.adjuster.full_name%></td>
+                        <td><%=s.adjuster.organization.full_name%></td>
                     <%end%>
                     <td>$<%=s.amount%></td>
                 </tr>

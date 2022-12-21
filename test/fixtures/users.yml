@@ -59,10 +59,10 @@ gkbm_attorney:
     role: Attorney
     organization: gkbm
 
-state_farm_insurance_agent: 
+state_farm_adjuster: 
     first_name: Jane
     last_name: Doe
-    email: insurance_agent.state_farm.test@example.com
+    email: adjuster.state_farm.test@example.com
     encrypted_password: <%=Devise::Encryptor.digest(User, 'password123')%>
-    role: Insurance Agent
+    role: Adjuster
     organization: state_farm

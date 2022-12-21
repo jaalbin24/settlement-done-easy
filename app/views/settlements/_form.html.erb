@@ -55,7 +55,7 @@
             <select class="form-select" name="partner_id" required>
                 <option disabled selected value>Select here</option>
                 <%if current_user.isAttorney?%>
-                    <%User.all_insurance_agents.each do |u|%>
+                    <%User.all_adjusters.each do |u|%>
                         <option id="<%=u.public_id%>" value="<%=u.public_id%>"><%="#{u.full_name} (#{u.organization.full_name})"%></option>
                     <%end%>
                 <%else%>

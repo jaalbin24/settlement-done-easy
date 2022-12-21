@@ -52,7 +52,7 @@ class OrganizationUsersController < ApplicationController
         if organization.isLawFirm?
             member.role = "Attorney"
         elsif organization.isInsuranceCompany?
-            member.role = "Insurance Agent"
+            member.role = "Adjuster"
         end
         if member.save
             flash[:info] = "New member #{member.full_name} added!"

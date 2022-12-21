@@ -219,12 +219,12 @@ ActiveRecord::Schema.define(version: 100) do
     t.boolean "ready_for_payment", default: false, null: false
     t.bigint "started_by_id"
     t.bigint "attorney_id"
-    t.bigint "insurance_agent_id"
+    t.bigint "adjuster_id"
     t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["adjuster_id"], name: "index_settlements_on_adjuster_id"
     t.index ["attorney_id"], name: "index_settlements_on_attorney_id"
-    t.index ["insurance_agent_id"], name: "index_settlements_on_insurance_agent_id"
     t.index ["log_book_id"], name: "index_settlements_on_log_book_id"
     t.index ["started_by_id"], name: "index_settlements_on_started_by_id"
   end
@@ -321,8 +321,8 @@ ActiveRecord::Schema.define(version: 100) do
   add_foreign_key "settlement_settings", "settlements"
   add_foreign_key "settlement_settings", "users"
   add_foreign_key "settlements", "log_books"
+  add_foreign_key "settlements", "users", column: "adjuster_id"
   add_foreign_key "settlements", "users", column: "attorney_id"
-  add_foreign_key "settlements", "users", column: "insurance_agent_id"
   add_foreign_key "settlements", "users", column: "started_by_id"
   add_foreign_key "stripe_account_requirements", "stripe_accounts"
   add_foreign_key "stripe_accounts", "users"

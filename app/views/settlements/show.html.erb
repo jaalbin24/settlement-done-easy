@@ -154,7 +154,7 @@
                                             <h6 class="card-subtitle text-muted m-0">
                                                 <%if current_user.isAttorney?%>
                                                 Deposit funds into...
-                                                <%elsif current_user.isInsuranceAgent?%>
+                                                <%elsif current_user.isAdjuster?%>
                                                 Withdraw funds from...
                                                 <%end%>
                                             </h6>
@@ -176,7 +176,7 @@
                                                     <div class="form-group m-2">
                                                         <%if current_user.isAttorney?%>
                                                             <%=f.select(:destination_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
-                                                        <%elsif current_user.isInsuranceAgent?%>
+                                                        <%elsif current_user.isAdjuster?%>
                                                             <%=f.select(:source_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
                                                         <%end%>
                                                         <div class="text-end mt-2">
@@ -209,10 +209,10 @@
                                 <p class="m-0 text-danger"><%=@settlement.attorney.organization.full_name%>'s account must be activated.</p>
                             </li>
                         <%end%>
-                        <%unless @settlement.insurance_agent.organization.activated? || @settlement.completed?%>
+                        <%unless @settlement.adjuster.organization.activated? || @settlement.completed?%>
                             <li class="d-flex gap-2">
                                 <h5 class="mx-0"><i class="fa-regular fa-square text-danger"></i></h5>
-                                <p class="m-0 text-danger"><%=@settlement.insurance_agent.organization.full_name%>'s account must be activated.</p>
+                                <p class="m-0 text-danger"><%=@settlement.adjuster.organization.full_name%>'s account must be activated.</p>
                             </li>
                         <%end%>
                         <li class="d-flex gap-2">
@@ -229,11 +229,11 @@
                         <%end%>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "square-check": "square"%>"></i></h5>
-                            <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
+                            <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.adjuster.full_name%>.</p>
                         </li>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.attribute_reviews.approved.count == 2 ? "square-check": "square"%>"></i></h5>
-                            <p class="m-0">All details are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.insurance_agent.full_name%>.</p>
+                            <p class="m-0">All details are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.adjuster.full_name%>.</p>
                         </li>
                         <p class="text-muted text-center mt-2 border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required to complete settlement</span></p>
                         <li class="d-flex gap-2">
@@ -282,7 +282,7 @@
 <%if @settlement.ready_for_payment?%>
     <%if current_user.isAttorney?%>
         <%=render "modals/payment_request_confirmation"%>
-    <%elsif current_user.isInsuranceAgent?%>
+    <%elsif current_user.isAdjuster?%>
         <%=render "modals/payment_confirmation"%>
     <%end%>
 <%end%>

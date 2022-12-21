@@ -110,10 +110,10 @@ class UserTest < ActiveSupport::TestCase
         u = users(:gkbm_attorney)
         u.organization = users(:gkbm)
         assert u.valid?, u.errors.full_messages.inspect
-        u.role = "Insurance Agent"
+        u.role = "Adjuster"
         assert_not u.valid?
 
-        u = users(:state_farm_insurance_agent)
+        u = users(:state_farm_adjuster)
         u.organization = users(:state_farm)
         assert u.valid?, u.errors.full_messages.inspect
         u.role = "Attorney"

@@ -16,23 +16,23 @@
 #  ready_for_payment  :boolean          default(FALSE), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  adjuster_id        :bigint
 #  attorney_id        :bigint
-#  insurance_agent_id :bigint
 #  log_book_id        :bigint
 #  public_id          :string
 #  started_by_id      :bigint
 #
 # Indexes
 #
-#  index_settlements_on_attorney_id         (attorney_id)
-#  index_settlements_on_insurance_agent_id  (insurance_agent_id)
-#  index_settlements_on_log_book_id         (log_book_id)
-#  index_settlements_on_started_by_id       (started_by_id)
+#  index_settlements_on_adjuster_id    (adjuster_id)
+#  index_settlements_on_attorney_id    (attorney_id)
+#  index_settlements_on_log_book_id    (log_book_id)
+#  index_settlements_on_started_by_id  (started_by_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (adjuster_id => users.id)
 #  fk_rails_...  (attorney_id => users.id)
-#  fk_rails_...  (insurance_agent_id => users.id)
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (started_by_id => users.id)
 #
@@ -112,9 +112,9 @@ class Settlement < ApplicationRecord
     )
 
     belongs_to(
-        :insurance_agent,
+        :adjuster,
         class_name: "User",
-        foreign_key: "insurance_agent_id",
+        foreign_key: "adjuster_id",
         inverse_of: :ia_settlements
     )
 
@@ -201,7 +201,7 @@ class Settlement < ApplicationRecord
     # Public number is assigned by generating a random integer 1-9999. If that number is already assigned to a settlement used by the attorney or adjuster, a different
     # number will be assigned by iterating either forward or backwards from that first number until an unused number is found.
     def init_public_number
-        unacceptable_nums = Settlement.where(insurance_agent: insurance_agent).or(Settlement.where(attorney: attorney)).and(Settlement.where(completed: false)).pluck(:public_number)
+        unacceptable_nums = Settlement.where(adjuster: adjuster).or(Settlement.where(attorney: attorney)).and(Settlement.where(completed: false)).pluck(:public_number)
         pn = rand(1..9999)
         counter = 0
         asc_or_desc = [-1, 1].sample
@@ -292,7 +292,7 @@ class Settlement < ApplicationRecord
 
     def partner_of(user)
         if user.isAttorney?
-            insurance_agent
+            adjuster
         else
             attorney
         end
@@ -303,7 +303,7 @@ class Settlement < ApplicationRecord
     def build_default_payment
         if payments.empty?
             payments.build(
-                source: insurance_agent.organization.default_bank_account,
+                source: adjuster.organization.default_bank_account,
                 destination: attorney.organization.default_bank_account,
                 amount: amount
             )
@@ -316,7 +316,7 @@ class Settlement < ApplicationRecord
                 reviewer: attorney
             )
             attribute_reviews.build(
-                reviewer: insurance_agent
+                reviewer: adjuster
             )
         end
     end
@@ -327,7 +327,7 @@ class Settlement < ApplicationRecord
                 user: attorney
             )
             settings.build(
-                user: insurance_agent
+                user: adjuster
             )
         end
     end
@@ -363,19 +363,19 @@ class Settlement < ApplicationRecord
     def generate_any_notifications
         if new_record?
             Notification.create!(
-                user: insurance_agent,
+                user: adjuster,
                 title: "New Settlement!",
                 message: "A new settlement was started with #{attorney.full_name}. Click here to view it."
             )
             Notification.create!(
                 user: attorney,
                 title: "New Settlement!",
-                message: "A new settlement was started with #{insurance_agent.full_name}. Click here to view it."
+                message: "A new settlement was started with #{adjuster.full_name}. Click here to view it."
             )
         end
         if ready_for_payment?
             Notification.create!(
-                user: insurance_agent,
+                user: adjuster,
                 title: "A settlement is ready for payment!",
                 message: "Click here to make the payment."
             )
@@ -424,7 +424,7 @@ class Settlement < ApplicationRecord
             self.ready_for_payment = false
         elsif !attorney.organization.activated?
             self.ready_for_payment = false
-        elsif !insurance_agent.organization.activated?
+        elsif !adjuster.organization.activated?
             self.ready_for_payment = false
         else
             self.ready_for_payment = true

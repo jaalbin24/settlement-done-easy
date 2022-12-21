@@ -18,7 +18,7 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
 
       t.references  :started_by,                foreign_key: {to_table: :users}
       t.references  :attorney,                  foreign_key: {to_table: :users}
-      t.references  :insurance_agent,           foreign_key: {to_table: :users}
+      t.references  :adjuster,           foreign_key: {to_table: :users}
 
       t.references  :log_book,                  foreign_key: {to_table: :log_books}
 

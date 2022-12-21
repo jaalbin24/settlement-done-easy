@@ -61,7 +61,7 @@ class PaymentRequest < ApplicationRecord
     validates :requester, :accepter, presence: true
     validate :requester_is_affiliated_with_settlement
     def requester_is_affiliated_with_settlement
-        errors.add(:requester, "is not affiliated with that settlement.") unless [settlement.insurance_agent, settlement.attorney].include?(requester)
+        errors.add(:requester, "is not affiliated with that settlement.") unless [settlement.adjuster, settlement.attorney].include?(requester)
     end
 
     validate :settlement_has_one_or_less_unanswered_payment_request
@@ -78,8 +78,8 @@ class PaymentRequest < ApplicationRecord
         puts "❤️❤️❤️ PaymentRequest before_validation block"
         # Initialize accepter reference
         if requester.isAttorney?
-            self.accepter = settlement.insurance_agent
-        elsif requester.isInsuranceAgent?
+            self.accepter = settlement.adjuster
+        elsif requester.isAdjuster?
             self.accepter = settlement.attorney
         end
     end

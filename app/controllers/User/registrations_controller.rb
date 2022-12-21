@@ -7,7 +7,7 @@ class User::RegistrationsController < Devise::RegistrationsController
   # GET /resource/sign_up
   def new
     @role = params[:role]
-    if @role == "Insurance Agent"
+    if @role == "Adjuster"
       @organizations = User.all_insurance_companies
     elsif @role == "Attorney"
       @organizations = User.all_law_firms
@@ -31,7 +31,7 @@ class User::RegistrationsController < Devise::RegistrationsController
     if resource.persisted?
       if resource.active_for_authentication?
         if resource.activated?
-          # TODO: Send yourself an email because this should never happen.
+          # TODO: Send yourself an email because this should never happen. A user is activated as soon as they sign up? Something's fishy.
         else
           flash[:warning] = "You have signed up, but your account is not activated. Click <a href=\"#{requirements_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
         end
@@ -50,7 +50,7 @@ class User::RegistrationsController < Devise::RegistrationsController
       clean_up_passwords resource
       set_minimum_password_length
       @role = params[:user][:role]
-      # if @role == "Insurance Agent"
+      # if @role == "Adjuster"
       #   @organizations = User.all_insurance_companies
       # elsif @role == "Attorney"
       #   @organizations = User.all_law_firms

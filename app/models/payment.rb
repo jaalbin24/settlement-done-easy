@@ -182,7 +182,7 @@ class Payment < ApplicationRecord
         if status_changed?
             if processing?
                 log_book.entries.build(
-                    user: settlement.insurance_agent,
+                    user: settlement.adjuster,
                     message: "Payment of $#{amount} initiated."
                 )
             elsif failed?
@@ -226,7 +226,7 @@ class Payment < ApplicationRecord
                     message: "Click here for details."
                 )
                 Notification.create!(
-                    user: settlement.insurance_agent,
+                    user: settlement.adjuster,
                     title: "Payment started!",
                     message: "Click here for details."
                 )
@@ -237,7 +237,7 @@ class Payment < ApplicationRecord
                     message: "Click here for details."
                 )
                 Notification.create!(
-                    user: settlement.insurance_agent,
+                    user: settlement.adjuster,
                     title: "Payment failed!",
                     message: "Click here for details."
                 )
@@ -248,7 +248,7 @@ class Payment < ApplicationRecord
                     message: "Click here for details."
                 )
                 Notification.create!(
-                    user: settlement.insurance_agent,
+                    user: settlement.adjuster,
                     title: "Payment canceled!",
                     message: "Click here for details."
                 )
@@ -259,7 +259,7 @@ class Payment < ApplicationRecord
                     message: "Click here for details."
                 )
                 Notification.create!(
-                    user: settlement.insurance_agent,
+                    user: settlement.adjuster,
                     title: "Payment completed!",
                     message: "Click here for details."
                 )
@@ -270,7 +270,7 @@ class Payment < ApplicationRecord
                     message: "Click here for details."
                 )
                 Notification.create!(
-                    user: settlement.insurance_agent,
+                    user: settlement.adjuster,
                     title: "Payment returned!",
                     message: "Click here for details."
                 )
@@ -282,13 +282,13 @@ class Payment < ApplicationRecord
         SafetyError::Payments.raise_error_unless_safe_to_execute_inbound_transfer_on self
         inbound_transfer = Stripe::Treasury::InboundTransfer.create(
             {
-                financial_account: settlement.insurance_agent.organization.stripe_financial_account_id,
+                financial_account: settlement.adjuster.organization.stripe_financial_account_id,
                 amount: amount_in_cents,
                 currency: 'usd',
                 origin_payment_method: source.stripe_payment_method_id,
                 description: "Settlement of $#{amount} for #{settlement.claimant_name}",
             },
-            {stripe_account: settlement.insurance_agent.organization.stripe_account_id}
+            {stripe_account: settlement.adjuster.organization.stripe_account_id}
         )
         self.stripe_inbound_transfer_id = inbound_transfer.id
         self.status = "Processing"
@@ -306,7 +306,7 @@ class Payment < ApplicationRecord
         SafetyError::Payments.raise_error_unless_safe_to_execute_outbound_payment_on self
         outbound_payment = Stripe::Treasury::OutboundPayment.create(
             {
-                financial_account: settlement.insurance_agent.organization.stripe_financial_account_id,
+                financial_account: settlement.adjuster.organization.stripe_financial_account_id,
                 amount: amount_in_cents,
                 currency: 'usd',
                 statement_descriptor: "Settlement of $#{amount} for #{settlement.claimant_name}",
@@ -315,7 +315,7 @@ class Payment < ApplicationRecord
                     financial_account: settlement.attorney.organization.stripe_financial_account_id,
                 },
             },
-            {stripe_account: settlement.insurance_agent.organization.stripe_account_id},
+            {stripe_account: settlement.adjuster.organization.stripe_account_id},
         )
         self.stripe_outbound_payment_id = outbound_payment.id
         unless self.save
@@ -376,7 +376,7 @@ class Payment < ApplicationRecord
                 raise StandardError.new "Unhandled payment status: #{outbound_transfer.status}"
             end
         elsif !stripe_outbound_payment_id.nil?
-            outbound_payment = Stripe::Treasury::OutboundPayment.retrieve(stripe_outbound_payment_id, {stripe_account: settlement.insurance_agent.organization.stripe_account_id})
+            outbound_payment = Stripe::Treasury::OutboundPayment.retrieve(stripe_outbound_payment_id, {stripe_account: settlement.adjuster.organization.stripe_account_id})
             case outbound_payment.status
             when 'posted'
                 execute_outbound_transfer
@@ -393,7 +393,7 @@ class Payment < ApplicationRecord
                 raise StandardError.new "Unhandled payment status: #{outbound_payment.status}"
             end
         elsif !stripe_inbound_transfer_id.nil?
-            inbound_transfer = Stripe::Treasury::InboundTransfer.retrieve(stripe_inbound_transfer_id, {stripe_account: settlement.insurance_agent.organization.stripe_account_id})
+            inbound_transfer = Stripe::Treasury::InboundTransfer.retrieve(stripe_inbound_transfer_id, {stripe_account: settlement.adjuster.organization.stripe_account_id})
             case inbound_transfer.status
             when 'succeeded'
                 execute_outbound_payment

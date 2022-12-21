@@ -52,8 +52,8 @@ RSpec.describe "Users", type: :model do
                 expect(u.valid?).to be_truthy, "Object: #{u.to_json} Error message: #{u.errors.full_messages.inspect}"
                 case u.role
                 when "Attorney"
-                    u.role = "Insurance Agent"
-                when "Insurance Agent"
+                    u.role = "Adjuster"
+                when "Adjuster"
                     u.role = "Attorney"
                 when "Law Firm"
                     u.role = "Insurance Company"

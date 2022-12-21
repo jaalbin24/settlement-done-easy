@@ -12,7 +12,7 @@ module OrganizationUsersHelper
     def organization_role_name
         if current_user.isAttorney?
             return "law firm"
-        elsif current_user.isInsuranceAgent?
+        elsif current_user.isAdjuster?
             return "insurance company"
         end
     end

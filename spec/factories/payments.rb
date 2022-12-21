@@ -71,19 +71,19 @@ FactoryBot.define do
                 puts "🤖🤖🤖 payment:from_the_ground_up before(:build) block"
                 if e.settlement.nil?
                     @attorney = select_random_attorney_or_create_one_if_none_exist
-                    @adjuster = select_random_insurance_agent_or_create_one_if_none_exist
-                    p.settlement = build(:settlement, attorney: @attorney, insurance_agent: @adjuster) 
+                    @adjuster = select_random_adjuster_or_create_one_if_none_exist
+                    p.settlement = build(:settlement, attorney: @attorney, adjuster: @adjuster) 
                 end
             end
             after(:create) do |p, e|
                 puts "🤖🤖🤖 payment:from_the_ground_up after(:create) block"
                 # Ensure this payment model is the only one attached to the settlement
                 destination = p.settlement.attorney.organization.default_bank_account
-                source = p.settlement.insurance_agent.organization.default_bank_account
+                source = p.settlement.adjuster.organization.default_bank_account
                 p.settlement.payments.excluding(p).each do |destroy_me|
                     destroy_me.destroy!
                 end
-                noahs_ark = [p.settlement.attorney, p.settlement.insurance_agent, p.settlement.attorney.organization, p.settlement.insurance_agent.organization]
+                noahs_ark = [p.settlement.attorney, p.settlement.adjuster, p.settlement.attorney.organization, p.settlement.adjuster.organization]
                 User.all.excluding(noahs_ark).each do |u|
                     u.destroy!
                 end
@@ -95,8 +95,8 @@ FactoryBot.define do
             puts "🤖🤖🤖 payment before(:build) block"
             if e.settlement.nil? # If creation started from the payment factory
                 @attorney = select_random_attorney_or_create_one_if_none_exist
-                @adjuster = select_random_insurance_agent_or_create_one_if_none_exist
-                p.settlement = build(:settlement, attorney: @attorney, insurance_agent: @adjuster) 
+                @adjuster = select_random_adjuster_or_create_one_if_none_exist
+                p.settlement = build(:settlement, attorney: @attorney, adjuster: @adjuster) 
             end
             if e.source.nil?
                 p.source = build(:bank_account_for_insurance_company, user: @attorney.organization)
@@ -121,7 +121,7 @@ FactoryBot.define do
                 puts "🤖🤖🤖 payment:processing after(:create) block"
                 # Ensure this payment model is the only one attached to the settlement
                 destination = p.settlement.attorney.organization.default_bank_account
-                source = p.settlement.insurance_agent.organization.default_bank_account
+                source = p.settlement.adjuster.organization.default_bank_account
                 atties = p.attributes
                 atties[:source] = source
                 atties[:destination] = destination
@@ -141,7 +141,7 @@ FactoryBot.define do
                 puts "🤖🤖🤖 payment:completed after(:create) block"
                 # Ensure this payment model is the only one attached to the settlement
                 destination = p.settlement.attorney.organization.default_bank_account
-                source = p.settlement.insurance_agent.organization.default_bank_account
+                source = p.settlement.adjuster.organization.default_bank_account
                 atties = p.attributes
                 atties[:source] = source
                 atties[:destination] = destination

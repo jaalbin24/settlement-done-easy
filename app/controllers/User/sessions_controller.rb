@@ -11,7 +11,7 @@ class User::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
   def create
     self.resource = warden.authenticate!(auth_options)
-    if resource.activated?
+    if resource.activated? || resource.isMember?
       flash[:info] = "You have signed in."
     else
       flash[:warning] = "You have signed in, but your account is not activated. Click <a href=\"#{requirements_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe

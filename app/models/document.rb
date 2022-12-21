@@ -111,7 +111,7 @@ class Document < ApplicationRecord
 
             reviews.build(
                 document: document,
-                reviewer: settlement.insurance_agent
+                reviewer: settlement.adjuster
             )
             reviews.build(
                 document: document,

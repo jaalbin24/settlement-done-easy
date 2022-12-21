@@ -34,7 +34,7 @@ FactoryBot.define do
         end
 
         trait :for_adjuster do
-            association :user, factory: :insurance_agent
+            association :user, factory: :adjuster
         end
     end
 end

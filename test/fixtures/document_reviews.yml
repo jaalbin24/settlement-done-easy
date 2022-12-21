@@ -37,12 +37,12 @@ attorney_approval_for_doc2:
     document: two
 
 # Insurance agent added document 3 & 4, so their default approval is below.
-insurance_agent_approval_for_doc3:
-    reviewer: state_farm_insurance_agent
+adjuster_approval_for_doc3:
+    reviewer: state_farm_adjuster
     verdict: Approved
     document: three
 
-insurance_agent_approval_for_doc4:
-    reviewer: state_farm_insurance_agent
+adjuster_approval_for_doc4:
+    reviewer: state_farm_adjuster
     verdict: Approved
     document: four

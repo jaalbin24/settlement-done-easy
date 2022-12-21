@@ -47,7 +47,7 @@ class User < ApplicationRecord
     scope :law_firms,           ->  {where(role: "Law Firm")}
     scope :insurance_companies, ->  {where(role: "Insurance Company")}
     scope :attorneys,           ->  {where(role: "Attorney")}
-    scope :insurance_agents,    ->  {where(role: "Insurance Agent")}
+    scope :adjusters,    ->  {where(role: "Adjuster")}
 
     validates :role, inclusion: {in: -> (i) {User.roles}} # Useless i variable prevents ArgumentError from being thrown during testing. Do not remove.
     validates :role, inclusion: {in: -> (i) {[i.role_was]}, message: "cannot be changed after creation."}, on: :update
@@ -91,7 +91,7 @@ class User < ApplicationRecord
     validate :role_must_match_organization_type
     def role_must_match_organization_type
         if !organization.blank? && !role.blank? && !organization.role.blank?
-            errors.add(:organization, "member must have appropriate user role. The role of '#{role}' is invalid for members of #{organization.role.pluralize}") unless (organization.isLawFirm? && isAttorney?) || (organization.isInsuranceCompany? && isInsuranceAgent?)
+            errors.add(:organization, "member must have appropriate user role. The role of '#{role}' is invalid for members of #{organization.role.pluralize}") unless (organization.isLawFirm? && isAttorney?) || (organization.isInsuranceCompany? && isAdjuster?)
         end
     end
 
@@ -114,8 +114,8 @@ class User < ApplicationRecord
     has_many(
         :ia_settlements,
         class_name: 'Settlement',
-        foreign_key: 'insurance_agent_id',
-        inverse_of: :insurance_agent,
+        foreign_key: 'adjuster_id',
+        inverse_of: :adjuster,
         dependent: :destroy
     )
 
@@ -257,7 +257,7 @@ class User < ApplicationRecord
             if organization.isLawFirm?
                 self.role = "Attorney"
             elsif user.organization.isInsuranceCompany?
-                self.role = "Insurance Agent"
+                self.role = "Adjuster"
             end
         end
         if isOrganization?
@@ -272,7 +272,7 @@ class User < ApplicationRecord
     end
 
     def self.roles
-        ["Insurance Agent", "Attorney", "Law Firm", "Insurance Company"]
+        ["Adjuster", "Attorney", "Law Firm", "Insurance Company"]
     end
 
     def update_activated_attribute
@@ -342,8 +342,8 @@ class User < ApplicationRecord
         return User.where(:role => "Attorney").order(:first_name, :last_name, :organization_id)
     end
 
-    def self.all_insurance_agents
-        return User.where(:role => "Insurance Agent").order(:first_name, :last_name, :organization_id)
+    def self.all_adjusters
+        return User.where(:role => "Adjuster").order(:first_name, :last_name, :organization_id)
     end
 
     def self.all_law_firms
@@ -362,8 +362,8 @@ class User < ApplicationRecord
         return role == "Attorney"
     end
 
-    def isInsuranceAgent?
-        return role == "Insurance Agent"
+    def isAdjuster?
+        return role == "Adjuster"
     end
 
     def isLawFirm?
@@ -379,7 +379,7 @@ class User < ApplicationRecord
     end
 
     def isMember?
-        return role == "Attorney" || role == "Insurance Agent"
+        return role == "Attorney" || role == "Adjuster"
     end
 
     def has_bank_account?
@@ -405,7 +405,7 @@ class User < ApplicationRecord
             return payments_out
         elsif isAttorney?
             return a_payments
-        elsif isInsuranceAgent?
+        elsif isAdjuster?
             return ia_payments
         end
     end
@@ -413,14 +413,14 @@ class User < ApplicationRecord
     def settlements
         if isAttorney?
             return a_settlements
-        elsif isInsuranceAgent?
+        elsif isAdjuster?
             return ia_settlements
         elsif isLawFirm?
             attorney_id_array = User.where(organization_id: id).pluck(:id)
             settlements = Settlement.where(attorney_id: attorney_id_array).all
         elsif isInsuranceCompany?
             agent_id_array = User.where(organization_id: id).pluck(:id)
-            settlements = Settlement.where(insurance_agent_id: agent_id_array).all
+            settlements = Settlement.where(adjuster_id: agent_id_array).all
         end
     end
 

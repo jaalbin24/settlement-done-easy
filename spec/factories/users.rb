@@ -68,7 +68,7 @@ FactoryBot.define do
                 "========> # of law firms: #{User.law_firms.size}\n"+
                 "========> # of insurance companies: #{User.insurance_companies.size}\n"+
                 "========> # of attorneys: #{User.attorneys.size}\n"+
-                "========> # of adjusters: #{User.insurance_agents.size}\n"
+                "========> # of adjusters: #{User.adjusters.size}\n"
         end
 
         trait :not_activated_due_to_lack_of_bank_account do
@@ -199,14 +199,14 @@ FactoryBot.define do
             after(:create) do |u, e|
                 puts "🤖🤖🤖 attorney after(:create) block"
                 if u.settlements.empty? && e.num_settlements > 0
-                    u.a_settlements = create_list(:settlement, e.num_settlements, attorney: u, insurance_agent: select_random_insurance_agent_or_create_one_if_none_exist)
+                    u.a_settlements = create_list(:settlement, e.num_settlements, attorney: u, adjuster: select_random_adjuster_or_create_one_if_none_exist)
                 end
                 u.organization.save
             end
         end
 
-        factory :adjuster, aliases: [:insurance_agent] do # TODO: When the big switch from 'I.n.s.u.r.a.n.c.e A.g.e.n.t' to 'Adjuster' happens, you should be able to remove the alias.
-            role {"Insurance Agent"}
+        factory :adjuster do # TODO: When the big switch from 'I.n.s.u.r.a.n.c.e A.g.e.n.t' to 'Adjuster' happens, you should be able to remove the alias.
+            role {"Adjuster"}
             first_name {random_first_name}
             last_name {random_last_name}
             trait :with_unactivated_organization_due_to_lack_of_bank_account do
@@ -219,7 +219,7 @@ FactoryBot.define do
             after(:create) do |u, e|
                 puts "🤖🤖🤖 adjuster after(:create) block"
                 if u.settlements.empty? && e.num_settlements > 0
-                    u.ia_settlements = create_list(:settlement, e.num_settlements, attorney: select_random_attorney_or_create_one_if_none_exist, insurance_agent: u)
+                    u.ia_settlements = create_list(:settlement, e.num_settlements, attorney: select_random_attorney_or_create_one_if_none_exist, adjuster: u)
                 end
                 u.organization.save
             end
@@ -227,10 +227,10 @@ FactoryBot.define do
     end
 end
 
-def select_random_insurance_agent_or_create_one_if_none_exist
+def select_random_adjuster_or_create_one_if_none_exist
     count = User.insurance_companies.activated.count
     if count == 0
-        adjuster = create(:insurance_agent)
+        adjuster = create(:adjuster)
         adjuster
     else
         random_offset = rand(count)
@@ -286,11 +286,11 @@ def random_attorney
 end
 
 def random_adjuster
-    count = User.where(role: "Insurance Agent").count
+    count = User.where(role: "Adjuster").count
     raise StandardError.new "Cannot select a random adjuster because there are no adjusters." if count == 0
     random_offset = rand(count)
-    random_insurance_agent = User.where(role: "Insurance Agent").offset(random_offset).first
-    random_insurance_agent
+    random_adjuster = User.where(role: "Adjuster").offset(random_offset).first
+    random_adjuster
 end
 
 def random_law_firm_name

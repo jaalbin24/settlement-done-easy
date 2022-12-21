@@ -14,9 +14,9 @@ class SettlementsController < ApplicationController
     def new
         if current_user.isAttorney?
             @settlement = Settlement.new
-            @users = User.all_insurance_agents
+            @users = User.all_adjusters
             render :new
-        elsif current_user.isInsuranceAgent?
+        elsif current_user.isAdjuster?
             @settlement = Settlement.new
             @users = User.all_attorneys
             render :new
@@ -36,10 +36,10 @@ class SettlementsController < ApplicationController
         # server-side. This begin-rescue block handles cases where the user-select field was sabotaged client-side.
         if current_user.isAttorney?
             attorney = current_user
-            insurance_agent = partner
-        elsif current_user.isInsuranceAgent?
+            adjuster = partner
+        elsif current_user.isAdjuster?
             attorney = partner
-            insurance_agent = current_user
+            adjuster = current_user
         end
         settlement_creation_params = {
             started_by: current_user,
@@ -51,7 +51,7 @@ class SettlementsController < ApplicationController
             incident_date: settlement_params[:incident_date],
             incident_location: settlement_params[:incident_location],
             attorney: attorney,
-            insurance_agent: insurance_agent
+            adjuster: adjuster
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
@@ -144,14 +144,14 @@ class SettlementsController < ApplicationController
     def completed_index
         if current_user.isAttorney?
             @settlements = Settlement.where("attorney_id=?", user.id).and(Settlement.where("completed=?", true)).all
-        elsif current_user.isInsuranceAgent?
-            @settlements = Settlement.where("insurance_agent_id=?", user.id).and(Settlement.where("completed=?", true)).all
+        elsif current_user.isAdjuster?
+            @settlements = Settlement.where("adjuster_id=?", user.id).and(Settlement.where("completed=?", true)).all
         elsif current_user.isLawFirm?
             attorney_id_array = User.where(organization_id: user.id).pluck(:id)
             @settlements = Settlement.where(attorney_id: attorney_id_array).and(Settlement.where("completed=?", true)).all
         elsif current_user.isInsuranceCompany?
             agent_id_array = User.where(organization_id: user.id).pluck(:id)
-            @settlements = Settlement.where(insurance_agent_id: agent_id_array).and(Settlement.where("completed=?", true)).all
+            @settlements = Settlement.where(adjuster_id: agent_id_array).and(Settlement.where("completed=?", true)).all
         end  
     end
 

@@ -16,7 +16,7 @@ class PaymentRequestsController < ApplicationController
         begin
             settlement.payment_requests.create!(
                 requester:  settlement.attorney,
-                accepter:   settlement.insurance_agent
+                accepter:   settlement.adjuster
             )
             flash[:info] = "Payment requested"
         rescue SafetyError::SafetyError => e

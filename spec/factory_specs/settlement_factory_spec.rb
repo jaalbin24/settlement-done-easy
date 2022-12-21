@@ -28,9 +28,9 @@ RSpec.describe "The Settlement Factory" do
             expect(User.attorneys.count).to eq(1)
         end
         it "must create exactly one insurance agent" do
-            expect(User.insurance_agents.count).to eq(0)
+            expect(User.adjusters.count).to eq(0)
             create(:settlement)
-            expect(User.insurance_agents.count).to eq(1)
+            expect(User.adjusters.count).to eq(1)
         end
         it "must create exactly two stripe accounts" do
             expect(StripeAccount.all.count).to eq(0)
@@ -93,9 +93,9 @@ RSpec.describe "The Settlement Factory" do
                 expect(User.attorneys.count).to eq(1)
             end
             it "must create exactly one insurance agent" do
-                expect(User.insurance_agents.count).to eq(0)
+                expect(User.adjusters.count).to eq(0)
                 create(:settlement, :with_processing_payment)
-                expect(User.insurance_agents.count).to eq(1)
+                expect(User.adjusters.count).to eq(1)
             end
             it "must create exactly two stripe accounts" do
                 expect(StripeAccount.all.count).to eq(0)
@@ -155,9 +155,9 @@ RSpec.describe "The Settlement Factory" do
                 expect(User.attorneys.count).to eq(1)
             end
             it "must create exactly one insurance agent" do
-                expect(User.insurance_agents.count).to eq(0)
+                expect(User.adjusters.count).to eq(0)
                 create(:settlement, :with_completed_payment)
-                expect(User.insurance_agents.count).to eq(1)
+                expect(User.adjusters.count).to eq(1)
             end
             it "must create exactly two stripe accounts" do
                 expect(StripeAccount.all.count).to eq(0)
@@ -217,9 +217,9 @@ RSpec.describe "The Settlement Factory" do
                 expect(User.attorneys.count).to eq(1)
             end
             it "must create exactly one insurance agent" do
-                expect(User.insurance_agents.count).to eq(0)
+                expect(User.adjusters.count).to eq(0)
                 create(:settlement, :with_unanswered_payment_request)
-                expect(User.insurance_agents.count).to eq(1)
+                expect(User.adjusters.count).to eq(1)
             end
             it "must create exactly two stripe accounts" do
                 expect(StripeAccount.all.count).to eq(0)
@@ -279,9 +279,9 @@ RSpec.describe "The Settlement Factory" do
                 expect(User.attorneys.count).to eq(1)
             end
             it "must create exactly one insurance agent" do
-                expect(User.insurance_agents.count).to eq(0)
+                expect(User.adjusters.count).to eq(0)
                 create(:settlement, :with_completed_payment)
-                expect(User.insurance_agents.count).to eq(1)
+                expect(User.adjusters.count).to eq(1)
             end
             it "must create exactly two stripe accounts" do
                 expect(StripeAccount.all.count).to eq(0)
@@ -354,10 +354,10 @@ RSpec.describe "The Settlement Factory" do
                         expect(User.attorneys.count).to eq(1)
                     end
                     it "must create exactly one insurance agent" do
-                        expect(User.insurance_agents.count).to eq(0)
+                        expect(User.adjusters.count).to eq(0)
                         user = create(:attorney, :with_unactivated_organization_due_to_lack_of_bank_account)
                         settlement = create(:settlement, :with_completed_payment, attorney: user)
-                        expect(User.insurance_agents.count).to eq(1)
+                        expect(User.adjusters.count).to eq(1)
                     end
                     it "must create exactly two stripe accounts" do
                         expect(StripeAccount.all.count).to eq(0)

@@ -90,16 +90,16 @@ attorneys = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
     a
 }
 
-insurance_agents = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
+adjusters = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
     a = User.create!(
-        email: "insurance_agent#{i}@example.com",
+        email: "adjuster#{i}@example.com",
         password: "password123",
-        role: "Insurance Agent",
+        role: "Adjuster",
         first_name: top_100_first_names[rand(0..99)],
         last_name: top_100_last_names[rand(0..99)],
         organization: insurance_company_users[rand(0..insurance_company_users.size-1)],
     )
-    puts "Created Insurance Agent i=#{i}"
+    puts "Created Adjuster i=#{i}"
     a
 }
 
@@ -107,7 +107,7 @@ attorneys.each do |a|
     SETTLEMENTS_PER_ATTORNEY.times do |i|
         settlement = Settlement.new(
             attorney:           a,
-            insurance_agent:    insurance_agents[rand(0..insurance_agents.size-1)],
+            adjuster:    adjusters[rand(0..adjusters.size-1)],
             claim_number:       "#{rand(100000..999999)}",
             amount:             '%.02f' % rand(Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS*100..Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS*100).fdiv(100),
             policy_holder_name: "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",
@@ -135,7 +135,7 @@ puts "Created #{User.all.size} user models..."
 puts "======= #{User.all_law_firms.size} law firm models"
 puts "======= #{User.all_insurance_companies.size} insurance company models"
 puts "======= #{User.all_attorneys.size} attorney models"
-puts "======= #{User.all_insurance_agents.size} insurance agent models"
+puts "======= #{User.all_adjusters.size} insurance agent models"
 puts "Created #{Settlement.all.size} settlement models..."
 puts "Created #{Document.all.size} document models..."
 

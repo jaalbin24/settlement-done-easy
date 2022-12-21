@@ -6,7 +6,7 @@ RSpec.describe "A member rejecting a document", type: :system do
         before(:each) do
             @document = create(:document, :from_the_ground_up)
             settlement = @document.settlement
-            @user = @document.added_by.isAttorney? ? @user = settlement.insurance_agent : @user = settlement.attorney
+            @user = @document.added_by.isAttorney? ? @user = settlement.adjuster : @user = settlement.attorney
             setting = settlement.settings_for(@document.added_by)
             setting.update(delete_my_documents_after_rejection: true)
         end
@@ -44,7 +44,7 @@ RSpec.describe "A member rejecting a document", type: :system do
         before(:each) do
             @document = create(:document, :from_the_ground_up)
             settlement = @document.settlement
-            @user = @document.added_by.isAttorney? ? @user = settlement.insurance_agent : @user = settlement.attorney
+            @user = @document.added_by.isAttorney? ? @user = settlement.adjuster : @user = settlement.attorney
             setting = settlement.settings_for(@document.added_by)
             setting.update(delete_my_documents_after_rejection: false)
         end

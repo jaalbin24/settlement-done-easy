@@ -86,14 +86,14 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           <%=message.html_safe%>
         </div>
-      <% end %>
+      <%end%>
     </div>
-    <main role="main" class="container mt-3" id="main-content-wrap">
+    <main role="main" class="h-100 container-fluid" id="main-content-wrap">
       <div id="toast-container" data-bs-toaster="" class="toast-container position-absolute m-3 top-10 end-0" aria-live="polite" style="z-index:999999;"></div>
-      <%= yield %>
+        <%=yield%>
       <br>
     </main>
-    <footer class="bg-secondary navbar d-flex align-items-center justify-content-center" id="footer">
+    <footer class="navbar d-flex align-items-center justify-content-center" id="footer">
       <p class="m-0 text-center">If you have any questions or comments, please email us at <a href=""><%=Rails.configuration.CUSTOMER_SUPPORT_EMAIL_ADDRESS%></a> or call <a href=""><%=Rails.configuration.CUSTOMER_SUPPORT_PHONE_NUMBER%></a>.</p>
     </footer>
   </body>

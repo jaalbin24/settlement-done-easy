@@ -31,8 +31,8 @@
 FactoryBot.define do
     factory :document, class: "Document" do
         settlement
-        trait :added_by_insurance_agent do
-            association :added_by, factory: :insurance_agent
+        trait :added_by_adjuster do
+            association :added_by, factory: :adjuster
         end
         trait :added_by_attorney do
             association :added_by, factory: :attorney
@@ -55,21 +55,21 @@ FactoryBot.define do
                 d.settlement.documents.excluding(d).each do |destroy_me|
                     destroy_me.destroy!
                 end
-                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.insurance_agent if d.added_by.nil?
+                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.adjuster if d.added_by.nil?
 
-                noahs_ark = [d.settlement.attorney, d.settlement.insurance_agent, d.settlement.attorney.organization, d.settlement.insurance_agent.organization]
+                noahs_ark = [d.settlement.attorney, d.settlement.adjuster, d.settlement.attorney.organization, d.settlement.adjuster.organization]
                 User.all.excluding(noahs_ark).each do |u|
                     u.destroy!
                 end
             end
             after(:build) do |d, e|
-                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.insurance_agent if d.added_by.nil?
+                d.added_by = rand(1..2).odd? ? d.settlement.attorney : d.settlement.adjuster if d.added_by.nil?
             end
         end
         after(:create) do |d, e|
             puts "🤖🤖🤖 document after(:create) block"
             d.reviews.destroy_all
-            d.reviews = [build(:document_review, document: d, reviewer: d.settlement.insurance_agent), build(:document_review, document: d, reviewer: d.settlement.attorney)]
+            d.reviews = [build(:document_review, document: d, reviewer: d.settlement.adjuster), build(:document_review, document: d, reviewer: d.settlement.attorney)]
             d.reviews.each do |r|
                 r.save
             end
