@@ -11,7 +11,7 @@
     <%= javascript_pack_tag 'application'%>
   </head>
 
-  <body id="page-container" style="background-color: #edf4ff;">
+  <body id="page-container">
     <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
       <div class="container-fluid">
         <%= image_tag "sde-cube-logo.png", height: 40, class: "mx-2"%>
@@ -82,15 +82,15 @@
     </nav>
     <div>
       <% flash.each do |key, message| %>
-        <div class="alert alert-dismissible <%=flash_class(key)%> text-center">
+        <div class="alert alert-dismissible <%=flash_class(key)%> text-center mb-0">
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           <%=message.html_safe%>
         </div>
       <%end%>
     </div>
-    <main role="main" class="h-100 container-fluid" id="main-content-wrap">
+    <main role="main" class="main-content-wrap">
       <div id="toast-container" data-bs-toaster="" class="toast-container position-absolute m-3 top-10 end-0" aria-live="polite" style="z-index:999999;"></div>
-        <%=yield%>
+      <%=yield%>
       <br>
     </main>
     <footer class="navbar d-flex align-items-center justify-content-center" id="footer">

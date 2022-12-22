@@ -1,157 +1,89 @@
-<div class="row h-100">
-    <div class="col-auto bg-secondary h-100">
-        <h1 class="ms-4 mt-4 mb-2"><strong>Settings</strong></h1>
-        <div class="list-group list-group-flush border-0 shadow-none">
-            <a class="list-group-item bg-transparent d-flex align-items-center justify-content-between gap-5" href="">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="max-width: 20vw; min-width: 20rem;">
+    <h1 class="my-0 ms-3"><strong>Settings</strong></h1>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item" data-test-id="settings_nav_bar_account_button">
+            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
                 <div>
                     <h5 class="m-0">Account</h5>
                     <p class="m-0">Change account settings</p>
                 </div>
                 <%=chevron_icon(direction: :right, color: :grey)%>
             </a>
-            <a class="list-group-item bg-transparent d-flex align-items-center justify-content-between gap-3" href="">
+        </li>
+        <li class="nav-item" data-test-id="settings_nav_bar_account_button">
+            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
                 <div>
                     <h5 class="m-0">Profile</h5>
                     <p class="m-0">Edit your profile</p>
                 </div>
                 <%=chevron_icon(direction: :right, color: :grey)%>
             </a>
-            <a class="list-group-item bg-transparent d-flex align-items-center justify-content-between gap-3" href="">
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
                 <div>
                     <h5 class="m-0">Wallet</h5>
                     <p class="m-0">Store payment methods</p>
                 </div>
                 <%=chevron_icon(direction: :right, color: :grey)%>
             </a>
-            <a class="list-group-item bg-transparent d-flex align-items-center justify-content-between gap-3" href="">
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
                 <div>
                     <h5 class="m-0">Billing</h5>
                     <p class="m-0">See costs for using SDE</p>
                 </div>
                 <%=chevron_icon(direction: :right, color: :grey)%>
             </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
+                <div>
+                    <h5 class="m-0">Security</h5>
+                    <p class="m-0">Keep your account secure</p>
+                </div>
+                <%=chevron_icon(direction: :right, color: :grey)%>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="p-5" style="min-width: 50rem;">
+    <div class="mb-2">
+        <h4 class="m-0">Account Settings</h4>
+        <%unless current_user.activated?%>
+            <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
+        <%end%>
+    </div>
+    <div class="py-4 border-top border-1 border-dark">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="">
+                <h6 class="m-0">Email</h6>
+                <p class="m-0"><%=current_user.email%></p>
+            </div>
+            <%=link_to "Change email", change_email_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>
     </div>
-    <div class="col">
-        <div class="row">
-            <div class="col">
-                <div class="card mb-3" name="details-section">
-                    <div class="card-header">
-                        <h3 class="m-0">Account Details</h3>
-                        <%if current_user.activated?%>
-                            <h6 class="card-subtitle text-success m-0">Your account has been activated.</h6>
-                        <%else%>
-                            <h6 class="card-subtitle text-danger m-0">Your account is not activated.</h6>
-                        <%end%>
-                    </div>
-                    <%=form_for(current_user, url: registration_path(current_user), html: { method: :put, id: "edit-user-form"}) do |f| %>
-                        <div class="card-body">
-                            <div class="form-group mb-2">
-                                <%=f.label :email, class: "form-label"%>
-                                <div class="input-group">
-                                    <%=f.email_field :email, class: "form-control"%>
-                                    <%if current_user.email_verified?%>
-                                        <span class="input-group-text text-success">
-                                            <%=checkbox_icon(checked: true)%><div class="ms-1">Verified</div>
-                                        </span>
-                                    <%else%>
-                                        <span class="input-group-text text-danger">
-                                            <%=checkbox_icon(checked: false)%><div class="ms-1">Not verified</div>
-                                        </span>
-                                    <%end%>
-                                </div>
-                                <small class="form-text text-muted">This is the email used to sign in to Settlement Done Easy.</small>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center gap-2">
-                                <div class="form-group">
-                                    <%=f.label :password, class: "form-label"%>
-                                    <input id="password-placeholder" value="********" class="form-control" readonly="readonly" type="text">
-                                    <button class="p-0 btn btn-sm btn-link" name="open-change-password-button" type="button">Change password</button>
-                                </div>
-                                <div class="form-group">
-                                    <%=f.label :phone_number, class: "form-label"%>
-                                    <%=f.telephone_field :phone_number, value: "#{number_to_phone(current_user.phone_number, area_code: true)}", class: "form-control"%>
-                                    <small class="form-text text-muted">This is the number used for MFA.</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body border-top d-flex align-items-center justify-content-between">
-                            <p class="text-muted m-0">No changes will be made until you click Update.</p>
-                            <button class="btn btn-primary btn-sm" name="open-password-confirmation-button">Update</button>
-                        </div>
-                    <%end%>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="m-0">Security</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <%if current_user.two_factor_authentication_enabled?%>
-                                <h6 class="card-subtitle text-muted">Multi Factor Authentication is enabled.</h6>
-                                <%=link_to "Disable MFA", mfa_disable_path, method: :delete, class: "btn btn-secondary btn-sm m-0 my-auto"%>
-                            <%else%>
-                                <h6 class="card-subtitle text-danger">Multi Factor Authentication is disabled.</h6>
-                                <button class="btn btn-secondary btn-sm m-0">Enable MFA</button>
-                            <%end%>
-                        </div>
-                    </div>
-                </div>
+    <div class="py-4 border-top border-1 border-dark">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="">
+                <h6 class="m-0">Password</h6>
+                <p class="m-0">********</p>
             </div>
-            <div class="col">
-                <div class="card" name="requirements-section">
-                    <div class="card-header">
-                        <h3>Requirements</h3>
-                        <%if current_user.activated?%>
-                            <h6 class="card-subtitle text-muted m-0">All requirements are met. Your account has been activated.</h6>
-                        <%else%>
-                            <h6 class="card-subtitle text-danger m-0">Fulfill all requirements to activate your account.</h6>
-                        <%end%>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <a class="py-1 list-group-item list-group-item-action" href="<%=stripe_onboard_account_link_path%>">
-                            <%if current_user.stripe_account.onboarded?%>
-                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Complete onboarding with Stripe.</p>
-                            <%else%>
-                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Complete onboarding with Stripe.</p>
-                            <%end%>
-                        </a>
-                        <a class="py-1 list-group-item list-group-item-action" href="">
-                            <%if current_user.has_bank_account?%>
-                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Add a bank account</p>
-                            <%else%>
-                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Add a bank account</p>
-                            <%end%>
-                        </a>
-                        <a class="py-1 list-group-item list-group-item-action" href="<%=organization_new_member_path(current_user)%>">
-                            <%if current_user.has_member_account?%>
-                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Create a Member account</p>
-                            <%else%>
-                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Create a Member account</p>
-                            <%end%>
-                        </a>
-                        <a class="py-1 list-group-item list-group-item-action" href="">
-                            <%if current_user.two_factor_authentication_enabled?%>
-                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Enable MFA</p>
-                            <%else%>
-                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Enable MFA</p>
-                            <%end%>
-                        </a>
-                        <a class="py-1 list-group-item list-group-item-action" href="">
-                            <%if current_user.email_verified?%>
-                                <p class="m-0"><i class="me-2 text-success fa-regular fa-square-check"></i>Verify email</p>
-                            <%else%>
-                                <p class="m-0"><i class="me-2 fa-regular fa-square"></i>Verify email</p>
-                            <%end%>
-                        </a>
-                    </div>
-                </div>
+            <button class="btn btn-outline-primary" name="open-change-password-button">Change password</button>
+        </div>
+    </div>
+    <div class="py-4 border-top border-1 border-dark">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="">
+                <h6 class="m-0">Phone number</h6>
+                <p class="m-0"><%=number_to_phone(current_user.phone_number, area_code: true)%></p>
             </div>
+            <%=link_to "Change phone number", change_phone_number_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>
     </div>
 </div>
-
-
 
 <%=render "modals/password_confirmation"%>
 <%=render "modals/change_password"%>

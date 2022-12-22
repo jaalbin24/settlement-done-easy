@@ -83,7 +83,6 @@ class User::RegistrationsController < Devise::RegistrationsController
     if resource_updated
       set_flash_message_for_update(resource, prev_unconfirmed_email)
       bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
-
       respond_with resource, location: after_update_path_for(resource)
     else
       flash[:info] = "Account details could not be updated at this time. Please try again later."
@@ -118,6 +117,15 @@ class User::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def cancel_changes
+    flash[:info] = "No changes were made."
+    if params[:continue_path].nil?
+      redirect_to root_path
+    else
+      redirect_to params[:continue_path]
+    end
+  end
+
   protected
 
   def update_resource(resource, params)
@@ -147,6 +155,14 @@ class User::RegistrationsController < Devise::RegistrationsController
   # The default url to be used after updating a resource. You need to overwrite
   # this method in your own RegistrationsController.
   def after_update_path_for(resource)
-    sign_in_after_change_password? ? settings_path : new_session_path(resource_name)
+    if sign_in_after_change_password?
+      if params[:continue_path].blank?
+        settings_path
+      else
+        continue_path
+      end
+    else
+      new_session_path(resource_name)
+    end
   end
 end
