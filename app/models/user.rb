@@ -222,32 +222,41 @@ class User < ApplicationRecord
 
     after_create do
         puts "❤️❤️❤️ User after_create block"
-        if isLawFirm? && stripe_financial_account_id.blank?
-            treasury_account = Stripe::Treasury::FinancialAccount.create(
-                {
-                    supported_currencies: ['usd'],
-                    features: {
-                        intra_stripe_flows: {requested: true}, # For recieving money from IC financial account
-                        outbound_transfers: {ach: {requested: true}}, # For transferring from LF financial account to LF bank account
-                    },
-                },
-                {stripe_account: stripe_account_id},
-            )
-            self.stripe_financial_account_id = treasury_account.id
-        elsif isInsuranceCompany? && stripe_financial_account_id.blank?
-            treasury_account = Stripe::Treasury::FinancialAccount.create(
-                {
-                    supported_currencies: ['usd'],
-                    features: {
-                        intra_stripe_flows: {requested: true}, # For sending money to LF financial account
-                        inbound_transfers: {ach: {requested: true}}, # For transferring from IC bank account to IC financial account
-                    },
-                },
-                {stripe_account: stripe_account_id},
-            )
-            self.stripe_financial_account_id = treasury_account.id
+        if isOrganization?
+            if stripe_account.nil?
+                CreateStripeAccountJob.perform_later self
+                #build_stripe_account
+            end
+            # if stripe_financial_account.nil?
+            #     build_stripe_financial_account
+            # end
         end
-        self.save if stripe_financial_account_id_changed?
+        # if isLawFirm? && stripe_financial_account_id.blank?
+        #     treasury_account = Stripe::Treasury::FinancialAccount.create(
+        #         {
+        #             supported_currencies: ['usd'],
+        #             features: {
+        #                 intra_stripe_flows: {requested: true}, # For recieving money from IC financial account
+        #                 outbound_transfers: {ach: {requested: true}}, # For transferring from LF financial account to LF bank account
+        #             },
+        #         },
+        #         {stripe_account: stripe_account_id},
+        #     )
+        #     self.stripe_financial_account_id = treasury_account.id
+        # elsif isInsuranceCompany? && stripe_financial_account_id.blank?
+        #     treasury_account = Stripe::Treasury::FinancialAccount.create(
+        #         {
+        #             supported_currencies: ['usd'],
+        #             features: {
+        #                 intra_stripe_flows: {requested: true}, # For sending money to LF financial account
+        #                 inbound_transfers: {ach: {requested: true}}, # For transferring from IC bank account to IC financial account
+        #             },
+        #         },
+        #         {stripe_account: stripe_account_id},
+        #     )
+        #     self.stripe_financial_account_id = treasury_account.id
+        # end
+        # self.save if stripe_financial_account_id_changed?
     end
 
     before_create do
@@ -261,14 +270,6 @@ class User < ApplicationRecord
             elsif user.organization.isInsuranceCompany?
                 self.role = "Adjuster"
             end
-        end
-        if isOrganization?
-            if stripe_account.nil?
-                build_stripe_account
-            end
-            # if stripe_financial_account.nil?
-            #     build_stripe_financial_account
-            # end
         end
         build_settings(UserSettings.default_settings)
     end
@@ -331,7 +332,6 @@ class User < ApplicationRecord
 
     def stripe_account_onboarded?
         if stripe_account.nil?
-            raise StandardError.new "NO STRIPE ACCOUNT FOR USER #{full_name}"
             false
         elsif stripe_account.onboarded?
             true

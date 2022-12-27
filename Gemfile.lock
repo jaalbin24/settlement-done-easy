@@ -65,6 +65,10 @@ GEM
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
+    async (1.30.3)
+      console (~> 1.10)
+      nio4r (~> 2.3)
+      timers (~> 4.1)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
     bcrypt (3.1.18)
@@ -93,6 +97,9 @@ GEM
       xpath (~> 3.2)
     childprocess (4.1.0)
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
+    console (1.16.2)
+      fiber-local
     crass (1.0.6)
     devise (4.8.1)
       bcrypt (~> 3.0)
@@ -116,6 +123,7 @@ GEM
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
     ffi (1.15.5)
+    fiber-local (1.0.0)
     font-awesome-sass (6.2.0)
       sassc (~> 2.0)
     globalid (1.0.0)
@@ -198,6 +206,8 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redis (4.8.0)
+    redis-client (0.11.2)
+      connection_pool
     regexp_parser (2.6.0)
     responders (3.0.1)
       actionpack (>= 5.0)
@@ -237,6 +247,11 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.0.0)
+    sidekiq (7.0.2)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     spring (4.1.0)
     sprockets (4.1.1)
       concurrent-ruby (~> 1.0)
@@ -248,6 +263,7 @@ GEM
     stripe (7.1.0)
     thor (1.2.1)
     tilt (2.0.11)
+    timers (4.3.5)
     ttfunk (1.7.0)
     typhoeus (1.4.0)
       ethon (>= 0.9.0)
@@ -284,6 +300,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
+  async
   bootsnap (>= 1.4.4)
   bootstrap
   bootstrap_form (~> 4.0)
@@ -309,6 +326,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (>= 6)
   selenium-webdriver
+  sidekiq
   spring
   stripe
   tzinfo

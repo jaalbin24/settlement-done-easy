@@ -39,6 +39,8 @@ group :development, :test do
   gem "rspec-rails"
   # Factory Bot for dynamic test fixture generation
   gem 'factory_bot_rails'
+
+  gem 'async'
 end
 
 group :development do
@@ -96,4 +98,7 @@ gem 'stripe' #, '~> 5.47.0'
 
 # For icons
 gem "font-awesome-sass"
+
+# For background job-processing
+gem 'sidekiq'
 

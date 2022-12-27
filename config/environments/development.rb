@@ -88,6 +88,9 @@ Rails.application.configure do
 
   # Required for the Devise mailer to work
   config.action_mailer.default_url_options = { host: "#{Rails.configuration.URL_ROOT}/", port: 25 }
+
+
+  config.active_job.queue_adapter = :async
   
 end
 
