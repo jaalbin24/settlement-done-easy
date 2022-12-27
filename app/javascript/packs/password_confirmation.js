@@ -1,109 +1,117 @@
 export default class PasswordConfirmation {
     constructor(e) {
         document.addEventListener("DOMContentLoaded", () => {
-            var submitEditUserButton = document.getElementsByName("submit-edit-user-button")[0];
-            submitEditUserButton.addEventListener("click", async event => {
-                event.preventDefault();
-                event.target.disabled = true;
+            if (!!document.getElementsByName("submit-edit-user-button")[0]) {
+                let submitEditUserButton = document.getElementsByName("submit-edit-user-button")[0]
+                submitEditUserButton.addEventListener("click", async event => {
+                    event.preventDefault();
+                    event.target.disabled = true;
 
-                var editUserForm = document.getElementById("edit-user-form");
-                var passwordConfirmationForm = document.getElementById("password-confirmation-form");
-                var passwordConfirmationFormData = new FormData(passwordConfirmationForm);
+                    var editUserForm = document.getElementById("edit-user-form");
+                    var passwordConfirmationForm = document.getElementById("password-confirmation-form");
+                    var passwordConfirmationFormData = new FormData(passwordConfirmationForm);
 
-                for(const e of passwordConfirmationFormData) {
-                    if (e[0] == "user[current_password]") {
-                        let currentPassword = String(e[1]);
-                        if (await PasswordConfirmation.currentPasswordIsValid(currentPassword)) {
-                            console.log("PW valid");
-                            var currentPasswordField = document.createElement("input");
-                            currentPasswordField.type = "hidden";
-                            currentPasswordField.name = "user[current_password]";
-                            currentPasswordField.value = currentPassword;
-                            editUserForm.appendChild(currentPasswordField);
-                            editUserForm.submit();
-                        } else {
-                            console.log("PW invalid");
-                            var currentPasswordInputField = passwordConfirmationForm.querySelector("input[name='user[current_password]']");
-                            var incorrectPasswordErrorMessageElement = passwordConfirmationForm.querySelector("div[name='incorrect-password-error-message']");
-                            currentPasswordInputField.classList.add("is-invalid");
-                            incorrectPasswordErrorMessageElement.style.display = "block";
-                            currentPasswordInputField.focus();
-                            document.getElementsByName("submit-edit-user-button")[0].disabled = false;
+                    for(const e of passwordConfirmationFormData) {
+                        if (e[0] == "user[current_password]") {
+                            let currentPassword = String(e[1]);
+                            if (await PasswordConfirmation.currentPasswordIsValid(currentPassword)) {
+                                console.log("PW valid");
+                                var currentPasswordField = document.createElement("input");
+                                currentPasswordField.type = "hidden";
+                                currentPasswordField.name = "user[current_password]";
+                                currentPasswordField.value = currentPassword;
+                                editUserForm.appendChild(currentPasswordField);
+                                editUserForm.submit();
+                            } else {
+                                console.log("PW invalid");
+                                var currentPasswordInputField = passwordConfirmationForm.querySelector("input[name='user[current_password]']");
+                                var incorrectPasswordErrorMessageElement = passwordConfirmationForm.querySelector("div[name='incorrect-password-error-message']");
+                                currentPasswordInputField.classList.add("is-invalid");
+                                incorrectPasswordErrorMessageElement.style.display = "block";
+                                currentPasswordInputField.focus();
+                                document.getElementsByName("submit-edit-user-button")[0].disabled = false;
+                            }
+                            break;
                         }
-                        break;
                     }
-                }
-            });
+                });
+            }
 
-            // This event listener controls error messages when changing the user's password
-            var changePasswordButton = document.getElementsByName("submit-change-password-button")[0];
-            changePasswordButton.addEventListener("click", async event => {
-                event.preventDefault();
-                event.target.disabled = true;
-
-                var changePasswordForm = document.getElementById("change-password-form");
-                let currentPasswordInputElement = changePasswordForm.querySelector("input[name='user[current_password]']");
-                let currentPassword = currentPasswordInputElement.value;
-                let newPasswordInputElement = document.querySelector("input[name='user[password]']");
-                let newPassword = newPasswordInputElement.value;
-                let confirmNewPasswordInputElement = document.querySelector("input[name='user[password_confirmation]']");
-                let confirmNewPassword = confirmNewPasswordInputElement.value;
-
-                console.log("1");
-                PasswordConfirmation.removeAllErrorsFromForm(changePasswordForm);
-                console.log("2");
-                let incorrectPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='incorrect-password-error-message']");
-                console.log("3");
-                console.log("incorrectPasswordErrorMessageElement=%O", incorrectPasswordErrorMessageElement);
-                currentPasswordInputElement.classList.remove("is-invalid");
-                // incorrectPasswordErrorMessageElement.style.display = "none";
-
-
-                if (newPassword != confirmNewPassword || newPassword == "" || newPassword.length < 8) {
-                    var newPasswordInputElementHasError = false;
-                    var shortPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='short-password-error-message']");
-                    if (newPassword.length < 8 && newPassword != "") {
-                        newPasswordInputElementHasError = true;
-                        shortPasswordErrorMessageElement.style.display = "block";
-                        newPasswordInputElement.focus();
-                    }
-                    var blankPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='blank-password-error-message']");
-                    if (newPassword == "") {
-                        newPasswordInputElementHasError = true;
-                        newPasswordInputElement.focus();
-                        blankPasswordErrorMessageElement.style.display = "block";
-                    }
-                    var mismatchPasswordErrorMessageElement = changePasswordForm.querySelector("div.invalid-feedback[name='mismatch-password-error-message']");
-                    if (newPassword != confirmNewPassword && !newPasswordInputElementHasError) {
-                        confirmNewPasswordInputElement.classList.add("is-invalid");
-                        confirmNewPasswordInputElement.focus();
-                        mismatchPasswordErrorMessageElement.style.display = "block";
-                    }
+            let currentPasswordFields = document.getElementsByName("user[current_password]");
+            for(const currentPasswordField of currentPasswordFields) {
+                var submitButton;
+                if (!!currentPasswordField.form.querySelector("input[type='submit']")) {
+                    submitButton = currentPasswordField.form.querySelector("input[type='submit']");
+                    console.log("SUBMIT BUTTON DETECTED: %O", submitButton);
                 } else {
-                    if (await PasswordConfirmation.currentPasswordIsValid(currentPassword)) {
-                        console.log("PW valid");
-                        changePasswordForm.submit();
-                    } else {
-                        console.log("PW invalid");
-                        currentPasswordInputElement.classList.add("is-invalid");
-                        incorrectPasswordErrorMessageElement.style.display = "block";
-                        currentPasswordInputElement.focus();
+                    console.log("NO SUBMIT BUTTON DETECTED");
+                    continue;
+                }
+                submitButton.addEventListener("click", async event => {
+                    event.preventDefault();
+                    event.target.disabled = true;
+                    let formHasErrors = false;
+                    PasswordConfirmation.removeAllErrorsFromForm(event.target.form);
+                    let currentPassword = currentPasswordField.value;
+                    console.log("currentPassword=%s", currentPassword);
+                    let inputFields = currentPasswordField.form.querySelectorAll("input.form-control");
+                    for (const inputField of inputFields) {
+                        if (inputField.required == true && inputField.value == "") {
+                            PasswordConfirmation.styleInputAsInvalid(inputField, "Cannot be blank");
+                            formHasErrors = true;
+                        } else if (inputField.type == "email") {
+                            if (!PasswordConfirmation.emailIsFormattedCorrectly(inputField.value)) {
+                                PasswordConfirmation.styleInputAsInvalid(inputField, "Please enter a valid email");
+                                formHasErrors = true;
+                            } else if (inputField.hasAttribute("data-verify-unique")) {
+                                if (await PasswordConfirmation.emailIsTaken(inputField.value)) {
+                                    PasswordConfirmation.styleInputAsInvalid(inputField, "This email is already taken");
+                                    formHasErrors = true;
+                                }
+                            }
+                        } else if (inputField.type == "tel") {
+                            if (!PasswordConfirmation.phoneNumberIsFormattedCorrectly(inputField.value)) {
+                                PasswordConfirmation.styleInputAsInvalid(inputField, "Please enter a valid phone number");
+                                formHasErrors = true;
+                            }
+                        } else if (inputField.name == "user[password]") {
+                            if (inputField.value.length < 8) {
+                                PasswordConfirmation.styleInputAsInvalid(inputField, "Must have 8 or more characters");
+                                formHasErrors = true;
+                            }
+                        } else if (inputField.name == "user[password_confirmation]") {
+                            let newPasswordInputField = inputField.form.querySelector("input[name='user[password]']");
+                            if (inputField.value != newPasswordInputField.value) {
+                                PasswordConfirmation.styleInputAsInvalid(inputField, "Does not match new password");
+                                formHasErrors = true;
+                            }
+                        }
                     }
-                }
-                if (newPasswordInputElementHasError) {
-                    newPasswordInputElement.classList.add("is-invalid");
-                }
-                event.target.disabled = false;
-            });
+                    if (formHasErrors) {
+                        event.target.disabled = false;
+                        return;
+                    }
+                    if (currentPassword == null || currentPassword == "") {
+                        // Incorrect message was already shown
+                    } else if (await PasswordConfirmation.currentPasswordIsValid(currentPassword)) {
+                        console.log("PASSWORD VALID");
+                        event.target.form.submit();
+                    } else {
+                        console.log("PASSWORD INVALID");
+                        PasswordConfirmation.styleInputAsInvalid(currentPasswordField, "Incorrect password");
+                    }
+                    event.target.disabled = false;
+                });
+            }
         });
     }
 
-    static async currentPasswordIsValid(plaintext_password) {
+    static async currentPasswordIsValid(currentPassword) {
         let bodyContent = {
-            "user[current_password]": String(plaintext_password),
-            "authenticity_token": document.querySelector("input[name='authenticity_token']").value
+            "user[current_password]":   String(currentPassword),
+            "authenticity_token":       document.querySelector("input[name='authenticity_token']").value
         }
-        let res = await fetch("users/validate", {
+        let res = await fetch("/user/validate", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -111,15 +119,37 @@ export default class PasswordConfirmation {
             },
             body: JSON.stringify(bodyContent)
         }).then(res => {
-            return res;
+            return res.json();
         }).catch(error => {
             console.error(error);
         });
-        if (res.status == 200) {
-            console.log("Returning TRUE");
+        if (res['current_password_valid']) {
             return true;
         } else {
-            console.log("Returning FALSE");
+            return false;
+        }
+    }
+
+    static async emailIsTaken(email) {
+        let bodyContent = {
+            "user[email]":          String(email),
+            "authenticity_token":   document.querySelector("input[name='authenticity_token']").value
+        }
+        let res = await fetch("/user/validate", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept":       "application/json"
+            },
+            body: JSON.stringify(bodyContent)
+        }).then(res => {
+            return res.json();
+        }).catch(error => {
+            console.error(error);
+        });
+        if (res['email_taken']) {
+            return true;
+        } else {
             return false;
         }
     }
@@ -134,5 +164,28 @@ export default class PasswordConfirmation {
         for(const input of inputs) {
             input.classList.remove("is-invalid");
         }
+    }
+
+    static styleInputAsInvalid(inputElement, message) {
+        inputElement.classList.add("is-invalid");
+        let errorMessageElement = document.createElement("div");
+        errorMessageElement.innerHTML = message;
+        errorMessageElement.classList.add("invalid-feedback");
+        inputElement.parentElement.appendChild(errorMessageElement);
+    }
+
+    static emailIsFormattedCorrectly (email) {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
+            );
+    }
+
+    static phoneNumberIsFormattedCorrectly (phoneNumber) {
+        return String(phoneNumber)
+            .match(
+                /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+            );
     }
 }

@@ -1,11 +1,13 @@
-<div class="card mx-auto w-50">
-    <h2 class="card-header">Sign up</h2>
-    <div class="card-body">
-        <h5 class="text-center">What type of organization do you represent?</h5>
+<div class="container mt-3">
+    <h1 class="text-center">Sign up</h1>
+    <div class="card mx-auto w-50">
+        <div class="card-body">
+            <h5 class="text-center">What type of organization do you represent?</h5>
 
-        <div class="d-grid gap-2 mt-3">
-            <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
-            <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
+            <div class="d-grid gap-2 mt-3">
+                <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
+                <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
+            </div>
         </div>
     </div>
 </div>

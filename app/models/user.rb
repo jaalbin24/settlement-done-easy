@@ -42,6 +42,8 @@ class User < ApplicationRecord
     # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable
 
+    scope :with_email,          -> (i) {where(email: i)}
+
     scope :activated,           ->  {where(activated: true)}
     scope :not_activated,       ->  {where(activated: false)}
     scope :law_firms,           ->  {where(role: "Law Firm")}

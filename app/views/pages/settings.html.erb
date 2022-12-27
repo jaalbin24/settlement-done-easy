@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="max-width: 20vw; min-width: 20rem;">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light border-end" style="max-width: 20vw; min-width: 20rem;">
     <h1 class="my-0 ms-3"><strong>Settings</strong></h1>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
@@ -52,7 +52,7 @@
 <div class="p-5" style="min-width: 50rem;">
     <div class="mb-2">
         <h4 class="m-0">Account Settings</h4>
-        <%unless current_user.activated?%>
+        <%if !current_user.activated? && current_user.isOrganization?%>
             <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
         <%end%>
     </div>
@@ -71,19 +71,16 @@
                 <h6 class="m-0">Password</h6>
                 <p class="m-0">********</p>
             </div>
-            <button class="btn btn-outline-primary" name="open-change-password-button">Change password</button>
+            <%=link_to "Change password", change_password_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>
     </div>
     <div class="py-4 border-top border-1 border-dark">
         <div class="d-flex align-items-center justify-content-between">
             <div class="">
                 <h6 class="m-0">Phone number</h6>
-                <p class="m-0"><%=number_to_phone(current_user.phone_number, area_code: true)%></p>
+                <p class="m-0"><%=current_user.phone_number.blank? ? "No phone number added" : number_to_phone(current_user.phone_number, area_code: true)%></p>
             </div>
-            <%=link_to "Change phone number", change_phone_number_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
+            <%=link_to "#{current_user.phone_number.blank? ? "Add" : "Change"} phone number", change_phone_number_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>
     </div>
 </div>
-
-<%=render "modals/password_confirmation"%>
-<%=render "modals/change_password"%>

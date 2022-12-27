@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: { registrations: 'user/registrations', sessions: 'user/sessions'}
   devise_scope :user do
-    put 'users/validate',                       to: 'user/registrations#validate_password'
+    put 'user/validate',                        to: 'user/registrations#validate_user_details'
     get 'user/changeemail',                     to: 'user/registrations#change_email',        as: 'change_email'
     get 'user/changepassword',                  to: 'user/registrations#change_password',     as: 'change_password'
     get 'user/changephonenumber',               to: 'user/registrations#change_phone_number', as: 'change_phone_number'

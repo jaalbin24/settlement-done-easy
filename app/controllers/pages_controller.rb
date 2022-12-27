@@ -32,11 +32,7 @@ class PagesController < ApplicationController
     end
 
     def settings
-        if current_user.isOrganization?
-            render :org_settings
-        else
-            render :mem_settings
-        end
+        render :settings
     end
 
     def requirements

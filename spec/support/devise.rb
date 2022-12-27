@@ -1,7 +1,7 @@
 include Warden::Test::Helpers
 
-RSpec.configure do |r|
-    r.shared_context_metadata_behavior = :apply_to_host_groups
+RSpec.configure do |config|
+    config.shared_context_metadata_behavior = :apply_to_host_groups
 end
 
 RSpec.shared_context "devise", :shared_context => :metadata do
@@ -22,6 +22,15 @@ RSpec.shared_context "devise", :shared_context => :metadata do
     end
 end
 
-RSpec.configure do |r|
-    r.include_context "devise", :include_shared => true
+RSpec.configure do |config|
+    config.include_context "devise", :include_shared => true
+    config.after :suite, type: :system do
+        fork do
+            %x|rails db:migrate:reset RAILS_ENV=test|
+            puts "Test database was reset because the following command is automatically run after every test suite."
+            puts "\n\t\t\trails db:migrate:reset RAILS_ENV=test\n\n"
+            puts "This is triggered by the after(:all) hook in spec/support/devise.rb"
+            exit
+        end
+    end
 end

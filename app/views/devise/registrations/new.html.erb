@@ -1,36 +1,38 @@
-<div class="mx-auto w-50">
-  <div class="card">
-  <h2 class="text-center card-header">Sign up</h2>
-  <div class="card-body">
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
-      <div class="container">
-        <div class="row">
-          <div class="col form-group px-0">
-            <label for="user_business_name" class="form-label mb-0 mt-2">Legal name of organization</label>
-            <input type="text" autofocus="autofocus" class="form-control" id="user_business_name" placeholder="Name of organization" name="user[business_name]" required>
-          </div>
+<div class="container mt-3">
+    <div class="mx-auto w-50">
+        <div class="card">
+        <h2 class="text-center card-header">Sign up</h2>
+        <div class="card-body">
+            <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
+                <div class="container">
+                    <div class="row">
+                        <div class="col form-group px-0">
+                            <label for="user_business_name" class="form-label mb-0 mt-2">Legal name of organization</label>
+                            <input type="text" autofocus="autofocus" class="form-control" id="user_business_name" placeholder="Name of organization" name="user[business_name]" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form-group px-0">
+                            <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
+                            <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
+                            <label for="user_password" class="form-label mb-0 mt-2">Password</label>
+                            <input type="password" class="form-control" id="user_password" placeholder="Password" name="user[password]" required>
+                        </div>
+                        <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
+                            <label for="user_password_confirmation" class="form-label mb-0 mt-2">Confirm password</label>
+                            <input type="password" class="form-control" id="user_password_confirmation" placeholder="Confirm password" name="user[password_confirmation]" required>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" name="commit" class="btn btn-primary" data-disable-with="Sign up">Sign up</button>
+                </div>
+            <%end%>
         </div>
-        <div class="row">
-          <div class="col form-group px-0">
-            <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
-            <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email" required>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
-            <label for="user_password" class="form-label mb-0 mt-2">Password</label>
-            <input type="password" class="form-control" id="user_password" placeholder="Password" name="user[password]" required>
-          </div>
-          <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
-            <label for="user_password_confirmation" class="form-label mb-0 mt-2">Confirm password</label>
-            <input type="password" class="form-control" id="user_password_confirmation" placeholder="Confirm password" name="user[password_confirmation]" required>
-          </div>
-        </div>
-      </div>
-      <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
-      <div class="d-flex justify-content-end mt-4">
-        <button type="submit" name="commit" class="btn btn-primary" data-disable-with="Sign up">Sign up</button>
-      </div>
-    <%end%>
-  </div>
+    </div>
 </div>
