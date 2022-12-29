@@ -1,6 +1,12 @@
 module EnglishLanguage
-    def indefinite_articleize(word)
-        %w(a e i o u).include?(word[0].downcase) ? "an #{word}" : "a #{word}"
+    def indefinite_articleize(args)
+        if args[:word].nil?
+            return
+        end
+        case args[:html_tag]
+        when :strong, "strong"
+            return %w(a e i o u).include?(args[:word][0].downcase) ? "an <strong>#{args[:word]}</strong>" : "a <strong>#{args[:word]}</strong>"
+        end
     end
 
     def self.random_noun

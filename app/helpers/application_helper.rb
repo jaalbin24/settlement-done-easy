@@ -1,6 +1,12 @@
 module ApplicationHelper
-    def indefinite_articleize(word)
-        %w(a e i o u).include?(word[0].downcase) ? "an #{word}" : "a #{word}"
+    def indefinite_articleize(args=nil)
+        if args[:word].nil?
+            return
+        end
+        case args[:html_tag]
+        when :strong, "strong"
+            return (%w(a e i o u).include?(args[:word][0].downcase) ? "an <strong>#{args[:word]}</strong>" : "a <strong>#{args[:word]}</strong>").html_safe
+        end
     end
     
     def active_class(path)
@@ -429,10 +435,16 @@ module ApplicationHelper
         css_classes = ["fa-solid", "fa-thumbs-up", "m-0"]
         return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
         case args[:color]
-        when :green
+        when :green, :success
             css_classes.push("text-success")
-        when :red
+        when :red, :danger
             css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
+        when :primary
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -446,10 +458,16 @@ module ApplicationHelper
         css_classes = ["fa-solid", "fa-thumbs-down", "m-0"]
         return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
         case args[:color]
-        when :green
+        when :green, :success
             css_classes.push("text-success")
-        when :red
+        when :red, :danger
             css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
+        when :primary
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -463,10 +481,16 @@ module ApplicationHelper
         css_classes = ["fa-solid", "fa-circle", "m-0"]
         return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
         case args[:color]
-        when :green
+        when :green, :success
             css_classes.push("text-success")
-        when :red
+        when :red, :danger
             css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
+        when :primary
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -479,12 +503,16 @@ module ApplicationHelper
         css_classes = ["m-0"]
         return "<i class=\"fa-regular #{css_classes.join(" ")}\"></i>".html_safe if args.nil?
         case args[:color]
-        when :green
+        when :green, :success
             css_classes.push("text-success")
-        when :red
+        when :red, :danger
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
+        when :primary
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -509,12 +537,16 @@ module ApplicationHelper
         css_classes = ["m-0", "fa-solid"]
         return "<i class=\"#{css_classes.join(" ")} fa-chevron-right\"></i>".html_safe if args.nil?
         case args[:color]
-        when :green
+        when :green, :success
             css_classes.push("text-success")
-        when :red
+        when :red, :danger
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
+        when :primary
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -531,6 +563,34 @@ module ApplicationHelper
             css_classes.push("fa-chevron-down")
         else
             css_classes.push("fa-chevron-right") # Default to right-pointing chevron when none specified
+        end
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
+    end
+
+    def warning_icon(args=nil)
+        css_classes = ["m-0", "fa-solid"]
+        return "<i class=\"#{css_classes.join(" ")} fa-circle-exclamation\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green, :success
+            css_classes.push("text-success")
+        when :red, :danger
+            css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
+        when :primary
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
+        end
+        case args[:size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:size].to_s)
+        end
+        case args[:shape]
+        when :triangle
+            css_classes.push("fa-triangle-exclamation")
+        else
+            css_classes.push("fa-circle-exclamation")
         end
         "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end

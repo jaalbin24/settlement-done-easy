@@ -4,7 +4,7 @@ class OrganizationUsersController < ApplicationController
 
     def ensure_user_is_organization
         unless current_user.isOrganization?
-            flash[:info] = "You are not authorized to access that page."
+            flash[:primary] = "You are not authorized to access that page."
             redirect_to root_path
         end
     end
@@ -35,7 +35,7 @@ class OrganizationUsersController < ApplicationController
         member = User.find_by!(public_id: params[:mem_id])
 
         organization.members.delete(member)
-        flash[:info] = "#{member.full_name} removed!"
+        flash[:primary] = "#{member.full_name} removed!"
         redirect_to members_index_url(organization)
     end
 
@@ -55,7 +55,7 @@ class OrganizationUsersController < ApplicationController
             member.role = "Adjuster"
         end
         if member.save
-            flash[:info] = "New member #{member.full_name} added!"
+            flash[:primary] = "New member #{member.full_name} added!"
         else
             puts "========================== ERROR: OrganizationUsersController.create_member: #{member.errors.full_messages.inspect}"
         end

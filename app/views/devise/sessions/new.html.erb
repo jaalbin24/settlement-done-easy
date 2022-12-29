@@ -1,33 +1,50 @@
-<div class="mx-auto w-50">
-  <div class="card">
-  <h2 class="card-header">Sign in</h2>
-  <div class="card-body">
+<div class="row w-100 m-0">
+    <div class="col bg-bluegrey">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div>
+                <div class="bg-secondary rounded-circle px-5 py-4">
+                    <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
+                </div>
+                <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="h-100 d-flex justify-content-center">
+            <div class="" style="width: 60%; margin-top: 20%">
+                <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {method: :post, "data-js-styling": true, "data-wait-before-resubmit": true}) do |f|%>
+                    <div class="mb-4 ms-1">
+                        <h1 class="">Welcome back!</h1>
+                        <p class="">Welcome back! Please sign in below.</p>
+                    </div>
+                    <div class="container ps-3 mt-2">
+                        <div class="row my-1">
+                            <div class="col form-group px-0">
+                                <%=f.label :email, class: "form-label"%>
+                                <%=f.email_field :email, class: "form-control", placeholder: "Email", autofocus: true, required: true%>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col form-group px-0">
+                                <%=f.label :password, class: "form-label"%>
+                                <%=f.password_field :password, class: "form-control", placeholder: "Password", required: true, autofill: "current-password"%>
+                            </div>
+                        </div>
+                    </div>
+                    <%if devise_mapping.rememberable?%>
+                        <div class="row my-3">
+                            <div class="col form-group">
+                                <%=f.hidden_field :remember_me, value: "0", autocomplete: "off"%>
+                                <%=f.check_box :remember_me, value: "1"%>
+                                <%=f.label :remember_me%>
+                            </div>
+                        </div>
+                    <%end%>
+                    <%=f.submit "Sign in", class: "btn btn-primary mt-2 ms-1", "data-test-id": "submit_user_sign_in_button"%>
+                <%end%>
+                <p class="text-muted mt-4">Don't have an account? <%=link_to "Sign up", new_user_registration_path, class: "link-dark"%>.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="container">
-    <div class="row">
-      <div class="col form-group px-0">
-        <label class="form-label mb-0 mt-2" for="user_email">Email</label>
-        <input class="form-control" autofocus="autofocus" placeholder="Email" type="email" value="" name="user[email]" id="user_email" required>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col form-group px-0">
-        <label class="form-label mb-0 mt-2" for="user_password">Password</label>
-        <input class="form-control" placeholder="Password" type="password" name="user[password]" id="user_password" required>
-      </div>
-    </div>
-    <% if devise_mapping.rememberable? %>
-    <div class="row">
-      <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
-        <input name="user[remember_me]" type="hidden" value="0" autocomplete="off">
-        <input class="form-check-label" type="checkbox" value="1" name="user[remember_me]" id="user_remember_me">
-        <label class="form-label mb-0 mt-2" for="user_remember_me">Remember me</label>
-      </div>
-    </div>
-  </div>
-  <%end%>
-  <button type="submit" name="commit" class="btn btn-lg btn-primary w-100 mt-3" data-disable-with="Sign in">Sign in</button>
-<% end %>
-<br>
-<%= render "devise/shared/links" %>

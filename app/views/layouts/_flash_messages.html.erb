@@ -1,0 +1,30 @@
+<div class="position-absolute top-10 end-0 m-3" style="z-index: 3;">
+    <%[:primary, :warning, :success, :danger].each do |level|%>
+        <%unless flash[level].nil?%>
+            <div class="alert alert-dismissible <%=flash_class(level.to_s)%> border border-<%=level.to_s%>">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="d-flex align-items-center gap-3 pe-3">
+                    <%=warning_icon(size: :h1, color: level)%>
+                    <div>
+                        <%if flash[level].is_a? Hash%>
+                            <%if !flash[level][:heading].nil?%>
+                                <h4 class="alert-heading m-0"><%=flash[level][:heading].html_safe%></h4>
+                                <hr class="my-1">
+                            <%elsif !flash[level]["heading"].nil?%>
+                                <h4 class="alert-heading m-0"><%=flash[level]["heading"].html_safe%></h4>
+                                <hr class="my-1">
+                            <%end%>
+                            <%if !flash[level][:message].nil?%>
+                                <p class="m-0"><%=flash[level][:message].html_safe%></p>
+                            <%elsif !flash[level]["message"].nil?%>
+                                <p class="m-0"><%=flash[level]["message"].html_safe%></p>
+                            <%end%>
+                        <%elsif flash[level].is_a? String%>
+                            <h5 class="m-0 alert-heading"><%=flash[level].html_safe%></h5>
+                        <%end%>
+                    </div>
+                </div>
+            </div>
+        <%end%>
+    <%end%>
+</div>

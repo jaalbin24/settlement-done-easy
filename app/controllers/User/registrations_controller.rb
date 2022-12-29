@@ -3,8 +3,7 @@
 class User::RegistrationsController < Devise::RegistrationsController
     before_action :configure_sign_up_params, only: [:create]
     before_action :configure_account_update_params, only: [:update]
-    before_action :authenticate_user!, only: [:validate_user_details]
-
+    
     # GET /resource/sign_up
     def new
         @role = params[:role]
@@ -67,11 +66,7 @@ class User::RegistrationsController < Devise::RegistrationsController
 
     # GET /resource/edit
     def edit
-        if current_user.isMember?
-            render :edit_member
-        elsif current_user.isOrganization?
-            render :edit_organization
-        end
+        redirect_to settings_path(section: "account")
     end
 
     # PUT /resource
@@ -79,14 +74,36 @@ class User::RegistrationsController < Devise::RegistrationsController
         self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
         prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
+        old_email = current_user.email
+        old_phone_number = current_user.phone_number
+        old_encrypted_password = current_user.encrypted_password
+        
         resource_updated = update_resource(resource, account_update_params)
         yield resource if block_given?
         if resource_updated
-            set_flash_message_for_update(resource, prev_unconfirmed_email)
+            unless account_update_params[:email].nil?
+                flash[:primary] = {
+                    heading: "Account updated",
+                    message: "Your email was changed to <strong>#{account_update_params[:email]}</strong>."
+                }
+            end
+            unless account_update_params[:phone_number].nil?
+                flash[:primary] = {
+                    heading: "Account updated",
+                    message: "Your phone number was changed to <strong>#{ActiveSupport::NumberHelper.number_to_phone(account_update_params[:phone_number], area_code: true)}</strong>."
+                }
+            end
+            unless account_update_params[:password].nil?
+                flash[:primary] = {
+                    heading: "Account updated",
+                    message: "Your password was changed."
+                }
+            end
+            # set_flash_message_for_update(resource, prev_unconfirmed_email)
             bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
             respond_with resource, location: after_update_path_for(resource)
         else
-            flash[:info] = "Account details could not be updated at this time. Please try again later."
+            flash[:primary] = "Account details could not be updated at this time. Please try again later."
             clean_up_passwords resource
             set_minimum_password_length
             redirect_to settings_url
@@ -116,8 +133,10 @@ class User::RegistrationsController < Devise::RegistrationsController
             current_password_valid: false,
             email_taken: false,
         }
-        if current_user.valid_password?(params["user[current_password]"])
-            response[:current_password_valid] = true
+        if user_signed_in?
+            if current_user.valid_password?(params["user[current_password]"])
+                response[:current_password_valid] = true
+            end
         end
         unless params["user[email]"].blank?
             if User.with_email(params["user[email]"]).count >= 1
@@ -128,7 +147,7 @@ class User::RegistrationsController < Devise::RegistrationsController
     end
 
     def cancel_changes
-        flash[:info] = "No changes were made."
+        flash[:primary] = "No changes were made."
         if params[:continue_path].blank?
             redirect_to root_path
         else
@@ -154,7 +173,8 @@ class User::RegistrationsController < Devise::RegistrationsController
 
     # The path used after sign up.
     def after_sign_up_path_for(resource)
-        super(resource)
+        requirements_path
+        # super(resource)
     end
 
     # The path used after sign up for inactive accounts.

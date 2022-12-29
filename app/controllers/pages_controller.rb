@@ -9,11 +9,6 @@ class PagesController < ApplicationController
         render :generate_or_upload
     end
 
-    def approve_or_reject
-        @document = Document.find_by!(public_id: params[:id])
-        render :approve_or_reject
-    end
-
     def root
         if !user_signed_in?
             render :home
@@ -38,7 +33,7 @@ class PagesController < ApplicationController
     def requirements
         if current_user.isOrganization?
             @activation_progress = 0
-            @activation_progress += 1 if current_user.stripe_account.onboarded?
+            @activation_progress += 1 if current_user.stripe_account_onboarded?
             @activation_progress += 1 if current_user.has_bank_account?
             @activation_progress += 1 if current_user.has_member_account?
             @activation_progress += 1 if current_user.two_factor_authentication_enabled?
@@ -46,7 +41,7 @@ class PagesController < ApplicationController
             @activation_progress = @activation_progress * 100 / 5
             render :requirements
         else
-            flash[:info] = "You cannot access that page."
+            flash[:primary] = "You cannot access the requirements page."
             redirect_to root_path
         end
     end

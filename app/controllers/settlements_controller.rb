@@ -6,7 +6,7 @@ class SettlementsController < ApplicationController
 
     def ensure_organization_is_activated
         unless current_user.organization.activated?
-            flash[:info] = "You cannot start a settlement until #{current_user.organization.full_name}'s account is activated."
+            flash[:primary] = "You cannot start a settlement until #{current_user.organization.full_name}'s account is activated."
             redirect_to root_path
         end
     end
@@ -55,7 +55,7 @@ class SettlementsController < ApplicationController
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
-            flash[:info] = "Started a new settlement with #{partner.full_name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
+            flash[:primary] = "Started a new settlement with #{partner.full_name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
         else
             flash.now[:error] = "#{settlement.errors.full_messages.inspect}"
@@ -82,7 +82,7 @@ class SettlementsController < ApplicationController
             return
         end
         settlement.destroy
-        flash[:info] = "Settlement canceled!"
+        flash[:primary] = "Settlement canceled!"
         redirect_to root_path
     end
 
@@ -94,13 +94,13 @@ class SettlementsController < ApplicationController
             return
         end
         if settlement.locked?
-            flash[:info] = "This settlement cannot be modified right now because it is locked. No changes were made."
+            flash[:primary] = "This settlement cannot be modified right now because it is locked. No changes were made."
         else
             begin
                 settlement.update(settlement_params)
-                flash[:info] = "Settlement updated."
+                flash[:primary] = "Settlement updated."
             rescue SafetyError::SafetyError => e
-                flash[:info] = e.message
+                flash[:primary] = e.message
             rescue
                 flash[:error] = "Settlement could not be updated. Try again later."
             end
@@ -131,11 +131,11 @@ class SettlementsController < ApplicationController
         begin
             document = generate_document_for_settlement(settlement)
             document.save!
-            flash[:info] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
+            flash[:primary] = "Generated new document! Click <a href=#{document_show_path(document)}>here</a> to view it."
         rescue SafetyError::SafetyError => e
-            flash[:info] = e.message
+            flash[:primary] = e.message
         rescue
-            flash[:info] = "There was a problem generating the document. Please try again later."
+            flash[:primary] = "There was a problem generating the document. Please try again later."
             puts "⚠️⚠️⚠️ ERROR: #{e.message}"
         end
         redirect_back(fallback_location: root_path)

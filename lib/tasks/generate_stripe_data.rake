@@ -388,7 +388,7 @@ def generate_random_law_firm_name
     when 9
         "Law #{random_noun.pluralize.capitalize}"
     when 10
-        "#{random_last_name} #{random_last_name} & #{indefinite_articleize(random_animal_name.singularize.capitalize)}"
+        "#{random_last_name} #{random_last_name} & #{indefinite_articleize(word: random_animal_name.singularize.capitalize)}"
     else
         raise StandardError.new "Something broke your algorithm. The random number is not between 1 and 10."
     end

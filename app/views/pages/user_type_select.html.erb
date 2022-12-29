@@ -1,13 +1,27 @@
-<div class="container mt-3">
-    <h1 class="text-center">Sign up</h1>
-    <div class="card mx-auto w-50">
-        <div class="card-body">
-            <h5 class="text-center">What type of organization do you represent?</h5>
-
-            <div class="d-grid gap-2 mt-3">
-                <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
-                <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
+<div class="row w-100 m-0">
+    <div class="col bg-bluegrey">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div>
+                <div class="bg-secondary rounded-circle px-5 py-4">
+                    <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
+                </div>
+                <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="h-100 d-flex justify-content-center">
+            <div class="" style="width: 60%; margin-top: 20%;">
+                <div class="mb-4 ms-1">
+                    <h1 class="">Create an account</h1>
+                    <p class="mb-5">What type of organization do you represent?</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <%=link_to "Insurance Company", new_user_registration_path(:role => "Insurance Company"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
+                    <%=link_to "Law Firm", new_user_registration_path(:role => "Law Firm"), class: "mx-auto w-50 btn btn-lg btn-primary"%>
+                </div>
             </div>
         </div>
     </div>
 </div>
+

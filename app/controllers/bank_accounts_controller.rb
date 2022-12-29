@@ -26,33 +26,33 @@ class BankAccountsController < ApplicationController
     def destroy
         bank_account = BankAccount.find_by!(public_id: params[:id])
         if bank_account.user.bank_accounts.size == 1
-            flash[:info] = "You must keep at least one bank account. Add another bank account to delete this one."
+            flash[:primary] = "You must keep at least one bank account. Add another bank account to delete this one."
             redirect_back(fallback_location: root_path)
             return
         elsif bank_account.has_processing_payments?
-            flash[:info] = "You cannot delete a bank account with ongoing payments. Wait for this account's payments to settle before deleting."
+            flash[:primary] = "You cannot delete a bank account with ongoing payments. Wait for this account's payments to settle before deleting."
             redirect_back(fallback_location: root_path)
             return
         else
             begin
                 bank_account.destroy
             rescue Stripe::RateLimitError => e
-                flash[:info] = "Account XXXXX#{bank_account.last4} was not deleted due to high network traffic. Try again in a moment."
+                flash[:primary] = "Account XXXXX#{bank_account.last4} was not deleted due to high network traffic. Try again in a moment."
             rescue Stripe::InvalidRequestError => e
-                flash[:info] = "Account XXXXX#{bank_account.last4} was not deleted due to an invalid request."
+                flash[:primary] = "Account XXXXX#{bank_account.last4} was not deleted due to an invalid request."
             rescue Stripe::AuthenticationError => e
-                flash[:info] = "Account XXXXX#{bank_account.last4} was not deleted due to an authentication error."
+                flash[:primary] = "Account XXXXX#{bank_account.last4} was not deleted due to an authentication error."
             rescue Stripe::APIConnectionError => e
-                flash[:info] = "Account XXXXX#{bank_account.last4} was not deleted due to poor network connectivity. Try again in a moment."
+                flash[:primary] = "Account XXXXX#{bank_account.last4} was not deleted due to poor network connectivity. Try again in a moment."
             rescue  => e
                 puts "⚠️⚠️⚠️ ERROR: #{e.message}"
-                flash[:info] = "Account XXXXX#{bank_account.last4} could not be deleted."
+                flash[:primary] = "Account XXXXX#{bank_account.last4} could not be deleted."
             end
             if bank_account.persisted?
-                flash[:info] = "Account XXXXX#{bank_account.last4} could not be deleted."
+                flash[:primary] = "Account XXXXX#{bank_account.last4} could not be deleted."
                 redirect_back(fallback_location: root_path)
             else
-                flash[:info] = "Account deleted."
+                flash[:primary] = "Account deleted."
                 redirect_back(fallback_location: root_path)
             end
         end

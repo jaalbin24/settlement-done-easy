@@ -5,7 +5,7 @@ class PaymentsController < ApplicationController
         payment = Payment.find_by!(public_id: params[:id])
 
         unless current_user.can_access?(payment)
-            flash[:info] = "You are not authorized to access that payment."
+            flash[:primary] = "You are not authorized to access that payment."
             redirect_back(fallback_location: root_path)
         end
     end
@@ -15,7 +15,7 @@ class PaymentsController < ApplicationController
         if !payment_params[:source_id].blank?
             source = BankAccount.find_by!(public_id: payment_params[:source_id])
             if source == payment.source
-                flash[:info] = "That bank account is already the source bank account."
+                flash[:primary] = "That bank account is already the source bank account."
                 redirect_back(fallback_location: root_path)
                 return
             else
@@ -27,7 +27,7 @@ class PaymentsController < ApplicationController
         if !payment_params[:destination_id].blank?
             destination = BankAccount.find_by!(public_id: payment_params[:destination_id])
             if destination == payment.destination
-                flash[:info] = "That bank account is already the destination bank account."
+                flash[:primary] = "That bank account is already the destination bank account."
                 redirect_back(fallback_location: root_path)
                 return
             else
@@ -37,9 +37,9 @@ class PaymentsController < ApplicationController
             destination = payment.destination
         end
         if payment.update(source: source, destination: destination)
-            flash[:info] = flash_message
+            flash[:primary] = flash_message
         else
-            flash[:info] = "Payment data could not be updated. Try again later."
+            flash[:primary] = "Payment data could not be updated. Try again later."
             puts "⚠️⚠️⚠️ ERROR: #{payment.errors.full_messages.inspect}"
         end
         redirect_back(fallback_location: root_path)
@@ -71,9 +71,9 @@ class PaymentsController < ApplicationController
 
         begin
             settlement.initiate_payment
-            flash[:info] = "Payment started!"
+            flash[:primary] = "Payment started!"
         rescue SafetyError::SafetyError => e
-            flash[:info] = e.message
+            flash[:primary] = e.message
         end
         redirect_back(fallback_location: root_path)
     end

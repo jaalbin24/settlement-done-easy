@@ -7,7 +7,7 @@ class StripeController < ApplicationController
     def onboard_account_link
         if current_user.isOrganization?
             if current_user.stripe_account_onboarded?
-                flash[:info] = "Account already onboarded. No action needed."
+                flash[:primary] = "Account already onboarded. No action needed."
                 redirect_to root_path
                 return
             end
@@ -34,14 +34,14 @@ class StripeController < ApplicationController
             if current_user.save
                 render :onboard_complete
             else
-                flash[:info] = "Stripe onboarding completed, but there was a server error. #{current_user.errors.full_messages.inspect}"
+                flash[:primary] = "Stripe onboarding completed, but there was a server error. #{current_user.errors.full_messages.inspect}"
                 redirect_to root_path
             end
         else
             if current_user.save
                 render :onboard_not_complete
             else
-                flash[:info] = "Stripe onboarding not completed, and there was a server error. #{current_user.errors.full_messages.inspect}"
+                flash[:primary] = "Stripe onboarding not completed, and there was a server error. #{current_user.errors.full_messages.inspect}"
                 redirect_to root_path
             end
         end

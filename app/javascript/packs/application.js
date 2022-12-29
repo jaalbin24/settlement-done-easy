@@ -14,25 +14,21 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'autosize'
 import 'stripe/bank_account'
 
-// Toaster is the class that handles the cute toast notifications that appear in the corner of the screen.
-import Toaster from 'packs/toaster'
-
 // ModalMaker is the class that handles the big modal notifications that appear in the center of the screen and blur the background.
 import ModalMaker from 'packs/modal_maker'
 
 
-import PasswordConfirmation from 'packs/password_confirmation'
+import FormErrorStyling from 'packs/form_error_styling'
 
 import AttributeReview from 'packs/settlement_attribute_review'
 import EnglishLanguage from 'packs/english_language'
 
 // Instantiate objects to call methods on such as bootstrap.Modal()
 window.bootstrap = require('bootstrap');
-window.toaster = new Toaster();
 window.modalMaker = new ModalMaker();
 window.settlementAttributeReview = new AttributeReview();
 window.englishLanguage = new EnglishLanguage();
-window.passwordConfirmation = new PasswordConfirmation();
+window.formErrorStyling = new FormErrorStyling();
 
 // For bootstrap popovers
 document.addEventListener("DOMContentLoaded", () => {

@@ -3,7 +3,7 @@ class UserSettingsController < ApplicationController
 
     def update
         if !current_user.settings.update(sanitized_params)
-            flash[:info] = "Settings could not be updated."
+            flash[:primary] = "Settings could not be updated."
             puts "⚠️⚠️⚠️ ERROR: #{current_user.settings.errors.full_messages.inspect}"
             raise StandardError.new "Something stopped the user settings from being updated. Investigate it."
         end
@@ -16,5 +16,13 @@ class UserSettingsController < ApplicationController
             :confirmation_before_document_rejection,
             :delete_my_documents_after_rejection,
         )
+    end
+
+    def account_settings
+        render :account_settings
+    end
+
+    def profile_settings
+        render :profile_settings
     end
 end

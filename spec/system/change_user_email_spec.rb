@@ -1,13 +1,18 @@
 require "rails_helper"
 
-RSpec.describe "The change email page" do
+RSpec.describe "The change email page", type: :system do
     include_context "devise"
-    before(:all) do
+    before :context do
         @law_firm = create(:law_firm)
         @insurance_company = create(:insurance_company)
         @attorney = @law_firm.members.first
         @adjuster = @insurance_company.members.first
         @users = [@law_firm, @insurance_company, @attorney, @adjuster]
+    end
+    after :context do
+        @users.each do |user|
+            user.destroy
+        end
     end
     it "must have a field to enter the new email" do
         @users.each do |user|
@@ -150,7 +155,7 @@ RSpec.describe "The change email page" do
                     fill_in "user[email]", with: "new.email#{i}.#{i+1}@example.com"
                     fill_in "user[current_password]", with: "password123"
                     click_on "Save"
-                    expect(page).to have_text "Account details updated."
+                    expect(page).to have_text "Your email was changed to new.email#{i}.#{i+1}@example.com."
                 end
             end
         end

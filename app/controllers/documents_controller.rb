@@ -30,7 +30,7 @@ class DocumentsController < ApplicationController
         @document = settlement.documents.build(document_params)
         @document.added_by = current_user
         if @document.save
-            flash[:info] = "Document uploaded! Click <a href=#{document_show_path(@document)}>here<a> to view it."
+            flash[:primary] = "Document uploaded! Click <a href=#{document_show_path(@document)}>here<a> to view it."
             redirect_back(fallback_location: root_path)
         else
             flash.now[:error] = "Failed to upload document!"
@@ -45,7 +45,7 @@ class DocumentsController < ApplicationController
             return
         end
         if @document.update(document_params)
-            flash[:info] = "Release form updated!"
+            flash[:primary] = "Release form updated!"
             @document.update_pdf
             # This^ should be moved to the document.rb file.
             # TODO: Move the PDF-updating feature to the model file. This should not be in the controller.
@@ -65,9 +65,9 @@ class DocumentsController < ApplicationController
         filename = document.filename
         settlement = document.settlement
         if document.destroy
-            flash[:info] = "#{filename} has been deleted."
+            flash[:primary] = "#{filename} has been deleted."
         else
-            flash[:info] = "#{filename} could not be removed right now. Try again later."
+            flash[:primary] = "#{filename} could not be removed right now. Try again later."
         end
         redirect_to settlement_show_url(settlement)
     end
@@ -78,11 +78,11 @@ class DocumentsController < ApplicationController
             @settlement = @document.settlement
             @approval_progress = ((@document.reviews.approvals.size.to_f / @document.reviews.size) * 100).to_i
         rescue ActiveRecord::RecordNotFound => e
-            flash[:info] = "That document does not exist."
+            flash[:primary] = "That document does not exist."
             redirect_to root_path
             return
         rescue => e
-            flash[:info] = "An unknown error occured."
+            flash[:primary] = "An unknown error occured."
             puts "⚠️⚠️⚠️ ERROR: #{e.message}"
             redirect_back(fallback_location: root_path)
             return
@@ -110,7 +110,7 @@ class DocumentsController < ApplicationController
             return
         end
         if !@document.approved?
-            flash[:info] = "Document must be approved before e-signing."
+            flash[:primary] = "Document must be approved before e-signing."
             redirect_back(fallback_location: root_path)
         else
             render :get_e_signature
@@ -129,7 +129,7 @@ class DocumentsController < ApplicationController
                 redirect_back(fallback_location: root_path)
                 return
             elsif !document.approved?
-                flash[:info] = "Document must be approved before e-signing."
+                flash[:primary] = "Document must be approved before e-signing."
                 redirect_back(fallback_location: root_path)
                 return
             end
@@ -152,7 +152,7 @@ class DocumentsController < ApplicationController
             puts "====================== ERROR SAVING: #{document.errors.full_messages.inspect}"
         end
         puts "================================================================================================================= DS ENVELOPE ID: #{document.ds_envelope_id}"
-        flash[:info] = "Sent signature request to #{params[:client_email]}"
+        flash[:primary] = "Sent signature request to #{params[:client_email]}"
         redirect_back(fallback_location: root_path)
     end
 
@@ -161,7 +161,7 @@ class DocumentsController < ApplicationController
         if !document.signed? && document.ds_envelope_id != nil
             envelope = retrieve_envelope(document.ds_envelope_id)
             status = JSON.parse(envelope.to_json)['status']
-            flash[:info] = "Document signature status: #{status}"
+            flash[:primary] = "Document signature status: #{status}"
             puts "================================== get_ds_envelope_status: envelope = #{envelope}"
             if status == "completed" 
                 temp_file = download_document(document.ds_envelope_id)

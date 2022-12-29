@@ -1,13 +1,18 @@
 require "rails_helper"
 
-RSpec.describe "The change password page" do
+RSpec.describe "The change password page", type: :system do
     include_context "devise"
-    before(:context) do
+    before :context do
         @law_firm = create(:law_firm)
         @insurance_company = create(:insurance_company)
         @attorney = @law_firm.members.first
         @adjuster = @insurance_company.members.first
         @users = [@law_firm, @insurance_company, @attorney, @adjuster]
+    end
+    after :context do
+        @users.each do |user|
+            user.destroy
+        end
     end
     it "must have a field to enter the user's current password" do
         @users.each do |user|
@@ -205,7 +210,7 @@ RSpec.describe "The change password page" do
                     fill_in "user[current_password]", with: "password123"
                     click_on "Save"
                     expect(page).to have_css "div.invalid-feedback"
-                    expect(page).to have_text "Does not match new password"                    
+                    expect(page).to have_text "Does not match"
                 end
             end
         end
@@ -230,7 +235,7 @@ RSpec.describe "The change password page" do
                     fill_in "user[password_confirmation]", with: "password123"
                     fill_in "user[current_password]", with: "password123"
                     click_on "Save"
-                    expect(page).to have_text "Account details updated."
+                    expect(page).to have_text "Your password was changed."
                 end
             end
         end

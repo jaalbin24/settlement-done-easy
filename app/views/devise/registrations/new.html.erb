@@ -1,23 +1,33 @@
 <div class="row w-100 m-0">
-    <div class="col">
+    <div class="col bg-bluegrey">
         <div class="h-100 d-grid justify-content-center align-items-center">
-            <div class="" style="min-width: 75%;">
-                <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|%>
+            <div>
+                <div class="bg-secondary rounded-circle px-5 py-4">
+                    <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
+                </div>
+                <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="h-100 d-flex justify-content-center">
+            <div class="" style="width: 60%; margin-top: 20%;">
+                <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {"data-js-styling": true, "data-wait-before-resubmit": true}) do |f|%>
                     <div class="mb-4 ms-1">
-                    <h1 class="">Create an account</h1>
-                    <p class="">Please enter your details to get started.</p>
+                        <h1 class="">Create an account</h1>
+                        <p class="">You are creating <%=indefinite_articleize(word: @role.titleize, html_tag: :strong)%> account. If you want to create a different type of account, click <%=link_to "here", user_type_select_path, class: "link-dark"%>.</p>
                     </div>
                     <div class="container ps-3 mt-2">
                         <div class="row">
                             <div class="col form-group px-0">
-                                <label for="user_business_name" class="form-label mb-0 mt-2">Legal name of organization</label>
-                                <input type="text" autofocus="autofocus" class="form-control" id="user_business_name" placeholder="Name of organization" name="user[business_name]" required>
+                                <%=f.label "Legal name of organization", class: "form-label mb-0 mt-2"%>
+                                <%=f.text_field :business_name, class: "form-control", placeholder: "Name of organization", autofocus: true, required: true%>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col form-group px-0">
                                 <label for="user_email" class="form-label mb-0 mt-2">Email address</label>
-                                <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email" required>
+                                <input class="form-control" autocomplete="email" type="email" name="user[email]" id="user_email" placeholder="Email" required data-verify-unique="true">
                             </div>
                         </div>
                         <div class="row">
@@ -32,17 +42,9 @@
                         </div>
                     </div>
                     <input type="hidden" id="user_role" name="user[role]" value="<%=@role%>">
-                    <button type="submit" name="commit" class="btn btn-primary w-25 mt-4 ms-1" data-disable-with="Sign up">Sign up</button>
+                    <%=f.submit "Sign up", class: "btn btn-primary mt-4 ms-1", "data-test-id": 'submit_user_sign_up_button'%>
                 <%end%>
                 <p class="text-muted mt-4">Already have an account? <%=link_to "Sign in", new_user_session_path, class: "link-dark"%>.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col bg-bluegrey">
-        <div class="h-100 d-grid justify-content-center align-items-center">
-            <div>
-                <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
-                <h3 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h3>
             </div>
         </div>
     </div>

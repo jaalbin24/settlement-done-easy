@@ -1,13 +1,18 @@
 require "rails_helper"
 
-RSpec.describe "The change phone number page" do
+RSpec.describe "The change phone number page", type: :system do
     include_context "devise"
-    before(:context) do
+    before :context do
         @law_firm = create(:law_firm)
         @insurance_company = create(:insurance_company)
         @attorney = @law_firm.members.first
         @adjuster = @insurance_company.members.first
         @users = [@law_firm, @insurance_company, @attorney, @adjuster]
+    end
+    after :context do
+        @users.each do |user|
+            user.destroy
+        end
     end
     it "must have a field to enter the new phone number" do
         @users.each do |user|
@@ -176,7 +181,7 @@ RSpec.describe "The change phone number page" do
                     fill_in "user[phone_number]", with: "1234567890"
                     fill_in "user[current_password]", with: "password123"
                     click_on "Save"
-                    expect(page).to have_text "Account details updated."
+                    expect(page).to have_text "Your phone number was changed to (123) 456-7890"
                 end
             end
             it "must show the new phone number on the account settings page" do

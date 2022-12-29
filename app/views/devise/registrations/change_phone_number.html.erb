@@ -1,12 +1,13 @@
 <div class="container">
     <div class="card mt-4 mx-auto w-50">
-        <%= form_for(current_user, url: registration_path(current_user), html: { method: :put }) do |f| %>
+        <%= form_for(current_user, url: registration_path(current_user), html: {method: :put, "data-js-styling": true}) do |f| %>
             <div class="card-header">
-                <h2 class="card-title">Change phone number for <%=current_user.full_name%></h2>
-                <p class="card-subtitle"><%=current_user.full_name%>'s current phone number is <%=number_to_phone(current_user.phone_number, area_code: true)%></p>
+                <h2 class="card-title"><%=current_user.phone_number.blank? ? "Add" : "Change"%> phone number for <%=current_user.full_name%></h2>
+                <%unless current_user.phone_number.blank?%>
+                    <p class="card-subtitle"><%=current_user.full_name%>'s current phone number is <%=number_to_phone(current_user.phone_number, area_code: true)%></p>
+                <%end%>
             </div>
                 <div class="card-body">
-                    <p></p>
                     <div class="form-group">
                         <div class="form-floating mb-3">
                             <%= f.telephone_field :phone_number, autofocus: true, autocomplete: "phone-number", class: "form-control", placeholder: current_user.phone_number, value: "", required: true%>

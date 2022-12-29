@@ -11,7 +11,7 @@ consumer.subscriptions.create("NotificationsChannel", {
   },
 
   received(data) {
-    toaster.createAndRender(data["title"], data["message"]);
+    
   }
 });
 

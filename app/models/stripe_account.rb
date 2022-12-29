@@ -43,22 +43,23 @@ class StripeAccount < ApplicationRecord
 
     before_validation do
         if stripe_id.blank?
-            puts "STRIPE_ID is BLANK"
             # TODO: If this call to Stripe fails for network reasons, add a job to ActiveJobs to retry later.
-            account = Stripe::Account.create({
-                type: "custom",
-                country: "US",
-                capabilities: {
-                    treasury: {requested: true},
-                    us_bank_account_ach_payments: {requested: true},
-                    card_payments: {requested: true},
-                    transfers: {requested: true},
-                },
-                business_type: "company",
-                business_profile: {url: "http://settlementdoneeasy.com/"},
-            })
-            self.stripe_id = account.id
-            sync_with(account)
+            unless Rails.env.test?
+                account = Stripe::Account.create({
+                    type: "custom",
+                    country: "US",
+                    capabilities: {
+                        treasury: {requested: true},
+                        us_bank_account_ach_payments: {requested: true},
+                        card_payments: {requested: true},
+                        transfers: {requested: true},
+                    },
+                    business_type: "company",
+                    business_profile: {url: "http://settlementdoneeasy.com/"},
+                })
+                self.stripe_id = account.id
+                sync_with(account)
+            end
         end
     end
 
