@@ -18,11 +18,11 @@ class UserSettingsController < ApplicationController
         )
     end
 
-    def account_settings
-        render :account_settings
+    def account
+        render :account
     end
 
-    def profile_settings
-        render :profile_settings
+    def profile
+        render :profile
     end
 end

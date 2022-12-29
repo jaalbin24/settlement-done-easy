@@ -1,0 +1,45 @@
+<%=render "sidebar"%>
+
+<div class="p-5" style="min-width: 50rem;">
+    <div class="mb-2">
+        <h4 class="m-0">Profile Settings</h4>
+        <%if !current_user.activated? && current_user.isOrganization?%>
+            <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
+        <%end%>
+    </div>
+    <div class="py-4 border-top border-1 border-dark">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="">
+                <h6 class="m-0">Name</h6>
+                <p class="m-0"><%=current_user.profile.full_name%></p>
+            </div>
+            <%=link_to "Change name", "", class: "btn btn-outline-primary"%>
+        </div>
+    </div>
+    <div class="py-4 border-top border-1 border-dark">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="">
+                <h6 class="m-0">Date of birth</h6>
+                <%if current_user.profile.date_of_birth.nil?%>
+                    <p class="m-0">N/A</p>
+                <%else%>
+                    <p class="m-0"><%=current_user.profile.date_of_birth.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y")%></p>
+                <%end%>
+            </div>
+            <%=link_to "Change date of birth", "", class: "btn btn-outline-primary"%>
+        </div>
+    </div>
+    <div class="py-4 border-top border-1 border-dark">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="">
+                <h6 class="m-0">Address</h6>
+                <%if current_user.profile.address.nil?%>
+                    <p class="m-0">N/A</p>
+                <%else%>
+                    <p class="m-0"><%=current_user.profile.address.to_s%></p>
+                <%end%>
+            </div>
+            <%=link_to "Change address", "", class: "btn btn-outline-primary"%>
+        </div>
+    </div>
+</div>

@@ -29,6 +29,8 @@ module GeneratePublicId
             id_prefix = "sreq"
         when "StripeAccount"
             id_prefix = "sacc"
+        when "UserProfile"
+            id_prefix = "upro"
         when "UserSettings"
             id_prefix = "uset"
         when "User"

@@ -253,6 +253,26 @@ ActiveRecord::Schema.define(version: 100) do
     t.index ["user_id"], name: "index_stripe_accounts_on_user_id"
   end
 
+  create_table "user_profiles", force: :cascade do |t|
+    t.string "public_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "phone_number"
+    t.date "date_of_birth"
+    t.string "relationship_to_business"
+    t.integer "percent_ownership"
+    t.integer "ssn_last_4"
+    t.integer "mcc"
+    t.string "tax_id"
+    t.string "product_description"
+    t.bigint "address_id"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["address_id"], name: "index_user_profiles_on_address_id"
+    t.index ["user_id"], name: "index_user_profiles_on_user_id"
+  end
+
   create_table "user_settings", force: :cascade do |t|
     t.string "public_id"
     t.boolean "replace_unsigned_document_with_signed_document"
@@ -326,6 +346,8 @@ ActiveRecord::Schema.define(version: 100) do
   add_foreign_key "settlements", "users", column: "started_by_id"
   add_foreign_key "stripe_account_requirements", "stripe_accounts"
   add_foreign_key "stripe_accounts", "users"
+  add_foreign_key "user_profiles", "addresses"
+  add_foreign_key "user_profiles", "users"
   add_foreign_key "user_settings", "users"
   add_foreign_key "users", "users", column: "organization_id"
 end

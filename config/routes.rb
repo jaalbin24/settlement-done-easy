@@ -89,12 +89,14 @@ Rails.application.routes.draw do
 
   post 'user_settings',                               to: 'user_settings#update',                     as: 'user_settings_update'
   get 'settings',                                     to: 'pages#settings',                           as: 'settings'
-
+  get 'settings/account',                             to: 'user_settings#account',                    as: 'account_settings'
+  get 'settings/profile',                             to: 'user_settings#profile',                    as: 'profile_settings'
+  
 
   post 'settlement_attribute_reviews/:id/update',     to: 'settlement_attributes_reviews#update',     as: 'settlement_attributes_review_update'
   
   get 'requirements',                                 to: 'pages#requirements',                       as: 'requirements'
 
 
-  delete 'multi_factor_authentication',               to: 'multi_factor_authentication#disable',      as: 'mfa_disable'
+  put 'user/:id/profile',                             to: 'user_profile#update',                      as: 'user_profile_update'
 end

@@ -97,6 +97,13 @@ class User < ApplicationRecord
         end
     end
 
+    has_one(
+        :profile,
+        class_name: "UserProfile",
+        foreign_key: :user_id,
+        dependent: :destroy,
+        inverse_of: :user
+    )
     has_many(
         :documents,
         class_name: "Document",
@@ -222,6 +229,7 @@ class User < ApplicationRecord
 
     after_create do
         puts "❤️❤️❤️ User after_create block"
+
         if isOrganization?
             if stripe_account.nil?
                 CreateStripeAccountJob.perform_later self
@@ -272,6 +280,8 @@ class User < ApplicationRecord
             end
         end
         build_settings(UserSettings.default_settings)
+        build_profile(first_name: first_name, last_name: last_name)
+
     end
 
     def self.roles
@@ -323,7 +333,7 @@ class User < ApplicationRecord
     end
 
     def activated?
-        return activated
+        activated
     end
 
     def stripe_account_id
