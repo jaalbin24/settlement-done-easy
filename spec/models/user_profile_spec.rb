@@ -4,11 +4,12 @@
 #
 #  id                       :bigint           not null, primary key
 #  date_of_birth            :date
+#  email                    :string
 #  first_name               :string
 #  last_name                :string
 #  mcc                      :integer
 #  percent_ownership        :integer
-#  phone_number             :integer
+#  phone_number             :bigint
 #  product_description      :string
 #  relationship_to_business :string
 #  ssn_last_4               :integer

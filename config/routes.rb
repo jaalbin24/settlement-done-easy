@@ -18,8 +18,7 @@ Rails.application.routes.draw do
   root to: "pages#root"
 
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
-  # get 'generate_or_upload',                     to: 'pages#generate_or_upload',           as: 'generate_or_upload'
-  # get 'testing',                                to: 'pages#testing',                      as: 'testing'    
+  get 'under_construction',                     to: 'pages#under_construction',           as: 'under_construction'
 
   post 'bank_account',                          to: 'bank_accounts#create',               as: 'bank_account_create'
   get 'bank_account_secret',                    to: 'bank_accounts#secret',               as: 'bank_account_secret'
@@ -97,6 +96,6 @@ Rails.application.routes.draw do
   
   get 'requirements',                                 to: 'pages#requirements',                       as: 'requirements'
 
-
+  get 'user/profile',                                 to: 'user_profile#edit',                        as: 'user_profile_edit'
   put 'user/:id/profile',                             to: 'user_profile#update',                      as: 'user_profile_update'
 end

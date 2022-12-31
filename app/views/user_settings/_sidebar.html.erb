@@ -1,51 +1,26 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light border-end" style="max-width: 20vw; min-width: 20rem;">
-    <h1 class="my-0 ms-3"><strong>Settings</strong></h1>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item" data-test-id="settings_nav_bar_account_button">
-            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="<%=account_settings_path%>">
-                <div>
-                    <h5 class="m-0">Account</h5>
-                    <p class="m-0">Change account settings</p>
-                </div>
-                <%=chevron_icon(direction: :right, color: :grey)%>
-            </a>
-        </li>
-        <li class="nav-item" data-test-id="settings_nav_bar_account_button">
-            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="<%=profile_settings_path%>">
-                <div>
-                    <h5 class="m-0">Profile</h5>
-                    <p class="m-0">Edit your profile</p>
-                </div>
-                <%=chevron_icon(direction: :right, color: :grey)%>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
-                <div>
-                    <h5 class="m-0">Wallet</h5>
-                    <p class="m-0">Store payment methods</p>
-                </div>
-                <%=chevron_icon(direction: :right, color: :grey)%>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
-                <div>
-                    <h5 class="m-0">Billing</h5>
-                    <p class="m-0">See costs for using SDE</p>
-                </div>
-                <%=chevron_icon(direction: :right, color: :grey)%>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center justify-content-between gap-5" href="">
-                <div>
-                    <h5 class="m-0">Security</h5>
-                    <p class="m-0">Keep your account secure</p>
-                </div>
-                <%=chevron_icon(direction: :right, color: :grey)%>
-            </a>
-        </li>
-    </ul>
+<div class="border-end d-flex" style="width: 400px">
+    <div style="width: 120px;"></div>
+    <div class="d-flex flex-column flex-shrink-0 flex-fill p-3">
+        <h1 class="my-0 ms-3"><strong>Settings</strong></h1>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <%=link_to "Account", account_settings_path, class: "nav-link #{request.path == account_settings_path ? "active" : "link-dark"}"%>
+            </li>
+            <li>
+                <%=link_to "Profile", profile_settings_path, class: "nav-link #{request.path == profile_settings_path ? "active" : "link-dark"}"%>
+            </li>
+            <li>
+                <%=link_to "Wallet", under_construction_path(continue_path: request.path, page_name: "wallet"), class: "nav-link link-dark"%>
+
+            </li>
+            <li>
+                <%=link_to "Billing", under_construction_path(continue_path: request.path, page_name: "billing"), class: "nav-link link-dark"%>
+
+            </li>
+            <li>
+                <%=link_to "Security", under_construction_path(continue_path: request.path, page_name: "security settings"), class: "nav-link link-dark"%>
+            </li>
+        </ul>
+    </div>
 </div>

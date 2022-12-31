@@ -441,7 +441,7 @@ module ApplicationHelper
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
-        when :primary
+        when :primary, :blue
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
@@ -464,7 +464,7 @@ module ApplicationHelper
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
-        when :primary
+        when :primary, :blue
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
@@ -487,7 +487,7 @@ module ApplicationHelper
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
-        when :primary
+        when :primary, :blue
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
@@ -509,7 +509,7 @@ module ApplicationHelper
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
-        when :primary
+        when :primary, :blue
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
@@ -543,7 +543,7 @@ module ApplicationHelper
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
-        when :primary
+        when :primary, :blue
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
@@ -577,7 +577,7 @@ module ApplicationHelper
             css_classes.push("text-danger")
         when :grey, :gray
             css_classes.push("text-muted")
-        when :primary
+        when :primary, :blue
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")

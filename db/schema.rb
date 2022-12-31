@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "line1"
     t.string "line2"
     t.string "city"
-    t.integer "postal_code"
+    t.string "postal_code"
     t.string "state"
     t.string "country"
     t.datetime "created_at", precision: 6, null: false
@@ -257,7 +257,8 @@ ActiveRecord::Schema.define(version: 100) do
     t.string "public_id"
     t.string "first_name"
     t.string "last_name"
-    t.integer "phone_number"
+    t.bigint "phone_number"
+    t.string "email"
     t.date "date_of_birth"
     t.string "relationship_to_business"
     t.integer "percent_ownership"

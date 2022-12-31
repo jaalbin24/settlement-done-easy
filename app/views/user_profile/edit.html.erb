@@ -1,0 +1,143 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h2 class="m-0 mt-5"><%=current_user.full_name%></h2>
+                    <p>Member since <%=current_user.created_at.strftime("%B %-d, %Y")%>
+                </div>
+                <%# This is where the profile picture will go%>
+            </div>
+            <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" data-bs-toggle="tab" href="#stats" aria-selected="true" role="tab">Statistics</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#personal" aria-selected="false" role="tab">Personal</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#business" aria-selected="false" role="tab" tabindex="-1">Business</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#sensitive" aria-selected="false" role="tab" tabindex="-1">Sensitive</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active show" id="stats" role="tabpanel">
+            <h6>Settlements completed:</h6>
+            <h6>Average settlement:</h6>
+            <h6>Average settlement time:</h6>
+            <h6>Total settled:</h6>
+        </div>
+        <div class="tab-pane fade" id="personal" role="tabpanel">
+            <p class="my-2"><%=warning_icon(color: :blue)%> We are required to collect this information to comply with KYC laws.</p>
+            <%=form_for(current_user.profile, url: user_profile_update_path(current_user), html: { method: :put, "data-js-styling": true}) do |f|%>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=f.label :first_name, class:"form-label mb-1"%>
+                        <%=f.text_field :first_name, class: "form-control", placeholder: "First name"%>
+                    </div>
+                    <div class="col form-group">
+                        <%=f.label :last_name, class:"form-label mb-1"%>
+                        <%=f.text_field :last_name, class: "form-control", placeholder: "Last name"%>
+                    </div>
+                </div>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=f.label :phone_number, class:"form-label mb-1"%>
+                        <%=f.telephone_field :phone_number, class: "form-control", placeholder: "Phone number"%>
+                    </div>
+                    <div class="col form-group">
+                        <%=f.label :email, class:"form-label mb-1"%>
+                        <%=f.email_field :email, class: "form-control", placeholder: "Email"%>
+                    </div>
+                </div>
+
+                <div class="mb-2 mt-3">
+                    <p class="text-muted m-0">Address</p>
+                    <hr class="m-0">
+                </div>
+                <%=f.fields_for :address do |af|%>
+                    <div class="row my-1">
+                        <div class="col form-group">
+                            <%=af.label :street, class:"form-label mb-1"%>
+                            <%=af.text_field :line1, class: "form-control", placeholder: "Street"%>
+                        </div>
+                        <div class="col form-group">
+                            <%=af.label "Apt/suite", class:"form-label mb-1"%>
+                            <%=af.text_field :line2, class: "form-control", placeholder: "Apt/suite"%>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col form-group">
+                            <%=af.label :city, class:"form-label mb-1"%>
+                            <%=af.text_field :city, class: "form-control", placeholder: "City"%>
+                        </div>
+                        <div class="col form-group">
+                            <%=af.label :state, class:"form-label mb-1"%>
+                            <%=af.text_field :state, class: "form-control", placeholder: "State"%>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col form-group">
+                            <%=af.label :country, class:"form-label mb-1"%>
+                            <%=af.text_field :country, class: "form-control", placeholder: "Country"%>
+                        </div>
+                        <div class="col form-group">
+                            <%=af.label :postal_code, class:"form-label mb-1"%>
+                            <%=af.text_field :postal_code, class: "form-control", placeholder: "Postal code"%>
+                        </div>
+                    </div>
+                <%end%>
+                <%=f.submit "Save", class: "btn btn-primary mt-3"%>
+            <%end%>
+        </div>
+        <div class="tab-pane fade" id="business" role="tabpanel">
+            <p class="my-2"><%=warning_icon(color: :blue)%> We are required to collect this information to comply with KYC laws.</p>
+            <%=form_for(current_user.profile, url: user_profile_update_path(current_user), html: { method: :put, "data-js-styling": true}) do |f|%>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=f.label :relationship_to_business, class:"form-label mb-1"%>
+                        <%=f.text_field :relationship_to_business, class: "form-control", placeholder: "CEO, Manager, Director, etc."%>
+                    </div>
+                    <div class="col form-group">
+                        <%=f.label :percent_ownership, class:"form-label mb-1"%>
+                        <%=f.text_field :percent_ownership, class: "form-control", placeholder: "Percent ownership of #{current_user.organization.nil? ? "your business" : current_user.organization.full_name}"%>
+                    </div>
+                </div>
+                <%=f.submit "Save", class: "btn btn-primary mt-3"%>
+            <%end%>
+        </div>
+        <div class="tab-pane fade" id="sensitive" role="tabpanel">
+            <p class="my-2"><%=warning_icon(color: :blue)%> We are required to collect this information to comply with KYC laws.</p>
+            <%=form_for(current_user.profile, url: user_profile_update_path(current_user), html: { method: :put, "data-js-styling": true}) do |f|%>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=f.label :date_of_birth, class:"form-label mb-1"%>
+                        <%=f.date_field :date_of_birth, class: "form-control"%>
+                    </div>
+                    <div class="col form-group">
+                        <%=f.label :ssn_last_4, class:"form-label mb-1"%>
+                        <%=f.text_field :ssn_last_4, class: "form-control", placeholder: "####"%>
+                    </div>
+                </div>
+                <%=f.submit "Save", class: "btn btn-primary mt-3"%>
+            <%end%>
+        </div>
+    </div>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
