@@ -1,18 +1,148 @@
 <div class="w-100">
     <div class="w-100 position-absolute" style="z-index: -1;">
-        <div class="w-100 bg-bluegrey" style="height: 12rem;"></div>
-        <div class="w-100" style="height: 24rem; background-image: linear-gradient(#C0D7FB, white);"></div>
+        <div class="w-100 bg-bluegrey" style="height: 17rem;"></div>
     </div>
-    <div class="container">
-        <div class="mx-auto w-50 mt-4">
+    <div class="container mt-4">
+        <%=form_for(@user_profile, url: user_profile_update_path(@user_profile), html: { method: :put, "data-js-styling": true}) do |f|%>
             <div class="card">
-                <div class="card-body">
-                    <%=render "user_profile/edit"%>
+                <div class="card-body bg-light">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="my-1">
+                            <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
+                        </div>
+                        <div class="me-auto">
+                            <h2 class="m-0"><%=@user.full_name%></h2>
+                            <%if @user.isOrganization?%>
+                                <p class="m-0">Member since <%=@user.created_at.strftime("%B %-d, %Y")%>
+                            <%else%>
+                                <p class="m-0"><%=@user.organization.full_name%></p>
+                            <%end%>
+                        </div>
+                        <%unless @continue_path.blank?%>
+                            <input name="continue_path" type="hidden" value="<%=@continue_path%>">
+                        <%end%>
+                        <%=link_to "Cancel", cancel_changes_path(continue_path: @continue_path), class: "btn btn-outline-primary"%>
+                        <%=f.submit "Save changes", class: "btn btn-primary"%>
+                    </div>
+                </div>       
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#edit" aria-selected="true" role="tab">Edit</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active show" id="edit" role="tabpanel">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card my-3">
+                                <div class="card-body">
+                                    <h5 class="m-0">Personal information</h5>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="text-muted m-0">Email</p>
+                                            <%if @user_profile.email.blank?%>
+                                                <h6 class="m-0">Not listed</h6>
+                                            <%else%>
+                                                <h6 class="m-0"><%=@user_profile.email%></h6>
+                                            <%end%>
+                                        </div>
+                                        <%=link_to "Change email", change_email_path(continue_path: user_profile_edit_path(@user_profile)), class: "btn btn-outline-primary"%>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="text-muted m-0">Phone number</p>
+                                            <%if @user_profile.phone_number.blank?%>
+                                                <h6 class="m-0">Not listed</h6>
+                                            <%else%>
+                                                <h6 class="m-0"><%=number_to_phone(@user_profile.phone_number, area_code: true)%></h6>
+                                            <%end%>
+                                        </div>
+                                        <%=link_to "Change phone number", change_phone_number_path(continue_path: user_profile_edit_path(@user_profile)), class: "btn btn-outline-primary"%>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <p class="text-muted m-0">Address</p>
+                                        <%=f.fields_for :address, include_id: false do |af|%>
+                                            <div class="row my-1">
+                                                <div class="col form-group">
+                                                    <%=af.label :street, class:"form-label mb-1"%>
+                                                    <%=af.text_field :line1, class: "form-control", placeholder: "Street"%>
+                                                </div>
+                                                <div class="col form-group">
+                                                    <%=af.label "Apt/suite", class:"form-label mb-1"%>
+                                                    <%=af.text_field :line2, class: "form-control", placeholder: "Apt/suite"%>
+                                                </div>
+                                            </div>
+                                            <div class="row my-1">
+                                                <div class="col form-group">
+                                                    <%=af.label :city, class:"form-label mb-1"%>
+                                                    <%=af.text_field :city, class: "form-control", placeholder: "City"%>
+                                                </div>
+                                                <div class="col form-group">
+                                                    <%=af.label :state, class:"form-label mb-1"%>
+                                                    <%=af.text_field :state, class: "form-control", placeholder: "State"%>
+                                                </div>
+                                            </div>
+                                            <div class="row my-1">
+                                                <div class="col form-group">
+                                                    <%=af.label :country, class:"form-label mb-1"%>
+                                                    <%=af.text_field :country, class: "form-control", placeholder: "Country"%>
+                                                </div>
+                                                <div class="col form-group">
+                                                    <%=af.label :postal_code, class:"form-label mb-1"%>
+                                                    <%=af.text_field :postal_code, class: "form-control", placeholder: "Postal code"%>
+                                                </div>
+                                            </div>
+                                        <%end%>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <p class="text-muted m-0">Date of birth</p>
+                                        <div>
+                                            <%=f.date_field :date_of_birth, class: "form-control"%>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card my-3">
+                                <div class="card-body">
+                                    <h5 class="m-0">Business information</h5>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <p class="text-muted m-0">Company name (Cannot be changed)</p>
+                                        <%if @user_profile.user.organization.blank?%>
+                                            <h6 class="m-0">Not listed</h6>
+                                        <%else%>
+                                            <h6 class="m-0"><%=@user_profile.user.organization.full_name%></h6>
+                                        <%end%>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <p class="text-muted m-0">Position title</p>
+                                        <div>
+                                            <%=f.text_field :relationship_to_business, class: "form-control", placeholder: "CEO, Manager, Director, etc."%>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <p class="text-muted m-0">Percent ownership</p>
+                                        <div>
+                                            <%=f.text_field :percent_ownership, class: "form-control", placeholder: "Percent ownership"%>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>           
                 </div>
             </div>
-        </div>
+        <%end%>
     </div>
 </div>
+
+
 
 
 

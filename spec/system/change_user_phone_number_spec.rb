@@ -171,7 +171,7 @@ RSpec.describe "The change phone number page", type: :system do
                     fill_in "user[current_password]", with: "password123"
                     click_on "Save"
                     sleep 0.05 # The test fails unless given time for the value of current_path to update
-                    expect(current_path).to eq settings_path
+                    expect(current_path).to eq account_settings_path
                 end
             end
             it "must show a flash message saying the phone number was changed" do

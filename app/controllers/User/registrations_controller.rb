@@ -146,13 +146,19 @@ class User::RegistrationsController < Devise::RegistrationsController
         render json: response
     end
 
-    def cancel_changes
-        flash[:primary] = "No changes were made."
-        if params[:continue_path].blank?
-            redirect_to root_path
-        else
-            redirect_to params[:continue_path]
-        end
+    def change_email
+        @continue_path = params[:continue_path]
+        render :change_email
+    end
+
+    def change_phone_number
+        @continue_path = params[:continue_path]
+        render :change_phone_number
+    end
+    
+    def change_password
+        @continue_path = params[:continue_path]
+        render :change_password
     end
 
     protected
@@ -189,7 +195,7 @@ class User::RegistrationsController < Devise::RegistrationsController
             if params[:continue_path].blank?
                 settings_path
             else
-                continue_path
+                params[:continue_path]
             end
         else
             new_session_path(resource_name)

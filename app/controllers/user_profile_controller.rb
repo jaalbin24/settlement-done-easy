@@ -13,7 +13,7 @@ class UserProfileController < ApplicationController
             flash[:primary] = "Failed to update :("
         end
         if params[:continue_path].blank?
-            redirect_to user_profile_edit_url
+            redirect_to user_profile_show_path(user_profile)
         else
             redirect_to params[:continue_path]
         end
@@ -23,7 +23,7 @@ class UserProfileController < ApplicationController
         @user_profile = UserProfile.find_by(public_id: params[:public_id])
         @user = @user_profile.user
         if params[:continue_path].blank?
-            @continue_path = profile_settings_path
+            @continue_path = user_profile_show_path(@user_profile)
         else
             @continue_path = params[:continue_path]
         end
