@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 100) do
+ActiveRecord::Schema.define(version: 2023_01_02_161640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -253,6 +253,36 @@ ActiveRecord::Schema.define(version: 100) do
     t.index ["user_id"], name: "index_stripe_accounts_on_user_id"
   end
 
+  create_table "user_profile_settings", force: :cascade do |t|
+    t.string "public_id"
+    t.boolean "hide_tax_id_from_public"
+    t.boolean "hide_tax_id_from_members"
+    t.boolean "hide_product_description_from_public"
+    t.boolean "hide_product_description_from_members"
+    t.boolean "hide_mcc_from_public"
+    t.boolean "hide_mcc_from_members"
+    t.boolean "hide_last_name_from_public"
+    t.boolean "hide_last_name_from_members"
+    t.boolean "hide_phone_number_from_public"
+    t.boolean "hide_phone_number_from_members"
+    t.boolean "hide_email_from_public"
+    t.boolean "hide_email_from_members"
+    t.boolean "hide_address_from_public"
+    t.boolean "hide_address_from_members"
+    t.boolean "hide_date_of_birth_from_public"
+    t.boolean "hide_date_of_birth_from_members"
+    t.boolean "hide_relationship_to_business_from_public"
+    t.boolean "hide_relationship_to_business_from_members"
+    t.boolean "hide_percent_ownership_from_public"
+    t.boolean "hide_percent_ownership_from_members"
+    t.boolean "hide_last_4_of_ssn_from_public"
+    t.boolean "hide_last_4_of_ssn_from_members"
+    t.bigint "user_settings_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_settings_id"], name: "index_user_profile_settings_on_user_settings_id"
+  end
+
   create_table "user_profiles", force: :cascade do |t|
     t.string "public_id"
     t.string "first_name"
@@ -262,7 +292,7 @@ ActiveRecord::Schema.define(version: 100) do
     t.date "date_of_birth"
     t.string "relationship_to_business"
     t.integer "percent_ownership"
-    t.integer "ssn_last_4"
+    t.integer "last_4_of_ssn"
     t.integer "mcc"
     t.string "tax_id"
     t.string "product_description"
@@ -347,6 +377,7 @@ ActiveRecord::Schema.define(version: 100) do
   add_foreign_key "settlements", "users", column: "started_by_id"
   add_foreign_key "stripe_account_requirements", "stripe_accounts"
   add_foreign_key "stripe_accounts", "users"
+  add_foreign_key "user_profile_settings", "user_settings", column: "user_settings_id"
   add_foreign_key "user_profiles", "addresses"
   add_foreign_key "user_profiles", "users"
   add_foreign_key "user_settings", "users"

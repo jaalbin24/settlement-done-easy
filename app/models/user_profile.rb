@@ -6,13 +6,13 @@
 #  date_of_birth            :date
 #  email                    :string
 #  first_name               :string
+#  last_4_of_ssn            :integer
 #  last_name                :string
 #  mcc                      :integer
 #  percent_ownership        :integer
 #  phone_number             :bigint
 #  product_description      :string
 #  relationship_to_business :string
-#  ssn_last_4               :integer
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  address_id               :bigint

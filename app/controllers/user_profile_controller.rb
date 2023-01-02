@@ -46,7 +46,7 @@ class UserProfileController < ApplicationController
             :date_of_birth,
             :relationship_to_business,
             :percent_ownership,
-            :ssn_last_4,
+            :last_4_of_ssn,
             :mcc,
             :tax_id,
             :product_description,

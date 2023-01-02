@@ -10,7 +10,7 @@ class CreateUserProfiles < ActiveRecord::Migration[6.1]
             t.date          :date_of_birth
             t.string        :relationship_to_business
             t.integer       :percent_ownership
-            t.integer       :ssn_last_4
+            t.integer       :last_4_of_ssn
             t.integer       :mcc
             t.string        :tax_id
             t.string        :product_description

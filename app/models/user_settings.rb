@@ -30,6 +30,17 @@ class UserSettings < ApplicationRecord
         foreign_key: "user_id",
         inverse_of: :settings
     )
+    has_one(
+        :profile,
+        class_name: "UserProfileSettings",
+        foreign_key: "user_settings_id",
+        inverse_of: :user_settings,
+        dependent: :destroy
+    )
+
+    before_create do
+        build_profile(UserProfileSettings.default_settings_for_user(user))
+    end
 
     def self.default_settings
         {

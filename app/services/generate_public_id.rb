@@ -31,6 +31,8 @@ module GeneratePublicId
             id_prefix = "sacc"
         when "UserProfile"
             id_prefix = "upro"
+        when "UserProfileSettings"
+            id_prefix = "upse"
         when "UserSettings"
             id_prefix = "uset"
         when "User"

@@ -89,6 +89,7 @@ Rails.application.routes.draw do
   get 'settings',                                     to: 'pages#settings',                           as: 'settings'
   get 'settings/account',                             to: 'user_settings#account',                    as: 'account_settings'
   get 'settings/profile',                             to: 'user_settings#profile',                    as: 'profile_settings'
+  put 'settings/profile',                             to: 'user_profile_settings#update',             as: 'user_profile_settings_update'
   
 
   post 'settlement_attribute_reviews/:id/update',     to: 'settlement_attributes_reviews#update',     as: 'settlement_attributes_review_update'

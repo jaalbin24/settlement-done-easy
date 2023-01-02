@@ -16,4 +16,160 @@
             <%=link_to "Go to profile", user_profile_show_path(current_user.profile), class: "btn btn-outline-primary"%>
         </div>
     </div>
+    <%=form_for(@user_profile_settings, url: user_profile_settings_update_path(@user_profile_settings), html: { method: :put, "data-js-styling": true}) do |f|%>
+        <div class="py-4 border-top border-1 border-dark">
+            <table class="table" style="box-shadow: none;">
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>Hide from members</td>
+                        <td>Hide from public</td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Tax ID</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_tax_id_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_tax_id_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Legal name</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_last_name_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_last_name_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">MCC</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_mcc_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_mcc_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Product Description</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_product_description_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_product_description_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Phone number</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_phone_number_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_phone_number_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Email</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_email_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_email_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Address</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_address_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_address_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Date of birth</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_date_of_birth_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_date_of_birth_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Position title</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_relationship_to_business_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_relationship_to_business_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Last 4 digits of SSN</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_last_4_of_ssn_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_last_4_of_ssn_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h6 class="m-0">Percent ownership</h6></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_percent_ownership_from_members, class: "form-check-input"%>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <%=f.check_box :hide_percent_ownership_from_public, class: "form-check-input"%>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    <%end%>
 </div>
