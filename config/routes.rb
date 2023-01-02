@@ -10,7 +10,6 @@ Rails.application.routes.draw do
     get 'user/changeemail',                     to: 'user/registrations#change_email',        as: 'change_email'
     get 'user/changepassword',                  to: 'user/registrations#change_password',     as: 'change_password'
     get 'user/changephonenumber',               to: 'user/registrations#change_phone_number', as: 'change_phone_number'
-    get 'user/cancelchanges',                   to: 'user/registrations#cancel_changes',      as: 'cancel_changes'
   end
 
   
@@ -96,6 +95,9 @@ Rails.application.routes.draw do
   
   get 'requirements',                                 to: 'pages#requirements',                       as: 'requirements'
 
-  get 'user/profile',                                 to: 'user_profile#edit',                        as: 'user_profile_edit'
-  put 'user/:id/profile',                             to: 'user_profile#update',                      as: 'user_profile_update'
+  get 'user/profile/:public_id',                      to: 'user_profile#show',                        as: 'user_profile_show'
+  get 'user/profile/:public_id/edit',                 to: 'user_profile#edit',                        as: 'user_profile_edit'
+  put 'user/profile/:public_id',                      to: 'user_profile#update',                      as: 'user_profile_update'
+
+  get 'cancel_changes',                               to: 'pages#cancel_changes',                     as: 'cancel_changes'
 end

@@ -36,7 +36,7 @@ attorney_approval_for_doc2:
     verdict: Approved
     document: two
 
-# Insurance agent added document 3 & 4, so their default approval is below.
+# Adjuster added document 3 & 4, so their default approval is below.
 adjuster_approval_for_doc3:
     reviewer: state_farm_adjuster
     verdict: Approved

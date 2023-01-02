@@ -2,7 +2,7 @@
 
 <div class="p-5" style="min-width: 50rem;">
     <div class="mb-2">
-        <h4 class="m-0">Account Settings</h4>
+        <h3 class="m-0">Account Settings</h3>
         <%if !current_user.activated? && current_user.isOrganization?%>
             <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
         <%end%>
@@ -10,8 +10,8 @@
     <div class="py-4 border-top border-1 border-dark">
         <div class="d-flex align-items-center justify-content-between">
             <div class="">
-                <h6 class="m-0">Email</h6>
-                <p class="m-0"><%=current_user.email%></p>
+                <p class="m-0">Email</p>
+                <h6 class="m-0"><%=current_user.email%></h6>
             </div>
             <%=link_to "Change email", change_email_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>
@@ -19,8 +19,8 @@
     <div class="py-4 border-top border-1 border-dark">
         <div class="d-flex align-items-center justify-content-between">
             <div class="">
-                <h6 class="m-0">Password</h6>
-                <p class="m-0">********</p>
+                <p class="m-0">Password</p>
+                <h6 class="m-0">********</h6>
             </div>
             <%=link_to "Change password", change_password_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>
@@ -28,8 +28,8 @@
     <div class="py-4 border-top border-1 border-dark">
         <div class="d-flex align-items-center justify-content-between">
             <div class="">
-                <h6 class="m-0">Phone number</h6>
-                <p class="m-0"><%=current_user.phone_number.blank? ? "No phone number added" : number_to_phone(current_user.phone_number, area_code: true)%></p>
+                <p class="m-0">Phone number</p>
+                <h6 class="m-0"><%=current_user.phone_number.blank? ? "No phone number added" : number_to_phone(current_user.phone_number, area_code: true)%></h6>
             </div>
             <%=link_to "#{current_user.phone_number.blank? ? "Add" : "Change"} phone number", change_phone_number_path(continue_path: settings_path(section: "account")), class: "btn btn-outline-primary"%>
         </div>

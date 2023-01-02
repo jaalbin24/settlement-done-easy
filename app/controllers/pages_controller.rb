@@ -57,4 +57,13 @@ class PagesController < ApplicationController
             redirect_to root_path
         end
     end
+
+    def cancel_changes
+        flash[:primary] = "No changes were made."
+        if params[:continue_path].blank?
+            redirect_to root_path
+        else
+            redirect_to params[:continue_path]
+        end
+    end
 end

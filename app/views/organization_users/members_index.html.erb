@@ -1,6 +1,6 @@
 
-<h1 class="text-center"><%=member_role_name.capitalize%> Index</h1>
-<p class="text-center">This is a list of all <%=member_role_name%>s in <%=@organization.full_name%></p>
+<h1 class="text-center"><%=member_role_name(current_user).capitalize%> Index</h1>
+<p class="text-center">This is a list of all <%=member_role_name(current_user)%>s in <%=@organization.full_name%></p>
 
 <table class="table table-sm table-hover">
     <thead>
@@ -31,4 +31,4 @@
 </table>
 
 <%=link_to "🡸 Back", :back, class: "btn btn-outline-primary"%>
-<%=link_to "Add #{member_role_name}", organization_new_member_path(current_user), class: "btn btn-primary"%>
+<%=link_to "Add #{member_role_name(current_user)}", organization_new_member_path(current_user), class: "btn btn-primary"%>

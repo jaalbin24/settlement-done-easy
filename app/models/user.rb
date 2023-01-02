@@ -279,8 +279,8 @@ class User < ApplicationRecord
                 self.role = "Adjuster"
             end
         end
-        build_settings(UserSettings.default_settings)
-        build_profile(first_name: first_name, last_name: last_name)
+        build_settings(UserSettings.default_settings) if settings.nil?
+        build_profile(first_name: first_name, last_name: last_name) if profile.nil?
 
     end
 

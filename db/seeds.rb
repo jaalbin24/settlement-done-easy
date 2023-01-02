@@ -135,7 +135,7 @@ puts "Created #{User.all.size} user models..."
 puts "======= #{User.all_law_firms.size} law firm models"
 puts "======= #{User.all_insurance_companies.size} insurance company models"
 puts "======= #{User.all_attorneys.size} attorney models"
-puts "======= #{User.all_adjusters.size} insurance agent models"
+puts "======= #{User.all_adjusters.size} adjuster models"
 puts "Created #{Settlement.all.size} settlement models..."
 puts "Created #{Document.all.size} document models..."
 

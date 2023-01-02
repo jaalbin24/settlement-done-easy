@@ -371,7 +371,7 @@ module ApplicationHelper
             case status
             when 1
                 if current_user.isAttorney?
-                    message += "are waiting for an insurance agent to add a document."
+                    message += "are waiting for an adjuster to add a document."
                 elsif current_user.isAdjuster?
                     message += "need a document to continue."
                 end
@@ -383,7 +383,7 @@ module ApplicationHelper
                 end
             when 3
                 if current_user.isAttorney?
-                    message += "are waiting for an insurance agent to make adjustments."
+                    message += "are waiting for an adjuster to make adjustments."
                 elsif current_user.isAdjuster?
                     message += "need your adjustments to continue."
                 end

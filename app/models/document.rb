@@ -106,7 +106,7 @@ class Document < ApplicationRecord
         # This^ if-statement is only here to allow rails db:seed to run without error. 
         # It should be commented out for all other cases.
         if reviews.size != 2
-            # Create document reviews for the two required reviewers (insurance agent and attorney)
+            # Create document reviews for the two required reviewers (adjuster and attorney)
             reviews.destroy_all
 
             reviews.build(

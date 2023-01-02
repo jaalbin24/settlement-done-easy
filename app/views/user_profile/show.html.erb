@@ -1,0 +1,156 @@
+<div class="w-100">
+    <div class="w-100 position-absolute" style="z-index: -1;">
+        <div class="w-100 bg-bluegrey" style="height: 12rem;"></div>
+        <div class="w-100" style="height: 24rem; background-image: linear-gradient(#C0D7FB, white);"></div>
+    </div>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body bg-light">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="my-1">
+                        <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
+                    </div>
+                    <div class="me-auto">
+                        <h2 class="m-0"><%=@user.full_name%></h2>
+                        <%if @user.isOrganization?%>
+                            <p class="m-0">Member since <%=@user.created_at.strftime("%B %-d, %Y")%>
+                        <%else%>
+                            <p class="m-0"><%=@user.organization.full_name%></p>
+
+                        <%end%>
+                    </div>
+                    <a class="btn btn-secondary d-flex align-items-center gap-1" href="<%=user_profile_edit_path(@user_profile, continue_path: request.path)%>">
+                        Edit profile <i class="fa-solid fa-pen text-muted m-0"></i>
+                    </a>
+                </div>
+            </div>        
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#about" aria-selected="true" role="tab">About</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="tab" href="#settlements" aria-selected="false" role="tab">Settlements</a>
+                </li>
+            </ul>
+        </div>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active show" id="about" role="tabpanel">
+                <div class="row">
+                    <div class="col">
+                        <div class="card my-3">
+                            <div class="card-body">
+                                <h5 class="m-0">Personal information</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Email</p>
+                                    <%if @user_profile.email.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=@user_profile.email%></h6>
+                                    <%end%>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Phone number</p>
+                                    <%if @user_profile.phone_number.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=number_to_phone(@user_profile.phone_number, area_code: true)%></h6>
+                                    <%end%>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Address</p>
+                                    <%if @user_profile.address.to_s.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=@user_profile.address.to_s%></h6>
+                                    <%end%>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Date of birth</p>
+                                    <%if @user_profile.date_of_birth.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=@user_profile.date_of_birth.strftime("%B %-d, %Y")%></h6>
+                                    <%end%>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card my-3">
+                            <div class="card-body">
+                                <h5 class="m-0">Business information</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Company name</p>
+                                    <%if @user_profile.user.organization.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=@user_profile.user.organization.full_name%></h6>
+                                    <%end%>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Position title</p>
+                                    <%if @user_profile.relationship_to_business.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=@user_profile.relationship_to_business%></h6>
+                                    <%end%>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Percent ownership</p>
+                                    <%if @user_profile.percent_ownership.blank?%>
+                                        <h6 class="m-0">Not listed</h6>
+                                    <%else%>
+                                        <h6 class="m-0"><%=number_to_phone(@user_profile.phone_number, area_code: true)%></h6>
+                                    <%end%>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>           
+            </div>
+            <div class="tab-pane fade" id="settlements" role="tabpanel">
+                <div class="row">
+                    <div class="col">
+                        <div class="card my-3">
+                            <div class="card-body">
+                                <h5 class="m-0">Settlement statistics</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Completed</p>
+                                    <h6 class="m-0">N/A</h6>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Canceled</p>
+                                    <h6 class="m-0">N/A</h6>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Average settlement</p>
+                                    <h6 class="m-0">N/A</h6>
+                                </li>
+                                <li class="list-group-item">
+                                    <p class="text-muted m-0">Total settled</p>
+                                    <h6 class="m-0">N/A</h6>
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h2 class="text-center mt-5">This tab is a work in progress.</h2>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

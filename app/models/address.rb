@@ -17,6 +17,6 @@ class Address < ApplicationRecord
 
 
     def to_s
-        [[[line1, line2].join(" "), [city, state].join(", ")].join(", "), country, postal_code].join(" ")
+        [[[line1, line2].reject(&:blank?).join(" "), [city, state].reject(&:blank?).join(", ")].reject(&:blank?).join(", "), country, postal_code].reject(&:blank?).join(" ")
     end
 end

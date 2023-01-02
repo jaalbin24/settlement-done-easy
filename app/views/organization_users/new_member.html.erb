@@ -1,6 +1,6 @@
 <div class="mx-auto w-50">
     <div class="card">
-        <h2 class="text-center card-header">New <%=member_role_name.capitalize%> Account</h2>
+        <h2 class="text-center card-header">New <%=member_role_name(current_user).capitalize%> Account</h2>
         <div class="card-body">
         <%= form_with model: @member, url: organization_create_member_path(@organization, @member), local: true do |f|%>
             <div class="container">

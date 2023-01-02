@@ -1,0 +1,91 @@
+<%=form_for(@user_profile, url: user_profile_update_path(@user_profile), html: { method: :put, "data-js-styling": true}) do |f|%>
+    <div class="d-flex gap-3 align-items-center">
+        <h3 class="m-0 me-auto">Edit profile</h3>
+        <%unless @continue_path.blank?%>
+            <%=link_to "Cancel", cancel_changes_path(continue_path: @continue_path), class: "btn btn-outline-primary"%>
+            <input name="continue_path" type="hidden" value="<%=@continue_path%>">
+        <%end%>
+        <%=f.submit "Save", class: "btn btn-primary"%>
+    </div>
+    <hr class="opacity-100 mt-2">
+    <div class="d-grid gap-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :first_name, class: "form-label"%>
+            <div class="w-50">
+                <%=f.text_field :first_name, class: "form-control", placeholder: "First name"%>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :last_name, class: "form-label"%>
+            <div class="w-50">
+                <%=f.text_field :last_name, class: "form-control", placeholder: "Last name"%>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :phone_number, class: "form-label"%>
+            <div class="w-50">
+                <%=f.text_field :phone_number, class: "form-control", placeholder: "Phone number", value: number_to_phone(@user_profile.phone_number, area_code: true)%>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :date_of_birth, class: "form-label"%>
+            <div class="">
+                <%=f.date_field :date_of_birth, class: "form-control", placeholder: "Date of birth"%>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :position_title, class: "form-label"%>
+            <div class="w-50">
+                <%=f.text_field :relationship_to_business, class: "form-control", placeholder: "CEO, Manager, Director, etc."%>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :percent_ownership, class: "form-label"%>
+            <div class="w-50">
+                <%=f.text_field :percent_ownership, class: "form-control", placeholder: "Percent ownership"%>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <%=f.label :last_4_of_SSN, class: "form-label"%>
+            <div class="w-50">
+                <%=f.text_field :ssn_last_4, class: "form-control", placeholder: "####"%>
+            </div>
+        </div>
+        <div>
+            <h5 class="m-0">Address</h5>
+            <hr class="mt-1">
+            <%=f.fields_for :address, include_id: false do |af|%>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=af.label :street, class:"form-label mb-1"%>
+                        <%=af.text_field :line1, class: "form-control", placeholder: "Street"%>
+                    </div>
+                    <div class="col form-group">
+                        <%=af.label "Apt/suite", class:"form-label mb-1"%>
+                        <%=af.text_field :line2, class: "form-control", placeholder: "Apt/suite"%>
+                    </div>
+                </div>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=af.label :city, class:"form-label mb-1"%>
+                        <%=af.text_field :city, class: "form-control", placeholder: "City"%>
+                    </div>
+                    <div class="col form-group">
+                        <%=af.label :state, class:"form-label mb-1"%>
+                        <%=af.text_field :state, class: "form-control", placeholder: "State"%>
+                    </div>
+                </div>
+                <div class="row my-1">
+                    <div class="col form-group">
+                        <%=af.label :country, class:"form-label mb-1"%>
+                        <%=af.text_field :country, class: "form-control", placeholder: "Country"%>
+                    </div>
+                    <div class="col form-group">
+                        <%=af.label :postal_code, class:"form-label mb-1"%>
+                        <%=af.text_field :postal_code, class: "form-control", placeholder: "Postal code"%>
+                    </div>
+                </div>
+            <%end%>
+        </div>
+    </div>
+<%end%>

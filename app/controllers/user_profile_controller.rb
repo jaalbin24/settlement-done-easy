@@ -3,7 +3,7 @@ class UserProfileController < ApplicationController
 
 
     def update
-        user_profile = User.find_by(public_id: params[:id]).profile
+        user_profile = UserProfile.find_by(public_id: params[:public_id])
         if user_profile.update(allowed_params)
             flash[:primary] = {
                 heading: "Changes saved",
@@ -12,14 +12,29 @@ class UserProfileController < ApplicationController
         else
             flash[:primary] = "Failed to update :("
         end
-        redirect_to user_profile_edit_url
+        if params[:continue_path].blank?
+            redirect_to user_profile_edit_url
+        else
+            redirect_to params[:continue_path]
+        end
     end
 
     def edit
-        @user_profile = current_user.profile
-        render :edit
+        @user_profile = UserProfile.find_by(public_id: params[:public_id])
+        @user = @user_profile.user
+        if params[:continue_path].blank?
+            @continue_path = profile_settings_path
+        else
+            @continue_path = params[:continue_path]
+        end
+        render :edit      
     end
 
+    def show
+        @user_profile = UserProfile.find_by(public_id: params[:public_id])
+        @user = @user_profile.user
+        render :show
+    end
 
     protected
 

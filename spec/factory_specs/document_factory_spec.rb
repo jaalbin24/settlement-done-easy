@@ -32,7 +32,7 @@ RSpec.describe "The Document Factory" do
             create(:document, :from_the_ground_up)
             expect(User.attorneys.size).to eq(1)
         end
-        it "must create exactly one insurance agent" do
+        it "must create exactly one adjuster" do
             expect(User.adjusters.size).to eq(0)
             create(:document, :from_the_ground_up)
             expect(User.adjusters.size).to eq(1)
