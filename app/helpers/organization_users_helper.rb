@@ -1,8 +1,8 @@
 module OrganizationUsersHelper
     def member_role_name(user)
-        if user.isLawFirm?
+        if user.isLawFirm? || user.isAttorney?
             return "attorney"
-        elsif user.isInsuranceCompany?
+        elsif user.isInsuranceCompany? || user.isAdjuster?
             return "adjuster"
         else
             return ""
@@ -10,9 +10,9 @@ module OrganizationUsersHelper
     end
 
     def organization_role_name(user)
-        if user.isAttorney?
+        if user.isLawFirm? || user.isAttorney?
             return "law firm"
-        elsif user.isAdjuster?
+        elsif user.isInsuranceCompany? || user.isAdjuster?
             return "insurance company"
         end
     end

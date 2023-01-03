@@ -13,3 +13,8 @@
 #  updated_at  :datetime         not null
 #  public_id   :string
 #
+FactoryBot.define do
+    factory :address do
+        
+    end
+end

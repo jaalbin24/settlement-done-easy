@@ -1,173 +1,229 @@
 <%=render "sidebar"%>
 
 <div class="p-5" style="min-width: 50rem;">
-    <div class="mb-2">
-        <h3 class="m-0">Profile Settings</h3>
-        <%if !current_user.activated? && current_user.isOrganization?%>
-            <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
-        <%end%>
-    </div>
-    <div class="py-4 border-top border-1 border-dark">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="">
-                <p class="m-0">Profile</p>
-                <h6 class="m-0"><%=current_user.profile.full_name%></h6>
-            </div>
-            <%=link_to "Go to profile", user_profile_show_path(current_user.profile), class: "btn btn-outline-primary"%>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+            <h3 class="m-0">Profile Settings</h3>
+            <%if !current_user.activated? && current_user.isOrganization?%>
+                <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
+            <%end%>
         </div>
+        <%=link_to "Go to profile", user_profile_show_path(current_user.profile), class: "btn btn-outline-primary"%>
     </div>
     <%=form_for(@user_profile_settings, url: user_profile_settings_update_path(@user_profile_settings), html: { method: :put, "data-js-styling": true}) do |f|%>
         <div class="py-4 border-top border-1 border-dark">
-            <table class="table" style="box-shadow: none;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="m-0">Privacy</h5>
+                    <p class="m-0">Choose what other users can see on your profile.</p>
+                </div>
+                <%=f.submit "Save", class: "btn btn-primary"%>
+            </div>
+            <hr class="mb-0 mt-4">
+            <table class="table table-sm" style="box-shadow: none;">
+                <thead>
+                    <tr>
+                        <td class="align-middle"></td>
+                        <td class="align-middle">Only members of <%=current_user.isOrganization? ? current_user.full_name : current_user.organization.full_name%> can see this</td>
+                        <td class="align-middle">All users can see this</td>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
-                        <td></td>
-                        <td>Hide from members</td>
-                        <td>Hide from public</td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Tax ID</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_tax_id_from_members, class: "form-check-input"%>
+                        <td class="align-middle">
+                            <h6 class="m-0">Email</h6>
+                            <p class="m-0"><%=current_user.profile.email.blank? ? "N/A" : current_user.profile.email%></p>
+                        </td>
+                        <td class="align-middle">
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                <%=f.check_box :show_email_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_email_to_public]"%>
                             </div>
                         </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_tax_id_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Legal name</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_last_name_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_last_name_from_public, class: "form-check-input"%>
+                        <td class="align-middle">
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                <%=f.check_box :show_email_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_email_to_members_only]"%>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td><h6 class="m-0">MCC</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_mcc_from_members, class: "form-check-input"%>
+                        <td class="align-middle">
+                            <h6 class="m-0">Phone number</h6>
+                            <p class="m-0"><%=current_user.profile.phone_number.blank? ? "N/A" : current_user.profile.phone_number%></p>
+                        </td>
+                        <td class="align-middle">
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                <%=f.check_box :show_phone_number_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_phone_number_to_public]"%>
                             </div>
                         </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_mcc_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Product Description</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_product_description_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_product_description_from_public, class: "form-check-input"%>
+                        <td class="align-middle">
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                <%=f.check_box :show_phone_number_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_phone_number_to_members_only]"%>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td><h6 class="m-0">Phone number</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_phone_number_from_members, class: "form-check-input"%>
+                        <td class="align-middle">
+                            <h6 class="m-0">Address</h6>
+                            <p class="m-0"><%=current_user.profile.address.to_s.blank? ? "N/A" : current_user.profile.address.to_s%></p>
+                        </td>
+                        <td class="align-middle">
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                <%=f.check_box :show_address_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_address_to_public]"%>
                             </div>
                         </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_phone_number_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Email</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_email_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_email_from_public, class: "form-check-input"%>
+                        <td class="align-middle">
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+                                <%=f.check_box :show_address_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_address_to_members_only]"%>
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td><h6 class="m-0">Address</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_address_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_address_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Date of birth</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_date_of_birth_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_date_of_birth_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Position title</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_relationship_to_business_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_relationship_to_business_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Last 4 digits of SSN</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_last_4_of_ssn_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_last_4_of_ssn_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h6 class="m-0">Percent ownership</h6></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_percent_ownership_from_members, class: "form-check-input"%>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <%=f.check_box :hide_percent_ownership_from_public, class: "form-check-input"%>
-                            </div>
-                        </td>
-                    </tr>
+                    <%if current_user.isOrganization?%>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Tax ID</h6>
+                                <p class="m-0"><%=current_user.profile.tax_id.blank? ? "N/A" : current_user.profile.tax_id%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_tax_id_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_tax_id_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_tax_id_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_tax_id_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Legal name</h6>
+                                <p class="m-0"><%=current_user.profile.legal_name.blank? ? "N/A" : current_user.profile.legal_name%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_legal_name_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_legal_name_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_legal_name_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_legal_name_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">MCC</h6>
+                                <p class="m-0"><%=current_user.profile.mcc.blank? ? "N/A" : current_user.profile.mcc%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_mcc_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_mcc_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_mcc_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_mcc_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Product description</h6>
+                                <p class="m-0"><%=current_user.profile.product_description.blank? ? "N/A" : current_user.profile.product_description%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_product_description_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_product_description_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_product_description_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_product_description_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                    <%else%>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Last name</h6>
+                                <p class="m-0"><%=current_user.last_name.blank? ? "N/A" : current_user.last_name%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_last_name_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_last_name_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_last_name_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_last_name_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Date of birth</h6>
+                                <p class="m-0"><%=current_user.profile.date_of_birth.blank? ? "N/A" : current_user.profile.date_of_birth.strftime("%B %-d, %Y")%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_date_of_birth_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_date_of_birth_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_date_of_birth_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_date_of_birth_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Position title</h6>
+                                <p class="m-0"><%=current_user.profile.relationship_to_business.blank? ? "N/A" : current_user.profile.relationship_to_business%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_relationship_to_business_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_relationship_to_business_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_relationship_to_business_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_relationship_to_business_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <h6 class="m-0">Percent ownership</h6>
+                                <p class="m-0"><%=current_user.profile.percent_ownership.blank? ? "N/A" : "#{current_user.profile.percent_ownership}%"%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_percent_ownership_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_percent_ownership_to_public]"%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_percent_ownership_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_percent_ownership_to_members_only]"%>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle opacity-50">
+                                <h6 class="m-0">Last 4 digits of SSN</h6>
+                                <p class="m-0"><%=current_user.profile.last_4_of_ssn.blank? ? "N/A" : current_user.profile.last_4_of_ssn%></p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_last_4_of_ssn_to_members_only, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_last_4_of_ssn_to_public]", disabled: true%>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="form-check form-switch d-flex justify-content-center p-0">
+                                    <%=f.check_box :show_last_4_of_ssn_to_public, class: "form-check-input", "data-mutually-exclusive-with": "user_profile_settings[show_last_4_of_ssn_to_members_only]", disabled: true%>
+                                </div>
+                            </td>
+                        </tr>
+                    <%end%>
                 </tbody>
             </table>
         </div>

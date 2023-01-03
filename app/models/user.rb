@@ -49,15 +49,11 @@ class User < ApplicationRecord
     scope :law_firms,           ->  {where(role: "Law Firm")}
     scope :insurance_companies, ->  {where(role: "Insurance Company")}
     scope :attorneys,           ->  {where(role: "Attorney")}
-    scope :adjusters,    ->  {where(role: "Adjuster")}
+    scope :adjusters,           ->  {where(role: "Adjuster")}
 
     validates :role, inclusion: {in: -> (i) {User.roles}} # Useless i variable prevents ArgumentError from being thrown during testing. Do not remove.
     validates :role, inclusion: {in: -> (i) {[i.role_was]}, message: "cannot be changed after creation."}, on: :update
     validates :email, :role, :encrypted_password, presence: true
-    validates :first_name, :last_name, presence: {if: :isMember?}
-    validates :first_name, :last_name, absence: {if: :isOrganization?}
-    validates :business_name, presence: {if: :isOrganization?}
-    validates :business_name, absence: {if: :isMember?}
     validates :stripe_account, absence: {if: :isMember?}
     validates :stripe_account, presence: {if: :isOrganization?}, on: :update
     validates :organization, presence: {if: :isMember?}
@@ -104,6 +100,7 @@ class User < ApplicationRecord
         dependent: :destroy,
         inverse_of: :user
     )
+    accepts_nested_attributes_for :profile
     has_many(
         :documents,
         class_name: "Document",
@@ -317,19 +314,11 @@ class User < ApplicationRecord
     end
 
     def full_name
-        if isOrganization?
-            return business_name
-        end
-        full = ""
-        if !first_name.blank?
-            full += first_name
-            if !last_name.blank?
-                full += " #{last_name}"
-            end
-        elsif !last_name.blank?
-            full += last_name
-        end
-        return full
+        name
+    end
+
+    def name
+        profile.name
     end
 
     def activated?

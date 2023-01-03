@@ -39,7 +39,8 @@ class UserSettings < ApplicationRecord
     )
 
     before_create do
-        build_profile(UserProfileSettings.default_settings_for_user(user))
+        puts "❤️❤️❤️ UserSettings before_create block"
+        build_profile(UserProfileSettings.default_settings_for_user(user)) if profile.nil?
     end
 
     def self.default_settings

@@ -18,7 +18,10 @@ law_firm_users = Array.new(1) {|i|
         email: "law_firm#{i}@example.com",
         password: "password123",
         role: "Law Firm",
-        business_name: law_firms[i],
+        profile_attributes: {
+            public_name: law_firms[i],
+            mcc: 8111
+        },
         stripe_financial_account_id: stripe_test_data_hash[:law_firms][stripe_test_data_hash[:law_firms].keys.first][:stripe_financial_account_id],
         organization: nil
     )
@@ -50,7 +53,10 @@ insurance_company_users = Array.new(1) {|i|
         email: "insurance_company#{i}@example.com",
         password: "password123",
         role: "Insurance Company",
-        business_name: insurance_companies[i],
+        profile_attributes: {
+            public_name: insurance_companies[i],
+            mcc: 6300
+        },
         stripe_financial_account_id: stripe_test_data_hash[:insurance_companies][stripe_test_data_hash[:insurance_companies].keys.first][:stripe_financial_account_id],
         organization: nil
     )
@@ -82,8 +88,10 @@ attorneys = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
         email: "attorney#{i}@example.com",
         password: "password123",
         role: "Attorney",
-        first_name: top_100_first_names[rand(0..99)],
-        last_name: top_100_last_names[rand(0..99)],
+        profile_attributes: {
+            first_name: top_100_first_names[rand(0..99)],
+            last_name: top_100_last_names[rand(0..99)],
+        },
         organization: law_firm_users[rand(0..law_firm_users.size-1)],
     )
     puts "Created Attorney i=#{i}"
@@ -95,8 +103,10 @@ adjusters = Array.new(MEMBERS_PER_ORGANIZATION) {|i|
         email: "adjuster#{i}@example.com",
         password: "password123",
         role: "Adjuster",
-        first_name: top_100_first_names[rand(0..99)],
-        last_name: top_100_last_names[rand(0..99)],
+        profile_attributes: {
+            first_name: top_100_first_names[rand(0..99)],
+            last_name: top_100_last_names[rand(0..99)],
+        },
         organization: insurance_company_users[rand(0..insurance_company_users.size-1)],
     )
     puts "Created Adjuster i=#{i}"
@@ -107,7 +117,7 @@ attorneys.each do |a|
     SETTLEMENTS_PER_ATTORNEY.times do |i|
         settlement = Settlement.new(
             attorney:           a,
-            adjuster:    adjusters[rand(0..adjusters.size-1)],
+            adjuster:           adjusters[rand(0..adjusters.size-1)],
             claim_number:       "#{rand(100000..999999)}",
             amount:             '%.02f' % rand(Rails.configuration.PAYMENT_MINIMUM_IN_DOLLARS*100..Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS*100).fdiv(100),
             policy_holder_name: "#{top_100_first_names[rand(0..99)]} #{top_100_last_names[rand(0..99)]}",

@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col">
+        <div class="card my-3">
+            <div class="card-body">
+                <h5 class="m-0">Personal</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:email])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Email</p>
+                        <%if @user_profile.email.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.email%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:phone_number])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Phone number</p>
+                        <%if @user_profile.phone_number.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=number_to_phone(@user_profile.phone_number, area_code: true)%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:address])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Address</p>
+                        <%if @user_profile.address.to_s.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.address.to_s%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:date_of_birth])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Date of birth</p>
+                        <%if @user_profile.date_of_birth.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.date_of_birth.strftime("%B %-d, %Y")%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+            </ul>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card my-3">
+            <div class="card-body">
+                <h5 class="m-0">Business Details</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <p class="text-muted m-0">Company name</p>
+                    <%if @user_profile.user.organization.blank?%>
+                        <h6 class="m-0">Not listed</h6>
+                    <%else%>
+                        <h6 class="m-0"><%=@user_profile.user.organization.full_name%></h6>
+                    <%end%>
+                </li>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:relationship_to_business])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Position title</p>
+                        <%if @user_profile.relationship_to_business.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.relationship_to_business%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:percent_ownership])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Percent ownership</p>
+                        <%if @user_profile.percent_ownership.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.percent_ownership%>%</h6>
+                        <%end%>
+                    </li>
+                <%end%>
+            </ul>
+        </div>
+    </div>
+</div> 

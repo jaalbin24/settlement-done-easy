@@ -42,6 +42,7 @@ class StripeAccount < ApplicationRecord
     validates :user, presence: true
 
     before_validation do
+        puts "❤️❤️❤️ StripeAccount before_validation block"
         if stripe_id.blank?
             # TODO: If this call to Stripe fails for network reasons, add a job to ActiveJobs to retry later.
             unless Rails.env.test?
@@ -64,6 +65,7 @@ class StripeAccount < ApplicationRecord
     end
 
     after_commit do
+        puts "❤️❤️❤️ StripeAccount after_commit block"
         if changed?
             user.save
         end

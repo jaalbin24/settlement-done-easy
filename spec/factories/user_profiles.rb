@@ -8,10 +8,12 @@
 #  first_name               :string
 #  last_4_of_ssn            :integer
 #  last_name                :string
+#  legal_name               :string
 #  mcc                      :integer
 #  percent_ownership        :integer
 #  phone_number             :bigint
 #  product_description      :string
+#  public_name              :string
 #  relationship_to_business :string
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -31,7 +33,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 FactoryBot.define do
-  factory :user_profile do
-    
-  end
+    factory :user_profile do
+
+    end
 end

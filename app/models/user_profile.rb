@@ -8,10 +8,12 @@
 #  first_name               :string
 #  last_4_of_ssn            :integer
 #  last_name                :string
+#  legal_name               :string
 #  mcc                      :integer
 #  percent_ownership        :integer
 #  phone_number             :bigint
 #  product_description      :string
+#  public_name              :string
 #  relationship_to_business :string
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -46,16 +48,20 @@ class UserProfile < ApplicationRecord
         dependent: :destroy
     )
 
+    validates :first_name,  presence: {if: -> (i) {i.user.isMember?}}
+    validates :last_name,   presence: {if: -> (i) {i.user.isMember?}}
+    validates :public_name, presence: {if: -> (i) {i.user.isOrganization?}}
+
     accepts_nested_attributes_for :address
     
     before_validation do
+        puts "❤️❤️❤️ UserProfile before_validation block"
         if address.nil?
             build_address
         end
-    end
-
-    after_create do
-        puts "WE DID IT"
+        if email != user.email
+            self.email = user.email
+        end
     end
 
     def full_name
@@ -70,11 +76,15 @@ class UserProfile < ApplicationRecord
         full
     end
 
-    def legal_name
-        last_name
+    def name
+        if user.isMember?
+            full_name
+        else
+            public_name
+        end
     end
 
-    def brand_name
-        first_name
+    def settings
+        user.settings.profile
     end
 end

@@ -12,17 +12,19 @@
     <div class="col">
         <div class="h-100 d-flex justify-content-center">
             <div class="" style="width: 60%; margin-top: 20%;">
-                <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {"data-js-styling": true, "data-wait-before-resubmit": true}) do |f|%>
+                <%=form_for(@user, url: user_registration_path, html: {"data-js-styling": true, "data-wait-before-resubmit": true}) do |f|%>
                     <div class="mb-4 ms-1">
                         <h1 class="">Create an account</h1>
                         <p class="">You are creating <%=indefinite_articleize(word: @role.titleize, html_tag: :strong)%> account. If you want to create a different type of account, click <%=link_to "here", user_type_select_path, class: "link-dark"%>.</p>
                     </div>
                     <div class="container ps-3 mt-2">
                         <div class="row">
-                            <div class="col form-group px-0">
-                                <%=f.label "Legal name of organization", class: "form-label mb-0 mt-2"%>
-                                <%=f.text_field :business_name, class: "form-control", placeholder: "Name of organization", autofocus: true, required: true%>
-                            </div>
+                            <%=f.fields_for @profile, as: :profile, include_id: false do |pf|%>
+                                <div class="col form-group px-0">
+                                    <%=pf.label "Name of company", class: "form-label mb-0 mt-2"%>
+                                    <input class="form-control" placeholder="Name of company" autofocus="autofocus" required="required" type="text" name="user[profile_attributes][public_name]" id="user_profile_attributes_public_name">
+                                </div>
+                            <%end%>
                         </div>
                         <div class="row">
                             <div class="col form-group px-0">

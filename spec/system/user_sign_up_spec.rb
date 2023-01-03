@@ -60,7 +60,7 @@ RSpec.describe "The sign up page", type: :system do
         end
         context "if the email was blank" do
             before :each do
-                fill_in "user[business_name]", with: "Valid Business Name"
+                fill_in "user[profile_attributes][public_name]", with: "Valid Business Name"
                 fill_in "user[password]", with: "password123"
                 fill_in "user[password_confirmation]", with: "password123"
                 find("input[data-test-id='submit_user_sign_up_button']").click
@@ -75,7 +75,7 @@ RSpec.describe "The sign up page", type: :system do
         end
         context "if the email was invalid" do
             before :each do
-                fill_in "user[business_name]", with: "Valid Business Name"
+                fill_in "user[profile_attributes][public_name]", with: "Valid Business Name"
                 fill_in "user[email]", with: "invalid.email@example"
                 fill_in "user[password]", with: "password123"
                 fill_in "user[password_confirmation]", with: "password123"
@@ -91,7 +91,7 @@ RSpec.describe "The sign up page", type: :system do
         end
         context "if the password was blank" do
             before :each do
-                fill_in "user[business_name]", with: "Valid Business Name"
+                fill_in "user[profile_attributes][public_name]", with: "Valid Business Name"
                 fill_in "user[email]", with: "valid.email@example.com"
                 fill_in "user[password_confirmation]", with: "password123"
                 find("input[data-test-id='submit_user_sign_up_button']").click
@@ -106,7 +106,7 @@ RSpec.describe "The sign up page", type: :system do
         end
         context "if the password confirmation was blank" do
             before :each do
-                fill_in "user[business_name]", with: "Valid Business Name"
+                fill_in "user[profile_attributes][public_name]", with: "Valid Business Name"
                 fill_in "user[email]", with: "valid.email@example.com"
                 fill_in "user[password]", with: "password123"
                 find("input[data-test-id='submit_user_sign_up_button']").click
@@ -121,7 +121,7 @@ RSpec.describe "The sign up page", type: :system do
         end
         context "if the password confirmation did not match the password" do
             before :each do
-                fill_in "user[business_name]", with: "Valid Business Name"
+                fill_in "user[profile_attributes][public_name]", with: "Valid Business Name"
                 fill_in "user[email]", with: "valid.email@example.com"
                 fill_in "user[password]", with: "password123"
                 fill_in "user[password_confirmation]", with: "differentPassword123"
@@ -140,16 +140,16 @@ RSpec.describe "The sign up page", type: :system do
                 find("input[data-test-id='submit_user_sign_up_button']").click
             end
             it "must style the field to be red" do
-                expect(page).to have_css "input.form-control.is-invalid[name='user[business_name]']"
+                expect(page).to have_css "input.form-control.is-invalid[name='user[profile_attributes][public_name]']"
             end
             it "must show a message saying the field cannot be blank" do
-                expect(page).to have_css "div.invalid-feedback[data-test-id='user[business_name]_cannot_be_blank']"
+                expect(page).to have_css "div.invalid-feedback[data-test-id='user[profile_attributes][public_name]_cannot_be_blank']"
                 expect(page).to have_text "Cannot be blank"
             end
         end
         context "if the form submits successfully" do
             before :each do
-                fill_in "user[business_name]", with: "Valid Business Name"
+                fill_in "user[profile_attributes][public_name]", with: "Valid Business Name"
                 fill_in "user[email]", with: "valid.email@example.com"
                 fill_in "user[password]", with: "password123"
                 fill_in "user[password_confirmation]", with: "password123"

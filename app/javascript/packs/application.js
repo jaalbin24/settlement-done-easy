@@ -19,6 +19,7 @@ import ModalMaker from 'packs/modal_maker'
 
 
 import FormErrorStyling from 'packs/form_error_styling'
+import MutuallyExclusiveFormElements from 'packs/mutually_exclusive_form_elements'
 
 import AttributeReview from 'packs/settlement_attribute_review'
 import EnglishLanguage from 'packs/english_language'
@@ -29,6 +30,7 @@ window.modalMaker = new ModalMaker();
 window.settlementAttributeReview = new AttributeReview();
 window.englishLanguage = new EnglishLanguage();
 window.formErrorStyling = new FormErrorStyling();
+window.mefe = new MutuallyExclusiveFormElements();
 
 // For bootstrap popovers
 document.addEventListener("DOMContentLoaded", () => {

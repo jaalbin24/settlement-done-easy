@@ -7,6 +7,8 @@ class User::RegistrationsController < Devise::RegistrationsController
     # GET /resource/sign_up
     def new
         @role = params[:role]
+        @user = User.new
+        @profile = @user.build_profile
         if @role == "Adjuster"
             @organizations = User.all_insurance_companies
         elsif @role == "Attorney"
@@ -169,7 +171,7 @@ class User::RegistrationsController < Devise::RegistrationsController
 
     # If you have extra params to permit, append them to the sanitizer in the keys array.
     def configure_sign_up_params
-        devise_parameter_sanitizer.permit(:sign_up, keys: [:role, :first_name, :last_name, :organization_id, :business_name])
+        devise_parameter_sanitizer.permit(:sign_up, keys: [:role, :first_name, :last_name, :organization_id, profile_attributes: [:public_name]])
     end
 
     # If you have extra params to permit, append them to the sanitizer in the keys array.

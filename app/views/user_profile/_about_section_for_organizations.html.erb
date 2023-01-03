@@ -1,0 +1,90 @@
+<div class="row">
+    <div class="col">
+        <div class="card my-3">
+            <div class="card-body">
+                <h5 class="m-0">Contact</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:email])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Email</p>
+                        <%if @user_profile.email.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.email%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:phone_number])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Phone number</p>
+                        <%if @user_profile.phone_number.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=number_to_phone(@user_profile.phone_number, area_code: true)%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:address])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Address</p>
+                        <%if @user_profile.address.to_s.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.address.to_s%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+            </ul>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card my-3">
+            <div class="card-body">
+                <h5 class="m-0">Business Details</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:legal_name])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Legal name</p>
+                        <%if @user_profile.legal_name.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.legal_name%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:product_description])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Product description</p>
+                        <%if @user_profile.product_description.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.product_description%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:mcc])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">MCC</p>
+                        <%if @user_profile.mcc.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.mcc%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:tax_id])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">Tax ID</p>
+                        <%if @user_profile.tax_id.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0"><%=@user_profile.tax_id%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
+            </ul>
+        </div>
+    </div>
+</div> 
