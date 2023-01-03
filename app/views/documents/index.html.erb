@@ -25,9 +25,9 @@
         <%end%>
                 <td><%=d.pdf.filename%></td>
                 <%if d.auto_generated?%>
-                    <td><%="#{d.added_by.full_name} (Auto-generated)"%></td>
+                    <td><%="#{d.added_by.name} (Auto-generated)"%></td>
                 <%else%>
-                    <td><%=d.added_by.full_name%></td>
+                    <td><%=d.added_by.name%></td>
                 <%end%>
                 <td><%=d.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y")%></td>
                 <%if d.approved?%>

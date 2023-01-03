@@ -98,7 +98,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -244,7 +244,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -363,7 +363,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -482,7 +482,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -615,7 +615,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will not have 'organization account needs to be activated' as an item on the checklist" do # Because the settlement is complete.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -743,7 +743,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will not have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -870,7 +870,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will not have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|
@@ -997,7 +997,7 @@ RSpec.describe "The settlement show page" do
                                 end
                                 it "will not have 'organization account needs to be activated' as an item on the checklist" do # Because the attorney's organization is not activated.
                                     checklist = find(id: "settlement-checklist")
-                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.full_name}'s account must be activated."
+                                    expect(checklist).to_not have_text "#{@settlement.attorney.organization.name}'s account must be activated."
                                 end
                                 it "will not have a 'document needs your review' indicator" do # Because the settlement is locked, all documents should already be approved
                                     @settlement.documents.each do |d|

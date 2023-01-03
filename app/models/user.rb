@@ -313,10 +313,6 @@ class User < ApplicationRecord
         end
     end
 
-    def full_name
-        name
-    end
-
     def name
         profile.name
     end

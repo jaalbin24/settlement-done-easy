@@ -1,6 +1,6 @@
 
 <h1 class="text-center"><%=member_role_name(current_user).capitalize%> Index</h1>
-<p class="text-center">This is a list of all <%=member_role_name(current_user)%>s in <%=@organization.full_name%></p>
+<p class="text-center">This is a list of all <%=member_role_name(current_user)%>s in <%=@organization.name%></p>
 
 <table class="table table-sm table-hover">
     <thead>
@@ -14,7 +14,7 @@
     <tbody>
         <%@organization.members.each do |m|%>
             <tr class="table-secondary">
-                <td><%=m.full_name%></td>
+                <td><%=m.name%></td>
                 <td><%=m.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y @ %l:%M%P ")%></td>
                 <%if m.last_sign_in_at != nil%>
                 <td><%=m.last_sign_in_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y @ %l:%M%P ")%></td>
@@ -23,7 +23,7 @@
                 <%end%>
                 <td style="text-align: right;">
                     <%=link_to "View", organization_show_member_path(@organization, m), class: "badge rounded-pill bg-primary text-decoration-none"%>
-                    <%=link_to "Remove", organization_remove_member_path(@organization, m), method: :delete, class: "badge rounded-pill bg-danger text-decoration-none", :data => {:confirm => "Remove #{m.full_name}? Are you sure?"}%>
+                    <%=link_to "Remove", organization_remove_member_path(@organization, m), method: :delete, class: "badge rounded-pill bg-danger text-decoration-none", :data => {:confirm => "Remove #{m.name}? Are you sure?"}%>
                 </td>
             </tr>
         <%end%>

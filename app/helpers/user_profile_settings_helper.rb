@@ -1,7 +1,7 @@
 module UserProfileSettingsHelper
     def user_can_access_profile_resource?(user, profile, resources=nil)
-        puts "=====================user=#{user.full_name}"
-        puts "=====================profile=#{profile.user.full_name}"
+        puts "=====================user=#{user.name}"
+        puts "=====================profile=#{profile.user.name}"
         puts "=====================resources=#{resources}"
         # Users always have full access to their own profile.
         # Organizations always have full access to their members' profiles.

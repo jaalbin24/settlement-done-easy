@@ -35,7 +35,7 @@ class OrganizationUsersController < ApplicationController
         member = User.find_by!(public_id: params[:mem_id])
 
         organization.members.delete(member)
-        flash[:primary] = "#{member.full_name} removed!"
+        flash[:primary] = "#{member.name} removed!"
         redirect_to members_index_url(organization)
     end
 
@@ -55,7 +55,7 @@ class OrganizationUsersController < ApplicationController
             member.role = "Adjuster"
         end
         if member.save
-            flash[:primary] = "New member #{member.full_name} added!"
+            flash[:primary] = "New member #{member.name} added!"
         else
             puts "========================== ERROR: OrganizationUsersController.create_member: #{member.errors.full_messages.inspect}"
         end

@@ -15,7 +15,7 @@
                             <p class="m-0">Member since <%=@user.created_at.strftime("%B %-d, %Y")%>
                         <%else%>
                             <h2 class="m-0"><%=@user.profile.first_name%> <%=@user.profile.last_name if user_can_access_profile_resource?(current_user, @user_profile, [:last_name])%></h2>
-                            <p class="m-0"><%=@user.organization.full_name%></p>
+                            <p class="m-0"><%=@user.organization.name%></p>
                         <%end%>
                     </div>
                     <%if current_user == @user || current_user.organization == @user%>

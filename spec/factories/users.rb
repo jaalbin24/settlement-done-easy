@@ -74,7 +74,7 @@ FactoryBot.define do
                 end
             end
             puts "🤖🤖🤖 user after(:create) block"
-            puts "========> #{u.full_name} created!\n"+
+            puts "========> #{u.name} created!\n"+
                 "========> Members: #{u.members.size}\n"+
                 "========> BankAccounts: #{u.bank_accounts.size}\n"+
                 "========> settlements: #{u.settlements.size}\n"+

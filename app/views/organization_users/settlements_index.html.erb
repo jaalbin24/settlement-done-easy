@@ -1,5 +1,5 @@
 <h1 class="text-center">Settlement Index</h1>
-<p class="text-center">This is a list of all active settlements associated with <%=@organization.full_name%></p>
+<p class="text-center">This is a list of all active settlements associated with <%=@organization.name%></p>
 
 <table class="table table-sm table-hover">
     <thead>
@@ -14,8 +14,8 @@
         <%@organization.settlements.each do |s|%>
             <tr>
                 <td><%=render "settlements/status", settlement: s%></td>
-                <td><%=link_to s.attorney.full_name, settlement_show_path(s)%></td>
-                <td><%=link_to s.adjuster.full_name, settlement_show_path(s)%></td>
+                <td><%=link_to s.attorney.name, settlement_show_path(s)%></td>
+                <td><%=link_to s.adjuster.name, settlement_show_path(s)%></td>
                 <td>$<%=s.amount%></td>
                 <td class="text-end">
                     <%=link_to "View", settlement_show_path(s), class: "badge rounded-pill bg-primary text-decoration-none"%>

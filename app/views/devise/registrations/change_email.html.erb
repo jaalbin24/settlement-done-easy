@@ -2,8 +2,8 @@
     <div class="card mt-4 mx-auto w-50">
         <%=form_for(current_user, url: registration_path(current_user), html: { method: :put, "data-js-styling": true}) do |f|%>
             <div class="card-header">
-                <h2 class="card-title">Change email for <%=current_user.full_name%></h2>
-                <p class="card-subtitle"><%=current_user.full_name%>'s current email is <%=current_user.email%></p>
+                <h2 class="card-title">Change email for <%=current_user.name%></h2>
+                <p class="card-subtitle"><%=current_user.name%>'s current email is <%=current_user.email%></p>
             </div>
             <div class="card-body">
                     <div class="form-group">

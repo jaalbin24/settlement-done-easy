@@ -20,11 +20,11 @@
             <tr class="table-secondary">
                 <td><%=render "status", settlement: s%></td>
                 <%if current_user.isAdjuster?%>
-                    <td><%=link_to s.attorney.full_name, settlement_show_path(s)%></td>
-                    <td><%=s.attorney.organization.full_name%></td>
+                    <td><%=link_to s.attorney.name, settlement_show_path(s)%></td>
+                    <td><%=s.attorney.organization.name%></td>
                 <%elsif current_user.isAttorney?%>
-                    <td><%=link_to s.adjuster.full_name, settlement_show_path(s)%></td>
-                    <td><%=s.adjuster.organization.full_name%></td>
+                    <td><%=link_to s.adjuster.name, settlement_show_path(s)%></td>
+                    <td><%=s.adjuster.organization.name%></td>
                 <%end%>
                 <td>$<%=s.amount%></td>
             </tr>

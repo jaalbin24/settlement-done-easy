@@ -8,7 +8,7 @@
                 <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
             <%end%>
         </div>
-        <%=link_to "Sign out", destroy_user_session_path, class: "btn btn-outline-danger"%>
+        <%=link_to "Sign out", destroy_user_session_path, method: "delete", class: "btn btn-outline-danger"%>
     </div>
     <div class="py-4 border-top border-1 border-dark">
         <div class="d-flex align-items-center justify-content-between">

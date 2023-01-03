@@ -206,13 +206,13 @@
                         <%unless @settlement.attorney.organization.activated? || @settlement.completed?%>
                             <li class="d-flex gap-2">
                                 <h5 class="mx-0"><i class="fa-regular fa-square text-danger"></i></h5>
-                                <p class="m-0 text-danger"><%=@settlement.attorney.organization.full_name%>'s account must be activated.</p>
+                                <p class="m-0 text-danger"><%=@settlement.attorney.organization.name%>'s account must be activated.</p>
                             </li>
                         <%end%>
                         <%unless @settlement.adjuster.organization.activated? || @settlement.completed?%>
                             <li class="d-flex gap-2">
                                 <h5 class="mx-0"><i class="fa-regular fa-square text-danger"></i></h5>
-                                <p class="m-0 text-danger"><%=@settlement.adjuster.organization.full_name%>'s account must be activated.</p>
+                                <p class="m-0 text-danger"><%=@settlement.adjuster.organization.name%>'s account must be activated.</p>
                             </li>
                         <%end%>
                         <li class="d-flex gap-2">
@@ -229,11 +229,11 @@
                         <%end%>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.unapproved.exists? ? "square-check": "square"%>"></i></h5>
-                            <p class="m-0">All documents are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.adjuster.full_name%>.</p>
+                            <p class="m-0">All documents are approved by <%=@settlement.attorney.name%> and <%=@settlement.adjuster.name%>.</p>
                         </li>
                         <li class="d-flex gap-2">
                             <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.attribute_reviews.approved.count == 2 ? "square-check": "square"%>"></i></h5>
-                            <p class="m-0">All details are approved by <%=@settlement.attorney.full_name%> and <%=@settlement.adjuster.full_name%>.</p>
+                            <p class="m-0">All details are approved by <%=@settlement.attorney.name%> and <%=@settlement.adjuster.name%>.</p>
                         </li>
                         <p class="text-muted text-center mt-2 border-bottom" style="line-height: 0.1em;"><span class="px-1 bg-secondary">Required to complete settlement</span></p>
                         <li class="d-flex gap-2">

@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h6><%=@settlement.active_payment_request.requester.full_name%> has requested payment!</h6>
+                <h6><%=@settlement.active_payment_request.requester.name%> has requested payment!</h6>
                 <p>Amount: $<%=@settlement.active_payment_request.payment.amount%></p>
                 <p>Clicking accept will trigger a payment comfirmation modal.</p>
             </div>

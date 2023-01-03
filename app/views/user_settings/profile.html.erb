@@ -24,7 +24,7 @@
                 <thead>
                     <tr>
                         <td class="align-middle"></td>
-                        <td class="align-middle">Only members of <%=current_user.isOrganization? ? current_user.full_name : current_user.organization.full_name%> can see this</td>
+                        <td class="align-middle">Only members of <%=current_user.isOrganization? ? current_user.name : current_user.organization.name%> can see this</td>
                         <td class="align-middle">All users can see this</td>
                     </tr>
                 </thead>

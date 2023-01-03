@@ -59,7 +59,7 @@
                     <%if @user_profile.user.organization.blank?%>
                         <h6 class="m-0">Not listed</h6>
                     <%else%>
-                        <h6 class="m-0"><%=@user_profile.user.organization.full_name%></h6>
+                        <h6 class="m-0"><%=@user_profile.user.organization.name%></h6>
                     <%end%>
                 </li>
                 <%if user_can_access_profile_resource?(current_user, @user_profile, [:relationship_to_business])%>

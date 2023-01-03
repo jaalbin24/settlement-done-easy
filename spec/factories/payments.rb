@@ -55,8 +55,8 @@ FactoryBot.define do
                 p.settlement.touch
             end
             puts "========> PAYMENT created!\n"+
-                "========> source: #{p.source.user.full_name}\n"+
-                "========> destination: #{p.destination.user.full_name}\n"+
+                "========> source: #{p.source.user.name}\n"+
+                "========> destination: #{p.destination.user.name}\n"+
                 "========> p.to_json: #{p.to_json}\n"+
                 "========> p.settlement.to_json: #{p.settlement.to_json}\n"+
                 "========> p.settlement.payments.size: #{p.settlement.payments.size}\n"+
@@ -105,8 +105,8 @@ FactoryBot.define do
                 p.destination = build(:bank_account_for_law_firm, user: @attorney.organization)
             end
             puts "========> PAYMENT before building!\n"+
-            "========> source: #{p.source.user.full_name}\n"+
-            "========> destination: #{p.destination.user.full_name}\n"+
+            "========> source: #{p.source.user.name}\n"+
+            "========> destination: #{p.destination.user.name}\n"+
             "========> p.to_json: #{p.to_json}\n"+
             "========> p.settlement.to_json: #{p.settlement.to_json}\n"+
             "========> p.settlement.payments.size: #{p.settlement.payments.size}\n"+

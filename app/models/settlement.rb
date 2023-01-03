@@ -365,12 +365,12 @@ class Settlement < ApplicationRecord
             Notification.create!(
                 user: adjuster,
                 title: "New Settlement!",
-                message: "A new settlement was started with #{attorney.full_name}. Click here to view it."
+                message: "A new settlement was started with #{attorney.name}. Click here to view it."
             )
             Notification.create!(
                 user: attorney,
                 title: "New Settlement!",
-                message: "A new settlement was started with #{adjuster.full_name}. Click here to view it."
+                message: "A new settlement was started with #{adjuster.name}. Click here to view it."
             )
         end
         if ready_for_payment?

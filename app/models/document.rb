@@ -185,12 +185,12 @@ class Document < ApplicationRecord
             if auto_generated?
                 log_book.entries.build(
                     user: added_by,
-                    message: "#{added_by.full_name} generated a document."
+                    message: "#{added_by.name} generated a document."
                 )
             else
                 log_book.entries.build(
                     user: added_by,
-                    message: "#{added_by.full_name} uploaded a document."
+                    message: "#{added_by.name} uploaded a document."
                 )
             end
         end

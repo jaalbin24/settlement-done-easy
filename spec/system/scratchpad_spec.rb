@@ -38,12 +38,12 @@ RSpec.describe "The scratchpad" do
                 it "must have the owner's Last name" do
                     @owners.each do |owner|
                         @extras.each do |extra|
-                            expect(extra.organization.full_name).to eq owner.organization.full_name
+                            expect(extra.organization.name).to eq owner.organization.name
                             expect(extra.organization.id).to eq owner.organization.id
                             expect(extra.organization.id.nil?).to eq false
                             sign_in extra
                             visit user_profile_show_path(owner.profile)
-                            expect(page).to have_text owner.profile.full_name, wait: 15
+                            expect(page).to have_text owner.profile.name, wait: 15
                         end
                     end
                 end
@@ -55,7 +55,7 @@ RSpec.describe "The scratchpad" do
                             sign_in user
                             visit user_profile_show_path(owner.profile)
                             expect(page).to_not have_text "Last name"
-                            expect(page).to_not have_text owner.profile.full_name
+                            expect(page).to_not have_text owner.profile.name
                         end
                     end
                 end
@@ -87,12 +87,12 @@ RSpec.describe "The scratchpad" do
                     @users.each do |user|
                         sign_in user
                         visit user_profile_show_path(owner.profile)
-                        expect(page).to have_text owner.profile.full_name
+                        expect(page).to have_text owner.profile.name
                     end
                     @extras.each do |extra|
                         sign_in extra
                         visit user_profile_show_path(owner.profile)
-                        expect(page).to have_text owner.profile.full_name
+                        expect(page).to have_text owner.profile.name
                     end
                 end
             end
@@ -105,7 +105,7 @@ RSpec.describe "The scratchpad" do
                         sign_in user
                         visit user_profile_show_path(owner.profile)
                         expect(page).to_not have_text "Last name"
-                        expect(page).to_not have_text owner.profile.full_name
+                        expect(page).to_not have_text owner.profile.name
                     end
                 end
             end
@@ -116,7 +116,7 @@ RSpec.describe "The scratchpad" do
                             sign_in user
                             visit user_profile_show_path(owner.profile)
                             expect(page).to_not have_text "Last name"
-                            expect(page).to_not have_text owner.profile.full_name
+                            expect(page).to_not have_text owner.profile.name
                         end
                     end
                 end

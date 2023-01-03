@@ -24,11 +24,11 @@
                     <td><%="%04d" % s.public_number%></td>
                     <td><%=link_to s.claimant_name, settlement_show_path(s)%></td>
                     <%if current_user.isAdjuster?%>
-                        <td><%=s.attorney.full_name%></td>
-                        <td><%=s.attorney.organization.full_name%></td>
+                        <td><%=s.attorney.name%></td>
+                        <td><%=s.attorney.organization.name%></td>
                     <%elsif current_user.isAttorney?%>
-                        <td><%=s.adjuster.full_name%></td>
-                        <td><%=s.adjuster.organization.full_name%></td>
+                        <td><%=s.adjuster.name%></td>
+                        <td><%=s.adjuster.organization.name%></td>
                     <%end%>
                     <td>$<%=s.amount%></td>
                 </tr>

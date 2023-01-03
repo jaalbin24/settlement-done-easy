@@ -109,19 +109,19 @@ class PaymentRequest < ApplicationRecord
         if self.new_record?
             log_book.entries.build(
                 user: requester,
-                message: "#{requester.full_name} requested payment."
+                message: "#{requester.name} requested payment."
             )
         end
         if status_changed?
             if accepted?
                 log_book.entries.build(
                     user: accepter,
-                    message: "#{accepter.full_name} accepted the payment request."
+                    message: "#{accepter.name} accepted the payment request."
                 )
             elsif denied?
                 log_book.entries.build(
                     user: accepter,
-                    message: "#{accepter.full_name} accepted the payment request."
+                    message: "#{accepter.name} accepted the payment request."
                 )
             end
         end

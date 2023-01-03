@@ -6,7 +6,7 @@ class SettlementsController < ApplicationController
 
     def ensure_organization_is_activated
         unless current_user.organization.activated?
-            flash[:primary] = "You cannot start a settlement until #{current_user.organization.full_name}'s account is activated."
+            flash[:primary] = "You cannot start a settlement until #{current_user.organization.name}'s account is activated."
             redirect_to root_path
         end
     end
@@ -55,7 +55,7 @@ class SettlementsController < ApplicationController
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
-            flash[:primary] = "Started a new settlement with #{partner.full_name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
+            flash[:primary] = "Started a new settlement with #{partner.name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
         else
             flash.now[:error] = "#{settlement.errors.full_messages.inspect}"

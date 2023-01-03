@@ -58,8 +58,8 @@ FactoryBot.define do
             s.settings = [create(:settlement_settings, :for_attorney, user: s.attorney, settlement: s), create(:settlement_settings, :for_adjuster, user: s.adjuster, settlement: s)]
             puts "🤖🤖🤖 settlement after(:create) block"
             puts "========> SETTLEMENT created!\n"+
-                "========> adjuster: #{s.adjuster.full_name}\n"+
-                "========> attorney: #{s.attorney.full_name}\n"+
+                "========> adjuster: #{s.adjuster.name}\n"+
+                "========> attorney: #{s.attorney.name}\n"+
                 "========> s.to_json: #{s.to_json}\n"+
                 "========> payments.active.size: #{s.payments.active.size}\n"+
                 "========> payment status: #{s.payments.last.status}\n"+

@@ -109,17 +109,17 @@ class DocumentReview < ApplicationRecord
             if is_for_approval?
                 log_book.entries.build(
                     user: reviewer,
-                    message: "#{reviewer.full_name} approved a document."
+                    message: "#{reviewer.name} approved a document."
                 )
             elsif is_for_rejection?
                 log_book.entries.build(
                     user: reviewer,
-                    message: "#{reviewer.full_name} rejected a document."
+                    message: "#{reviewer.name} rejected a document."
                 )
             elsif waiting_for_review?
                 log_book.entries.build(
                     user: reviewer,
-                    message: "#{reviewer.full_name} unapproved a document."
+                    message: "#{reviewer.name} unapproved a document."
                 )
             end
         end

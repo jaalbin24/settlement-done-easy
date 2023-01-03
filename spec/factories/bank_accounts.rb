@@ -33,7 +33,7 @@ FactoryBot.define do
         after(:create) do |ba|
             puts "🤖🤖🤖 bank_account after(:create) block"
             puts "========> BANK ACCOUNT created!\n"+
-                "========> user: #{ba.user.full_name}\n"+
+                "========> user: #{ba.user.name}\n"+
                 "========> # of bank accounts: #{BankAccount.all.size}\n"
         end
 

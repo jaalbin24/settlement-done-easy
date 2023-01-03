@@ -24,7 +24,7 @@
                                         Added by:
                                     </div>
                                     <div class="col">
-                                        <%=@document.added_by.full_name%>
+                                        <%=@document.added_by.name%>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -89,7 +89,7 @@
                                 <%if @document.reviews.rejections.by(current_user).exists?%>
                                 <p class="text-center text-muted">You have rejected this document. The settlement cannot continue until this document is removed or approved.</p>
                                 <%else%>
-                                <p class="text-center text-muted"><%=@document.reviews.rejections.first.reviewer.full_name%> has rejected this document. The settlement cannot continue until it is removed or approved.</p>
+                                <p class="text-center text-muted"><%=@document.reviews.rejections.first.reviewer.name%> has rejected this document. The settlement cannot continue until it is removed or approved.</p>
                                 <%end%>
                             <%elsif @document.approved?%>
                             <p class="text-center text-muted">This document has been approved by all parties.</p>
@@ -97,20 +97,20 @@
                                 <%if @document.reviews.waiting_for_review.by(current_user).exists?%>
                                     <p class="text-center text-muted">You must approve or reject this document for the settlement to continue.</p>
                                 <%else%>
-                                    <p class="text-center text-muted"><%=@document.reviews.waiting_for_review.first.reviewer.full_name%> must approve this document for the settlement to continue.</p>
+                                    <p class="text-center text-muted"><%=@document.reviews.waiting_for_review.first.reviewer.name%> must approve this document for the settlement to continue.</p>
                                 <%end%>
                             <%end%>
                             <div class="row">
                                 <div class="col border-end">
                                     <h5 class="fs-bold">Approvals gathered:</h5>
                                     <%@document.reviews.approvals.each do |review|%>
-                                        <h6><i class="fa-regular fa-square-check"></i> <%=@document.added_by == review.reviewer ? "#{review.reviewer.full_name} (Automatically)" : review.reviewer.full_name%></h6>
+                                        <h6><i class="fa-regular fa-square-check"></i> <%=@document.added_by == review.reviewer ? "#{review.reviewer.name} (Automatically)" : review.reviewer.name%></h6>
                                     <%end%>
                                     <%@document.reviews.rejections.each do |review|%>
-                                        <h6 class="text-danger"><i class="fa-regular fa-square"></i> <%=review.reviewer.full_name%></h6>
+                                        <h6 class="text-danger"><i class="fa-regular fa-square"></i> <%=review.reviewer.name%></h6>
                                     <%end%>
                                     <%@document.reviews.waiting_for_review.each do |review|%>
-                                        <h6><i class="fa-regular fa-square"></i> <%=review.reviewer.full_name%></h6>
+                                        <h6><i class="fa-regular fa-square"></i> <%=review.reviewer.name%></h6>
                                     <%end%>
                                 </div>
                                 <div class="col">

@@ -138,7 +138,7 @@ class DocumentsController < ApplicationController
             return
         end
         envelope_args = {
-            email_subject: "#{document.settlement.attorney.full_name} is requesting a signature.",
+            email_subject: "#{document.settlement.attorney.name} is requesting a signature.",
             signer_email: params[:client_email],
             signer_name: params[:client_name],
             cc_email: Rails.configuration.APP_EMAIL,

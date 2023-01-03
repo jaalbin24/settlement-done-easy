@@ -7,21 +7,21 @@
                     <%=f.label "Claimant name", { class: "form-label m-0"}%>
                     <div class="d-flex gap-1 align-items-center">
                         <button class="btn p-0" name="reject-claimant-name-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.claimant_name_approved? ? "" : "display: none;"%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :green, size: :h6)%>
                             </div>
                         </button>
                         <button class="btn p-0" name="approve-claimant-name-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.claimant_name_approved? ? "display: none;" : ""%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :red, size: :h6)%>
                             </div>
                         </button>
                         <%if @settlement.attribute_reviews.by(@settlement.partner_of(current_user)).first.claimant_name_approved?%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :green, size: :h6, name: "claimant-name-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%else%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :red, size: :h6, name: "claimant-name-not-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%end%>
@@ -34,21 +34,21 @@
                     <%= f.label "Policy holder name", { class: "form-label mb-1"} %>
                     <div class="d-flex gap-1 align-items-center">
                         <button class="btn p-0" name="reject-policy-holder-name-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.policy_holder_name_approved? ? "" : "display: none;"%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :green, size: :h6)%>
                             </div>
                         </button>
                         <button class="btn p-0" name="approve-policy-holder-name-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.policy_holder_name_approved? ? "display: none;" : ""%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :red, size: :h6)%>
                             </div>
                         </button>
                         <%if @settlement.attribute_reviews.by(@settlement.partner_of(current_user)).first.policy_holder_name_approved?%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :green, size: :h6, name: "policy-holder-name-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%else%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :red, size: :h6, name: "policy-holder-name-not-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%end%>
@@ -64,21 +64,21 @@
                     <%=f.label "Incident date", { class: "form-label m-0"}%>
                     <div class="d-flex gap-1 align-items-center">
                         <button class="btn p-0" name="reject-incident-date-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.incident_date_approved? ? "" : "display: none;"%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :green, size: :h6)%>
                             </div>
                         </button>
                         <button class="btn p-0" name="approve-incident-date-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.incident_date_approved? ? "display: none;" : ""%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :red, size: :h6)%>
                             </div>
                         </button>
                         <%if @settlement.attribute_reviews.by(@settlement.partner_of(current_user)).first.incident_date_approved?%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :green, size: :h6, name: "incident-date-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%else%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :red, size: :h6, name: "incident-date-not-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%end%>
@@ -91,21 +91,21 @@
                     <%=f.label "Incident location", { class: "form-label m-0"}%>
                     <div class="d-flex gap-1 align-items-center">
                         <button class="btn p-0" name="reject-incident-location-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.incident_location_approved? ? "" : "display: none;"%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :green, size: :h6)%>
                             </div>
                         </button>
                         <button class="btn p-0" name="approve-incident-location-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.incident_location_approved? ? "display: none;" : ""%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :red, size: :h6)%>
                             </div>
                         </button>
                         <%if @settlement.attribute_reviews.by(@settlement.partner_of(current_user)).first.incident_location_approved?%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :green, size: :h6, name: "incident-location-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%else%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :red, size: :h6, name: "incident-location-not-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%end%>
@@ -120,21 +120,21 @@
                     <%=f.label "Amount", { class: "form-label m-0"}%>
                     <div class="d-flex gap-1 align-items-center">
                         <button class="btn p-0" name="reject-amount-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.amount_approved? ? "" : "display: none;"%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :green, size: :h6)%>
                             </div>
                         </button>
                         <button class="btn p-0" name="approve-amount-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.amount_approved? ? "display: none;" : ""%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :red, size: :h6)%>
                             </div>
                         </button>
                         <%if @settlement.attribute_reviews.by(@settlement.partner_of(current_user)).first.amount_approved?%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :green, size: :h6, name: "amount-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%else%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :red, size: :h6, name: "amount-not-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%end%>
@@ -150,21 +150,21 @@
                     <%=f.label "Claim number", { class: "form-label m-0"}%>
                     <div class="d-flex gap-1 align-items-center">
                         <button class="btn p-0" name="reject-claim-number-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.claim_number_approved? ? "" : "display: none;"%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :green, size: :h6)%>
                             </div>
                         </button>
                         <button class="btn p-0" name="approve-claim-number-button" for="<%=@settlement.attribute_reviews.by(current_user).first.public_id%>" style="<%=@settlement.attribute_reviews.by(current_user).first.claim_number_approved? ? "display: none;" : ""%>">
-                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.full_name%>">
+                            <div class="d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=current_user.name%>">
                                 <%=circle_icon(color: :red, size: :h6)%>
                             </div>
                         </button>
                         <%if @settlement.attribute_reviews.by(@settlement.partner_of(current_user)).first.claim_number_approved?%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :green, size: :h6, name: "claim-number-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%else%>
-                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).full_name%>">
+                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Not approved by <%=@settlement.partner_of(current_user).name%>">
                                 <%=circle_icon(color: :red, size: :h6, name: "claim-number-not-approved-by-#{@settlement.partner_of(current_user).public_id}")%>
                             </div>
                         <%end%>
