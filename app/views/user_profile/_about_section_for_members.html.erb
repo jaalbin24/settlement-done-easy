@@ -64,7 +64,7 @@
                 </li>
                 <%if user_can_access_profile_resource?(current_user, @user_profile, [:relationship_to_business])%>
                     <li class="list-group-item">
-                        <p class="text-muted m-0">Position title</p>
+                        <p class="text-muted m-0">Relationship to business</p>
                         <%if @user_profile.relationship_to_business.blank?%>
                             <h6 class="m-0">Not listed</h6>
                         <%else%>

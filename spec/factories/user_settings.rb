@@ -26,5 +26,12 @@
 FactoryBot.define do
     factory :user_settings, class: "UserSettings" do
         user
+        factory :user_settings_for_attorney do
+            association :user, factory: :attorney
+        end
+
+        factory :user_settings_for_adjuster do
+            association :user, factory: :adjuster
+        end
     end
 end

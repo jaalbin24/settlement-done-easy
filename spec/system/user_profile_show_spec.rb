@@ -449,8 +449,8 @@ RSpec.describe "The user profile page", type: :system do
                 fail
             end
         end
-        context "if the owner has settings set to hide their position title" do
-            it "must not show the owner's position title" do
+        context "if the owner has settings set to hide their Relationship to business" do
+            it "must not show the owner's Relationship to business" do
                 pending "Implementation"
                 fail
             end
@@ -549,8 +549,8 @@ RSpec.describe "The user profile page", type: :system do
                 fail
             end
         end
-        context "if the owner has settings set to hide their position title" do
-            it "must still show the owner's position title" do
+        context "if the owner has settings set to hide their Relationship to business" do
+            it "must still show the owner's Relationship to business" do
                 pending "Implementation"
                 fail
             end
@@ -559,8 +559,8 @@ RSpec.describe "The user profile page", type: :system do
                 fail
             end
         end
-        context "if the owner has settings set to show their position title" do
-            it "must still show the owner's position title" do
+        context "if the owner has settings set to show their Relationship to business" do
+            it "must still show the owner's Relationship to business" do
                 pending "Implementation"
                 fail
             end
@@ -659,8 +659,8 @@ RSpec.describe "The user profile page", type: :system do
                 fail
             end
         end
-        context "if the owner has settings set to hide their position title" do
-            it "must still show the owner's position title" do
+        context "if the owner has settings set to hide their Relationship to business" do
+            it "must still show the owner's Relationship to business" do
                 pending "Implementation"
                 fail
             end
@@ -669,8 +669,8 @@ RSpec.describe "The user profile page", type: :system do
                 fail
             end
         end
-        context "if the owner has settings set to show their position title" do
-            it "must still show the owner's position title" do
+        context "if the owner has settings set to show their Relationship to business" do
+            it "must still show the owner's Relationship to business" do
                 pending "Implementation"
                 fail
             end
