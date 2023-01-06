@@ -70,7 +70,7 @@ class StripeController < ApplicationController
             return
         end
         # Check if webhook signing is configured.
-        endpoint_secret = Rails.configuration.STRIPE_ENDPOINT_SECRET
+        endpoint_secret = ENV['STRIPE_ENDPOINT_SECRET']
         if !endpoint_secret.blank?
             # Retrieve the event by verifying the signature using the raw body and secret.
             signature = request.env['HTTP_STRIPE_SIGNATURE'];

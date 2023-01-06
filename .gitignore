@@ -32,6 +32,7 @@
 /config/docusign_private_key.txt
 /config/docusign_public_key.txt
 /config/credentials/*.key
+/config/environment_variables.rb
 
 /public/packs
 /public/packs-test
