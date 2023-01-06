@@ -1,21 +1,13 @@
 # README
 
-To run SDE, follow these instructions...
+Settlement Done Easy (SDE) is a settlement mediator between law firms and insurance companies designed to make processing settlements easier and faster by processing documents and associated settlement proceeds electronically.
 
-1. Clone the repository into your local machine using "git clone [SSH link]". A folder called "settlement-done-easy" will be created. Navigate into that folder using the command "cd settlement-done-easy"
+SDE facilitates the exchange of the electronically signed release documents for an ACH settlement e-check deposited instantly in the law firm’s escrow account. The electronic payment of settlement the SDE is permitted by all State Bar Associations in the U.S.,
+though some states, do have specific requirements.
 
-2. Run the following commands in this order
-    1) bundle install
-    2) yarn install
-    3) yarn add bootstrap jquery popper.js
-    4) yarn add bootswatch
-    5) yarn add autosize
-    6) sudo service postgresql start
-    7) rails db:migrate:reset db:seed
-    8) rails server
+For Law Firms:
+SDE shortens the time to conclude a settlement with ACH e-checks deposited into a law firms escrow account from days or weeks to minutes. After the first such ACH transfer, monies clear the bank in 2 business days. (First ACH Transfer can take
+up to 7 business days to clear.) A settlement concluded through SDE on a Tuesday could be disbursed to a client the same week.
 
-3. Configure the config/appsettings.yml file with DocuSign & Stripe account data. An account with DocuSign and Stripe are required to run Settlement Done Easy.
-
-4. Open a browser. In your URL field, type "localhost:3000" and press enter. The page should load for a while then show the application.
-
-5. You're set up! :)
+For Insurance Companies:
+SDE allows adjusters to resolve claims and transmit e-checks remotely, from any-where they have internet access. No more lost/delayed checks, FedEx overnight charges, or calls from angry lawyers looking for settlement checks. SDE does all this at a rate cheaper and faster than the carrier’s postage/FedEx budget.
