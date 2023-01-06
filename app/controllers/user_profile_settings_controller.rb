@@ -50,6 +50,9 @@ class UserProfileSettingsController < ApplicationController
 
             :show_last_4_of_ssn_to_public,
             :show_last_4_of_ssn_to_members_only,
+
+            :show_legal_name_to_public,
+            :show_legal_name_to_members_only,
         )
     end
 end

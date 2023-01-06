@@ -23,6 +23,54 @@ RSpec.describe "The profile section of the user settings page", type: :system do
         end
     end
 
+    context "when the user is a member-type user" do
+        it "must have a link to the user's profile show page" do
+
+        end
+
+        context "after the show email to public switch is turned on" do
+            it "must turn off the show email to members only switch" do
+
+            end
+        end
+        context "after the show email to members only switch is turned on" do
+            it "must turn off the show email to public switch" do
+
+            end
+        end
+        context "after the show email to public switch is turned off" do
+            it "must not turn on the show email to members only switch" do
+
+            end
+        end
+        context "after the show email to members only switch is turned off" do
+            it "must not turn on the show email to public switch" do
+
+            end
+        end
+        context "after the save button is clicked" do
+            it "must show a flash message saying the profile settings were updated" do
+                
+            end
+        end
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     it "must have a link to the user's profile show page" do
         @users.each do |user|
             sign_in user
