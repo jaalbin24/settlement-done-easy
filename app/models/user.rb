@@ -46,6 +46,8 @@ class User < ApplicationRecord
 
     scope :activated,           ->  {where(activated: true)}
     scope :not_activated,       ->  {where(activated: false)}
+    scope :members,             ->  {where(role: ["Attorney", "Adjuster"])}
+    scope :organizations,       ->  {where(role: ["Law Firm", "Insurance Company"])}
     scope :law_firms,           ->  {where(role: "Law Firm")}
     scope :insurance_companies, ->  {where(role: "Insurance Company")}
     scope :attorneys,           ->  {where(role: "Attorney")}
@@ -226,12 +228,10 @@ class User < ApplicationRecord
 
     after_create do
         puts "❤️❤️❤️ User after_create block"
-
+        create_settings(UserSettings.default_settings) if settings.nil?
+        create_profile if profile.nil?
         if isOrganization?
-            if stripe_account.nil?
-                CreateStripeAccountJob.perform_later self
-                #build_stripe_account
-            end
+            CreateStripeAccountJob.perform_later self if stripe_account.nil?
             # if stripe_financial_account.nil?
             #     build_stripe_financial_account
             # end
@@ -276,9 +276,6 @@ class User < ApplicationRecord
                 self.role = "Adjuster"
             end
         end
-        build_settings(UserSettings.default_settings) if settings.nil?
-        build_profile(first_name: first_name, last_name: last_name) if profile.nil?
-
     end
 
     def self.roles

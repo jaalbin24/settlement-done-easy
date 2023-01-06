@@ -7,6 +7,7 @@ module EnglishLanguage
         when :strong, "strong"
             return %w(a e i o u).include?(args[:word][0].downcase) ? "an <strong>#{args[:word]}</strong>" : "a <strong>#{args[:word]}</strong>"
         end
+        return %w(a e i o u).include?(args[:word][0].downcase) ? "an #{args[:word]}" : "a #{args[:word]}"
     end
 
     def random_noun
@@ -32,6 +33,42 @@ module EnglishLanguage
     def random_animal_name
         arbitrary_93_animal_names = ["alpaca", "ant", "antelope", "arctic wolf", "badger", "bald eagle", "bat", "bear", "bee", "bird", "bison", "buffalo", "butterfly", "camel", "cat", "cheetah", "chicken", "chimpanzee", "chipmunk", "cow", "coyote", "crab", "crocodile", "crow", "deer", "dog", "dolphin", "dove", "duck", "eagle", "earthworm", "elephant", "elk", "fish", "fish", "fox", "giraffe", "goat", "goose", "gorilla", "grasshopper", "hare", "hedgehog", "hen", "hippopotamus", "honey bee", "horse", "housefly", "kangaroo", "koala", "leopard", "lion", "lizard", "llama", "mole", "monkey", "mosquito", "mouse", "ostrich", "otter", "owl", "panda", "panther", "parrot", "peacock", "pig", "pigeon", "polar bear", "porcupine", "possum", "rabbit", "raccoon", "rat", "rattle snake", "red panda", "reindeer", "rhinoceros", "sabre-tooth cat", "sheep", "shrimp", "snake", "spider", "squirrel", "starfish", "tiger", "turkey", "walrus", "wild boar", "wolf", "wombat", "woodpecker", "woolly mammoth", "zebra"]        
         arbitrary_93_animal_names[rand(0..(arbitrary_93_animal_names.length - 1))]
+    end
+
+    def random_law_firm_name
+        random_number = rand(1..10)
+        case random_number
+        when 1, 2, 3, 4, 5
+            "#{random_last_name} & #{random_last_name}"
+        when 6, 7
+            "#{random_last_name} #{random_last_name} & #{random_last_name}"
+        when 8
+            "#{random_adjective.capitalize} Law"
+        when 9
+            "Law #{random_noun.pluralize.capitalize}"
+        when 10
+            "#{random_last_name} #{random_last_name} & #{indefinite_articleize(word: random_animal_name.singularize.capitalize)}"
+        else
+            raise StandardError.new "Something broke your algorithm."
+        end
+    end
+    
+    def random_insurance_company_name
+        random_number = rand(1..10)
+        case random_number
+        when 1, 2, 3, 4, 5
+            "#{random_adjective.capitalize} Insurance"
+        when 6, 7
+            "Very #{random_adjective.capitalize} Insurance"
+        when 8
+            "Insurance #{random_noun.pluralize.capitalize}"
+        when 9
+            "Insura#{random_noun.capitalize}"
+        when 10
+            "Insurance for #{random_animal_name.pluralize.capitalize}"
+        else
+            raise StandardError.new "Something broke your algorithm."
+        end
     end
 end
 

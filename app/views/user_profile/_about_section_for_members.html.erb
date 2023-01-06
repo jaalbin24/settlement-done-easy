@@ -45,6 +45,16 @@
                         <%end%>
                     </li>
                 <%end%>
+                <%if user_can_access_profile_resource?(current_user, @user_profile, [:last_4_of_ssn])%>
+                    <li class="list-group-item">
+                        <p class="text-muted m-0">SSN</p>
+                        <%if @user_profile.last_4_of_ssn.blank?%>
+                            <h6 class="m-0">Not listed</h6>
+                        <%else%>
+                            <h6 class="m-0">###-##-<%=@user_profile.last_4_of_ssn%></h6>
+                        <%end%>
+                    </li>
+                <%end%>
             </ul>
         </div>
     </div>

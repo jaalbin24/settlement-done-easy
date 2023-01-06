@@ -2,7 +2,7 @@
     <div class="w-100 position-absolute" style="z-index: -1;">
         <div class="w-100 bg-bluegrey" style="height: 17rem;"></div>
     </div>
-    <div class="container mt-4">
+    <div class="container mt-4" data-test-id="user_profile_show_page">
         <div class="card">
             <div class="card-body bg-light">
                 <div class="d-flex align-items-center gap-3">
@@ -11,14 +11,14 @@
                     </div>
                     <div class="me-auto">
                         <%if @user.isOrganization?%>
-                            <h2 class="m-0"><%=@user.name%></h2>
+                            <h2 class="m-0" data-test-id='owner_name'><%=@user.name%></h2>
                             <p class="m-0">Member since <%=@user.created_at.strftime("%B %-d, %Y")%>
                         <%else%>
-                            <h2 class="m-0"><%=@user.profile.first_name%> <%=@user.profile.last_name if user_can_access_profile_resource?(current_user, @user_profile, [:last_name])%></h2>
+                            <h2 class="m-0" data-test-id='owner_name'><%=@user.profile.first_name%> <%=@user.profile.last_name if user_can_access_profile_resource?(current_user, @user_profile, [:last_name])%></h2>
                             <p class="m-0"><%=@user.organization.name%></p>
                         <%end%>
                     </div>
-                    <%if current_user == @user || current_user.organization == @user%>
+                    <%if current_user == @user || current_user == @user.organization%>
                         <a class="btn btn-secondary d-flex align-items-center gap-1" href="<%=user_profile_edit_path(@user_profile, continue_path: request.path)%>">
                             Edit profile <i class="fa-solid fa-pen text-muted m-0"></i>
                         </a>

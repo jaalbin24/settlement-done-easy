@@ -89,6 +89,20 @@ module SpecGenerator
             self.level -= 1
             self.file_string += "#{self.tab*self.level}end\n"
         end
+        # Used for printing regular text to the eventual file
+        def text
+            yield.gsub(self.tab, "").split("\n").each do |line|
+                if line.end_with?("|", "do")
+                    self.file_string += "#{self.tab*self.level}#{line}\n"
+                    self.level += 1
+                elsif line.end_with?("end")
+                    self.level -= 1
+                    self.file_string += "#{self.tab*self.level}#{line}\n"
+                else
+                    self.file_string += "#{self.tab*self.level}#{line}\n"
+                end
+            end
+        end
         # returns a string of a comment box
         def self.comment_header(args=nil)
             lines = [

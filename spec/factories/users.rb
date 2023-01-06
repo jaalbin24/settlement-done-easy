@@ -124,7 +124,6 @@ FactoryBot.define do
 
         factory :law_firm do
             role {"Law Firm"}
-            business_name {random_law_firm_name}
             after(:create) do |u, e|
                 puts "🤖🤖🤖 law_firm after(:create) block"
                 u.bank_accounts = create_list(:bank_account_for_law_firm, e.num_bank_accounts, user: u)  if u.bank_accounts.empty? && e.num_bank_accounts > 0
@@ -153,26 +152,12 @@ FactoryBot.define do
                         raise StandardError.new "There are not enough law firms in the stripe test data hash to accomodate the test load.\nUser.count=#{User.count}\nUser.law_firms.count=#{User.law_firms.count}"
                     end
                 end
-                u.profile = build(:user_profile, user: u,
-                    public_name:    random_law_firm_name,
-                    legal_name:     "LEGALLYLAW",
-                    phone_number:   1234567890,
-                    mcc:            8890,
-                    tax_id:         9184944752,
-                    product_description: "Nice stuff",
-                    address: build(:address,
-                        line1: "2941 E Glengarry Rd",
-                        city: "Memphis",
-                        state: "Tennessee",
-                        postal_code: 38128
-                    )
-                ) if u.profile.nil?
+                u.profile = build(:user_profile_for_law_firm, user: u) if u.profile.nil?
             end
         end
 
         factory :insurance_company do
             role {"Insurance Company"}
-            business_name {random_insurance_company_name}
             after(:create) do |u, e|
                 puts "🤖🤖🤖 insurance_company after(:create) block"
                 u.bank_accounts = create_list(:bank_account_for_insurance_company, e.num_bank_accounts, user: u) if u.bank_accounts.empty? && e.num_bank_accounts > 0
@@ -201,38 +186,19 @@ FactoryBot.define do
                         raise StandardError.new "There are not enough insurance companies in the stripe test data hash to accomodate the test load.\nUser.count=#{User.count}\nUser.insurance_companies.count=#{User.insurance_companies.count}"
                     end
                 end
-                u.profile = build(:user_profile, user: u,
-                    public_name:    random_insurance_company_name,
-                    legal_name:     "INSURACARE",
-                    phone_number:   1234567890,
-                    mcc:            8890,
-                    tax_id:         9184944752,
-                    product_description: "Nice stuff",
-                    address: build(:address,
-                        line1: "2941 E Glengarry Rd",
-                        city: "Memphis",
-                        state: "Tennessee",
-                        postal_code: 38128
-                    )
-                ) if u.profile.nil?
-                # raise StandardError.new "Stripe Id is blank" if u.stripe_account.stripe_id.blank?
-                # raise StandardError.new "Financial Account Id is blank" if u.stripe_financial_account_id.blank?
+                u.profile = build(:user_profile_for_insurance_company, user: u) if u.profile.nil?
             end
-            # before(:create) do |u, e|
-            #     raise StandardError.new "Stripe Id is blank" if u.stripe_account.stripe_id.blank?
-            #     raise StandardError.new "Financial Account Id is blank" if u.stripe_financial_account_id.blank?
-            # end
         end
         
         factory :attorney do
             role {"Attorney"}
+            association :organization, factory: :law_firm, num_members: 0
             trait :with_unactivated_organization_due_to_lack_of_bank_account do
                 transient do
                     num_settlements {0}
                 end
                 association :organization, :not_activated_due_to_lack_of_bank_account, factory: :law_firm, num_members: 0
             end
-            association :organization, factory: :law_firm, num_members: 0
             after(:create) do |u, e|
                 puts "🤖🤖🤖 attorney after(:create) block"
                 if u.settlements.empty? && e.num_settlements > 0
@@ -241,33 +207,19 @@ FactoryBot.define do
                 u.organization.save
             end
             after(:build) do |u, e|
-                u.profile = build(:user_profile, user: u,
-                    first_name:                 random_first_name,
-                    last_name:                  random_last_name,
-                    phone_number:               1234567890,
-                    last_4_of_ssn:              1234,
-                    date_of_birth:              25.years.ago,
-                    relationship_to_business:   "Manager",
-                    percent_ownership:          0,
-                    address: build(:address,
-                        line1: "2941 E Glengarry Rd",
-                        city: "Memphis",
-                        state: "Tennessee",
-                        postal_code: 38128
-                    )
-                ) if u.profile.nil?
+                u.profile = build(:user_profile_for_attorney, user: u) if u.profile.nil?
             end
         end
 
         factory :adjuster do
             role {"Adjuster"}
+            association :organization, factory: :insurance_company, num_members: 0
             trait :with_unactivated_organization_due_to_lack_of_bank_account do
                 transient do
                     num_settlements {0}
                 end
                 association :organization, :not_activated_due_to_lack_of_bank_account, factory: :insurance_company, num_members: 0
             end
-            association :organization, factory: :insurance_company, num_members: 0
             after(:create) do |u, e|
                 puts "🤖🤖🤖 adjuster after(:create) block"
                 if u.settlements.empty? && e.num_settlements > 0
@@ -276,21 +228,7 @@ FactoryBot.define do
                 u.organization.save
             end
             after(:build) do |u, e|
-                u.profile = build(:user_profile, user: u,
-                    first_name:                 random_first_name,
-                    last_name:                  random_last_name,
-                    phone_number:               1234567890,
-                    last_4_of_ssn:              1234,
-                    date_of_birth:              25.years.ago,
-                    relationship_to_business:   "Manager",
-                    percent_ownership:          0,
-                    address: build(:address,
-                        line1: "2941 E Glengarry Rd",
-                        city: "Memphis",
-                        state: "Tennessee",
-                        postal_code: 38128
-                    )
-                ) if u.profile.nil?
+                u.profile = build(:user_profile_for_adjuster, user: u) if u.profile.nil?
             end
         end
     end

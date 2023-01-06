@@ -15,6 +15,12 @@
 #
 FactoryBot.define do
     factory :address do
+
+        line1 {"2941 E Glengary Rd"}
+        city {"Memphis"}
+        state {"TN"}
+        postal_code {38128}
+        country {"United States"}
         
     end
 end

@@ -48,8 +48,8 @@ class UserProfileSettings < ApplicationRecord
         inverse_of: :profile
     )
 
-    validates :show_last_4_of_ssn_to_members_only,   inclusion: {in: [false]}
-    validates :show_last_4_of_ssn_to_public,         inclusion: {in: [false]}
+    # validates :show_last_4_of_ssn_to_members_only,   inclusion: {in: [false]}
+    # validates :show_last_4_of_ssn_to_public,         inclusion: {in: [false]}
 
     before_validation do
         puts "❤️❤️❤️ UserProfileSettings before_validation block"

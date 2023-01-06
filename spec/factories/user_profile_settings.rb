@@ -100,6 +100,14 @@ FactoryBot.define do
         show_last_4_of_ssn_to_public {false}
         show_last_4_of_ssn_to_members_only {false}
 
+        factory :user_profile_settings_for_law_firm do
+            association :user_settings, factory: :user_settings_for_law_firm
+        end
+        
+        factory :user_profile_settings_for_insurance_company do
+            association :user_settings, factory: :user_settings_for_insurance_company
+        end
+
         factory :user_profile_settings_for_attorney do
             association :user_settings, factory: :user_settings_for_attorney
         end

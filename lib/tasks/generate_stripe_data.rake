@@ -26,7 +26,7 @@ end
 def generate_law_firms_hash(num_law_firms)
     law_firms_hash = {}
     company_names = Array.new(num_law_firms) do
-        generate_random_law_firm_name
+        random_law_firm_name
     end
 
     company_names.each do |cn|
@@ -203,7 +203,7 @@ end
 def generate_insurance_companies_hash(num_insurance_companies)
     insurance_companies_hash = {}
     company_names = Array.new(num_insurance_companies) do
-        generate_random_insurance_company_name
+        random_insurance_company_name
     end
 
     company_names.each do |cn|
@@ -374,42 +374,6 @@ def generate_insurance_companies(num_insurance_companies)
         }
     end
     return_value
-end
-
-def generate_random_law_firm_name
-    random_number = rand(1..10)
-    case random_number
-    when 1, 2, 3, 4, 5
-        "#{random_last_name} & #{random_last_name}"
-    when 6, 7
-        "#{random_last_name} #{random_last_name} & #{random_last_name}"
-    when 8
-        "#{random_adjective.capitalize} Law"
-    when 9
-        "Law #{random_noun.pluralize.capitalize}"
-    when 10
-        "#{random_last_name} #{random_last_name} & #{indefinite_articleize(word: random_animal_name.singularize.capitalize)}"
-    else
-        raise StandardError.new "Something broke your algorithm. The random number is not between 1 and 10."
-    end
-end
-
-def generate_random_insurance_company_name
-    random_number = rand(1..10)
-    case random_number
-    when 1, 2, 3, 4, 5
-        "#{random_adjective.capitalize} Insurance"
-    when 6, 7
-        "Very #{random_adjective.capitalize} Insurance"
-    when 8
-        "Insurance #{random_noun.pluralize.capitalize}"
-    when 9
-        "Insura#{random_noun.capitalize}"
-    when 10
-        "Insurance for #{random_animal_name.pluralize.capitalize}"
-    else
-        raise StandardError.new "Something broke your algorithm. The random number is not between 1 and 10."
-    end
 end
 
 def write_to_stripe_test_data_file(content)
