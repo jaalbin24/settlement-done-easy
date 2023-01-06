@@ -13,7 +13,7 @@ module SpecGenerator
             if block_given?
                 yield self
                 SystemSpec.create_file({
-                    filename: "#{args[:name]}.rb",
+                    filename: "#{args[:name]}_spec.rb",
                     file_string: self.file_string
                 })
             end

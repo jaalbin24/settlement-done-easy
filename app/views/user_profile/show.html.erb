@@ -1,6 +1,6 @@
 <div class="w-100">
     <div class="w-100 position-absolute" style="z-index: 0;">
-        <div class="w-100" style="height: 17rem; background-image: radial-gradient(farthest-corner at 40px 40px, #212529 0%, #6d7991 100%);"></div>
+        <div class="w-100" style="height: 17rem; background-image: linear-gradient(160deg, rgba(52,89,230,1) 24%, rgba(81,145,223,1) 66%, rgba(192,215,251,1) 100%);"></div>
     </div>
     <div class="container mt-4" data-test-id="user_profile_show_page">
         <div class="card">
@@ -43,37 +43,7 @@
                 <%end%>           
             </div>
             <div class="tab-pane fade" id="settlements" role="tabpanel">
-                <div class="row">
-                    <div class="col">
-                        <div class="card my-3">
-                            <div class="card-body">
-                                <h5 class="m-0">Settlement statistics</h5>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <p class="text-muted m-0">Completed</p>
-                                    <h6 class="m-0">N/A</h6>
-                                </li>
-                                <li class="list-group-item">
-                                    <p class="text-muted m-0">Canceled</p>
-                                    <h6 class="m-0">N/A</h6>
-                                </li>
-                                <li class="list-group-item">
-                                    <p class="text-muted m-0">Average settlement</p>
-                                    <h6 class="m-0">N/A</h6>
-                                </li>
-                                <li class="list-group-item">
-                                    <p class="text-muted m-0">Total settled</p>
-                                    <h6 class="m-0">N/A</h6>
-                                </li>                                
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <h2 class="text-center mt-5">This tab is a work in progress.</h2>
-                    </div>
-                </div>
-
+                <%=render "user_profile/settlement_section"%>
             </div>
         </div>
     </div>

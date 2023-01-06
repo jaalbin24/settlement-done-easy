@@ -1,0 +1,21 @@
+default: &default
+  APP_EMAIL: john.smith29324@gmail.com
+  CUSTOMER_SUPPORT_EMAIL_ADDRESS: support@settlementdoneeasy.com
+  CUSTOMER_SUPPORT_PHONE_NUMBER: (731) 614-7141
+  MINIMUM_PASSWORD_LENGTH: 8
+  STRIPE_SECRET_KEY: <%=ENV['STRIPE_SECRET_KEY']%>
+  STRIPE_ENDPOINT_SECRET: <%=ENV['STRIPE_ENDPOINT_SECRET']%>
+  PAYMENT_MINIMUM_IN_DOLLARS: 1
+  PAYMENT_MAXIMUM_IN_DOLLARS: 100
+
+development:
+  <<: *default
+  URL_ROOT: http://localhost:3000
+
+test:
+  <<: *default
+  URL_ROOT: http://localhost:3000
+
+production:
+  <<: *default
+  URL_ROOT: https://settlementdoneeasy.com
