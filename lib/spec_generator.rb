@@ -127,7 +127,7 @@ module SpecGenerator
 
         def self.create_file(args=nil)
             Dir.chdir "#{Pathname.new(__FILE__).parent.parent}/spec/system/"
-            if File.exist?("AUTO_GENERATED_#{args[:filename]}")
+            if File.exist?("#{args[:filename]}")
                 puts "WARNING: A file spec/system/#{args[:filename]} already exists!"
                 puts "Overwrite? (y/n)"
                 input = STDIN.gets.strip
@@ -137,11 +137,11 @@ module SpecGenerator
                 end
             end
             Dir.chdir "#{Pathname.new(__FILE__).parent.parent}/spec/system/"
-            File.open("AUTO_GENERATED_#{args[:filename]}", "w+") do |file|
+            File.open("#{args[:filename]}", "w+") do |file|
                 file.write SystemSpec.comment_header(generator_file_location: "spec/generators")
                 file.write args[:file_string]
             end
-            puts "Generated file AUTO_GENERATED_#{args[:filename]}"
+            puts "Generated file #{args[:filename]}"
         end
 
         def self.generate_all_specs(args=nil)

@@ -38,14 +38,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -68,7 +69,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -76,7 +78,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -99,7 +101,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -107,7 +110,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -130,7 +133,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -138,7 +142,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -161,7 +165,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -169,7 +174,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -192,7 +197,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -200,7 +206,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -223,7 +229,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -231,7 +238,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -254,14 +261,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -284,7 +292,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -292,7 +301,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -315,7 +324,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -323,7 +333,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -346,7 +356,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -354,7 +365,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -377,7 +388,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -385,7 +397,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -408,7 +420,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -416,7 +429,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -439,7 +452,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -447,7 +461,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -470,14 +484,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -500,7 +515,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -508,7 +524,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -531,7 +547,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -539,7 +556,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -562,7 +579,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -570,7 +588,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -593,7 +611,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -601,7 +620,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -624,7 +643,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -632,7 +652,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -655,7 +675,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -663,7 +684,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -688,14 +709,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -718,7 +740,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -726,7 +749,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -749,7 +772,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -757,7 +781,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -780,7 +804,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -788,7 +813,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -811,7 +836,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -819,7 +845,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -842,7 +868,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -850,7 +877,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -873,7 +900,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -881,7 +909,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -904,14 +932,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -934,7 +963,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -942,7 +972,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -965,7 +995,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -973,7 +1004,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -996,7 +1027,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -1004,7 +1036,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1027,7 +1059,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -1035,7 +1068,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1058,7 +1091,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -1066,7 +1100,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1089,7 +1123,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -1097,7 +1132,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1120,14 +1155,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1150,7 +1186,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -1158,7 +1195,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1181,7 +1218,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -1189,7 +1227,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1212,7 +1250,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -1220,7 +1259,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1243,7 +1282,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -1251,7 +1291,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1274,7 +1314,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -1282,7 +1323,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1305,7 +1346,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -1313,7 +1355,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -1340,14 +1382,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1372,7 +1415,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -1380,7 +1424,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1405,7 +1449,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -1413,7 +1458,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1438,7 +1483,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -1446,7 +1492,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1471,7 +1517,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -1479,7 +1526,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1504,7 +1551,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -1512,7 +1560,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1537,7 +1585,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -1545,7 +1594,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1570,14 +1619,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1602,7 +1652,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -1610,7 +1661,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1635,7 +1686,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -1643,7 +1695,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1668,7 +1720,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -1676,7 +1729,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1701,7 +1754,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -1709,7 +1763,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1734,7 +1788,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -1742,7 +1797,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1767,7 +1822,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -1775,7 +1831,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1800,14 +1856,15 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last name" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to_not have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1832,7 +1889,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -1840,7 +1898,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1865,7 +1923,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -1873,7 +1932,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1898,7 +1957,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -1906,7 +1966,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1931,7 +1991,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.relationship_to_business
                     end
@@ -1939,7 +2000,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1964,7 +2025,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -1972,7 +2034,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -1997,7 +2059,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -2005,7 +2068,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.organization.members.where.not(id: owner.id).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2030,14 +2093,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2060,7 +2124,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -2068,7 +2133,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2091,7 +2156,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -2099,7 +2165,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2122,7 +2188,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -2130,7 +2197,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2153,7 +2220,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -2161,7 +2229,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2184,7 +2252,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -2192,7 +2261,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2215,7 +2284,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -2223,7 +2293,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2246,14 +2316,15 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last name" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to_not have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2276,7 +2347,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -2284,7 +2356,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2307,7 +2379,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -2315,7 +2388,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2338,7 +2411,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -2346,7 +2420,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2369,7 +2443,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.relationship_to_business
                     end
@@ -2377,7 +2452,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2400,7 +2475,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -2408,7 +2484,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2431,7 +2507,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -2439,7 +2516,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2462,14 +2539,15 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last name" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to_not have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2492,7 +2570,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -2500,7 +2579,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2523,7 +2602,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -2531,7 +2611,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2554,7 +2634,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -2562,7 +2643,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2585,7 +2666,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.relationship_to_business
                     end
@@ -2593,7 +2675,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2616,7 +2698,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -2624,7 +2707,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2647,7 +2730,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -2655,7 +2739,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2680,14 +2764,15 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last name" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2710,7 +2795,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -2718,7 +2804,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2741,7 +2827,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -2749,7 +2836,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2772,7 +2859,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -2780,7 +2868,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2803,7 +2891,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.relationship_to_business
                     end
@@ -2811,7 +2900,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2834,7 +2923,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -2842,7 +2932,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2865,7 +2955,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -2873,7 +2964,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2896,14 +2987,15 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last name" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to_not have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2926,7 +3018,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -2934,7 +3027,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2957,7 +3050,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -2965,7 +3059,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -2988,7 +3082,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -2996,7 +3091,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3019,7 +3114,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.relationship_to_business
                     end
@@ -3027,7 +3123,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3050,7 +3146,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -3058,7 +3155,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3081,7 +3178,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -3089,7 +3187,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3112,14 +3210,15 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last name" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='owner_name']")).to_not have_text owner.profile.last_name
                     end
                 end
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3142,7 +3241,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -3150,7 +3250,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3173,7 +3273,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's date of birth" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Date of birth"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.date_of_birth.strftime('%B %-d, %Y')
                     end
@@ -3181,7 +3282,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3204,7 +3305,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -3212,7 +3314,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3235,7 +3337,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's relationship to business" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Relationship to business"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.relationship_to_business
                     end
@@ -3243,7 +3346,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3266,7 +3369,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's percent ownership" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Percent ownership"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "#{owner.profile.percent_ownership}%"
                     end
@@ -3274,7 +3378,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3297,7 +3401,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's last 4 of ssn" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "SSN"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "###-##-#{owner.profile.last_4_of_ssn}"
                     end
@@ -3305,7 +3410,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3332,7 +3437,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -3340,7 +3446,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3363,7 +3469,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -3371,7 +3478,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3394,7 +3501,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -3402,7 +3510,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3425,7 +3533,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -3433,7 +3542,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3456,7 +3565,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -3464,7 +3574,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3487,7 +3597,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -3495,7 +3606,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3518,7 +3629,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -3526,7 +3638,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3549,7 +3661,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -3557,7 +3670,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3580,7 +3693,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -3588,7 +3702,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3611,7 +3725,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -3619,7 +3734,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3642,7 +3757,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -3650,7 +3766,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3673,7 +3789,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -3681,7 +3798,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3704,7 +3821,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -3712,7 +3830,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3735,7 +3853,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -3743,7 +3862,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3766,7 +3885,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -3774,7 +3894,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3797,7 +3917,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -3805,7 +3926,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3828,7 +3949,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -3836,7 +3958,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3859,7 +3981,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -3867,7 +3990,7 @@ RSpec.describe "The user profile show page" do
                 it "must have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to have_link "Edit profile"
                     end
                 end
@@ -3894,7 +4017,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -3902,7 +4026,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3927,7 +4051,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -3935,7 +4060,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3960,7 +4085,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -3968,7 +4094,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -3993,7 +4119,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -4001,7 +4128,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4026,7 +4153,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -4034,7 +4162,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4059,7 +4187,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -4067,7 +4196,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4092,7 +4221,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -4100,7 +4230,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4125,7 +4255,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -4133,7 +4264,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4158,7 +4289,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -4166,7 +4298,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4191,7 +4323,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -4199,7 +4332,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4224,7 +4357,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -4232,7 +4366,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4257,7 +4391,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -4265,7 +4400,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4290,7 +4425,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -4298,7 +4434,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4323,7 +4459,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -4331,7 +4468,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4356,7 +4493,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.legal_name
                     end
@@ -4364,7 +4502,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4389,7 +4527,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.mcc
                     end
@@ -4397,7 +4536,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4422,7 +4561,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.tax_id
                     end
@@ -4430,7 +4570,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4455,7 +4595,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's product description" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.product_description
                     end
@@ -4463,7 +4604,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in owner.members.first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4488,7 +4629,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -4496,7 +4638,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4519,7 +4661,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -4527,7 +4670,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4550,7 +4693,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -4558,7 +4702,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4581,7 +4725,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -4589,7 +4734,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4612,7 +4757,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -4620,7 +4766,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4643,7 +4789,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -4651,7 +4798,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4674,7 +4821,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -4682,7 +4830,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4705,7 +4853,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -4713,7 +4862,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4736,7 +4885,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.legal_name
                     end
@@ -4744,7 +4894,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4767,7 +4917,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.mcc
                     end
@@ -4775,7 +4926,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4798,7 +4949,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.tax_id
                     end
@@ -4806,7 +4958,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4829,7 +4981,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's product description" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.product_description
                     end
@@ -4837,7 +4990,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4860,7 +5013,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -4868,7 +5022,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4891,7 +5045,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -4899,7 +5054,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4922,7 +5077,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.legal_name
                     end
@@ -4930,7 +5086,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4953,7 +5109,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.mcc
                     end
@@ -4961,7 +5118,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -4984,7 +5141,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.tax_id
                     end
@@ -4992,7 +5150,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5015,7 +5173,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's product description" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.product_description
                     end
@@ -5023,7 +5182,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.members.where.not(organization: [owner.organization, owner]).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5048,7 +5207,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -5056,7 +5216,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5079,7 +5239,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.address.to_s
                     end
@@ -5087,7 +5248,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5110,7 +5271,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.legal_name
                     end
@@ -5118,7 +5280,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5141,7 +5303,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.mcc
                     end
@@ -5149,7 +5312,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5172,7 +5335,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.tax_id
                     end
@@ -5180,7 +5344,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5203,7 +5367,8 @@ RSpec.describe "The user profile show page" do
                 it "must have the owner's product description" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to have_text owner.profile.product_description
                     end
@@ -5211,7 +5376,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5234,7 +5399,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -5242,7 +5408,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5265,7 +5431,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -5273,7 +5440,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5296,7 +5463,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.legal_name
                     end
@@ -5304,7 +5472,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5327,7 +5495,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.mcc
                     end
@@ -5335,7 +5504,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5358,7 +5527,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.tax_id
                     end
@@ -5366,7 +5536,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5389,7 +5559,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's product description" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.product_description
                     end
@@ -5397,7 +5568,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5420,7 +5591,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's phone number" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Phone number"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text ActiveSupport::NumberHelper.number_to_phone(owner.profile.phone_number, area_code: true)
                     end
@@ -5428,7 +5600,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5451,7 +5623,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's address" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Address"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.address.to_s
                     end
@@ -5459,7 +5632,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5482,7 +5655,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's legal name" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Legal name"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.legal_name
                     end
@@ -5490,7 +5664,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5513,7 +5687,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's mcc" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "MCC"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.mcc
                     end
@@ -5521,7 +5696,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5544,7 +5719,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's tax id" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Tax ID"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.tax_id
                     end
@@ -5552,7 +5728,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end
@@ -5575,7 +5751,8 @@ RSpec.describe "The user profile show page" do
                 it "must not have the owner's product description" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
+                        click_on 'About'
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text "Product description"
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_text owner.profile.product_description
                     end
@@ -5583,7 +5760,7 @@ RSpec.describe "The user profile show page" do
                 it "must not have a link to the user profile edit page" do
                     @owners.each do |owner|
                         sign_in User.organizations.without(owner.organization, owner).first
-                        visit user_profile_show_path(owner.profile)
+                        visit user_profile_show_path(owner.profile, section: 'about')
                         expect(find("[data-test-id='user_profile_show_page']")).to_not have_link "Edit profile"
                     end
                 end

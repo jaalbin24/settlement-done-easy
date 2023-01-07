@@ -227,7 +227,8 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show") do |s|
                                     s.it "must #{security_groups[group][:allowed_visitors].include?(v) ? "have" : "not have"} the owner's #{a.to_s.gsub("_", " ")}" do
                                         "@owners.each do |owner|
                                             sign_in #{visitors[v][:sign_in]}
-                                            visit user_profile_show_path(owner.profile)#{("
+                                            visit user_profile_show_path(owner.profile, section: 'about')
+                                            click_on 'About'#{("
                                             expect(find(\"[data-test-id='#{tested_attr[a][:expected_location]}']\")).#{security_groups[group][:allowed_visitors].include?(v) ? "to": "to_not"} have_text \"#{tested_attr[a][:expected_label]}\"") if tested_attr[a][:has_label?]}
                                             expect(find(\"[data-test-id='#{tested_attr[a][:expected_location]}']\")).#{security_groups[group][:allowed_visitors].include?(v) ? "to": "to_not"} have_text #{tested_attr[a][:expected_value]}
                                         end"
@@ -235,7 +236,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show") do |s|
                                     s.it "must #{visitors[v][:can_edit_owner_profile] ? "have" : "not have"} a link to the user profile edit page" do
                                         "@owners.each do |owner|
                                             sign_in #{visitors[v][:sign_in]}
-                                            visit user_profile_show_path(owner.profile)
+                                            visit user_profile_show_path(owner.profile, section: 'about')
                                             expect(find(\"[data-test-id='user_profile_show_page']\")).#{visitors[v][:can_edit_owner_profile] ? "to" : "to_not"} have_link \"Edit profile\"
                                         end"
                                     end

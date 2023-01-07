@@ -23,6 +23,7 @@ import MutuallyExclusiveFormElements from 'packs/mutually_exclusive_form_element
 
 import AttributeReview from 'packs/settlement_attribute_review'
 import EnglishLanguage from 'packs/english_language'
+import ClickableTableRows from "packs/clickable_table_rows"
 
 // Instantiate objects to call methods on such as bootstrap.Modal()
 window.bootstrap = require('bootstrap');
@@ -31,14 +32,7 @@ window.settlementAttributeReview = new AttributeReview();
 window.englishLanguage = new EnglishLanguage();
 window.formErrorStyling = new FormErrorStyling();
 window.mefe = new MutuallyExclusiveFormElements();
-
-// For bootstrap popovers
-document.addEventListener("DOMContentLoaded", () => {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });    
-})
+window.clickableTableRows = new ClickableTableRows();
 
 
 

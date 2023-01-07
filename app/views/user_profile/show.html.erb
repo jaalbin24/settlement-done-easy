@@ -1,7 +1,4 @@
-<div class="w-100">
-    <div class="w-100 position-absolute" style="z-index: 0;">
-        <div class="w-100" style="height: 17rem; background-image: linear-gradient(160deg, rgba(52,89,230,1) 24%, rgba(81,145,223,1) 66%, rgba(192,215,251,1) 100%);"></div>
-    </div>
+<div class="w-100 bg-bluegrey">
     <div class="container mt-4" data-test-id="user_profile_show_page">
         <div class="card">
             <div class="card-body bg-light">
@@ -25,24 +22,24 @@
                     <%end%>
                 </div>
             </div>        
-            <ul class="nav nav-tabs" role="tablist">
+            <ul class="nav nav-tabs border-bottom-0" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#about" aria-selected="true" role="tab">About</a>
+                    <a class="nav-link <%=@section == 'about' ? "active" : ""%>" data-bs-toggle="tab" href="#about" aria-selected="true" role="tab">About</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#settlements" aria-selected="false" role="tab">Settlements</a>
+                    <a class="nav-link <%=@section == 'settlements' ? "active" : ""%>" data-bs-toggle="tab" href="#settlements" aria-selected="false" role="tab">Settlements</a>
                 </li>
             </ul>
         </div>
         <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade active show" id="about" role="tabpanel">
+            <div class="tab-pane fade <%=@section == 'about' ? "active show" : ""%>" id="about" role="tabpanel">
                 <%if @user.isMember?%>
                     <%=render "user_profile/about_section_for_members"%>
                 <%else%>
                     <%=render "user_profile/about_section_for_organizations"%>
                 <%end%>           
             </div>
-            <div class="tab-pane fade" id="settlements" role="tabpanel">
+            <div class="tab-pane fade <%=@section == 'settlements' ? "active show" : ""%>" id="settlements" role="tabpanel">
                 <%=render "user_profile/settlement_section"%>
             </div>
         </div>

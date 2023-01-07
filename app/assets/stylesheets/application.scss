@@ -62,8 +62,11 @@
     min-height: 85vh;
 }
 
-
 // For custom colors
 .bg-bluegrey {
     background-color: #C0D7FB;
+}
+
+tr.clickable:hover {
+    cursor: pointer;
 }

@@ -1,52 +1,70 @@
 <div class="row">
     <div class="col-auto">
         <div class="card my-3">
-            <div class="card-body">
-                <h5 class="m-0">Next Steps</h5>
+            <h5 class="m-0 card-header">What's Next?</h5>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                    <h6 class="m-0 me-auto">A settlement needs a document</h6>
+                    <%=chevron_icon(color: :grey)%>
+                </a>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                    <h6 class="m-0 me-auto">A settlement is ready for payment</h6>
+                    <%=chevron_icon(color: :grey)%>
+                </a>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                    <h6 class="m-0 me-auto">A document needs your approval</h6>
+                    <%=chevron_icon(color: :grey)%>
+                </a>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                    <h6 class="m-0 me-auto">A settlement needs your approval</h6>
+                    <%=chevron_icon(color: :grey)%>
+                </a>                            
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <h6 class="m-0">Send </h6>
-                    <h6 class="m-0">N/A</h6>
-                </li>
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Canceled</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Average settlement</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Total settled</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>                                
-            </ul>
         </div>
     </div>
     <div class="col">
         <div class="card my-3">
-            <div class="card-body">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="m-0">Active Settlements</h5>
+                <div>
+                    <a class="btn btn-secondary">Show all</a>
+                </div>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Completed</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Canceled</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Average settlement</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>
-                <li class="list-group-item">
-                    <p class="text-muted m-0">Total settled</p>
-                    <h6 class="m-0">N/A</h6>
-                </li>                                
-            </ul>
+            <table class="table table-hover table-sm m-0">
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th><%=member_role_name(@user, invert: true).capitalize%></th>
+                        <th>Claimant</th>
+                        <th>Amount</th>
+                        <th>Time elapsed</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%current_user.settlements.each do |s|%>
+                        <tr class="clickable" href="<%=settlement_show_path(s)%>">
+                            <td><strong><%="%04d" % s.public_number%><strong></td>
+                            <%if member_role_name(@user) == "attorney"%>
+                                <td><%=link_to s.adjuster.name, user_profile_show_path(s.adjuster.profile), class: "link-dark"%></td>
+                            <%elsif member_role_name(@user) == "adjuster"%>
+                                <td><%=link_to s.attorney.name, user_profile_show_path(s.attorney.profile), class: "link-dark"%></td>
+                            <%end%>
+                            <td><%=s.claimant_name%></td>
+                            <td>$<%=s.amount%></td>
+                            <td><%=distance_of_time_in_words(DateTime.now, s.created_at)%></td>
+                            <td><%=chevron_icon()%></td>
+                        </tr>
+                    <%end%>
+                </tbody>
+            </table>
+            <div class="card-footer">
+                <%=link_to "New settlement", settlement_new_path(continue_path: request.path), class: "btn btn-primary"%>
+            </div>
         </div>
     </div>
 </div>

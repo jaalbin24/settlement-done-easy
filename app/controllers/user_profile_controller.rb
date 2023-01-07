@@ -33,6 +33,13 @@ class UserProfileController < ApplicationController
     def show
         @user_profile = UserProfile.find_by(public_id: params[:public_id])
         @user = @user_profile.user
+
+        if params[:section].blank?
+            @section = "about"
+            @section = "settlements" if @user == current_user
+        else
+            @section = params[:section]
+        end
         render :show
     end
 
