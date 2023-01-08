@@ -21,7 +21,7 @@ class UserProfileController < ApplicationController
 
     def edit
         @user_profile = UserProfile.find_by(public_id: params[:public_id])
-        @user = @user_profile.user
+        @owner = @user_profile.user
         if params[:continue_path].blank?
             @continue_path = user_profile_show_path(@user_profile)
         else
@@ -32,11 +32,11 @@ class UserProfileController < ApplicationController
 
     def show
         @user_profile = UserProfile.find_by(public_id: params[:public_id])
-        @user = @user_profile.user
+        @owner = @user_profile.user
 
         if params[:section].blank?
             @section = "about"
-            @section = "settlements" if @user == current_user
+            @section = "settlements" if @owner == current_user
         else
             @section = params[:section]
         end

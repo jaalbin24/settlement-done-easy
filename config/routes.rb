@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   delete 'documents/:id',                       to: 'documents#destroy',                  as: 'document_delete'
   
 
+  post 'settlements/search',                          to: 'search_settlements#search',          as: 'settlement_search'
   get 'settlements/new',                              to: 'settlements#new',                    as: 'settlement_new'
   get 'settlements/completed',                        to: 'settlements#completed_index',        as: 'settlement_completed_index'
   get 'settlements/need_index/:stage/:status',        to: 'settlements#need_index',             as: 'settlement_need_index'

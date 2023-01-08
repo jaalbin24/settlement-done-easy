@@ -4,6 +4,7 @@
 #
 #  id                 :bigint           not null, primary key
 #  amount             :float
+#  canceled           :boolean          default(FALSE), not null
 #  claim_number       :string
 #  claimant_name      :string
 #  completed          :boolean          default(FALSE), not null

@@ -24,6 +24,7 @@ import MutuallyExclusiveFormElements from 'packs/mutually_exclusive_form_element
 import AttributeReview from 'packs/settlement_attribute_review'
 import EnglishLanguage from 'packs/english_language'
 import ClickableTableRows from "packs/clickable_table_rows"
+import Searcher from "packs/searcher"
 
 // Instantiate objects to call methods on such as bootstrap.Modal()
 window.bootstrap = require('bootstrap');
@@ -33,6 +34,7 @@ window.englishLanguage = new EnglishLanguage();
 window.formErrorStyling = new FormErrorStyling();
 window.mefe = new MutuallyExclusiveFormElements();
 window.clickableTableRows = new ClickableTableRows();
+window.searcher = new Searcher();
 
 
 

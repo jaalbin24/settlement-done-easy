@@ -8,7 +8,7 @@ top_100_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"
 insurance_companies = ["State Farm", "Geico", "Progressive", "Allstate", "Liberty Mutual", "USAA", "Nationwide"]
 law_firms = ["GKBM", "Morgan & Morgan", "Adams & Reece", "Bass Berry & Sims", "GoodLaw", "Smith & Doe", "Hearsay Law Firm"]
 # For generating random organizations to which each user belongs
-MEMBERS_PER_ORGANIZATION = 1
+MEMBERS_PER_ORGANIZATION = 2
 SETTLEMENTS_PER_ATTORNEY = 7
 DOCUMENTS_PER_SETTLEMENT = 1
 # Adjust NUM_USERS_OF_EACH_ROLE to increase/decrease the number of records created when calling the 'rails db:seed' command

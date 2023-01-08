@@ -24,7 +24,7 @@ class UserSettingsController < ApplicationController
 
     def profile
         @user_profile = current_user.profile
-        @user = current_user
+        @owner = current_user
         @user_profile_settings = current_user.settings.profile
         @continue_path = params[:continue_path]
         render :profile

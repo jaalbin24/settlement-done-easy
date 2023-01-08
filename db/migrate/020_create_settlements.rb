@@ -14,11 +14,12 @@ class CreateSettlements < ActiveRecord::Migration[6.1]
 
       t.boolean     :locked,                    null: false, default: false
       t.boolean     :completed,                 null: false, default: false
+      t.boolean     :canceled,                  null: false, default: false
       t.boolean     :ready_for_payment,         null: false, default: false
 
       t.references  :started_by,                foreign_key: {to_table: :users}
       t.references  :attorney,                  foreign_key: {to_table: :users}
-      t.references  :adjuster,           foreign_key: {to_table: :users}
+      t.references  :adjuster,                  foreign_key: {to_table: :users}
 
       t.references  :log_book,                  foreign_key: {to_table: :log_books}
 

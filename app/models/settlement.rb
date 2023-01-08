@@ -4,6 +4,7 @@
 #
 #  id                 :bigint           not null, primary key
 #  amount             :float
+#  canceled           :boolean          default(FALSE), not null
 #  claim_number       :string
 #  claimant_name      :string
 #  completed          :boolean          default(FALSE), not null
@@ -39,7 +40,13 @@
 class Settlement < ApplicationRecord
     include DocumentGenerator
 
+    scope :with_attorney_public_id,     -> (i)  {joins(:attorney).where(attorney: {public_id: i}).distinct}
+    scope :with_adjuster_public_id,     -> (i)  {joins(:adjuster).where(adjuster: {public_id: i}).distinct}
+    scope :completed,                   -> (i)  {where(completed: true)}
+    scope :canceled,                    -> (i)  {where(canceled: true)}
+    scope :active,                      -> (i)  {where(completed: false).and(where(canceled: false))}
     scope :ready_for_payment,           ->      {where(ready_for_payment: true)}
+    scope :belonging_to,                -> (i)  {joins(attorney: :organization).joins(adjuster: :organization).where(attorney: i).or(where(adjuster: i)).or(where(attorney: {organization: i})).or(where(adjuster: {organization: i})).distinct}
 
     validates :amount, presence: true
     validates :locked, inclusion: {in: [true], message: "must be true when the settlement is completed.", if: :completed?}
@@ -438,5 +445,35 @@ class Settlement < ApplicationRecord
             completed?
             self.locked = true
         end
+    end
+
+    # Accepts the following params from SearchSettlementController
+    # :canceled
+    # :active,
+    # :completed,
+    # :attorney_public_id,
+    # :adjuster_public_id,
+    # :amount_min,
+    # :amount_max,
+    # :public_number,
+    # :time_period
+
+    def self.search(requesting_user, params)
+        result = Settlement.joins(attorney: :organization).joins(adjuster: :organization)
+        result = result.or(Settlement.active)                                                   unless params[:active].nil?     || params[:active]
+        result = result.or(Settlement.completed)                                                unless params[:completed].nil?  || params[:completed]
+        result = result.or(Settlement.canceled)                                                 unless params[:canceled].nil?   || params[:canceled]
+        result = result.and(Settlement.where(amount: params[:amount_min]..))                    unless params[:amount_min].nil?
+        result = result.and(Settlement.where(amount: ..params[:amount_max]))                    unless params[:amount_max].nil?
+        result = result.and(Settlement.where(public_number: params[:public_number]))            unless params[:public_number].nil?
+
+        result = result.and(Settlement.from_past(params[:time_period]))                         unless params[:time_period].nil?
+
+        result = result.where(attorney: {public_id: params[:attorney_public_id]}).distinct  unless params[:attorney_public_id].nil?
+        result = result.where(adjuster: {public_id: params[:adjuster_public_id]}).distinct  unless params[:adjuster_public_id].nil?
+
+
+        result = result.belonging_to(requesting_user)
+        result
     end
 end

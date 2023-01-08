@@ -11,11 +11,11 @@
                             <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
                         </div>
                         <div class="me-auto">
-                            <h2 class="m-0"><%=@user.name%></h2>
-                            <%if @user.isOrganization?%>
-                                <p class="m-0">Member since <%=@user.created_at.strftime("%B %-d, %Y")%>
+                            <h2 class="m-0"><%=@owner.name%></h2>
+                            <%if @owner.isOrganization?%>
+                                <p class="m-0">Member since <%=@owner.created_at.strftime("%B %-d, %Y")%>
                             <%else%>
-                                <p class="m-0"><%=@user.organization.name%></p>
+                                <p class="m-0"><%=@owner.organization.name%></p>
                             <%end%>
                         </div>
                         <%unless @continue_path.blank?%>

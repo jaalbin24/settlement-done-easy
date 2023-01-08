@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.integer "public_number"
     t.boolean "locked", default: false, null: false
     t.boolean "completed", default: false, null: false
+    t.boolean "canceled", default: false, null: false
     t.boolean "ready_for_payment", default: false, null: false
     t.bigint "started_by_id"
     t.bigint "attorney_id"
