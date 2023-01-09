@@ -1,7 +1,7 @@
 <div class="w-100 bg-bluegrey">
     <div class="container mt-4" data-test-id="user_profile_show_page">
         <div class="card">
-            <div class="card-body bg-light">
+            <div class="card-header border-bottom-0">
                 <div class="d-flex align-items-center gap-3">
                     <div class="my-1">
                         <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
@@ -21,7 +21,7 @@
                         </a>
                     <%end%>
                 </div>
-            </div>        
+            </div>
             <ul class="nav nav-tabs border-bottom-0" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link <%=@section == 'about' ? "active" : ""%>" data-bs-toggle="tab" href="#about" aria-selected="true" role="tab">About</a>

@@ -37,9 +37,39 @@
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (started_by_id => users.id)
 #
+
+
+
+# if documents.first.nil? # If settlement has no documents
+#     self.ready_for_payment = false
+# elsif documents.rejected.exists? # If settlement has rejected documents
+#     self.ready_for_payment = false
+# elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
+#     self.ready_for_payment = false
+# elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
+#     self.ready_for_payment = false
+# elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
+#     self.ready_for_payment = false
+# elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
+#     self.ready_for_payment = false
+# elsif has_processing_payment?
+#     self.ready_for_payment = false
+# elsif has_completed_payment?
+#     self.ready_for_payment = false
+# elsif !attorney.organization.activated?
+#     self.ready_for_payment = false
+# elsif !adjuster.organization.activated?
+#     self.ready_for_payment = false
+# else
+#     self.ready_for_payment = true
+# end
+#
 class Settlement < ApplicationRecord
     include DocumentGenerator
 
+    scope :ready_for_payment,           ->      {where(ready_for_payment: true)}
+    scope :needs_document,              ->      {left_joins(:documents).where(documents: {id: nil})}
+    scope :needs_signature,             ->      {joins(:documents).where(document: {signed: false, needs_signature: true})}
     scope :with_attorney_public_id,     -> (i)  {joins(:attorney).where(attorney: {public_id: i}).distinct}
     scope :with_adjuster_public_id,     -> (i)  {joins(:adjuster).where(adjuster: {public_id: i}).distinct}
     scope :completed,                   -> (i)  {where(completed: true)}
@@ -451,6 +481,10 @@ class Settlement < ApplicationRecord
     # :canceled
     # :active,
     # :completed,
+    # :needs_document,
+    # :ready_for_payment,
+    # :needs_signature,
+    # :needs_approval_from,
     # :attorney_public_id,
     # :adjuster_public_id,
     # :amount_min,
@@ -460,17 +494,23 @@ class Settlement < ApplicationRecord
 
     def self.search(requesting_user, params)
         result = Settlement.joins(attorney: :organization).joins(adjuster: :organization)
-        result = result.or(Settlement.active)                                                   unless params[:active].nil?     || params[:active]
-        result = result.or(Settlement.completed)                                                unless params[:completed].nil?  || params[:completed]
-        result = result.or(Settlement.canceled)                                                 unless params[:canceled].nil?   || params[:canceled]
-        result = result.and(Settlement.where(amount: params[:amount_min]..))                    unless params[:amount_min].nil?
-        result = result.and(Settlement.where(amount: ..params[:amount_max]))                    unless params[:amount_max].nil?
-        result = result.and(Settlement.where(public_number: params[:public_number]))            unless params[:public_number].nil?
+        result = result.or(Settlement.active)                                               if params[:active]
+        result = result.or(Settlement.completed)                                            if params[:completed]
+        result = result.or(Settlement.canceled)                                             if params[:canceled]
+        
+        result = result.needs_document                                                      if params[:needs_document]
+        result = result.ready_for_payment                                                   if params[:ready_for_payment]
+        result = result.needs_signature                                                     if params[:needs_signature]
 
-        result = result.and(Settlement.from_past(params[:time_period]))                         unless params[:time_period].nil?
+        
+        result = result.where(amount: params[:amount_min]..)                                if params[:amount_min]
+        result = result.where(amount: ..params[:amount_max])                                if params[:amount_max]
+        result = result.where(public_number: params[:public_number])                        if params[:public_number]
 
-        result = result.where(attorney: {public_id: params[:attorney_public_id]}).distinct  unless params[:attorney_public_id].nil?
-        result = result.where(adjuster: {public_id: params[:adjuster_public_id]}).distinct  unless params[:adjuster_public_id].nil?
+        result = result.from_past(params[:time_period])                                     if params[:time_period]
+
+        result = result.where(attorney: {public_id: params[:attorney_public_id]}).distinct  if params[:attorney_public_id]
+        result = result.where(adjuster: {public_id: params[:adjuster_public_id]}).distinct  if params[:adjuster_public_id]
 
 
         result = result.belonging_to(requesting_user)

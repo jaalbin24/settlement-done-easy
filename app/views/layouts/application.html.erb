@@ -28,9 +28,6 @@
               </li>
               <%if !current_user.isOrganization?%>
                 <li class="nav-item">
-                  <%= link_to "Settlements", settlement_completed_index_path, class: 'nav-link'%>
-                </li>
-                <li class="nav-item">
                   <%= link_to current_user.organization.name, nil, class: 'nav-link'%>
                 </li>
               <%else%>
@@ -39,9 +36,6 @@
                     <%= link_to "Set up Stripe", stripe_onboard_account_link_path, class: 'nav-link'%>
                   </li>
                 <%end%>
-                <li class="nav-item">
-                  <%= link_to "Settlements", organization_settlements_index_path, class: 'nav-link'%>
-                </li>
                 <li class="nav-item">
                   <%= link_to "Members", organization_members_index_path, class: 'nav-link'%>
                 </li>

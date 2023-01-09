@@ -4,40 +4,49 @@
             <h5 class="m-0 card-header">What's Next?</h5>
             <div class="list-group list-group-flush">
                 <%=form_with url: settlement_search_path, method: :post, html: {type: :search} do |f|%>
-                    <%=f.hidden_field :attorney_public_id, value: current_user.public_id%>
-                    <%=f.submit "Search"%>
+                    <%=f.hidden_field :needs_document, value: true%>
+                    <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                        <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                        <h6 class="m-0 me-auto">A settlement needs a document</h6>
+                        <%=chevron_icon(color: :grey)%>
+                    </button>
                 <%end%>
-
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
-                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
-                    <h6 class="m-0 me-auto">A settlement needs a document</h6>
-                    <%=chevron_icon(color: :grey)%>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
-                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
-                    <h6 class="m-0 me-auto">A settlement is ready for payment</h6>
-                    <%=chevron_icon(color: :grey)%>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="<%=%>">
-                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
-                    <h6 class="m-0 me-auto">A document needs your approval</h6>
-                    <%=chevron_icon(color: :grey)%>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
-                    <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
-                    <h6 class="m-0 me-auto">A settlement needs your approval</h6>
-                    <%=chevron_icon(color: :grey)%>
-                </a>                            
+                <%=form_with url: settlement_search_path, method: :post, html: {type: :search} do |f|%>
+                    <%=f.hidden_field :ready_for_payment, value: true%>
+                    <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                        <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                        <h6 class="m-0 me-auto">A settlement is ready for payment</h6>
+                        <%=chevron_icon(color: :grey)%>
+                    </button>
+                <%end%>
+                <%=form_with url: settlement_search_path, method: :post, html: {type: :search} do |f|%>
+                    <%=f.hidden_field :needs_approval_from, value: current_user.public_id%>
+                    <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                        <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                        <h6 class="m-0 me-auto">A document needs your approval</h6>
+                        <%=chevron_icon(color: :grey)%>
+                    </button>
+                <%end%>
+                <%=form_with url: settlement_search_path, method: :post, html: {type: :search} do |f|%>
+                    <%=f.hidden_field :needs_signature, value: true%>
+                    <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-2 link-dark px-3" href="#">
+                        <i class="fa-solid fa-circle-exclamation text-warning h5 m-0"></i>
+                        <h6 class="m-0 me-auto">A document needs a signature</h6>
+                        <%=chevron_icon(color: :grey)%>
+                    </button>
+                <%end%>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card my-3">
             <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-2">
                 <h5 class="m-0">Active Settlements</h5>
-                <div>
-                    <a class="btn btn-secondary btn-sm">Show all</a>
-                </div>
+            </div>
+            <div>
+                <a class="btn btn-secondary btn-sm">Show all</a>
+            </div>
             </div>
             <table class="table table-hover table-sm shadow-none m-0">
                 <thead>
@@ -50,10 +59,10 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="user_profile_settlements_table_body">
                     <%current_user.settlements.each_with_index do |s, i|%>
                         <tr class="clickable" href="<%=settlement_show_path(s)%>">
-                            <td class="border-bottom-0"><strong><%="%04d" % s.public_number%><strong></td>
+                            <td class="border-bottom-0"><strong><%="%04d" % s.public_number%></strong></td>
                             <%if member_role_name(@owner) == "attorney"%>
                                 <td class="border-bottom-0"><%=link_to s.adjuster.name, user_profile_show_path(s.adjuster.profile), class: "link-dark"%></td>
                             <%elsif member_role_name(@owner) == "adjuster"%>
