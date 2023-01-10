@@ -6,102 +6,167 @@ require 'english_language'
 include EnglishLanguage
 include SpecGenerator
 
+policy = {
+    # When the profile owner is an attorney
+    attorney: {
+        # then these visitors
+        visitors: {
+            # should see these specific settlements
+            can_see_settlements_involving_owner: [
+                :the_owner,
+                :the_owners_organization,
+                :a_member_of_the_owners_organization,
+            ],
+            can_see_settlements_involving_owner_and_visitor: [
+                :an_adjuster_from_another_insurance_company,
+            ],
+            can_see_settlements_involving_owner_and_members_of_visitor: [
+                :another_insurance_company,
+            ],
+            can_see_no_settlements: [
+                :an_attorney_from_another_law_firm,
+                :another_law_firm,
+            ],
+            can_see_new_settlement_button: [
+                :the_owner,
+                :an_adjuster_from_another_insurance_company,
+            ],
+        },
+    },
+    adjuster: {
+        these_visitors: {
+            can_see_settlements_involving_owner: [
+                :the_owner,
+                :the_owners_organization,
+                :a_member_of_the_owners_organization,
+            ],
+            can_see_settlements_involving_owner_and_visitor: [
+                :an_attorney_from_another_law_firm,
+            ],
+            can_see_settlements_involving_owner_and_members_of_visitor: [
+                :another_law_firm,
+            ],
+            can_see_no_settlements: [
+                :an_adjuster_from_another_insurance_company,
+                :another_insurance_company,
+            ],
+            can_see_new_settlement_button: [
+                :the_owner,
+                :an_attorney_from_another_law_firm,
+            ],
+        },
+    },
+    law_firm: {
+        these_visitors: {
+            can_see_settlements_involving_members_of_owner: {
+                :the_owner,
+                :one_of_the_owners_members,
+            },
+            can_see_settlements_involving_members_of_owner_and_members_of_visitor: [
+                :another_insurance_company,
+            ],
+            can_see_settlements_involving_members_of_owner_and_visitor: [
+                :an_adjuster_from_another_insurance_company,
+            ],
+            can_see_no_settlements: [
+                :another_law_firm,
+                :an_attorney_from_another_law_firm,
+            ],
+        },
+    },
+    insurance_company: {
+        these_visitors: {
+            can_see_settlements_involving_members_of_owner: {
+                :the_owner,
+                :one_of_the_owners_members,
+            },
+            can_see_settlements_involving_members_of_owner_and_members_of_visitor: [
+                :another_law_firm,
+            ],
+            can_see_settlements_involving_members_of_owner_and_visitor: [
+                :an_attorney_from_another_law_firm,
+            ],
+            can_see_no_settlements: [
+                :another_insurance_company,
+                :an_adjuster_from_another_insurance_company,
+            ],
+        },
+    },
+}
+
 visitors = {
     the_owner: {
-        test_on_members?: true,
-        test_on_organizations?: true,
-        can_have_settlement_with_attorney?: false,
-        can_have_settlement_with_adjuster?: false,
         creation_code: "@owner",
         settlement_start_button: {
             label: "New settlement",
-            expected_to_be_present?: true
-        }
+        },
     },
     the_owners_organization: { # Only applicable when the owner is a member-type user
-        test_on_members?: true,
-        test_on_organizations?: false,
-        can_have_settlement_with_attorney?: false,
-        can_have_settlement_with_adjuster?: false,
         creation_code: "@owner.organization",
-        settlement_start_button: {
-            label: nil,
-            expected_to_be_present?: false
-        }
     },
     one_of_the_owners_members: { # Only applicable when the owner is an organization-type user
-        test_on_members?: false,
-        test_on_organizations?: true,
-        can_have_settlement_with_attorney?: false,
-        can_have_settlement_with_adjuster?: false,
         creation_code: "@owner.members.first",
-        settlement_start_button: {
-            label: nil,
-            expected_to_be_present?: false
-        }
     },
     a_member_of_the_owners_organization: { # Only applicable when the owner is a member-type user
-        test_on_members?: true,
-        test_on_organizations?: false,
-        can_have_settlement_with_attorney?: false,
-        can_have_settlement_with_adjuster?: false,
         creation_code: "@owner.organization.members.where.not(id: owner.id).first",
-        settlement_start_button: {
-            label: nil,
-            expected_to_be_present?: false
-        }
     },
     an_attorney_from_another_law_firm: {
-        test_on_members?: true,
-        test_on_organizations?: true,
-        can_have_settlement_with_attorney?: false,
-        can_have_settlement_with_adjuster?: true,
         creation_code: "User.attorneys.where.not(organization: [owner.organization, owner]).first",
         settlement_start_button: {
             label: '"Start a settlement with #{@owner.name}"',
-            expected_to_be_present?: true
-        }
+        },
     },
     an_adjuster_from_another_insurance_company: {
-        test_on_members?: true,
-        test_on_organizations?: true,
-        can_have_settlement_with_attorney?: true,
-        can_have_settlement_with_adjuster?: false,
         creation_code: "User.adjusters.where.not(organization: [owner.organization, owner]).first",
         settlement_start_button: {
             label: '"Start a settlement with #{@owner.name}"',
-            expected_to_be_present?: true
-        }
+        },
     },
-    another_organization: {
-        test_on_members?: true,
-        test_on_organizations?: true,
-        can_have_settlement_with_attorney?: false,
-        can_have_settlement_with_adjuster?: false,
-        creation_code: "User.organizations.without(owner.organization, owner).first",
-        settlement_start_button: {
-            label: nil,
-            expected_to_be_present?: false
-        }
+    another_law_firm: {
+        creation_code: "User.law_firms.without(owner.organization, owner).first",
+    },
+    another_insurance_company: {
+        creation_code: "User.insurance_companies.without(owner.organization, owner).first",
     }
 }
 
 owners = {
-    attorney: {
-        type: :member,
-        settlement_creation_code: "",
+    members: {
+        can_have_settlements?: true
+        attorney: {
+            testable?: true,
+            settles_with: [
+                :an_adjuster_from_another_insurance_company
+            ],
+        },
+        adjuster: {
+            testable?: true
+            settles_with: [
+                :an_attorney_from_another_law_firm
+            ],
+        },
+        possible_visitors: [
+            :the_owner,
+            :the_owners_organization,
+            :a_member_of_the_owners_organization,
+            :an_attorney_from_another_law_firm,
+            :an_adjuster_from_another_insurance_company,
+            :another_law_firm,
+            :another_insurance_company,
+        ]
     },
-    adjuster: {
-        type: :member,
-        settlement_creation_code: "",
-    },
-    law_firm: {
-        type: :organization,
-        settlement_creation_code: "",
-    },
-    insurance_company: {
-        type: :organization,
-        settlement_creation_code: "",
+    organizations: {
+        can_have_settlements_through_members?: true
+        law_firm: {testable?: true},
+        insurance_company:  {testable?: true},
+        possible_visitors: [
+            :the_owner,
+            :one_of_the_owners_members,
+            :an_attorney_from_another_law_firm,
+            :an_adjuster_from_another_insurance_company,
+            :another_law_firm,
+            :another_insurance_company,
+        ]
     },
 }
 
@@ -152,40 +217,121 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_about_section") do |s|
         s.after :context do
             "User.all.each {|u| u.destroy}"
         end
-        owners.keys.each do |owner|
-            s.context "when the owner is #{indefinite_articleize(word: owner.to_s)}" do
-                [0, 1, 5].each do |num_settlements| do
-                    s.context "with #{num_settlements} active settlements" do
-                        s.before :each do
-                            if owner[:type] == :organization
-                                "@owner = create(:#{owner})
-                                @owner.members.first.settlements = create_list(:settlement, #{num_settlements}, attorney: , adjuster: User.adjusters.first)"
-                            else 
+        owners.each do |type, type_hash|
+            type_hash.each do |owner_name, owner|
+                next unless owner[:testable?]
+                s.context "when the owner is #{indefinite_articleize(word: owner_name.to_s)}" do
+                    [0, 1, 5].each do |num_settlements| do
+                        if owner[:can_have_settlements?]
+                            s.context "with #{num_settlements} #{'settlement'.pluralize(num_settlements)}" do
+                                visitors.keys.each do |v|
+                                    next unless type_hash[:possible_visitors].include?(v)
+                                    s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
+                                        if owner[:settles_with].include?(v)
+                                            [0, 1, 5].each do |i|
+                                                s.context "with #{i} more settlements together" do
+                                                    if policy[owner_name][:visitors][:can_see_settlements_involving_owner][v]
 
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end                              
+                                end
+                            end
+                        elsif owner[:can_have_settlements_through_members?]
+                            s.context "with #{num_members} #{'member'.pluralize(num_members)}" do
+                                s.context "and #{num_settlements} #{'settlement'.pluralize(num_members)} for each member" do
+                                    visitors.keys.each do |v|
+                                        next unless type_hash[:possible_visitors].include?(v)
+                                        s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
+
+                                        end                              
+                                    end
+                                end  
                             end
                         end
-                        visitors.keys.each do |v|
-                            next unless visitors[v]["test_on_#{owner[:type]}s?"]
-                            s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
-                                s.before :each do
-                                    "@owner = create(:#{owner})
-                                    @visitor = #{visitors[v][:creation_code]}"
-                                end
-                                if visitor[v][:settlement_start_button][:expected_to_be_present?]
-                                    s.it "must have a button labeled #{visitor[v][:settlement_start_button][:label]}" do
 
+
+
+
+
+
+
+
+
+
+
+                    [0, 1, 5].each do |num_settlements| do
+                    if owner[:type] == :organization
+                        [0, 1, 3].each
+                        s.context "with #{num_members} #{'member'.pluralize(num_members)}" do
+                            s.context "and #{num_settlements} #{'settlement'.pluralize(num_members)} for each member" do
+                                visitors.keys.each do |v|
+                                    next unless visitors[v]["test_on_#{owner[:type]}s?"]
+                                    s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
+                                        s.before :each do
+                                            "@owner = create(:#{owner})
+                                            @visitor = #{visitors[v][:creation_code]}"
+                                        end
+                                        if policy[owner][]
+                                            s.it "must have a button labeled #{visitor[v][:settlement_start_button][:label]}" do
+                                                
+                                            end
+                                        end
+                                        if visitors[v]["can_have_settlement_with_#{owner[:type]}?"]
+                                            0..num_settlements.each do |i|
+                                                s.context "that has #{i} other settlements with the owner" do
+                                                    s.before :each do
+                                                        "#{i}.times do |i|
+                                                            create(:settlement, #{owner}: @owner, #{owner==:attorney ? 'adjuster' : 'attorney'}: @visitor)
+                                                        end"
+                                                    end
+                                                    s.it "must have #{i} settlements in the active settlement index" do
+        
+                                                    end
+                                                end
+                                            end
+                                        end
                                     end
                                 end
-                                if visitors[v]["can_have_settlement_with_#{owner[:type]}?"]
-                                    0..num_settlements.each do |i|
-                                        s.context "that has #{i} other settlements with the owner" do
-                                            s.before :each do
-                                                "#{i}.times do |i|
-                                                    create(:settlement, #{owner}: @owner, #{owner==:attorney ? 'adjuster' : 'attorney'}: @visitor)
-                                                end"
-                                            end
-                                            s.it "must have #{i} settlements in the active settlement index" do
+                            end
+                        end
+                    else
 
+
+                        end
+                        s.context "with #{num_settlements} active settlements" do
+                            s.before :each do
+                                "@owner = create(:#{owner})
+                                @owner.members.first.settlements = create_list(:settlement, #{num_settlements}, attorney: , adjuster: User.adjusters.first)"
+                            end
+                            visitors.keys.each do |v|
+                                next unless visitors[v]["test_on_#{owner[:type]}s?"]
+                                s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
+                                    s.before :each do
+                                        "@owner = create(:#{owner})
+                                        @visitor = #{visitors[v][:creation_code]}"
+                                    end
+                                    s.it "must have " do
+
+                                    end
+                                    if visitor[v][:settlement_start_button][:expected_to_be_present?]
+                                        s.it "must have a button labeled #{visitor[v][:settlement_start_button][:label]}" do
+
+                                        end
+                                    end
+                                    if visitors[v]["can_have_settlement_with_#{owner[:type]}?"]
+                                        0..num_settlements.each do |i|
+                                            s.context "that has #{i} other settlements with the owner" do
+                                                s.before :each do
+                                                    "#{i}.times do |i|
+                                                        create(:settlement, #{owner}: @owner, #{owner==:attorney ? 'adjuster' : 'attorney'}: @visitor)
+                                                    end"
+                                                end
+                                                s.it "must have #{i} settlements in the active settlement index" do
+
+                                                end
                                             end
                                         end
                                     end
@@ -193,48 +339,48 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_about_section") do |s|
                             end
                         end
                     end
-                end
 
 
 
 
 
-                visitors.keys.each do |v|
-                    next unless visitors[v]["test_on_#{owner[:type]}s?".to_sym]
-                    s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
-                        s.context "in the active settlements card" do
-                            if visitors[v]["can_have_settlement_with_#{owner[:type]}?"]
-                                s.it "must have a button labeled start settlement with #{owner[:type]} name" do
-
-                                end
-                            end
-                            [1,5,0].each do |num_settlements|
-                                s.context "if the owner has #{num_settlements} #{'settlements'.pluralize(num_settlements)} with the visitor" do
-                                    s.it "must show #{num_settlements} in the index" do
+                    visitors.keys.each do |v|
+                        next unless visitors[v]["test_on_#{owner[:type]}s?".to_sym]
+                        s.context "and the visitor is #{v.to_s.gsub("_"," ")}" do
+                            s.context "in the active settlements card" do
+                                if visitors[v]["can_have_settlement_with_#{owner[:type]}?"]
+                                    s.it "must have a button labeled start settlement with #{owner[:type]} name" do
 
                                     end
                                 end
-                            end
-                        end
-                        s.context "in the whats next? card" do
-                            s.context "when the user has no settlements" do
-                                s.it "must not have any notices" do
+                                [1,5,0].each do |num_settlements|
+                                    s.context "if the owner has #{num_settlements} #{'settlements'.pluralize(num_settlements)} with the visitor" do
+                                        s.it "must show #{num_settlements} in the index" do
 
-                                end
-                                s.it "must have a message saying the user should start a settlement" do
-
-                                end
-                                s.context "after clicking the link in the start a settlement message" do
-                                    s.it "must take the user to the settlement new page" do
-
+                                        end
                                     end
                                 end
                             end
-                            settlement_requirements.keys.each do |key|
-                                [1, 5, 0].each do |num_settlements|
-                                    s.context "when the user has #{num_settlements} #{'settlements'.pluralize(num_settlements)} #{settlement_requirements[key][:context_title]}" do
-                                        s.it "must have a notice saying #{num_settlements==1 ? "a" : num_settlements} #{settlement_requirements[key][descriptor][num_settlements==1 ? :singular : :plural]}" do
-                                            
+                            s.context "in the whats next? card" do
+                                s.context "when the user has no settlements" do
+                                    s.it "must not have any notices" do
+
+                                    end
+                                    s.it "must have a message saying the user should start a settlement" do
+
+                                    end
+                                    s.context "after clicking the link in the start a settlement message" do
+                                        s.it "must take the user to the settlement new page" do
+
+                                        end
+                                    end
+                                end
+                                settlement_requirements.keys.each do |key|
+                                    [1, 5, 0].each do |num_settlements|
+                                        s.context "when the user has #{num_settlements} #{'settlements'.pluralize(num_settlements)} #{settlement_requirements[key][:context_title]}" do
+                                            s.it "must have a notice saying #{num_settlements==1 ? "a" : num_settlements} #{settlement_requirements[key][descriptor][num_settlements==1 ? :singular : :plural]}" do
+                                                
+                                            end
                                         end
                                     end
                                 end
