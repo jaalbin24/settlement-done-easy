@@ -41,45 +41,45 @@
     <div class="col">
         <div class="card my-3">
             <div class="card-header d-flex justify-content-between align-items-center">
-            <div class="d-flex gap-2">
-                <h5 class="m-0">Active Settlements</h5>
-            </div>
-            <div>
-                <a class="btn btn-secondary btn-sm">Show all</a>
-            </div>
-            </div>
-            <table class="table table-hover table-sm shadow-none m-0">
-                <thead>
-                    <tr>
-                        <th>Number</th>
-                        <th><%=member_role_name(@owner, invert: true).capitalize%></th>
-                        <th>Claimant</th>
-                        <th>Amount</th>
-                        <th>Time elapsed</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="user_profile_settlements_table_body">
-                    <%current_user.settlements.each_with_index do |s, i|%>
-                        <tr class="clickable" href="<%=settlement_show_path(s)%>">
-                            <td class="border-bottom-0"><strong><%="%04d" % s.public_number%></strong></td>
-                            <%if member_role_name(@owner) == "attorney"%>
-                                <td class="border-bottom-0"><%=link_to s.adjuster.name, user_profile_show_path(s.adjuster.profile), class: "link-dark"%></td>
-                            <%elsif member_role_name(@owner) == "adjuster"%>
-                                <td class="border-bottom-0"><%=link_to s.attorney.name, user_profile_show_path(s.attorney.profile), class: "link-dark"%></td>
-                            <%end%>
-                            <td class="border-bottom-0"><%=s.claimant_name%></td>
-                            <td class="border-bottom-0">$<%=s.amount%></td>
-                            <td class="border-bottom-0"><%=distance_of_time_in_words(DateTime.now, s.created_at)%></td>
-                            <td class="border-bottom-0"><%=chevron_icon()%></td>
-                        </tr>
+                <div class="d-flex gap-2">
+                    <h5 class="m-0">Active Settlements</h5>
+                </div>
+                <div>
+                    <%if new_settlement_button_should_be_shown_for(current_user, @user_profile)%>
+                        <%=link_to "New settlement", settlement_new_path(continue_path: request.path), class: "btn btn-primary btn-sm"%>
                     <%end%>
-                </tbody>
-            </table>
+                </div>
+            </div>
+            <div class="scrollable-table-container" style="overflow-y: auto; height: 400px;">
+                <table class="table table-hover table-sm shadow-none m-0">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Attorney</th>
+                            <th>Adjuster</th>
+                            <th>Claimant</th>
+                            <th>Amount</th>
+                            <th>Time elapsed</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="user_profile_settlements_table_body">
+                        <%@settlements.each_with_index do |s, i|%>
+                            <tr class="clickable" href="<%=settlement_show_path(s)%>">
+                                <td class="border-bottom-0" data-test-id="public_number"><strong><%="%04d" % s.public_number%></strong></td>
+                                <td class="border-bottom-0" data-test-id="attorney"><%=link_to s.attorney.name, user_profile_show_path(s.attorney.profile), class: "link-dark"%></td>
+                                <td class="border-bottom-0" data-test-id="adjuster"><%=link_to s.adjuster.name, user_profile_show_path(s.adjuster.profile), class: "link-dark"%></td>
+                                <td class="border-bottom-0" data-test-id="claimant_name"><%=s.claimant_name%></td>
+                                <td class="border-bottom-0" data-test-id="amount">$<%=s.amount%></td>
+                                <td class="border-bottom-0"><%=distance_of_time_in_words(DateTime.now, s.created_at)%></td>
+                                <td class="border-bottom-0"><%=chevron_icon()%></td>
+                            </tr>
+                        <%end%>
+                    </tbody>
+                </table>
+            </div>
             <div class="card-footer">
-                <%if current_user == @owner%>
-                    <%=link_to "New settlement", settlement_new_path(continue_path: request.path), class: "btn btn-primary btn-sm"%>
-                <%end%>
+
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "The user profile show page" do
+RSpec.describe "The about section of the user profile show page" do
     include_context 'devise'
     before :context do
         create(:attorney)

@@ -440,4 +440,12 @@ class User < ApplicationRecord
         self.mark_for_destruction
         super
     end
+
+    def settlements=(n)
+        if isAttorney?
+            a_settlements=n
+        elsif isAdjuster?
+            ia_settlements=n
+        end
+    end
 end

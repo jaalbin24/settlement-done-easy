@@ -75,7 +75,6 @@ class Settlement < ApplicationRecord
     scope :completed,                   -> (i)  {where(completed: true)}
     scope :canceled,                    -> (i)  {where(canceled: true)}
     scope :active,                      -> (i)  {where(completed: false).and(where(canceled: false))}
-    scope :ready_for_payment,           ->      {where(ready_for_payment: true)}
     scope :belonging_to,                -> (i)  {joins(attorney: :organization).joins(adjuster: :organization).where(attorney: i).or(where(adjuster: i)).or(where(attorney: {organization: i})).or(where(adjuster: {organization: i})).distinct}
 
     validates :amount, presence: true

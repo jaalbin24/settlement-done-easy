@@ -41,7 +41,7 @@ FactoryBot.define do
     factory :settlement, class: "Settlement" do
         adjuster
         attorney
-        amount {1000.00}
+        amount {10.00}
         transient do
             num_documents {1}
         end

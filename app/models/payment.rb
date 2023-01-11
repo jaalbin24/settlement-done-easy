@@ -173,7 +173,7 @@ class Payment < ApplicationRecord
     
     after_commit do
         puts "❤️❤️❤️ Payment after_commit block"
-        if saved_changes? && !new_record?
+        if saved_changes? && !new_record? && !settlement.frozen?
             settlement.save
         end
     end
