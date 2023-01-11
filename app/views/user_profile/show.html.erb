@@ -1,46 +1,16 @@
 <div class="w-100 bg-bluegrey">
     <div class="container mt-4" data-test-id="user_profile_show_page">
-        <div class="card">
-            <div class="card-header border-bottom-0">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="my-1">
-                        <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
-                    </div>
-                    <div class="me-auto">
-                        <%if @owner.isOrganization?%>
-                            <h2 class="m-0" data-test-id='owner_name'><%=@owner.name%></h2>
-                            <p class="m-0">Member since <%=@owner.created_at.strftime("%B %-d, %Y")%>
-                        <%else%>
-                            <h2 class="m-0" data-test-id='owner_name'><%=@owner.profile.first_name%> <%=@owner.profile.last_name if user_can_access_profile_resource?(current_user, @user_profile, [:last_name])%></h2>
-                            <p class="m-0"><%=@owner.organization.name%></p>
-                        <%end%>
-                    </div>
-                    <%if current_user == @owner || current_user == @owner.organization%>
-                        <a class="btn btn-secondary d-flex align-items-center gap-1" href="<%=user_profile_edit_path(@user_profile, continue_path: request.path)%>">
-                            Edit profile <i class="fa-solid fa-pen text-muted m-0"></i>
-                        </a>
-                    <%end%>
-                </div>
-            </div>
-            <ul class="nav nav-tabs border-bottom-0" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link <%=@section == 'about' ? "active" : ""%>" data-bs-toggle="tab" href="#about" aria-selected="true" role="tab">About</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link <%=@section == 'settlements' ? "active" : ""%>" data-bs-toggle="tab" href="#settlements" aria-selected="false" role="tab">Settlements</a>
-                </li>
-            </ul>
-        </div>
+        <%=render "user_profile/owner_card"%>
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade <%=@section == 'about' ? "active show" : ""%>" id="about" role="tabpanel">
                 <%if @owner.isMember?%>
-                    <%=render "user_profile/about_section_for_members"%>
+                    <%=render "user_profile/about/member"%>
                 <%else%>
-                    <%=render "user_profile/about_section_for_organizations"%>
+                    <%=render "user_profile/about/organization"%>
                 <%end%>           
             </div>
             <div class="tab-pane fade <%=@section == 'settlements' ? "active show" : ""%>" id="settlements" role="tabpanel">
-                <%=render "user_profile/settlement_section"%>
+                <%=render "user_profile/settlements/all"%>
             </div>
         </div>
     </div>
