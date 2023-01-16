@@ -229,7 +229,7 @@ class User < ApplicationRecord
     after_create do
         puts "❤️❤️❤️ User after_create block"
         create_settings(UserSettings.default_settings) if settings.nil?
-        create_profile if profile.nil?
+        create_profile() if profile.nil?
         if isOrganization?
             CreateStripeAccountJob.perform_later self if stripe_account.nil?
             # if stripe_financial_account.nil?

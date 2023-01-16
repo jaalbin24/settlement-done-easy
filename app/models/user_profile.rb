@@ -48,8 +48,8 @@ class UserProfile < ApplicationRecord
         dependent: :destroy
     )
 
-    validates :first_name,  presence: {if: -> (i) {i.user.isMember?}}
-    validates :last_name,   presence: {if: -> (i) {i.user.isMember?}}
+    # validates :first_name,  presence: {if: -> (i) {i.user.isMember?}}
+    # validates :last_name,   presence: {if: -> (i) {i.user.isMember?}}
     validates :public_name, presence: {if: -> (i) {i.user.isOrganization?}}
 
     accepts_nested_attributes_for :address

@@ -33,7 +33,11 @@ class UserProfileController < ApplicationController
     def show
         @user_profile = UserProfile.find_by(public_id: params[:public_id])
         @owner = @user_profile.user
-        @settlements = Settlement.belonging_to(@owner).merge(Settlement.belonging_to(current_user))
+        if current_user.organization == @owner
+            @settlements = Settlement.belonging_to(@owner)
+        else
+            @settlements = Settlement.belonging_to(@owner).merge(Settlement.belonging_to(current_user))
+        end
 
         if params[:section].blank?
             @section = "about"
