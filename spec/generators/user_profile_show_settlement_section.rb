@@ -22,54 +22,129 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
             s.context "when the owner is an attorney" do
                 s.before(:context) {'@owner = create(:attorney)'}
                 s.after(:context) {'@owner.organization.destroy'}
-                [0, 1, 5].each do |n_unrelated_for_owner|
+                [0, 1, 3].each do |n_unrelated_for_owner|
                     s.context "with #{n_unrelated_for_owner} unrelated #{'settlement'.pluralize(n_unrelated_for_owner)}" do
                         s.before(:context) {"@unrelated = create_list(:settlement, #{n_unrelated_for_owner}, attorney: @owner, adjuster: User.adjusters.sample)"}
                         s.after(:context) {'@unrelated.each {|s| s.destroy}'}
                         s.context "and the visitor is the owner" do
                             s.before(:context) {'@visitor = @owner'}
-                            s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
-                                "sign_in @visitor
-                                visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
-                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                    expect(page).to have_text s.public_number
-                                end"
+                            if n_unrelated_for_owner == 0
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the owner has no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements. Click here to start one.\""                               
+                                end
+                                s.context "after 'here' is clicked" do
+                                    s.it "must take the user to the settlement new page" do
+                                        "sign_in @visitor
+                                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                        find(\"[data-test-id='empty_active_settlement_link']\").click
+                                        sleep 0.05
+                                        expect(current_path).to eq(settlement_new_path)"
+                                    end
+                                end
+                            else
+                                s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
                             end
                         end # DONE
                         s.context "and the visitor is a member of the owners organization" do
                             s.before(:context) {'@visitor = create(:attorney, organization: @owner.organization)'}
                             s.after(:context) {'@visitor.destroy'}
-                            s.it "must not show any settlements" do
-                                "sign_in @visitor
-                                visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
-                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                    expect(page).to have_text s.public_number
-                                end"
+                            if n_unrelated_for_owner == 0
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the owner has no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"\#{@owner.name} does not have any active settlements.\""                               
+                                end
+                            else
+                                s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
                             end
                         end # DONE
                         s.context "and the visitor is the owners organization" do
                             s.before(:context) {'@visitor = @owner.organization'}
-                            s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
-                                "sign_in @visitor
-                                visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
-                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                    expect(page).to have_text s.public_number
-                                end"
+                            if n_unrelated_for_owner == 0
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the owner has no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"\#{@owner.name} does not have any active settlements.\""                               
+                                end
+                            else
+                                s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
                             end
                         end # DONE
                         s.context "and the visitor is an adjuster from another insurance company" do
                             s.before(:context) {'@visitor = create(:adjuster)'}
                             s.after(:context) {'@visitor.organization.destroy'}
-                            s.context "that has 0 settlements with the owner" do
-                                s.it "must have 0 settlements" do
-                                    "pending 'Implementation'
-                                    fail"
+                            s.context "that has no settlements with the owner" do
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the visitor has no settlements with the owner" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements with \#{@owner.name}. Click here to start one.\""                               
+                                end
+                                s.context "after 'here' is clicked" do
+                                    s.it "must take the user to the settlement new page" do
+                                        "sign_in @visitor
+                                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                        find(\"[data-test-id='empty_active_settlement_link']\").click
+                                        sleep 0.05
+                                        expect(current_path).to eq(settlement_new_path)"
+                                    end
                                 end
                             end
-                            [0, 1, 5].each do |n_settlements|
+                            [1, 3].each do |n_settlements|
                                 s.context "that has #{n_settlements} #{'settlement'.pluralize(n_settlements)} with the owner" do
                                     s.before (:context) {"@visitor.settlements += create_list(:settlement, #{n_settlements}, adjuster: @visitor, attorney: @owner)"}
                                     s.after (:context) {"@visitor.settlements.each {|s| s.destroy}"}
@@ -92,18 +167,38 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                 s.it "must have 0 settlements" do
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                    expect(all('tr').count).to eq(0)
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end"
                                 end
+                                s.it "must show a message saying the visitor has no settlements with the owner" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements with \#{@owner.name}.\""                               
+                                end
                             end
-                            [1,3,5].each do |n_members|
+                            [1,3].each do |n_members|
                                 # with x members
                                 s.context "with #{n_members} #{'member'.pluralize(n_members)}" do
                                     s.before(:context) {"@visitor.members = create_list(:adjuster, #{n_members}, organization: @visitor)"}
                                     s.after(:context) {"@visitor.members.each {|m| m.destroy}"}
-                                    [1,3,5].each do |n_unrelated_for_visitor|
+                                    s.context "that each have 0 settlements with the owner" do
+                                        s.it "must have 0 settlements" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            expect(all('tr').count).to eq(0)
+                                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                                expect(page).to have_text s.public_number
+                                            end"
+                                        end
+                                        s.it "must show a message saying the visitor has no settlements with the owner" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements with \#{@owner.name}.\""                               
+                                        end
+                                    end
+                                    [1,3].each do |n_unrelated_for_visitor|
                                         # that each have x unrelated settlements
                                         s.context "that #{n_members == 1 ? 'has': 'each have'} #{n_unrelated_for_visitor} unrelated #{'settlement'.pluralize(n_unrelated_for_visitor)}" do
                                             s.before(:context) do
@@ -147,25 +242,35 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                         s.context "and the visitor is another law firm" do
                             s.before(:context) {'@visitor = create(:law_firm)'}
                             s.after(:context) {'@visitor.destroy'}
-                            s.it "must not show any settlements" do
+                            s.it "must have no settlements" do
                                 "sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end"
+                            end
+                            s.it "must show a message saying the visitor cannot have settlements with the owner" do
+                                "sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You cannot have settlements with \#{@owner.name} because they are \#{indefinite_articleize(word: @owner.role.downcase)}\""                               
                             end
                         end # DONE
                         s.context "and the visitor is an attorney from another law firm" do
                             s.before(:context) {'@visitor = create(:attorney)'}
                             s.after(:context) {'@visitor.organization.destroy'}
-                            s.it "must not show any settlements" do
+                            s.it "must have no settlements" do
                                 "sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end"
+                            end
+                            s.it "must show a message saying the visitor cannot have settlements with the owner" do
+                                "sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You cannot have settlements with \#{@owner.name} because they are \#{indefinite_articleize(word: @owner.role.downcase)}\""                               
                             end
                         end # DONE
                     end # DONE
@@ -174,44 +279,101 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
             s.context "when the owner is an adjuster" do
                 s.before(:context) {'@owner = create(:adjuster)'}
                 s.after(:context) {'@owner.organization.destroy'}
-                [0, 1, 5].each do |n_unrelated_for_owner|
+                [0, 1, 3].each do |n_unrelated_for_owner|
                     s.context "with #{n_unrelated_for_owner} unrelated #{'settlement'.pluralize(n_unrelated_for_owner)}" do
                         s.before(:context) {"@unrelated = create_list(:settlement, #{n_unrelated_for_owner}, attorney: User.attorneys.sample, adjuster: @owner)"}
                         s.after(:context) {'@unrelated.each {|s| s.destroy}'}
                         s.context "and the visitor is the owner" do
                             s.before(:context) {'@visitor = @owner'}
-                            s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
-                                "sign_in @visitor
-                                visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
-                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                    expect(page).to have_text s.public_number
-                                end"
+                            if n_unrelated_for_owner == 0
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the owner has no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements. Click here to start one.\""                               
+                                end
+                                s.context "after 'here' is clicked" do
+                                    s.it "must take the user to the settlement new page" do
+                                        "sign_in @visitor
+                                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                        find(\"[data-test-id='empty_active_settlement_link']\").click
+                                        sleep 0.05
+                                        expect(current_path).to eq(settlement_new_path)"
+                                    end
+                                end
+                            else
+                                s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
                             end
-                        end
+                        end # DONE
                         s.context "and the visitor is a member of the owners organization" do
                             s.before(:context) {'@visitor = create(:adjuster, organization: @owner.organization)'}
                             s.after(:context) {'@visitor.destroy'}
-                            s.it "must not show any settlements" do
-                                "sign_in @visitor
-                                visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
-                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                    expect(page).to have_text s.public_number
-                                end"
+                            if n_unrelated_for_owner == 0
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the owner has no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"\#{@owner.name} does not have any active settlements.\""                               
+                                end
+                            else
+                                s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
                             end
-                        end
+                        end # DONE
                         s.context "and the visitor is the owners organization" do
                             s.before(:context) {'@visitor = @owner.organization'}
-                            s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
-                                "sign_in @visitor
-                                visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
-                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                    expect(page).to have_text s.public_number
-                                end"
+                            if n_unrelated_for_owner == 0
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the owner has no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"\#{@owner.name} does not have any active settlements.\""                               
+                                end
+                            else
+                                s.it "must show #{n_unrelated_for_owner} #{'settlement'.pluralize(n_unrelated_for_owner)}" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(#{n_unrelated_for_owner} + 1) # +1 because the table header counts as a row
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
                             end
-                        end
+                        end # DONE
                         s.context "and the visitor is an attorney from another law firm" do
                             s.before(:context) {'@visitor = create(:attorney)'}
                             s.after(:context) {'@visitor.organization.destroy'}
@@ -221,7 +383,31 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                     fail"
                                 end
                             end
-                            [0, 1, 5].each do |n_settlements|
+                            s.context "that has no settlements with the owner" do
+                                s.it "must have no settlements" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(all('tr').count).to eq(0)
+                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                        expect(page).to have_text s.public_number
+                                    end"
+                                end
+                                s.it "must show a message saying the visitor has no settlements with the owner" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements with \#{@owner.name}. Click here to start one.\""                               
+                                end
+                                s.context "after 'here' is clicked" do
+                                    s.it "must take the user to the settlement new page" do
+                                        "sign_in @visitor
+                                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                        find(\"[data-test-id='empty_active_settlement_link']\").click
+                                        sleep 0.05
+                                        expect(current_path).to eq(settlement_new_path)"
+                                    end
+                                end
+                            end
+                            [1, 3].each do |n_settlements|
                                 s.context "that has #{n_settlements} #{'settlement'.pluralize(n_settlements)} with the owner" do
                                     s.before (:context) {"@visitor.settlements += create_list(:settlement, #{n_settlements}, adjuster: @owner, attorney: @visitor)"}
                                     s.after (:context) {"@visitor.settlements.each {|s| s.destroy}"}
@@ -235,7 +421,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                     end
                                 end
                             end
-                        end
+                        end # DONE
                         s.context "and the visitor is another law firm" do
                             s.before(:context) {'@visitor = create(:law_firm)'}
                             s.after(:context) {'@visitor.destroy'}
@@ -244,18 +430,38 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                 s.it "must have 0 settlements" do
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                    expect(all('tr').count).to eq(0)
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end"
                                 end
+                                s.it "must show a message saying the visitor has no settlements with the owner" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                    expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements with \#{@owner.name}.\""                               
+                                end
                             end
-                            [1,3,5].each do |n_members|
+                            [1,3].each do |n_members|
                                 # with x members
                                 s.context "with #{n_members} #{'member'.pluralize(n_members)}" do
                                     s.before(:context) {"@visitor.members = create_list(:attorney, #{n_members}, organization: @visitor)"}
                                     s.after(:context) {"@visitor.members.each {|m| m.destroy}"}
-                                    [1,3,5].each do |n_unrelated_for_visitor|
+                                    s.context "that each have 0 settlements with the owner" do
+                                        s.it "must have 0 settlements" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            expect(all('tr').count).to eq(0)
+                                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                                expect(page).to have_text s.public_number
+                                            end"
+                                        end
+                                        s.it "must show a message saying the visitor has no settlements with the owner" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You do not have any active settlements with \#{@owner.name}.\""                               
+                                        end
+                                    end
+                                    [1,3].each do |n_unrelated_for_visitor|
                                         # that each have x unrelated settlements
                                         s.context "that #{n_members == 1 ? 'has': 'each have'} #{n_unrelated_for_visitor} unrelated #{'settlement'.pluralize(n_unrelated_for_visitor)}" do
                                             s.before(:context) do
@@ -299,27 +505,37 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                         s.context "and the visitor is another insurance company" do
                             s.before(:context) {'@visitor = create(:insurance_company)'}
                             s.after(:context) {'@visitor.destroy'}
-                            s.it "must not show any settlements" do
+                            s.it "must have no settlements" do
                                 "sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end"
                             end
-                        end
+                            s.it "must show a message saying the visitor cannot have settlements with the owner" do
+                                "sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You cannot have settlements with \#{@owner.name} because they are \#{indefinite_articleize(word: @owner.role.downcase)}\""                               
+                            end
+                        end # DONE
                         s.context "and the visitor is an adjuster from another insurance company" do
                             s.before(:context) {'@visitor = create(:adjuster)'}
                             s.after(:context) {'@visitor.organization.destroy'}
-                            s.it "must not show any settlements" do
+                            s.it "must have no settlements" do
                                 "sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end"
                             end
-                        end
+                            s.it "must show a message saying the visitor cannot have settlements with the owner" do
+                                "sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find(\"[data-test-id='empty_active_settlement_message']\")).to have_text \"You cannot have settlements with \#{@owner.name} because they are \#{indefinite_articleize(word: @owner.role.downcase)}\""                               
+                            end
+                        end # DONE
                     end
                 end
             end
@@ -400,7 +616,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                         s.it "must have no settlements" do
                                             "sign_in @visitor
                                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                            expect(all('tr').count).to eq(0)
                                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                                 expect(page).to have_text s.public_number
                                             end"
@@ -453,7 +669,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                     s.it "must have no settlements" do
                                         "sign_in @visitor
                                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                        expect(all('tr').count).to eq(0)
                                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                             expect(page).to have_text s.public_number
                                         end"
@@ -465,7 +681,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                     s.it "must have no settlements" do
                                         "sign_in @visitor
                                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                        expect(all('tr').count).to eq(0)
                                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                             expect(page).to have_text s.public_number
                                         end"
@@ -553,7 +769,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                         s.it "must have no settlements" do
                                             "sign_in @visitor
                                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                            expect(all('tr').count).to eq(0)
                                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                                 expect(page).to have_text s.public_number
                                             end"
@@ -606,7 +822,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                     s.it "must have no settlements" do
                                         "sign_in @visitor
                                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                        expect(all('tr').count).to eq(0)
                                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                             expect(page).to have_text s.public_number
                                         end"
@@ -618,7 +834,7 @@ SpecGenerator::SystemSpec.new(name: "user_profile_show_settlement_section") do |
                                     s.it "must have no settlements" do
                                         "sign_in @visitor
                                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                        expect(all('tr').count).to eq(0)
                                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                             expect(page).to have_text s.public_number
                                         end"

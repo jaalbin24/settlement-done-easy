@@ -7,6 +7,7 @@ module ApplicationHelper
         when :strong, "strong"
             return (%w(a e i o u).include?(args[:word][0].downcase) ? "an <strong>#{args[:word]}</strong>" : "a <strong>#{args[:word]}</strong>").html_safe
         end
+        return %w(a e i o u).include?(args[:word][0].downcase) ? "an #{args[:word]}" : "a #{args[:word]}"
     end
     
     def active_class(path)

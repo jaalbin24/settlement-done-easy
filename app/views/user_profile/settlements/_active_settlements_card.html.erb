@@ -10,7 +10,7 @@
         </div>
     </div>
     <%if @settlements.empty?%>
-        <p class="my-5 text-center text-muted"><%=empty_active_settlement_message%></p>
+        <p class="my-5 text-center text-muted" data-test-id="empty_active_settlement_message"><%=empty_active_settlement_message%></p>
     <%else%>
         <div class="scrollable-table-container" style="overflow-y: auto; min-height: 12rem; max-height: 18rem;">
             <table class="table table-hover table-sm shadow-none m-0">

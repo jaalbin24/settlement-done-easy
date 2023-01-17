@@ -448,4 +448,10 @@ class User < ApplicationRecord
             ia_settlements=n
         end
     end
+
+    def isMemberOf?(u)
+        return false if u.nil?
+        return false if u.members.nil?
+        u.members.include?(self)
+    end
 end

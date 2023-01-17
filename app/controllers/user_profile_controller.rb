@@ -33,7 +33,7 @@ class UserProfileController < ApplicationController
     def show
         @user_profile = UserProfile.find_by(public_id: params[:public_id])
         @owner = @user_profile.user
-        if current_user.organization == @owner
+        if current_user.isMemberOf?(@owner) || current_user.isMemberOf?(@owner.organization)
             @settlements = Settlement.belonging_to(@owner)
         else
             @settlements = Settlement.belonging_to(@owner).merge(Settlement.belonging_to(current_user))

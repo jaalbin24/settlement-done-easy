@@ -37,12 +37,26 @@ RSpec.describe "The settlement section of the user profile show page" do
                     before :context do
                         @visitor = @owner
                     end
-                    it "must show 0 settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
+                        end
+                    end
+                    it "must show a message saying the owner has no settlements" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements. Click here to start one."
+                    end
+                    context "after 'here' is clicked" do
+                        it "must take the user to the settlement new page" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            find("[data-test-id='empty_active_settlement_link']").click
+                            sleep 0.05
+                            expect(current_path).to eq(settlement_new_path)
                         end
                     end
                 end
@@ -53,26 +67,36 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the owner has no settlements" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "#{@owner.name} does not have any active settlements."
                     end
                 end
                 context "and the visitor is the owners organization" do
                     before :context do
                         @visitor = @owner.organization
                     end
-                    it "must show 0 settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the owner has no settlements" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "#{@owner.name} does not have any active settlements."
                     end
                 end
                 context "and the visitor is an adjuster from another insurance company" do
@@ -82,21 +106,27 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    context "that has 0 settlements with the owner" do
-                        before :context do
-                            @visitor.settlements += create_list(:settlement, 0, adjuster: @visitor, attorney: @owner)
-                        end
-                        after :context do
-                            @visitor.settlements.each {|s| s.destroy}
-                        end
-                        it "must have 0 settlements" do
+                    context "that has no settlements with the owner" do
+                        it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}. Click here to start one."
+                        end
+                        context "after 'here' is clicked" do
+                            it "must take the user to the settlement new page" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                find("[data-test-id='empty_active_settlement_link']").click
+                                sleep 0.05
+                                expect(current_path).to eq(settlement_new_path)
                             end
                         end
                     end
@@ -110,27 +140,23 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have 1 settlement" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
                             expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
                         end
                     end
-                    context "that has 5 settlements with the owner" do
+                    context "that has 3 settlements with the owner" do
                         before :context do
-                            @visitor.settlements += create_list(:settlement, 5, adjuster: @visitor, attorney: @owner)
+                            @visitor.settlements += create_list(:settlement, 3, adjuster: @visitor, attorney: @owner)
                         end
                         after :context do
                             @visitor.settlements.each {|s| s.destroy}
                         end
-                        it "must have 5 settlements" do
+                        it "must have 3 settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
-                            expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -145,9 +171,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.destroy
                     end
                     context "with 0 members" do
+                        before :context do
+                            @visitor.members.each {|m| m.destroy}
+                        end
                         it "must have 0 settlements" do
-                            pending 'Implementation'
-                            fail
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(all('tr').count).to eq(0)
+                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
                         end
                     end
                     context "with 1 member" do
@@ -156,6 +194,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         end
                         after :context do
                             @visitor.members.each {|m| m.destroy}
+                        end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
                         end
                         context "that has 1 unrelated settlement" do
                             before :context do
@@ -166,6 +219,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -197,33 +256,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1 settlement with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 1 settlement" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that has 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -252,6 +288,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         after :context do
                             @visitor.members.each {|m| m.destroy}
                         end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
+                        end
                         context "that each have 1 unrelated settlement" do
                             before :context do
                                 @visitor.members.each do |m|
@@ -261,6 +312,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -292,33 +349,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1, 2, and 3 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 6 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -333,101 +367,6 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    context "with 5 members" do
-                        before :context do
-                            @visitor.members = create_list(:adjuster, 5, organization: @visitor)
-                        end
-                        after :context do
-                            @visitor.members.each {|m| m.destroy}
-                        end
-                        context "that each have 1 unrelated settlement" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 1, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 3 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 3, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end
@@ -443,13 +382,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
                 context "and the visitor is an attorney from another law firm" do
@@ -459,13 +403,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
             end
@@ -496,10 +445,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must show 1 settlement" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -525,21 +474,27 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    context "that has 0 settlements with the owner" do
-                        before :context do
-                            @visitor.settlements += create_list(:settlement, 0, adjuster: @visitor, attorney: @owner)
-                        end
-                        after :context do
-                            @visitor.settlements.each {|s| s.destroy}
-                        end
-                        it "must have 0 settlements" do
+                    context "that has no settlements with the owner" do
+                        it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}. Click here to start one."
+                        end
+                        context "after 'here' is clicked" do
+                            it "must take the user to the settlement new page" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                find("[data-test-id='empty_active_settlement_link']").click
+                                sleep 0.05
+                                expect(current_path).to eq(settlement_new_path)
                             end
                         end
                     end
@@ -553,27 +508,23 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have 1 settlement" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
                             expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
                         end
                     end
-                    context "that has 5 settlements with the owner" do
+                    context "that has 3 settlements with the owner" do
                         before :context do
-                            @visitor.settlements += create_list(:settlement, 5, adjuster: @visitor, attorney: @owner)
+                            @visitor.settlements += create_list(:settlement, 3, adjuster: @visitor, attorney: @owner)
                         end
                         after :context do
                             @visitor.settlements.each {|s| s.destroy}
                         end
-                        it "must have 5 settlements" do
+                        it "must have 3 settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
-                            expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -588,9 +539,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.destroy
                     end
                     context "with 0 members" do
+                        before :context do
+                            @visitor.members.each {|m| m.destroy}
+                        end
                         it "must have 0 settlements" do
-                            pending 'Implementation'
-                            fail
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(all('tr').count).to eq(0)
+                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
                         end
                     end
                     context "with 1 member" do
@@ -599,6 +562,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         end
                         after :context do
                             @visitor.members.each {|m| m.destroy}
+                        end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
                         end
                         context "that has 1 unrelated settlement" do
                             before :context do
@@ -609,6 +587,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -640,33 +624,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1 settlement with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 1 settlement" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that has 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -695,6 +656,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         after :context do
                             @visitor.members.each {|m| m.destroy}
                         end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
+                        end
                         context "that each have 1 unrelated settlement" do
                             before :context do
                                 @visitor.members.each do |m|
@@ -704,6 +680,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -735,33 +717,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1, 2, and 3 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 6 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -776,101 +735,6 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    context "with 5 members" do
-                        before :context do
-                            @visitor.members = create_list(:adjuster, 5, organization: @visitor)
-                        end
-                        after :context do
-                            @visitor.members.each {|m| m.destroy}
-                        end
-                        context "that each have 1 unrelated settlement" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 1, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 3 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 3, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end
@@ -886,13 +750,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
                 context "and the visitor is an attorney from another law firm" do
@@ -902,19 +771,24 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
                     end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
+                    end
                 end
             end
-            context "with 5 unrelated settlements" do
+            context "with 3 unrelated settlements" do
                 before :context do
-                    @unrelated = create_list(:settlement, 5, attorney: @owner, adjuster: User.adjusters.sample)
+                    @unrelated = create_list(:settlement, 3, attorney: @owner, adjuster: User.adjusters.sample)
                 end
                 after :context do
                     @unrelated.each {|s| s.destroy}
@@ -923,10 +797,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     before :context do
                         @visitor = @owner
                     end
-                    it "must show 5 settlements" do
+                    it "must show 3 settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -939,10 +813,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must show 3 settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -952,10 +826,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     before :context do
                         @visitor = @owner.organization
                     end
-                    it "must show 5 settlements" do
+                    it "must show 3 settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -968,21 +842,27 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    context "that has 0 settlements with the owner" do
-                        before :context do
-                            @visitor.settlements += create_list(:settlement, 0, adjuster: @visitor, attorney: @owner)
-                        end
-                        after :context do
-                            @visitor.settlements.each {|s| s.destroy}
-                        end
-                        it "must have 0 settlements" do
+                    context "that has no settlements with the owner" do
+                        it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}. Click here to start one."
+                        end
+                        context "after 'here' is clicked" do
+                            it "must take the user to the settlement new page" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                find("[data-test-id='empty_active_settlement_link']").click
+                                sleep 0.05
+                                expect(current_path).to eq(settlement_new_path)
                             end
                         end
                     end
@@ -996,27 +876,23 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have 1 settlement" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
                             expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
                         end
                     end
-                    context "that has 5 settlements with the owner" do
+                    context "that has 3 settlements with the owner" do
                         before :context do
-                            @visitor.settlements += create_list(:settlement, 5, adjuster: @visitor, attorney: @owner)
+                            @visitor.settlements += create_list(:settlement, 3, adjuster: @visitor, attorney: @owner)
                         end
                         after :context do
                             @visitor.settlements.each {|s| s.destroy}
                         end
-                        it "must have 5 settlements" do
+                        it "must have 3 settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            
-                            
-                            expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -1031,9 +907,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.destroy
                     end
                     context "with 0 members" do
+                        before :context do
+                            @visitor.members.each {|m| m.destroy}
+                        end
                         it "must have 0 settlements" do
-                            pending 'Implementation'
-                            fail
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(all('tr').count).to eq(0)
+                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
                         end
                     end
                     context "with 1 member" do
@@ -1042,6 +930,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         end
                         after :context do
                             @visitor.members.each {|m| m.destroy}
+                        end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
                         end
                         context "that has 1 unrelated settlement" do
                             before :context do
@@ -1052,6 +955,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -1083,33 +992,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1 settlement with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 1 settlement" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that has 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -1138,6 +1024,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         after :context do
                             @visitor.members.each {|m| m.destroy}
                         end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
+                        end
                         context "that each have 1 unrelated settlement" do
                             before :context do
                                 @visitor.members.each do |m|
@@ -1147,6 +1048,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -1178,33 +1085,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1, 2, and 3 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 6 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -1219,101 +1103,6 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    context "with 5 members" do
-                        before :context do
-                            @visitor.members = create_list(:adjuster, 5, organization: @visitor)
-                        end
-                        after :context do
-                            @visitor.members.each {|m| m.destroy}
-                        end
-                        context "that each have 1 unrelated settlement" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 1, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 3 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 3, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, adjuster: m, attorney: User.attorneys.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: m, attorney: @owner)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end
@@ -1329,13 +1118,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
                 context "and the visitor is an attorney from another law firm" do
@@ -1345,13 +1139,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
             end
@@ -1374,12 +1173,26 @@ RSpec.describe "The settlement section of the user profile show page" do
                     before :context do
                         @visitor = @owner
                     end
-                    it "must show 0 settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
+                        end
+                    end
+                    it "must show a message saying the owner has no settlements" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements. Click here to start one."
+                    end
+                    context "after 'here' is clicked" do
+                        it "must take the user to the settlement new page" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            find("[data-test-id='empty_active_settlement_link']").click
+                            sleep 0.05
+                            expect(current_path).to eq(settlement_new_path)
                         end
                     end
                 end
@@ -1390,26 +1203,36 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the owner has no settlements" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "#{@owner.name} does not have any active settlements."
                     end
                 end
                 context "and the visitor is the owners organization" do
                     before :context do
                         @visitor = @owner.organization
                     end
-                    it "must show 0 settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the owner has no settlements" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "#{@owner.name} does not have any active settlements."
                     end
                 end
                 context "and the visitor is an attorney from another law firm" do
@@ -1420,18 +1243,32 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.organization.destroy
                     end
                     context "that has 0 settlements with the owner" do
-                        before :context do
-                            @visitor.settlements += create_list(:settlement, 0, adjuster: @owner, attorney: @visitor)
-                        end
-                        after :context do
-                            @visitor.settlements.each {|s| s.destroy}
-                        end
                         it "must have 0 settlements" do
+                            pending 'Implementation'
+                            fail
+                        end
+                    end
+                    context "that has no settlements with the owner" do
+                        it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}. Click here to start one."
+                        end
+                        context "after 'here' is clicked" do
+                            it "must take the user to the settlement new page" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                find("[data-test-id='empty_active_settlement_link']").click
+                                sleep 0.05
+                                expect(current_path).to eq(settlement_new_path)
                             end
                         end
                     end
@@ -1451,17 +1288,17 @@ RSpec.describe "The settlement section of the user profile show page" do
                             end
                         end
                     end
-                    context "that has 5 settlements with the owner" do
+                    context "that has 3 settlements with the owner" do
                         before :context do
-                            @visitor.settlements += create_list(:settlement, 5, adjuster: @owner, attorney: @visitor)
+                            @visitor.settlements += create_list(:settlement, 3, adjuster: @owner, attorney: @visitor)
                         end
                         after :context do
                             @visitor.settlements.each {|s| s.destroy}
                         end
-                        it "must have 5 settlements" do
+                        it "must have 3 settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -1476,9 +1313,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.destroy
                     end
                     context "with 0 members" do
+                        before :context do
+                            @visitor.members.each {|m| m.destroy}
+                        end
                         it "must have 0 settlements" do
-                            pending 'Implementation'
-                            fail
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(all('tr').count).to eq(0)
+                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
                         end
                     end
                     context "with 1 member" do
@@ -1487,6 +1336,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         end
                         after :context do
                             @visitor.members.each {|m| m.destroy}
+                        end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
                         end
                         context "that has 1 unrelated settlement" do
                             before :context do
@@ -1497,6 +1361,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -1528,33 +1398,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1 settlement with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 1 settlement" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that has 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -1583,6 +1430,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         after :context do
                             @visitor.members.each {|m| m.destroy}
                         end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
+                        end
                         context "that each have 1 unrelated settlement" do
                             before :context do
                                 @visitor.members.each do |m|
@@ -1592,6 +1454,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -1623,33 +1491,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1, 2, and 3 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 6 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -1664,101 +1509,6 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    context "with 5 members" do
-                        before :context do
-                            @visitor.members = create_list(:attorney, 5, organization: @visitor)
-                        end
-                        after :context do
-                            @visitor.members.each {|m| m.destroy}
-                        end
-                        context "that each have 1 unrelated settlement" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 1, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 3 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 3, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end
@@ -1774,13 +1524,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
                 context "and the visitor is an adjuster from another insurance company" do
@@ -1790,13 +1545,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
             end
@@ -1827,10 +1587,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must show 1 settlement" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -1857,18 +1617,32 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.organization.destroy
                     end
                     context "that has 0 settlements with the owner" do
-                        before :context do
-                            @visitor.settlements += create_list(:settlement, 0, adjuster: @owner, attorney: @visitor)
-                        end
-                        after :context do
-                            @visitor.settlements.each {|s| s.destroy}
-                        end
                         it "must have 0 settlements" do
+                            pending 'Implementation'
+                            fail
+                        end
+                    end
+                    context "that has no settlements with the owner" do
+                        it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}. Click here to start one."
+                        end
+                        context "after 'here' is clicked" do
+                            it "must take the user to the settlement new page" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                find("[data-test-id='empty_active_settlement_link']").click
+                                sleep 0.05
+                                expect(current_path).to eq(settlement_new_path)
                             end
                         end
                     end
@@ -1888,17 +1662,17 @@ RSpec.describe "The settlement section of the user profile show page" do
                             end
                         end
                     end
-                    context "that has 5 settlements with the owner" do
+                    context "that has 3 settlements with the owner" do
                         before :context do
-                            @visitor.settlements += create_list(:settlement, 5, adjuster: @owner, attorney: @visitor)
+                            @visitor.settlements += create_list(:settlement, 3, adjuster: @owner, attorney: @visitor)
                         end
                         after :context do
                             @visitor.settlements.each {|s| s.destroy}
                         end
-                        it "must have 5 settlements" do
+                        it "must have 3 settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -1913,9 +1687,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.destroy
                     end
                     context "with 0 members" do
+                        before :context do
+                            @visitor.members.each {|m| m.destroy}
+                        end
                         it "must have 0 settlements" do
-                            pending 'Implementation'
-                            fail
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(all('tr').count).to eq(0)
+                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
                         end
                     end
                     context "with 1 member" do
@@ -1924,6 +1710,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         end
                         after :context do
                             @visitor.members.each {|m| m.destroy}
+                        end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
                         end
                         context "that has 1 unrelated settlement" do
                             before :context do
@@ -1934,6 +1735,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -1965,33 +1772,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1 settlement with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 1 settlement" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that has 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -2020,6 +1804,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         after :context do
                             @visitor.members.each {|m| m.destroy}
                         end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
+                        end
                         context "that each have 1 unrelated settlement" do
                             before :context do
                                 @visitor.members.each do |m|
@@ -2029,6 +1828,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -2060,33 +1865,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1, 2, and 3 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 6 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -2101,101 +1883,6 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    context "with 5 members" do
-                        before :context do
-                            @visitor.members = create_list(:attorney, 5, organization: @visitor)
-                        end
-                        after :context do
-                            @visitor.members.each {|m| m.destroy}
-                        end
-                        context "that each have 1 unrelated settlement" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 1, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 3 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 3, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end
@@ -2211,13 +1898,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
                 context "and the visitor is an adjuster from another insurance company" do
@@ -2227,19 +1919,24 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
                     end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
+                    end
                 end
             end
-            context "with 5 unrelated settlements" do
+            context "with 3 unrelated settlements" do
                 before :context do
-                    @unrelated = create_list(:settlement, 5, attorney: User.attorneys.sample, adjuster: @owner)
+                    @unrelated = create_list(:settlement, 3, attorney: User.attorneys.sample, adjuster: @owner)
                 end
                 after :context do
                     @unrelated.each {|s| s.destroy}
@@ -2248,10 +1945,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     before :context do
                         @visitor = @owner
                     end
-                    it "must show 5 settlements" do
+                    it "must show 3 settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -2264,10 +1961,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must show 3 settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -2277,10 +1974,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                     before :context do
                         @visitor = @owner.organization
                     end
-                    it "must show 5 settlements" do
+                    it "must show 3 settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
@@ -2294,18 +1991,32 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.organization.destroy
                     end
                     context "that has 0 settlements with the owner" do
-                        before :context do
-                            @visitor.settlements += create_list(:settlement, 0, adjuster: @owner, attorney: @visitor)
-                        end
-                        after :context do
-                            @visitor.settlements.each {|s| s.destroy}
-                        end
                         it "must have 0 settlements" do
+                            pending 'Implementation'
+                            fail
+                        end
+                    end
+                    context "that has no settlements with the owner" do
+                        it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}. Click here to start one."
+                        end
+                        context "after 'here' is clicked" do
+                            it "must take the user to the settlement new page" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                find("[data-test-id='empty_active_settlement_link']").click
+                                sleep 0.05
+                                expect(current_path).to eq(settlement_new_path)
                             end
                         end
                     end
@@ -2325,17 +2036,17 @@ RSpec.describe "The settlement section of the user profile show page" do
                             end
                         end
                     end
-                    context "that has 5 settlements with the owner" do
+                    context "that has 3 settlements with the owner" do
                         before :context do
-                            @visitor.settlements += create_list(:settlement, 5, adjuster: @owner, attorney: @visitor)
+                            @visitor.settlements += create_list(:settlement, 3, adjuster: @owner, attorney: @visitor)
                         end
                         after :context do
                             @visitor.settlements.each {|s| s.destroy}
                         end
-                        it "must have 5 settlements" do
+                        it "must have 3 settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(5 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(3 + 1) # +1 because the table header counts as a row
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -2350,9 +2061,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         @visitor.destroy
                     end
                     context "with 0 members" do
+                        before :context do
+                            @visitor.members.each {|m| m.destroy}
+                        end
                         it "must have 0 settlements" do
-                            pending 'Implementation'
-                            fail
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(all('tr').count).to eq(0)
+                            Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                expect(page).to have_text s.public_number
+                            end
+                        end
+                        it "must show a message saying the visitor has no settlements with the owner" do
+                            sign_in @visitor
+                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                            expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
                         end
                     end
                     context "with 1 member" do
@@ -2361,6 +2084,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         end
                         after :context do
                             @visitor.members.each {|m| m.destroy}
+                        end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
                         end
                         context "that has 1 unrelated settlement" do
                             before :context do
@@ -2371,6 +2109,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -2402,33 +2146,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1 settlement with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 1 settlement" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(1 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that has 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1 settlement with the owner" do
@@ -2457,6 +2178,21 @@ RSpec.describe "The settlement section of the user profile show page" do
                         after :context do
                             @visitor.members.each {|m| m.destroy}
                         end
+                        context "that each have 0 settlements with the owner" do
+                            it "must have 0 settlements" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(all('tr').count).to eq(0)
+                                Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
+                                    expect(page).to have_text s.public_number
+                                end
+                            end
+                            it "must show a message saying the visitor has no settlements with the owner" do
+                                sign_in @visitor
+                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You do not have any active settlements with #{@owner.name}."
+                            end
+                        end
                         context "that each have 1 unrelated settlement" do
                             before :context do
                                 @visitor.members.each do |m|
@@ -2466,6 +2202,12 @@ RSpec.describe "The settlement section of the user profile show page" do
                             after :context do
                                 @visitor.members.each do |m|
                                     m.settlements.each {|s| s.destroy}
+                                end
+                            end
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -2497,33 +2239,10 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     m.settlements.each {|s| s.destroy}
                                 end
                             end
-                            context "and 1, 2, and 3 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 6 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
+                            context "and 0 settlements with the owner" do
+                                it "must have 0 settlements" do
+                                    pending 'Implementation'
+                                    fail
                                 end
                             end
                             context "and 1, 2, and 3 settlements with the owner" do
@@ -2538,101 +2257,6 @@ RSpec.describe "The settlement section of the user profile show page" do
                                     sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     expect(all('tr').count).to eq(6 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    context "with 5 members" do
-                        before :context do
-                            @visitor.members = create_list(:attorney, 5, organization: @visitor)
-                        end
-                        after :context do
-                            @visitor.members.each {|m| m.destroy}
-                        end
-                        context "that each have 1 unrelated settlement" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 1, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 3 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 3, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
-                                    Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
-                                        expect(page).to have_text s.public_number
-                                    end
-                                end
-                            end
-                        end
-                        context "that each have 5 unrelated settlements" do
-                            before :context do
-                                @visitor.members.each do |m|
-                                    m.settlements = create_list(:settlement, 5, attorney: m, adjuster: User.adjusters.without(@owner).sample)
-                                end
-                            end
-                            after :context do
-                                @visitor.members.each do |m|
-                                    m.settlements.each {|s| s.destroy}
-                                end
-                            end
-                            context "and 1, 2, 3, 4, and 5 settlements with the owner" do
-                                before :context do
-                                    @visitor.members.each_with_index do |m, i|
-                                        m.settlements += create_list(:settlement, i+1, adjuster: @owner, attorney: m)
-                                    end
-                                end
-                                after :context do
-                                end
-                                it "must have 15 settlements" do
-                                    sign_in @visitor
-                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                    expect(all('tr').count).to eq(15 + 1) # +1 because the table header counts as a row
                                     Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                         expect(page).to have_text s.public_number
                                     end
@@ -2648,13 +2272,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
                 context "and the visitor is an adjuster from another insurance company" do
@@ -2664,13 +2293,18 @@ RSpec.describe "The settlement section of the user profile show page" do
                     after :context do
                         @visitor.organization.destroy
                     end
-                    it "must not show any settlements" do
+                    it "must have no settlements" do
                         sign_in @visitor
                         visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                        expect(all('tr').count).to eq(0)
                         Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                             expect(page).to have_text s.public_number
                         end
+                    end
+                    it "must show a message saying the visitor cannot have settlements with the owner" do
+                        sign_in @visitor
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(find("[data-test-id='empty_active_settlement_message']")).to have_text "You cannot have settlements with #{@owner.name} because they are #{indefinite_articleize(word: @owner.role.downcase)}"
                     end
                 end
             end
@@ -2826,7 +2460,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -2987,7 +2621,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3003,7 +2637,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3147,7 +2781,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -3308,7 +2942,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3324,7 +2958,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3476,7 +3110,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -3637,7 +3271,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3653,7 +3287,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3797,7 +3431,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -3958,7 +3592,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -3974,7 +3608,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -4134,7 +3768,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -4295,7 +3929,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -4311,7 +3945,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -4455,7 +4089,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -4616,7 +4250,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -4632,7 +4266,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -4784,7 +4418,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -4945,7 +4579,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -4961,7 +4595,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -5105,7 +4739,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                             it "must have no settlements" do
                                 sign_in @visitor
                                 visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                                expect(all('tr').count).to eq(0)
                                 Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                     expect(page).to have_text s.public_number
                                 end
@@ -5266,7 +4900,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
@@ -5282,7 +4916,7 @@ RSpec.describe "The settlement section of the user profile show page" do
                         it "must have no settlements" do
                             sign_in @visitor
                             visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            expect(all('tr').count).to eq(0 + 1) # +1 because the table header counts as a row
+                            expect(all('tr').count).to eq(0)
                             Settlement.belonging_to(@owner).merge(Settlement.belonging_to(@visitor)).each do |s|
                                 expect(page).to have_text s.public_number
                             end
