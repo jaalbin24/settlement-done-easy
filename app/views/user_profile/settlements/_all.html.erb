@@ -1,7 +1,9 @@
 <div class="row">
-    <div class="col-auto">
-        <%=render "user_profile/settlements/whats_next_card"%>
-    </div>
+    <%if current_user == @owner%>
+        <div class="col-auto">
+            <%=render "user_profile/settlements/whats_next_card"%>
+        </div>
+    <%end%>
     <div class="col">
         <%=render "user_profile/settlements/active_settlements_card"%>
     </div>

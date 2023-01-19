@@ -14,6 +14,7 @@ module SpecGenerator
                 yield self
                 SystemSpec.create_file({
                     filename: "#{args[:name]}_spec.rb",
+                    location: args[:generated_file_location],
                     file_string: self.file_string
                 })
             end
@@ -126,9 +127,9 @@ module SpecGenerator
         end
 
         def self.create_file(args=nil)
-            Dir.chdir "#{Pathname.new(__FILE__).parent.parent}/spec/system/"
+            Dir.chdir "#{Pathname.new(__FILE__).parent.parent}/#{args[:location]}"
             if File.exist?("#{args[:filename]}")
-                puts "WARNING: A file spec/system/#{args[:filename]} already exists!"
+                puts "WARNING: A file #{args[:location]}#{args[:filename]} already exists!"
                 puts "Overwrite? (y/n)"
                 input = STDIN.gets.strip
                 unless input == 'y'
@@ -136,12 +137,11 @@ module SpecGenerator
                     return
                 end
             end
-            Dir.chdir "#{Pathname.new(__FILE__).parent.parent}/spec/system/"
             File.open("#{args[:filename]}", "w+") do |file|
                 file.write SystemSpec.comment_header(generator_file_location: "spec/generators")
                 file.write args[:file_string]
             end
-            puts "Generated file #{args[:filename]}"
+            puts "Generated file #{args[:location]}#{args[:filename]}"
         end
 
         def self.generate_all_specs(args=nil)

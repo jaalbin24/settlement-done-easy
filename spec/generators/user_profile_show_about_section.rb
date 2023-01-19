@@ -180,7 +180,7 @@ tested_attr = {
     },
 }
 
-SpecGenerator::SystemSpec.new(name: "user_profile_show_about_section") do |s|
+SpecGenerator::SystemSpec.new(name: "about_section", generated_file_location: "spec/system/user_profile/show/about/") do |s|
     s.describe "The about section of the user profile show page" do
         s.before :context do 
             "create(:attorney)
