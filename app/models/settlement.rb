@@ -38,44 +38,21 @@
 #  fk_rails_...  (started_by_id => users.id)
 #
 
-
-
-# if documents.first.nil? # If settlement has no documents
-#     self.ready_for_payment = false
-# elsif documents.rejected.exists? # If settlement has rejected documents
-#     self.ready_for_payment = false
-# elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
-#     self.ready_for_payment = false
-# elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
-#     self.ready_for_payment = false
-# elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
-#     self.ready_for_payment = false
-# elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
-#     self.ready_for_payment = false
-# elsif has_processing_payment?
-#     self.ready_for_payment = false
-# elsif has_completed_payment?
-#     self.ready_for_payment = false
-# elsif !attorney.organization.activated?
-#     self.ready_for_payment = false
-# elsif !adjuster.organization.activated?
-#     self.ready_for_payment = false
-# else
-#     self.ready_for_payment = true
-# end
-#
 class Settlement < ApplicationRecord
     include DocumentGenerator
 
-    scope :ready_for_payment,           ->      {where(ready_for_payment: true)}
-    scope :needs_document,              ->      {left_joins(:documents).where(documents: {id: nil})}
-    scope :needs_signature,             ->      {joins(:documents).where(document: {signed: false, needs_signature: true})}
-    scope :with_attorney_public_id,     -> (i)  {joins(:attorney).where(attorney: {public_id: i}).distinct}
-    scope :with_adjuster_public_id,     -> (i)  {joins(:adjuster).where(adjuster: {public_id: i}).distinct}
-    scope :completed,                   -> (i)  {where(completed: true)}
-    scope :canceled,                    -> (i)  {where(canceled: true)}
-    scope :active,                      -> (i)  {where(completed: false).and(where(canceled: false))}
-    scope :belonging_to,                -> (i)  {joins(attorney: :organization).joins(adjuster: :organization).where(attorney: i).or(where(adjuster: i)).or(where(attorney: {organization: i})).or(where(adjuster: {organization: i})).distinct}
+    scope :ready_for_payment,               ->      {where(ready_for_payment: true)}
+    scope :needs_document,                  ->      {left_joins(:documents).where(documents: {id: nil}).distinct}
+    scope :needs_signature,                 ->      {joins(:documents).where(documents: {signed: false, needs_signature: true}).distinct}
+    scope :needs_document_approval_from,    -> (i)  {joins(documents: :reviews).merge(DocumentReview.by(i).waiting_for_review).distinct}
+    scope :needs_attr_approval_from,        -> (i)  {joins(:attribute_reviews).merge(SettlementAttributesReview.by(i).not_fully_approved).distinct}
+    
+    scope :with_attorney_public_id,         -> (i)  {joins(:attorney).where(attorney: {public_id: i}).distinct}
+    scope :with_adjuster_public_id,         -> (i)  {joins(:adjuster).where(adjuster: {public_id: i}).distinct}
+    scope :completed,                       -> (i)  {where(completed: true)}
+    scope :canceled,                        -> (i)  {where(canceled: true)}
+    scope :active,                          -> (i)  {where(completed: false).and(where(canceled: false))}
+    scope :belonging_to,                    -> (i)  {joins(attorney: :organization).joins(adjuster: :organization).where(attorney: i).or(where(adjuster: i)).or(where(attorney: {organization: i})).or(where(adjuster: {organization: i})).distinct}
 
     validates :amount, presence: true
     validates :locked, inclusion: {in: [true], message: "must be true when the settlement is completed.", if: :completed?}
@@ -358,7 +335,7 @@ class Settlement < ApplicationRecord
     end
 
     def build_settings
-        if settings.empty?
+        if settings.nil?
             settings.build(
                 user: attorney
             )
@@ -443,24 +420,34 @@ class Settlement < ApplicationRecord
 
     def update_ready_for_payment_attribute
         if documents.first.nil? # If settlement has no documents
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 1"
             self.ready_for_payment = false
         elsif documents.rejected.exists? # If settlement has rejected documents
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 2"
             self.ready_for_payment = false
         elsif documents.waiting_for_review.exists? # If settlement has unapproved documents
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 3"
             self.ready_for_payment = false
-        elsif documents.unsigned.need_signature.exists? # If settlement has unsigned documents that should be signed
+        elsif documents.unsigned.needs_signature.exists? # If settlement has unsigned documents that should be signed
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 4"
             self.ready_for_payment = false
         elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 5"
             self.ready_for_payment = false
         elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 6"
             self.ready_for_payment = false
         elsif has_processing_payment?
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 7"
             self.ready_for_payment = false
         elsif has_completed_payment?
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 8"
             self.ready_for_payment = false
         elsif !attorney.organization.activated?
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 9"
             self.ready_for_payment = false
         elsif !adjuster.organization.activated?
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 10"
             self.ready_for_payment = false
         else
             self.ready_for_payment = true

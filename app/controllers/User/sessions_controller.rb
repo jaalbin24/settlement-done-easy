@@ -19,7 +19,7 @@ class User::SessionsController < Devise::SessionsController
         yield resource if block_given?
         if current_user.isMember?
             flash[:primary] = {
-                heading: "Welcome back, #{resource.first_name}!",
+                heading: "Welcome back, #{resource.profile.first_name}!",
                 message: "You are now signed in."
             }
         elsif resource.activated?

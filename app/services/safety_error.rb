@@ -31,7 +31,7 @@ module SafetyError
             raise PaymentSafetyError.new "This settlement already has a payment processing."                            if payment.settlement.has_processing_payment?
             raise PaymentSafetyError.new "Payment cannot be sent without a document."                                   unless payment.settlement.documents.exists?
             raise PaymentSafetyError.new "Payment cannot be sent until all documents are approved."                     if payment.settlement.documents.unapproved.exists?
-            raise PaymentSafetyError.new "Payment cannot be sent until all documents that need a signature are signed." if payment.settlement.documents.unsigned.need_signature.exists?
+            raise PaymentSafetyError.new "Payment cannot be sent until all documents that need a signature are signed." if payment.settlement.documents.unsigned.needs_signature.exists?
         end
 
         def self.raise_error_unless_safe_to_execute_outbound_payment_on(payment)

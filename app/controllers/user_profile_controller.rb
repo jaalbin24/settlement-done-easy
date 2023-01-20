@@ -39,6 +39,8 @@ class UserProfileController < ApplicationController
             @settlements = Settlement.belonging_to(@owner).merge(Settlement.belonging_to(current_user))
         end
 
+        @documents = Document.belonging_to(current_user)
+
         if params[:section].blank?
             @section = "about"
             @section = "settlements" if @owner == current_user

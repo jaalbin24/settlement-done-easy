@@ -12,13 +12,8 @@ class PagesController < ApplicationController
     def root
         if !user_signed_in?
             render :home
-        elsif current_user.isOrganization?
-            @payments = current_user.payments
-            render :organization_dashboard
-        elsif current_user.isMember?
-            render :member_dashboard
         else
-            render :home
+            redirect_to user_profile_show_path(current_user.profile)
         end
     end
 

@@ -31,6 +31,7 @@
 FactoryBot.define do
     factory :document, class: "Document" do
         settlement
+        association :added_by, factory: :attorney
         trait :added_by_adjuster do
             association :added_by, factory: :adjuster
         end
@@ -38,11 +39,12 @@ FactoryBot.define do
             association :added_by, factory: :attorney
         end
         trait :approved do
-            after(:create) do |d, e|
+            after(:build) do |d, e|
                 puts "🤖🤖🤖 document:approved after(:create) block"
-                d.reviews.each do |dr|
-                    dr.approve
-                end
+                d.reviews = [
+                    build(:document_review_by_attorney, :for_approval, document: d, reviewer: d.settlement.attorney),
+                    build(:document_review_by_adjuster, :for_approval, document: d, reviewer: d.settlement.adjuster)
+                ]
             end
         end
         trait :rejected do

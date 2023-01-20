@@ -11,15 +11,15 @@ class DocumentReviewsController < ApplicationController
             document = Document.find_by!(public_id: params[:id])
             review = document.reviews.by(current_user).first
             if review.reject && !document.nil?
-                if document.will_be_deleted_after_rejection? || document.nil?
-                    flash[:primary] = "The document was rejected and automatically deleted."
-                    redirect_to settlement_show_path(document.settlement)
-                    return
-                else
-                    flash[:primary] = "The document was rejected."
-                    redirect_to document_show_path(document)
-                    return
-                end
+                # if document.will_be_deleted_after_rejection? || document.nil?
+                #     flash[:primary] = "The document was rejected and automatically deleted."
+                #     redirect_to settlement_show_path(document.settlement)
+                #     return
+                # else
+                #     flash[:primary] = "The document was rejected."
+                #     redirect_to document_show_path(document)
+                #     return
+                # end
             else
                 flash[:primary] = "The document could not be rejected right now. Try again later."
                 puts "⚠️⚠️⚠️ ERROR: #{review.errors.full_messages.inspect}"

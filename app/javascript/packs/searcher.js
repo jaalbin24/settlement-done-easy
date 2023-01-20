@@ -56,6 +56,7 @@ export default class Searcher {
             console.log("key=%s, json[key]=%O", key, json[key]);
             let htmlString = `<table><tr class="clickable" href="${json[key].show_path}">
                 <td class="border-bottom-0"><strong>${json[key].public_number}</strong></td>
+                <td class="border-bottom-0"><a class="link-dark" href="${json[key].attorney.profile.show_path}">${json[key].attorney.profile.first_name} ${json[key].attorney.profile.last_name}</a></td>
                 <td class="border-bottom-0"><a class="link-dark" href="${json[key].adjuster.profile.show_path}">${json[key].adjuster.profile.first_name} ${json[key].adjuster.profile.last_name}</a></td>
                 <td class="border-bottom-0">${json[key].claimant_name}</td>
                 <td class="border-bottom-0">$${json[key].amount}</td>

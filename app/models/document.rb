@@ -36,9 +36,12 @@ class Document < ApplicationRecord
     scope :waiting_for_review,  ->      {where(status: "Waiting for review")}
     scope :signed,              ->      {where(signed: true)}
     scope :unsigned,            ->      {where(signed: false)}
-    scope :need_signature,      ->      {where(needs_signature: true)}
+    scope :needs_signature,     ->      {where(needs_signature: true)}
     scope :auto_generated,      ->      {where(auto_generated: true)}
     scope :added_by,            ->  (i) {where(added_by: i)}
+
+    scope :needs_approval_from, ->  (i) {joins(:reviews).merge(DocumentReview.by(i).waiting_for_review).distinct}
+    scope :belonging_to,        ->  (i) {joins(:settlement).where(settlement: {attorney: i}).or(where(settlement: {adjuster: i})).distinct}
 
 
     has_one_attached :pdf
@@ -144,9 +147,9 @@ class Document < ApplicationRecord
             if changed?
                 self.save
             end
-            if will_be_deleted_after_rejection? && rejected?
-                self.destroy
-            end
+            # if will_be_deleted_after_rejection? && rejected?
+            #     self.destroy
+            # end
         end
         settlement.save
     end
@@ -158,7 +161,7 @@ class Document < ApplicationRecord
     def update_status_attribute
         if reviews.rejections.exists?
             reject
-        elsif reviews.approvals.size == reviews.size
+        elsif reviews.approvals.count == reviews.count
             approve
         else
             self.status = "Waiting for review"
@@ -252,9 +255,5 @@ class Document < ApplicationRecord
 
     def init_nickname
         self.nickname = "Release for #{settlement.claimant_name}"
-    end
-
-    def will_be_deleted_after_rejection?
-        settlement.settings_for(added_by).delete_my_documents_after_rejection?
     end
 end

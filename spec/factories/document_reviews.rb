@@ -34,5 +34,12 @@ FactoryBot.define do
         trait :for_rejection do
             verdict {"Approved"}
         end
+        factory :document_review_by_attorney do
+            association :reviewer, factory: :attorney
+        end
+
+        factory :document_review_by_adjuster do
+            association :reviewer, factory: :adjuster
+        end
     end
 end

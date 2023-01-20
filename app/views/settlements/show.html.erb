@@ -221,9 +221,9 @@
                                 At least one document.
                             </a>
                         </li>
-                        <%if @settlement.documents.need_signature.exists?%>
+                        <%if @settlement.documents.needs_signature.exists?%>
                             <li class="d-flex gap-2">
-                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.need_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
+                                <h5 class="mx-0"><i class="fa-regular fa-<%=@settlement.documents.exists? && !@settlement.documents.needs_signature.unsigned.exists? ? "square-check": "square"%>"></i></h5>
                                 <p class="m-0">All documents that need a signature have one.</p>
                             </li>
                         <%end%>

@@ -42,8 +42,31 @@ FactoryBot.define do
         adjuster
         attorney
         amount {10.00}
+
         transient do
             num_documents {1}
+        end
+
+        trait :ready_for_payment do
+            ready_for_payment {true}
+            after(:build) do |s, e|
+                s.documents = build_list(:document, e.num_documents,
+                    :approved,
+                    added_by: rand(1..2).odd? ? s.attorney : s.adjuster,
+                    settlement: s
+                )
+            end
+        end
+
+        trait :needs_signature do
+            after(:build) do |s, e|
+                s.documents = build_list(:document, e.num_documents,
+                    needs_signature: true,
+                    signed: false,
+                    added_by: rand(1..2).odd? ? s.attorney : s.adjuster,
+                    settlement: s
+                )
+            end
         end
 
         trait :delete_my_documents_after_rejection do
