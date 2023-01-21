@@ -88,7 +88,7 @@ RSpec.describe "The sign in page", type: :system do
             end
         end
         context "if the form submits successfully" do
-            it "must take the user to the root page" do
+            it "must take the user to their profile page" do
                 @users.each do |user|
                     sign_out
                     visit new_user_session_path
@@ -96,7 +96,7 @@ RSpec.describe "The sign in page", type: :system do
                     fill_in "user[password]", with: "password123"
                     find("input[data-test-id='submit_user_sign_in_button']").click
                     sleep(0.05)
-                    expect(current_path).to eq root_path
+                    expect(current_path).to eq user_profile_show_path(user.profile)
                 end
             end
         end

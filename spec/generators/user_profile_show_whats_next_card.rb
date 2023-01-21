@@ -9,514 +9,168 @@ require 'humanize'
 include EnglishLanguage
 include SpecGenerator
 
-SpecGenerator::SystemSpec.new(name: "whats_next_card", generated_file_location: "spec/system/user_profile/show/settlements/") do |s|
-    s.describe "The whats next card in the settlement section of the user profile show page" do
-        s.context "when the owner is an attorney" do
-            s.before(:context) do
-                "@owner = create(:law_firm, num_members: 2).members.first
-                another_law_firm = create(:law_firm)
-                another_insurance_company = create(:insurance_company)
-                another_adjuster = another_insurance_company.members.first
-                another_attorney = another_law_firm.members.first
-                organization = @owner.organization
-                member_of_organization = organization.members.last
-                @non_owner_users = [organization, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
-            end
-            s.after :context do
-                "User.all.each {|u| u.destroy}"
-            end
-            [0,1,2].each do |n_needs_document|
-                s.context "with #{n_needs_document} #{'settlement'.pluralize(n_needs_document)} needing a document" do
-                    s.before(:context) do
-                        "@needs_documents = create_list(:settlement, #{n_needs_document}, :needs_document, attorney: @owner, adjuster: User.adjusters.sample)
-                        @owner.settlements += @needs_documents"
-                    end
-                    s.after(:context) {"@needs_documents.each {|s| s.destroy}"}
-                    [0,1,2].each do |n_needs_document_approval|
-                        s.context "and #{n_needs_document_approval} #{'settlement'.pluralize(n_needs_document_approval)} needing document approval" do
-                            s.before(:context) do
-                                "@needs_doc_approval = create_list(:settlement, #{n_needs_document_approval}, :needs_document_approval_from_attorney, attorney: @owner, adjuster: User.adjusters.sample)
-                                @owner.settlements += @needs_doc_approval"
-                            end
-                            s.after(:context) {"@needs_doc_approval.each {|s| s.destroy}"}
-                            [0,1,2].each do |n_needs_attr_approval|
-                                s.context "and #{n_needs_attr_approval} #{'settlement'.pluralize(n_needs_attr_approval)} needing attribute approval" do
-                                    s.before :context do
-                                        "@needs_attr_approval = create_list(:settlement, #{n_needs_attr_approval}, :needs_attr_approval_from_attorney, attorney: @owner, adjuster: User.adjusters.sample)
-                                        @owner.settlements += @needs_attr_approval"
-                                    end
-                                    s.after(:context) {"@needs_attr_approval.each {|s| s.destroy}"}
-                                    [0,1,2].each do |n_needs_signature|
-                                        s.context "and #{n_needs_signature} #{'settlement'.pluralize(n_needs_signature)} with a document needing a signature" do
-                                            s.before :context do
-                                                "@needs_signature = create_list(:settlement, #{n_needs_signature}, :needs_signature, attorney: @owner, adjuster: User.adjusters.sample)
-                                                @owner.settlements += @needs_signature"
-                                            end
-                                            s.after(:context) {"@needs_signature.each {|s| s.destroy}"}
-                                            [0,1,2].each do |n_ready_for_payment|
-                                                s.context "and #{n_ready_for_payment} #{'settlement'.pluralize(n_ready_for_payment)} ready for payment" do
-                                                    s.before :context do
-                                                        "@ready_for_payment = create_list(:settlement, #{n_ready_for_payment}, :ready_for_payment, attorney: @owner, adjuster: User.adjusters.sample)
-                                                        @owner.settlements += @ready_for_payment"
-                                                    end
-                                                    s.after(:context) {"@ready_for_payment.each {|s| s.destroy}"}
-                                                    s.context "and the visitor is the owner" do
-                                                        s.before(:context) {'@visitor = @owner'}
-                                                        if n_needs_document == 0
-                                                            s.it "must not have the needs document message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_document} #{'settlement'.pluralize(n_needs_document)} #{n_needs_document == 1 ? 'needs' : 'need'} a document" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_document_message']\"
-                                                                expect(find(\"[data-test-id='needs_document_message']\")).to have_text '#{n_needs_document == 1 ? 'A settlement needs': "#{n_needs_document} settlements need"} a document'"
-                                                            end
-                                                            s.context "after the needs document message is clicked" do
-                                                                s.it "must show only the settlements that need a document in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_documents.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_documents.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_needs_document_approval == 0
-                                                            s.it "must not have the needs document approval message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_document_approval} #{'settlement'.pluralize(n_needs_document_approval)} #{n_needs_document_approval == 1 ? 'needs' : 'need'} document approval" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_document_approval_from_message']\"
-                                                                expect(find(\"[data-test-id='needs_document_approval_from_message']\")).to have_text '#{n_needs_document_approval == 1 ? 'A settlement needs' : "#{n_needs_document_approval} settlements need"} document approval'"
-                                                            end
-                                                            s.context "after the needs document approval message is clicked" do
-                                                                s.it "must show only the settlements that need document approval in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_doc_approval.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_doc_approval.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_needs_attr_approval == 0
-                                                            s.it "must not have the needs attr approval message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_attr_approval} #{'settlement'.pluralize(n_needs_attr_approval)} #{n_needs_attr_approval == 1 ? 'needs' : 'need'} approval" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_attr_approval_from_message']\"
-                                                                expect(find(\"[data-test-id='needs_attr_approval_from_message']\")).to have_text '#{n_needs_attr_approval == 1 ? 'A settlement needs' : "#{n_needs_attr_approval} settlements need"} your approval'"
-                                                            end
-                                                            s.context "after the needs attr approval message is clicked" do
-                                                                s.it "must show only the settlements that need attribute approval from the owner in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_attr_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_attr_approval.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_attr_approval.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_needs_signature == 0
-                                                            s.it "must not have the needs signature message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_signature_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_signature} #{'settlement'.pluralize(n_needs_signature)} #{n_needs_signature == 1 ? 'needs' : 'need'} a signature" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_signature_message']\"
-                                                                expect(find(\"[data-test-id='needs_signature_message']\")).to have_text '#{n_needs_signature == 1 ? 'A document needs' : "#{n_needs_signature} documents need"} a signature'"
-                                                            end
-                                                            s.context "after the needs signature message is clicked" do
-                                                                s.it "must show only the settlements that need a signature in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_signature_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_signature.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_signature.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_ready_for_payment == 0
-                                                            s.it "must not have the ready for payment message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_ready_for_payment} #{'settlement'.pluralize(n_ready_for_payment)} #{n_ready_for_payment == 1 ? 'is' : 'are'} ready for payment" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='ready_for_payment_message']\"
-                                                                expect(find(\"[data-test-id='ready_for_payment_message']\")).to have_text '#{n_ready_for_payment == 1 ? 'A settlement is': "#{n_ready_for_payment} settlements are"} ready for payment'"
-                                                            end
-                                                            s.context "after the ready for payment message is clicked" do
-                                                                s.it "must show only the settlements that are ready for payment in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='ready_for_payment_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@ready_for_payment.size + 1) # +1 because the table header counts as a row
-                                                                    @ready_for_payment.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                    s.context "and the visitor is not the owner" do
-                                                        s.it "must not be shown" do
-                                                            "@non_owner_users.each do |u|
-                                                                sign_in u
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='whats_next_card']\"
-                                                                expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_message']\"
-                                                            end"
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-            # [0,1,2].each do |n_awaiting_doc_approval|
-            #     s.context "with n settlements awaiting document approval" do
-            #         [0,1,2].each do |n_awaiting_attr_approval|
-            #         s.context "and n settlements awaiting attr approval" do
-            #             [0,1,2].each do |n_awaiting_payment_sending|
-            #             s.context "and n settlements awaiting payment sending" do
-            #                 [0,1,2].each do |n_awaiting_payment_posting|
-            #                 s.context "and n settlements awaiting payment posting" do
-            #                     [0,1,2].each do |n_awaiting_signatures|
-            #                     s.context "and n settlements awaiting signatures" do
-            #                         s.it "must show the correct messages" do
+members = {
+    attorney: {
+        organization: :law_firm,
+        opposite: :adjuster
+    },
+    adjuster:{
+        organization: :insurance_company,
+        opposite: :attorney
+    }
+}
+organizations = [
+    :law_firm,
+    :insurance_company
+]
 
-            #                         end
-            #                     end
-            #                 end
-            #             end
-            #         end
-            #     end
-            # end
-        end
-        s.context "when the owner is an adjuster" do
-            s.before(:context) do
-                "@owner = create(:insurance_company, num_members: 2).members.first
-                another_law_firm = create(:law_firm)
-                another_insurance_company = create(:insurance_company)
-                another_adjuster = another_insurance_company.members.first
-                another_attorney = another_law_firm.members.first
-                organization = @owner.organization
-                member_of_organization = organization.members.last
-                @non_owner_users = [organization, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
-            end
-            s.after :context do
-                "User.all.each {|u| u.destroy}"
-            end
-            [0,1,2].each do |n_needs_document|
-                s.context "with #{n_needs_document} #{'settlement'.pluralize(n_needs_document)} needing a document" do
-                    s.before(:context) do
-                        "@needs_documents = create_list(:settlement, #{n_needs_document}, :needs_document, adjuster: @owner, attorney: User.attorneys.sample)
-                        @owner.settlements += @needs_documents"
-                    end
-                    s.after(:context) {"@needs_documents.each {|s| s.destroy}"}
-                    [0,1,2].each do |n_needs_document_approval|
-                        s.context "and #{n_needs_document_approval} #{'settlement'.pluralize(n_needs_document_approval)} needing document approval" do
+action = {
+    needs_document: {
+        context_string: "needing a document",
+        test_id: "needs_document_message",
+        expected_text: "%settlement% %needs% a document",
+    },
+    needs_document_approval_from_: {
+        context_string: "needing document approval",
+        test_id: "needs_document_approval_from_message",
+        expected_text: "%document% %needs% your approval",
+        from?: true
+    },
+    needs_attr_approval_from_: {
+        context_string: "needing attr approval",
+        test_id: "needs_attr_approval_from_message",
+        expected_text: "%settlement% %needs% your approval",
+        from?: true
+    },
+    needs_signature: {
+        context_string: "needing at least one signature",
+        test_id: "needs_signature_message",
+        expected_text: "%document% %needs% a signature",
+    },
+    ready_for_payment: {
+        context_string: "ready for payment",
+        test_id: "ready_for_payment_message",
+        expected_text: "%settlement% %is% ready for payment",
+    },
+}
+
+waiting = {
+    document_approval: {
+        expected_text: "%document% to be approved",
+        test_id: "awaiting_document_approval_message",
+        trait: :needs_document_approval_from_,
+        from?: true,
+        attorney_can_wait_on?: true,
+        adjuster_can_wait_on?: true,
+    },
+    attr_approval: {
+        expected_text: "%settlement% to be approved",
+        test_id: "awaiting_attr_approval_message",
+        trait: :needs_attr_approval_from_,
+        from?: true,
+        attorney_can_wait_on?: true,
+        adjuster_can_wait_on?: true,
+    },
+    payment_sending: {
+        expected_text: "%payment% to be sent",
+        test_id: "awaiting_payment_sending_message",
+        trait: :ready_for_payment,
+        attorney_can_wait_on?: true,
+        adjuster_can_wait_on?: false,
+    },
+    # payment_posting: {
+    #     expected_text: "%payment% to post",
+    #     test_id: "awaiting_payment_posting_message",
+    #     trait: :with_processing_payment,
+    #     attorney_can_wait_on?: true,
+    #     adjuster_can_wait_on?: true,
+    # },
+    # signature: {
+    #     expected_text: "%signature%",
+    #     test_id: "awaiting_signature_message",
+    #     trait: :with_sent_signature,
+    #     attorney_can_wait_on?: true,
+    #     adjuster_can_wait_on?: true,
+    # },
+    # Not yet implemented ^
+}
+
+SpecGenerator::SystemSpec.new(name: "whats_next_card", generated_file_location: "spec/system/user_profile/show/settlements/") do |s|
+    s.describe "The whats next card in the settlements section of the user profile show page" do
+        members.keys.each do |mk|
+            s.context "when the owner is an #{mk}" do
+                s.before(:context) do
+                    "@owner = create(:#{members[mk][:organization]}, num_members: 2).members.first
+                    another_law_firm = create(:law_firm)
+                    another_insurance_company = create(:insurance_company)
+                    another_adjuster = another_insurance_company.members.first
+                    another_attorney = another_law_firm.members.first
+                    organization = @owner.organization
+                    member_of_organization = organization.members.last
+                    @non_owner_users = [organization, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
+                end
+                s.after :context do
+                    "User.all.each {|u| u.destroy}"
+                end
+                action.keys.each do |ak|
+                    [0,1,2].each do |i|
+                        s.context "with #{i} #{'settlement'.pluralize(i)} #{action[ak][:context_string]}" do
                             s.before(:context) do
-                                "@needs_doc_approval = create_list(:settlement, #{n_needs_document_approval}, :needs_document_approval_from_adjuster, adjuster: @owner, attorney: User.attorneys.sample)
-                                @owner.settlements += @needs_doc_approval"
+                                "@#{ak} = create_list(:settlement, #{i}, :#{ak}#{mk if action[ak][:from?]}, #{mk}: @owner, #{members[mk][:opposite]}: User.#{members[mk][:opposite]}s.sample)
+                                @owner.settlements = @#{ak}"
                             end
-                            s.after(:context) {"@needs_doc_approval.each {|s| s.destroy}"}
-                            [0,1,2].each do |n_needs_attr_approval|
-                                s.context "and #{n_needs_attr_approval} #{'settlement'.pluralize(n_needs_attr_approval)} needing attribute approval" do
-                                    s.before :context do
-                                        "@needs_attr_approval = create_list(:settlement, #{n_needs_attr_approval}, :needs_attr_approval_from_adjuster, adjuster: @owner, attorney: User.attorneys.sample)
-                                        @owner.settlements += @needs_attr_approval"
-                                    end
-                                    s.after(:context) {"@needs_attr_approval.each {|s| s.destroy}"}
-                                    [0,1,2].each do |n_needs_signature|
-                                        s.context "and #{n_needs_signature} #{'settlement'.pluralize(n_needs_signature)} with a document needing a signature" do
-                                            s.before :context do
-                                                "@needs_signature = create_list(:settlement, #{n_needs_signature}, :needs_signature, adjuster: @owner, attorney: User.attorneys.sample)
-                                                @owner.settlements += @needs_signature"
-                                            end
-                                            s.after(:context) {"@needs_signature.each {|s| s.destroy}"}
-                                            [0,1,2].each do |n_ready_for_payment|
-                                                s.context "and #{n_ready_for_payment} #{'settlement'.pluralize(n_ready_for_payment)} ready for payment" do
-                                                    s.before :context do
-                                                        "@ready_for_payment = create_list(:settlement, #{n_ready_for_payment}, :ready_for_payment, adjuster: @owner, attorney: User.attorneys.sample)
-                                                        @owner.settlements += @ready_for_payment"
-                                                    end
-                                                    s.after(:context) {"@ready_for_payment.each {|s| s.destroy}"}
-                                                    s.context "and the visitor is the owner" do
-                                                        s.before(:context) {'@visitor = @owner'}
-                                                        if n_needs_document == 0
-                                                            s.it "must not have the needs document message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_document} #{'settlement'.pluralize(n_needs_document)} #{n_needs_document == 1 ? 'needs' : 'need'} a document" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_document_message']\"
-                                                                expect(find(\"[data-test-id='needs_document_message']\")).to have_text '#{n_needs_document == 1 ? 'A settlement needs': "#{n_needs_document} settlements need"} a document'"
-                                                            end
-                                                            s.context "after the needs document message is clicked" do
-                                                                s.it "must hide all other whats next messages" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_message']\").click
-                                                                    sleep 0.1 # To allow time for the whats next card to update
-                                                                    expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\").all('form').count).to eq(1) # +1 because the table header counts as a row
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\")).to have_text '#{n_needs_document == 1 ? 'A settlement needs': "#{n_needs_document} settlements need"} a document'"
-                                                                end
-                                                                s.it "must show only the settlements that need a document in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_documents.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_documents.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                                s.it "must show the reset button" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(page).to have_css \"button[data-test-id='reset_settlement_search_button']\""
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_needs_document_approval == 0
-                                                            s.it "must not have the needs document approval message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_document_approval} #{'settlement'.pluralize(n_needs_document_approval)} #{n_needs_document_approval == 1 ? 'needs' : 'need'} document approval" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_document_approval_from_message']\"
-                                                                expect(find(\"[data-test-id='needs_document_approval_from_message']\")).to have_text '#{n_needs_document_approval == 1 ? 'A settlement needs' : "#{n_needs_document_approval} settlements need"} document approval'"
-                                                            end
-                                                            s.context "after the needs document approval message is clicked" do
-                                                                s.it "must hide all other whats next messages" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the whats next card to update
-                                                                    expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\").all('form').count).to eq(1) # +1 because the table header counts as a row
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\")).to have_text '#{n_needs_document_approval == 1 ? 'A settlement needs' : "#{n_needs_document_approval} settlements need"} document approval'"
-                                                                end
-                                                                s.it "must show only the settlements that need document approval in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_doc_approval.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_doc_approval.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                                s.it "must show the reset button" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_document_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(page).to have_css \"button[data-test-id='reset_settlement_search_button']\""
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_needs_attr_approval == 0
-                                                            s.it "must not have the needs attr approval message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_attr_approval} #{'settlement'.pluralize(n_needs_attr_approval)} #{n_needs_attr_approval == 1 ? 'needs' : 'need'} approval" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_attr_approval_from_message']\"
-                                                                expect(find(\"[data-test-id='needs_attr_approval_from_message']\")).to have_text '#{n_needs_attr_approval == 1 ? 'A settlement needs' : "#{n_needs_attr_approval} settlements need"} your approval'"
-                                                            end
-                                                            s.context "after the needs attr approval message is clicked" do
-                                                                s.it "must hide all other whats next messages" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_attr_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the whats next card to update
-                                                                    expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\").all('form').count).to eq(1) # +1 because the table header counts as a row
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\")).to have_text '#{n_needs_attr_approval == 1 ? 'A settlement needs' : "#{n_needs_attr_approval} settlements need"} your approval'"
-                                                                end
-                                                                s.it "must show only the settlements that need attribute approval from the owner in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_attr_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_attr_approval.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_attr_approval.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                                s.it "must show the reset button" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_attr_approval_from_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(page).to have_css \"button[data-test-id='reset_settlement_search_button']\""
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_needs_signature == 0
-                                                            s.it "must not have the needs signature message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='needs_signature_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_needs_signature} #{'settlement'.pluralize(n_needs_signature)} #{n_needs_signature == 1 ? 'needs' : 'need'} a signature" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='needs_signature_message']\"
-                                                                expect(find(\"[data-test-id='needs_signature_message']\")).to have_text '#{n_needs_signature == 1 ? 'A document needs' : "#{n_needs_signature} documents need"} a signature'"
-                                                            end
-                                                            s.context "after the needs signature message is clicked" do
-                                                                s.it "must hide all other whats next messages" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_signature_message']\").click
-                                                                    sleep 0.1 # To allow time for the whats next card to update
-                                                                    expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\").all('form').count).to eq(1) # +1 because the table header counts as a row
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\")).to have_text '#{n_needs_signature == 1 ? 'A document needs' : "#{n_needs_signature} documents need"} a signature'"
-                                                                end
-                                                                s.it "must show only the settlements that need a signature in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_signature_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@needs_signature.size + 1) # +1 because the table header counts as a row
-                                                                    @needs_signature.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                                s.it "must show the reset button" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='needs_signature_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(page).to have_css \"button[data-test-id='reset_settlement_search_button']\""
-                                                                end
-                                                            end
-                                                        end
-                                                        if n_ready_for_payment == 0
-                                                            s.it "must not have the ready for payment message" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\""
-                                                            end
-                                                        else
-                                                            s.it "must have a message saying #{n_ready_for_payment} #{'settlement'.pluralize(n_ready_for_payment)} #{n_ready_for_payment == 1 ? 'is' : 'are'} ready for payment" do
-                                                                "sign_in @visitor
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to have_css \"[data-test-id='ready_for_payment_message']\"
-                                                                expect(find(\"[data-test-id='ready_for_payment_message']\")).to have_text '#{n_ready_for_payment == 1 ? 'A settlement is': "#{n_ready_for_payment} settlements are"} ready for payment'"
-                                                            end
-                                                            s.context "after the ready for payment message is clicked" do
-                                                                s.it "must hide all other whats next messages" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='ready_for_payment_message']\").click
-                                                                    sleep 0.1 # To allow time for the whats next card to update
-                                                                    expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\").all('form').count).to eq(1) # +1 because the table header counts as a row
-                                                                    expect(find(\"[data-test-id='whats_next_action_list']\")).to have_text '#{n_ready_for_payment == 1 ? 'A settlement is': "#{n_ready_for_payment} settlements are"} ready for payment'"
-                                                                end
-                                                                s.it "must show only the settlements that are ready for payment in the active settlements card" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='ready_for_payment_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(all('tr').count).to eq(@ready_for_payment.size + 1) # +1 because the table header counts as a row
-                                                                    @ready_for_payment.each do |s|
-                                                                        expect(page).to have_text s.public_number
-                                                                    end"
-                                                                end
-                                                                s.it "must show the reset button" do
-                                                                    "sign_in @visitor
-                                                                    visit user_profile_show_path(@owner.profile, section: 'settlements')
-                                                                    find(\"[data-test-id='ready_for_payment_message']\").click
-                                                                    sleep 0.1 # To allow time for the active settlement table to update
-                                                                    expect(page).to have_css \"button[data-test-id='reset_settlement_search_button']\""
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                    s.context "and the visitor is not the owner" do
-                                                        s.it "must not be shown" do
-                                                            "@non_owner_users.each do |u|
-                                                                sign_in u
-                                                                visit user_profile_show_path(@owner.profile, section: :settlements)
-                                                                expect(page).to_not have_css \"[data-test-id='whats_next_card']\"
-                                                                expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
-                                                                expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\"
-                                                                expect(page).to_not have_css \"[data-test-id='needs_document_message']\"
-                                                            end"
-                                                        end
-                                                    end
-                                                end
+                            s.after(:context) do
+                                "@#{ak}.each {|s| s.destroy!}
+                                @owner.reload"
+                            end
+                            s.context "and the visitor is the owner" do
+                                s.before(:context) {'@visitor = @owner'}
+                                s.it "must#{i == 0 ? " not" : ""} have the #{ak.to_s.gsub("_", " ")} message" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: :settlements)
+                                    expect(page).to#{i == 0 ? "_not" : ""} have_css \"[data-test-id='#{action[ak][:test_id]}']\"
+                                    expect(page).to#{i == 0 ? "_not" : ""} have_text '#{action[ak][:expected_text].sub('%settlement%', i == 1 ? 'A settlement' : "#{i} settlements").sub('%document%', i == 1 ? 'A document' : "#{i} documents").sub('%needs%', i == 1 ? 'needs' : 'need').sub('%is%', i == 1 ? 'is' : 'are')}'"
+                                end
+                                unless i == 0
+                                    s.context "after the #{ak.to_s.gsub("_", " ")} message is clicked" do
+                                        s.it "must hide all other whats next messages" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            find(\"[data-test-id='#{action[ak][:test_id]}']\").click
+                                            sleep 0.1 # To allow time for the whats next card to update
+                                            expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
+                                            expect(find(\"[data-test-id='whats_next_action_list']\").all('form').count).to eq(1) # +1 because the table header counts as a row
+                                            expect(find(\"[data-test-id='whats_next_action_list']\")).to have_text '#{action[ak][:expected_text].sub('%settlement%', i == 1 ? 'A settlement' : "#{i} settlements").sub('%document%', i == 1 ? 'A document' : "#{i} documents").sub('%needs%', i == 1 ? 'needs' : 'need').sub('%is%', i == 1 ? 'is' : 'are')}'"
+                                        end
+                                        s.it "must show only the settlements #{action[ak][:context_string]} in the active settlements card" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            find(\"[data-test-id='#{action[ak][:test_id]}']\").click
+                                            sleep 0.1 # To allow time for the active settlement table to update
+                                            expect(all('tr').count).to eq(@#{ak}.size + 1) # +1 because the table header counts as a row
+                                            @#{ak}.each do |s|
+                                                expect(page).to have_text s.public_number
+                                            end"
+                                        end
+                                        s.it "must show the reset button" do
+                                            "sign_in @visitor
+                                            visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                            find(\"[data-test-id='#{action[ak][:test_id]}']\").click
+                                            sleep 0.1 # To allow time for the active settlement table to update
+                                            expect(page).to have_css \"button[data-test-id='reset_settlement_search_button']\""
+                                        end
+                                        s.context "and the reset button is clicked" do
+                                            s.it "must show all the owners settlements again" do
+                                                "sign_in @visitor
+                                                visit user_profile_show_path(@owner.profile, section: 'settlements')
+                                                find(\"[data-test-id='#{action[ak][:test_id]}']\").click
+                                                sleep 0.1 # To allow time for the active settlement table to update
+                                                click_on 'Reset'
+                                                sleep 0.1 # To allow time for the active settlement table to update
+                                                expect(all('tr').count).to eq(@owner.settlements.count + 1) # +1 because the table header counts as a row
+                                                @owner.settlements.each_with_index do |s, i|
+                                                    expect(page).to have_text s.public_number
+                                                end"
                                             end
                                         end
                                     end
@@ -525,60 +179,66 @@ SpecGenerator::SystemSpec.new(name: "whats_next_card", generated_file_location: 
                         end
                     end
                 end
+                waiting.keys.each do |wk|
+                    next unless waiting[wk]["#{mk}_can_wait_on?".to_sym]
+                    [0,1,2].each do |i|
+                        s.context "with #{i} #{'settlement'.pluralize(i)} awaiting #{wk.to_s.gsub("_", " ")}" do
+                            s.before(:context) do
+                                "@#{wk} = create_list(:settlement, #{i}, :#{waiting[wk][:trait]}#{members[mk][:opposite] if waiting[wk][:from?]}, #{mk}: @owner, #{members[mk][:opposite]}: User.#{members[mk][:opposite]}s.sample)
+                                @owner.settlements = @#{wk}"
+                            end
+                            s.after(:context) {"@#{wk}.each {|s| s.destroy}"}
+                            s.context "and the visitor is the owner" do
+                                s.before(:context) {'@visitor = @owner'}
+                                s.it "must#{i == 0 ? " not" : " "} have the waiting for #{wk.to_s.gsub("_", " ")} message" do
+                                    "sign_in @visitor
+                                    visit user_profile_show_path(@owner.profile, section: :settlements)
+                                    expect(page).to#{i == 0 ? "_not" : ""} have_css \"[data-test-id='#{waiting[wk][:test_id]}']\"
+                                    expect(page).to#{i == 0 ? "_not" : ""} have_text '#{waiting[wk][:expected_text].sub('%settlement%', "#{i} #{'settlement'.pluralize(i)}").sub('%document%', "#{i} #{'document'.pluralize(i)}").sub('%payment%', "#{i} #{'payment'.pluralize(i)}")}'"
+                                end
+                            end
+                        end
+                    end
+                end
+                s.context "and the visitor is not the owner" do
+                    s.it "must not be shown" do
+                        "@non_owner_users.each do |u|
+                            sign_in u
+                            visit user_profile_show_path(@owner.profile, section: :settlements)
+                            expect(page).to_not have_css \"[data-test-id='whats_next_card']\"
+                            expect(page).to_not have_css \"[data-test-id='whats_next_wait_list']\"
+                            expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\"
+                            expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
+                            expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
+                            expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\"
+                            expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\"
+                            expect(page).to_not have_css \"[data-test-id='needs_document_message']\"
+                        end"
+                    end
+                end
             end
         end
-        s.context "when the owner is a law firm" do
-            s.before(:context) do
-                "@owner = create(:law_firm)
-                another_law_firm = create(:law_firm)
-                another_insurance_company = create(:insurance_company)
-                another_adjuster = another_insurance_company.members.first
-                another_attorney = another_law_firm.members.first
-                member_of_organization = @owner.members.first
-                @every_possible_visitor = [@owner, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
-            end
-            s.after :context do
-                "User.all.each {|u| u.destroy}"
-            end
-            s.it "must never be shown" do
-                "@every_possible_visitor.each do |u|
-                    sign_in u
-                    visit user_profile_show_path(@owner.profile, section: :settlements)
-                    expect(page).to_not have_css \"[data-test-id='whats_next_card']\"
-                    expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_document_message']\"
-                end"
-            end
-        end
-        s.context "when the owner is an insurance company" do
-            s.before(:context) do
-                "@owner = create(:insurance_company)
-                another_law_firm = create(:law_firm)
-                another_insurance_company = create(:insurance_company)
-                another_adjuster = another_insurance_company.members.first
-                another_attorney = another_law_firm.members.first
-                member_of_organization = @owner.members.first
-                @every_possible_visitor = [@owner, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
-            end
-            s.after :context do
-                "User.all.each {|u| u.destroy}"
-            end
-            s.it "must never be shown" do
-                "@every_possible_visitor.each do |u|
-                    sign_in u
-                    visit user_profile_show_path(@owner.profile, section: :settlements)
-                    expect(page).to_not have_css \"[data-test-id='whats_next_card']\"
-                    expect(page).to_not have_css \"[data-test-id='ready_for_payment_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_signature_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_attr_approval_from_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_document_approval_from_message']\"
-                    expect(page).to_not have_css \"[data-test-id='needs_document_message']\"
-                end"
+        organizations.each do |ok|
+            s.context "when the owner is #{indefinite_articleize(word: ok.to_s)}" do
+                s.before(:context) do
+                    "@owner = create(:#{ok})
+                    another_law_firm = create(:law_firm)
+                    another_insurance_company = create(:insurance_company)
+                    another_adjuster = another_insurance_company.members.first
+                    another_attorney = another_law_firm.members.first
+                    member_of_organization = @owner.members.first
+                    @every_possible_visitor = [@owner, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
+                end
+                s.after :context do
+                    "User.all.each {|u| u.destroy}"
+                end
+                s.it "must never be shown" do
+                    "@every_possible_visitor.each do |u|
+                        sign_in u
+                        visit user_profile_show_path(@owner.profile, section: :settlements)
+                        expect(page).to_not have_css \"[data-test-id='whats_next_card']\"
+                    end"
+                end
             end
         end
     end

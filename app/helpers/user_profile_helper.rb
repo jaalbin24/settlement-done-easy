@@ -30,53 +30,50 @@ module UserProfileHelper
         end
     end
 
-
-    
-
-    def whats_next_messages
+    def whats_next_action_messages
         whats_next_messages = {
             needs_attr_approval_from: {
                 submit_value: @owner.public_id,
-                message_text: "%n_settlements_need% your approval",
+                message_text: "%settlement% %needs% your approval",
             },
             needs_document: {
                 submit_value: true,
-                message_text: "%n_settlements_need% a document",
+                message_text: "%settlement% %needs% a document",
             },
             ready_for_payment: {
                 submit_value: true,
-                message_text: "%n_settlements_are% ready for payment",
+                message_text: "%settlement% %is% ready for payment",
             },
             needs_document_approval_from: {
                 submit_value: @owner.public_id,
-                message_text: "%n_settlements_need% document approval",
+                message_text: "%document% %needs% your approval",
             },
             needs_signature: {
                 submit_value: :true,
-                message_text: "%n_documents_need% a signature",
+                message_text: "%document% %needs% a signature",
             }
         }
         arr = whats_next_messages.keys.map do |k|
             case k
             when :needs_attr_approval_from
                 count = @settlements.needs_attr_approval_from(@owner).count
-                message_text = whats_next_messages[k][:message_text].sub('%n_settlements_need%', "#{count == 1 ? 'A settlement needs' : "#{count} settlements need"}")
             when :needs_document
                 count = @settlements.needs_document.count
-                message_text = whats_next_messages[k][:message_text].sub('%n_settlements_need%', "#{count == 1 ? 'A settlement needs' : "#{count} settlements need"}")
             when :ready_for_payment
                 count = @settlements.ready_for_payment.count # && owner.isAdjuster?
-                message_text = whats_next_messages[k][:message_text].sub('%n_settlements_are%', "#{count == 1 ? 'A settlement is' : "#{count} settlements are"}")
             when :needs_document_approval_from
                 count = @documents.needs_approval_from(@owner).count
-                message_text = whats_next_messages[k][:message_text].sub('%n_settlements_need%', "#{count == 1 ? 'A settlement needs' : "#{count} settlements need"}")
             when :needs_signature
                 count = @documents.unsigned.needs_signature.count
-                message_text = whats_next_messages[k][:message_text].sub('%n_documents_need%', "#{count == 1 ? 'A document needs' : "#{count} documents need"}")
             else
                 raise StandardError.new "Unhandled message type in the whats next card: #{k}"
             end
             next if count == 0
+            message_text = whats_next_messages[k][:message_text]
+                .sub('%settlement%', count == 1 ? 'A settlement' : "#{count} settlements")
+                .sub('%document%', count == 1 ? 'A document' : "#{count} documents")
+                .sub('%needs%', count == 1 ? 'needs' : 'need')
+                .sub('%is%', count == 1 ? 'is' : 'are')
             "<form type='search' action='#{settlement_search_path}' accept-charset='UTF-8' method='post'>
                 <input type='hidden' name='authenticity_token' value='#{form_authenticity_token}' autocomplete='off'>
                 <input value='#{whats_next_messages[k][:submit_value]}' autocomplete='off' type='hidden' name='#{k}' id='#{k}'>
@@ -88,5 +85,49 @@ module UserProfileHelper
             </form>"
         end
         arr.join("\n").html_safe
+    end
+
+    def whats_next_wait_messages
+        whats_next_messages = {
+            document_approval: {
+                message_text: "%document% to be approved",
+            },
+            attr_approval: {
+                message_text: "%settlement% to be approved",
+            },
+            payment_sending: {
+                message_text: "%payment% to be sent",
+            },
+        }
+
+        "<div class='list-group-item' id='whats_next_wait_list'>
+            <h5 class='text-muted'>Wait for...</h5>
+            <ul class='list-unstyled m-0'>
+                #{
+                    wait_messages = whats_next_messages.keys.map do |k|
+                        case k
+                        when :document_approval
+                            count = @settlements.needs_document_approval_from_anyone_except(@owner).count
+                        when :attr_approval
+                            count = @settlements.needs_attr_approval_from_anyone_except(@owner).count
+                        when :payment_sending
+                            count = @settlements.ready_for_payment.count
+                        else
+                            raise StandardError.new "Unhandled message type in the whats next card: #{k}"
+                        end
+                        next if count == 0
+                        message_text = whats_next_messages[k][:message_text]
+                            .sub('%settlement%', "#{count} #{'settlement'.pluralize(count)}")
+                            .sub('%document%', "#{count} #{'document'.pluralize(count)}")
+                            .sub('%payment%', "#{count} #{'payment'.pluralize(count)}")
+                        "<li data-test-id='awaiting_#{k}_message'>
+                            <p class='m-0'>#{message_text}</p>
+                        </li>"
+                    end
+                    wait_messages.join("\n")
+                }
+            </ul>
+        </div>".html_safe
+
     end
 end

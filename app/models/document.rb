@@ -256,4 +256,8 @@ class Document < ApplicationRecord
     def init_nickname
         self.nickname = "Release for #{settlement.claimant_name}"
     end
+
+    def sent_signature?
+        ds_envelope_id.blank?
+    end
 end

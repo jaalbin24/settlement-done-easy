@@ -8,16 +8,7 @@
         <%end%>
     </div>
     <div class="list-group list-group-flush h-100 overflow-auto" id="whats_next_messages" data-test-id="whats_next_action_list">
-        <%=whats_next_messages%>
-        <div class="list-group-item" id="whats_next_wait_list">
-            <h5 class="text-muted">Wait for...</h5>
-            <ul class="list-unstyled m-0">
-                <li><p class="m-0"><%=@settlements.needs_document_approval_from_anyone_except(@owner).count%> documents to be reviewed</p></li>
-                <li><p class="m-0"><%=@settlements.needs_attr_approval_from_anyone_except(@owner).count%> settlements to be reviewed</p></li>
-                <li><p class="m-0"><%=@settlements.ready_for_payment.count%> payments to be sent</p></li>
-                <li><p class="m-0">X payments to post</p></li>
-                <li><p class="m-0">X signatures</p></li>
-            </ul>
-        </div>
+        <%=whats_next_action_messages%>
+        <%=whats_next_wait_messages%>
     </div>
 </div>

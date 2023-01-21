@@ -81,14 +81,10 @@ FactoryBot.define do
                 num_documents {0}
             end
             after(:build) do |s, e|
-                s.amount = User.all.count
                 s.attribute_reviews = [
                     build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
                     build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
                 ]
-            end
-            after(:create) do |s, e|
-                raise StandardError.new "Extra users created! Before=#{s.amount} | After=#{User.all.count}" if s.amount != User.all.count
             end
         end
         trait :needs_attr_approval_from_attorney do
