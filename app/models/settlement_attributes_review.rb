@@ -55,6 +55,7 @@ class SettlementAttributesReview < ApplicationRecord
             update_status_attribute
             if changed?
                 self.save
+                settlement.save unless settlement.frozen?
             end
         end
     end
@@ -70,7 +71,7 @@ class SettlementAttributesReview < ApplicationRecord
         else
             attributes.each do |attribute|
                 if attribute[0].to_s.include?("_approved")
-                    write_attribute(attribute[0].to_sym, false)
+                    write_attribute(attribute[0].to_sym, false) if read_attribute(attribute[0]).nil?
                 end
             end
         end
@@ -102,5 +103,14 @@ class SettlementAttributesReview < ApplicationRecord
                 write_attribute(attribute[0].to_sym, false)
             end
         end
+    end
+
+    def approved?
+        attributes.each do |attribute|
+            if attribute[0].to_s.include?("_approved")
+                return false unless read_attribute(attribute[0].to_sym)
+            end
+        end
+        true
     end
 end

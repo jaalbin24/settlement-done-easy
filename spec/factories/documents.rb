@@ -47,6 +47,26 @@ FactoryBot.define do
                 ]
             end
         end
+        trait :needs_approval_from_attorney do
+            after(:build) do |d, e|
+                d.added_by = d.settlement.adjuster
+                puts "🤖🤖🤖 document:approved after(:create) block"
+                d.reviews = [
+                    build(:document_review_by_attorney, document: d, reviewer: d.settlement.attorney),
+                    build(:document_review_by_adjuster, :for_approval, document: d, reviewer: d.settlement.adjuster)
+                ]
+            end
+        end
+        trait :needs_approval_from_adjuster do
+            after(:build) do |d, e|
+                d.added_by = d.settlement.attorney
+                puts "🤖🤖🤖 document:approved after(:create) block"
+                d.reviews = [
+                    build(:document_review_by_attorney, :for_approval, document: d, reviewer: d.settlement.attorney),
+                    build(:document_review_by_adjuster, document: d, reviewer: d.settlement.adjuster)
+                ]
+            end
+        end
         trait :rejected do
             after(:create) do |d, e|
                 d.reviews.not_by(d.added_by).reject

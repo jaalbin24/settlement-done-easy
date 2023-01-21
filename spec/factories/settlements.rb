@@ -55,20 +55,96 @@ FactoryBot.define do
                     added_by: rand(1..2).odd? ? s.attorney : s.adjuster,
                     settlement: s
                 )
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
+                ]
             end
         end
-
         trait :needs_signature do
             after(:build) do |s, e|
                 s.documents = build_list(:document, e.num_documents,
+                    :approved,
                     needs_signature: true,
                     signed: false,
                     added_by: rand(1..2).odd? ? s.attorney : s.adjuster,
                     settlement: s
                 )
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
+                ]
             end
         end
-
+        trait :needs_document do
+            transient do
+                num_documents {0}
+            end
+            after(:build) do |s, e|
+                s.amount = User.all.count
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
+                ]
+            end
+            after(:create) do |s, e|
+                raise StandardError.new "Extra users created! Before=#{s.amount} | After=#{User.all.count}" if s.amount != User.all.count
+            end
+        end
+        trait :needs_attr_approval_from_attorney do
+            after(:build) do |s, e|
+                s.started_by = s.adjuster
+                s.documents = build_list(:document, e.num_documents,
+                    :approved,
+                    added_by: rand(1..2).odd? ? s.attorney : s.adjuster,
+                    settlement: s
+                )
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :rejected, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
+                ]
+            end
+        end
+        trait :needs_attr_approval_from_adjuster do
+            after(:build) do |s, e|
+                s.started_by = s.attorney
+                s.documents = build_list(:document, e.num_documents,
+                    :approved,
+                    added_by: rand(1..2).odd? ? s.attorney : s.adjuster,
+                    settlement: s
+                )
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :rejected, reviewer: s.adjuster),
+                ]
+            end
+        end
+        trait :needs_document_approval_from_attorney do
+            after(:build) do |s, e|
+                s.documents = build_list(:document, e.num_documents,
+                    :needs_approval_from_attorney,
+                    added_by: s.adjuster,
+                    settlement: s
+                )
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
+                ]
+            end
+        end
+        trait :needs_document_approval_from_adjuster do
+            after(:build) do |s, e|
+                s.documents = build_list(:document, e.num_documents,
+                    :needs_approval_from_adjuster,
+                    added_by: s.adjuster,
+                    settlement: s
+                )
+                s.attribute_reviews = [
+                    build(:settlement_attributes_review_for_attorney, :approved, reviewer: s.attorney),
+                    build(:settlement_attributes_review_for_adjuster, :approved, reviewer: s.adjuster),
+                ]
+            end
+        end
         trait :delete_my_documents_after_rejection do
             after(:create) do |s, e|
                 s.settings.each do |setting|
@@ -77,7 +153,6 @@ FactoryBot.define do
                 end
             end
         end
-
         after(:create) do |s, e|
             s.settings = [create(:settlement_settings, :for_attorney, user: s.attorney, settlement: s), create(:settlement_settings, :for_adjuster, user: s.adjuster, settlement: s)]
             puts "🤖🤖🤖 settlement after(:create) block"
@@ -89,7 +164,6 @@ FactoryBot.define do
                 "========> payment status: #{s.payments.last.status}\n"+
                 "========> Settlement.all.size: #{Settlement.all.size}\n"
         end
-
         trait :with_processing_payment do
             after(:build) do |s, e|
                 puts "🤖🤖🤖 settlement:with_processing_payment after(:build) block"
@@ -146,7 +220,6 @@ FactoryBot.define do
                 end
             end
         end
-
         trait :with_unanswered_payment_request do
             after(:build) do |s, e|
                 puts "🤖🤖🤖 settlement:with_unanswered_payment_request after(:build) block"
@@ -170,7 +243,6 @@ FactoryBot.define do
                 end
             end
         end
-
         after(:build) do |s, e|
             s.documents = build_list(:document, e.num_documents,
                 added_by: rand(1..2).odd? ? s.attorney : s.adjuster,

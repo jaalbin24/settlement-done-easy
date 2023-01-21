@@ -41,18 +41,23 @@
 class Settlement < ApplicationRecord
     include DocumentGenerator
 
-    scope :ready_for_payment,               ->      {where(ready_for_payment: true)}
-    scope :needs_document,                  ->      {left_joins(:documents).where(documents: {id: nil}).distinct}
-    scope :needs_signature,                 ->      {joins(:documents).where(documents: {signed: false, needs_signature: true}).distinct}
-    scope :needs_document_approval_from,    -> (i)  {joins(documents: :reviews).merge(DocumentReview.by(i).waiting_for_review).distinct}
-    scope :needs_attr_approval_from,        -> (i)  {joins(:attribute_reviews).merge(SettlementAttributesReview.by(i).not_fully_approved).distinct}
+    scope :ready_for_payment,                           ->      {where(ready_for_payment: true)}
+    scope :needs_document,                              ->      {left_joins(:documents).where(documents: {id: nil}).distinct}
+    scope :needs_signature,                             ->      {joins(:documents).where(documents: {signed: false, needs_signature: true}).distinct}
+    scope :needs_document_approval_from,                -> (i)  {joins(documents: :reviews).merge(DocumentReview.by(i).waiting_for_review).distinct}
+    scope :needs_document_approval_from_public_id,      -> (i)  {joins(documents: [{reviews: :reviewer}]).where(reviewer: {public_id: i}).where(reviews: {verdict: 'Waiting'}).distinct}
+    scope :needs_document_approval_from_anyone_except,  -> (i)  {joins(documents: :reviews).merge(DocumentReview.not_by(i).waiting_for_review).distinct}
+    scope :needs_attr_approval_from,                    -> (i)  {joins(:attribute_reviews).merge(SettlementAttributesReview.by(i).not_fully_approved).distinct}
+    scope :needs_attr_approval_from_public_id,          -> (i)  {joins(attribute_reviews: :reviewer).where(attribute_reviews: {status: 'Needs approval'}).where(reviewer: {public_id: i}).distinct}
+    scope :needs_attr_approval_from_anyone_except,      -> (i)  {joins(:attribute_reviews).merge(SettlementAttributesReview.not_by(i).not_fully_approved).distinct}
     
-    scope :with_attorney_public_id,         -> (i)  {joins(:attorney).where(attorney: {public_id: i}).distinct}
-    scope :with_adjuster_public_id,         -> (i)  {joins(:adjuster).where(adjuster: {public_id: i}).distinct}
-    scope :completed,                       -> (i)  {where(completed: true)}
-    scope :canceled,                        -> (i)  {where(canceled: true)}
-    scope :active,                          -> (i)  {where(completed: false).and(where(canceled: false))}
-    scope :belonging_to,                    -> (i)  {joins(attorney: :organization).joins(adjuster: :organization).where(attorney: i).or(where(adjuster: i)).or(where(attorney: {organization: i})).or(where(adjuster: {organization: i})).distinct}
+
+    scope :with_attorney_public_id,                     -> (i)  {joins(:attorney).where(attorney: {public_id: i}).distinct}
+    scope :with_adjuster_public_id,                     -> (i)  {joins(:adjuster).where(adjuster: {public_id: i}).distinct}
+    scope :completed,                                   -> (i)  {where(completed: true)}
+    scope :canceled,                                    -> (i)  {where(canceled: true)}
+    scope :active,                                      -> (i)  {where(completed: false).and(where(canceled: false))}
+    scope :belonging_to,                                -> (i)  {joins(attorney: :organization).joins(adjuster: :organization).where(attorney: i).or(where(adjuster: i)).or(where(attorney: {organization: i})).or(where(adjuster: {organization: i})).distinct}
 
     validates :amount, presence: true
     validates :locked, inclusion: {in: [true], message: "must be true when the settlement is completed.", if: :completed?}
@@ -449,6 +454,9 @@ class Settlement < ApplicationRecord
         elsif !adjuster.organization.activated?
             puts "🅱️🅱️🅱️🅱️🅱️🅱️> 10"
             self.ready_for_payment = false
+        elsif attribute_reviews.not_fully_approved.exists?
+            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 11"
+            self.ready_for_payment = false
         else
             self.ready_for_payment = true
         end
@@ -483,7 +491,10 @@ class Settlement < ApplicationRecord
         result = result.or(Settlement.active)                                               if params[:active]
         result = result.or(Settlement.completed)                                            if params[:completed]
         result = result.or(Settlement.canceled)                                             if params[:canceled]
-        
+
+        result = result.needs_attr_approval_from_public_id(params[:needs_attr_approval_from])         if params[:needs_attr_approval_from]
+        puts "=======> #{result.needs_attr_approval_from_public_id(params[:needs_attr_approval_from])}"
+        result = result.needs_document_approval_from_public_id(params[:needs_document_approval_from]) if params[:needs_document_approval_from]
         result = result.needs_document                                                      if params[:needs_document]
         result = result.ready_for_payment                                                   if params[:ready_for_payment]
         result = result.needs_signature                                                     if params[:needs_signature]

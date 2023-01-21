@@ -1,18 +1,15 @@
-<div class="card my-3">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div class="d-flex gap-2">
-            <h5 class="m-0">Active Settlements</h5>
-        </div>
-        <div>
-            <%if new_settlement_button_should_be_shown_for(current_user, @user_profile)%>
-                <%=link_to "New settlement", settlement_new_path(continue_path: request.path), class: "btn btn-primary btn-sm"%>
-            <%end%>
-        </div>
+<div class="card my-3" style="height: 400px;">
+    <div class="card-header d-flex justify-content-between align-items-center" style="min-height: 64px">
+        <h5 class="m-0">Active Settlements</h5>
+        <a class="text-decoration-none text-dark" href="">
+            View all
+            <%=chevron_icon()%>
+        </a>
     </div>
     <%if @settlements.empty?%>
-        <p class="my-5 text-center text-muted" data-test-id="empty_active_settlement_message"><%=empty_active_settlement_message%></p>
+        <p class="my-auto text-center text-muted" data-test-id="empty_active_settlement_message"><%=empty_active_settlement_message%></p>
     <%else%>
-        <div class="scrollable-table-container" style="overflow-y: auto; min-height: 12rem; max-height: 18rem;">
+        <div class="scrollable-table-container mb-auto" style="overflow-y: auto;">
             <table class="table table-hover table-sm shadow-none m-0">
                 <thead>
                     <tr>
@@ -41,7 +38,12 @@
             </table>
         </div>
     <%end%>
-    <div class="card-footer">
-
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <p class="m-0">Total active settlements: <%=@settlements.count%></p>
+        <div>
+            <%if new_settlement_button_should_be_shown_for(current_user, @user_profile)%>
+                <%=link_to "New settlement", settlement_new_path(continue_path: request.path), class: "btn btn-primary btn-sm"%>
+            <%end%>
+        </div>
     </div>
 </div>

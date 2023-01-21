@@ -12,7 +12,6 @@ ActiveStorage.start()
 import 'bootstrap'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'autosize'
-import 'stripe/bank_account'
 
 // ModalMaker is the class that handles the big modal notifications that appear in the center of the screen and blur the background.
 import ModalMaker from 'packs/modal_maker'
@@ -26,6 +25,7 @@ import EnglishLanguage from 'packs/english_language'
 import ClickableTableRows from "packs/clickable_table_rows"
 import Searcher from "packs/searcher"
 
+
 // Instantiate objects to call methods on such as bootstrap.Modal()
 window.bootstrap = require('bootstrap');
 window.modalMaker = new ModalMaker();
@@ -37,5 +37,6 @@ window.clickableTableRows = new ClickableTableRows();
 window.searcher = new Searcher();
 
 
-
+// Load this one last. It will throw an error when developing offline because Stripe servers cannot be reached.
+import 'stripe/bank_account'
 

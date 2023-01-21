@@ -1,5 +1,5 @@
 <div class="row">
-    <%if current_user == @owner%>
+    <%if current_user == @owner && @owner.isMember?%>
         <div class="col-auto">
             <%=render "user_profile/settlements/whats_next_card"%>
         </div>
@@ -8,3 +8,51 @@
         <%=render "user_profile/settlements/active_settlements_card"%>
     </div>
 </div>
+<div class="row" style="height: 400px;">
+    <div class="col h-100">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="m-0">Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <p>This card is not yet implemented, but it will eventually show a log of settlement activity for all the user's settlements.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col h-100">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="m-0">Recent Documents</h5>
+                <a class="text-decoration-none text-dark" href="">
+                    View all
+                    <%=chevron_icon()%>
+                </a>
+            </div>
+            <div class="list-group list-group-flush overflow-auto">
+                <%@documents.first(10).each do |d|%>
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-1 px-3">
+                        <div class="d-flex gap-3 align-items-center">
+                            <%=document_icon(color: :primary, size: :h4)%>
+                            <div>
+                                <h6 class="m-0"><%=d.filename%></h6>
+                                <p class="m-0 text-muted"><%=d.added_by.profile.name%></p>
+                            </div>
+                        </div>
+                        <p class="m-0"><%=time_ago_in_words(d.created_at).sub("about", "")%> ago</p>
+                    </div>
+                <%end%>
+            </div>
+        </div>
+    </div>
+    <div class="col h-100">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="m-0">Document Summary</h5>
+            </div>
+            <div class="card-body">
+                <p>This card is not yet implemented, but it will eventually show a pie chart of the user's documents broken down by their approval status: approved, rejected, or pending.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<br>

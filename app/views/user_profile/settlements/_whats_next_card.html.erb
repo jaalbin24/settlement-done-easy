@@ -1,20 +1,22 @@
-<div class="card my-3" style="min-width: 20.1rem;">
-    <div class="card-header d-flex justify-content-between align-items-center">
+<div class="card my-3" style="min-width: 20.1rem; height: 400px;" data-test-id="whats_next_card">
+    <div class="card-header d-flex justify-content-between align-items-center" style="min-height: 64px;">
         <h5 class="m-0">What's Next?</h5>
         <%=form_with url: settlement_search_path, method: :post, html: {type: :search} do |f|%>
-            <button type="submit" class="btn btn-secondary btn-sm">
+            <button id="reset_search_results_button" type="submit" class="btn btn-secondary btn-sm" style="display: none;" data-test-id="reset_settlement_search_button">
                 Reset
             </button>
         <%end%>
     </div>
-    <div class="list-group list-group-flush">
+    <div class="list-group list-group-flush h-100 overflow-auto" id="whats_next_messages" data-test-id="whats_next_action_list">
         <%=whats_next_messages%>
-        <div class="list-group-item">
-            <h6 class="m-0 text-muted">Wait for...</h6>
+        <div class="list-group-item" id="whats_next_wait_list">
+            <h5 class="text-muted">Wait for...</h5>
             <ul class="list-unstyled m-0">
-                <li><p class="m-0">2 documents to be approved</p></li>
-                <li><p class="m-0">2 payments to post</p></li>
-                <li><p class="m-0">1 signature</p></li>
+                <li><p class="m-0"><%=@settlements.needs_document_approval_from_anyone_except(@owner).count%> documents to be reviewed</p></li>
+                <li><p class="m-0"><%=@settlements.needs_attr_approval_from_anyone_except(@owner).count%> settlements to be reviewed</p></li>
+                <li><p class="m-0"><%=@settlements.ready_for_payment.count%> payments to be sent</p></li>
+                <li><p class="m-0">X payments to post</p></li>
+                <li><p class="m-0">X signatures</p></li>
             </ul>
         </div>
     </div>

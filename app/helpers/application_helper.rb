@@ -212,4 +212,26 @@ module ApplicationHelper
         end
         "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
     end
+
+    def document_icon(args=nil)
+        css_classes = ["m-0", "fa-regular", "fa-file-lines"]
+        return "<i class=\"#{css_classes.join(" ")}\"></i>".html_safe if args.nil?
+        case args[:color]
+        when :green, :success
+            css_classes.push("text-success")
+        when :red, :danger
+            css_classes.push("text-danger")
+        when :grey, :gray
+            css_classes.push("text-muted")
+        when :primary, :blue
+            css_classes.push("text-primary")
+        when :yellow, :warning
+            css_classes.push("text-warning")
+        end
+        case args[:size]
+        when :h1, :h2, :h3, :h4, :h5, :h6
+            css_classes.push(args[:size].to_s)
+        end
+        "<i class=\"#{css_classes.join(" ")}\"#{" name=\"#{args[:name]}\"" unless args[:name].nil?}></i>".html_safe
+    end
 end

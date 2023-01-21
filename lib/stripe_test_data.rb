@@ -4,46 +4,37 @@ module StripeTestData
 	def stripe_test_data_hash
 		{
 			law_firms: {
-				wright_morales_james: {
-					business_name: "Wright Morales & James",
-					stripe_id: "acct_1MG6AdQ19nw8xyxM",
-					stripe_financial_account_id: "fa_1MG6AtQ19nw8xyxMZxvjMlqt",
+				bass_berry_sims: {
+					business_name: "Bass Berry & Sims",
+					stripe_id: "acct_1MSaOtQ1bwwiWZUF",
+					stripe_financial_account_id: "fa_1MSaP8Q1bwwiWZUFWMDHkVap",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
 					}
 				},
-				lee_green_a_cat: {
-					business_name: "Lee Green & a Cat",
-					stripe_id: "acct_1MG6AuQ9uNcUAL17",
-					stripe_financial_account_id: "fa_1MG6BAQ9uNcUAL17mlHsZyKP",
+				gkbm: {
+					business_name: "GKBM",
+					stripe_id: "acct_1MSaP9Pw90cBOic6",
+					stripe_financial_account_id: "fa_1MSaPNPw90cBOic6QCnlcx5M",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
 					}
 				},
-				long_adams_hernandez: {
-					business_name: "Long Adams & Hernandez",
-					stripe_id: "acct_1MG6BBQ3A9wR1ily",
-					stripe_financial_account_id: "fa_1MG6BRQ3A9wR1ilyO3bG1nuz",
+				smith_doe: {
+					business_name: "Smith & Doe",
+					stripe_id: "acct_1MSaPOPxJ3j4bL9G",
+					stripe_financial_account_id: "fa_1MSaPjPxJ3j4bL9Gd0cPWWYd",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
 					}
 				},
-				hernandez_hernandez_a_cheetah: {
-					business_name: "Hernandez Hernandez & a Cheetah",
-					stripe_id: "acct_1MG6BSPx4L3lcFhk",
-					stripe_financial_account_id: "fa_1MG6BqPx4L3lcFhk4LxVJy9V",
-					external_accounts: {
-						bank_account_1_payment_method_id: "",
-						bank_account_2_payment_method_id: ""
-					}
-				},
-				law_actions: {
-					business_name: "Law Actions",
-					stripe_id: "acct_1MG6BrQ96gd0JLGv",
-					stripe_financial_account_id: "fa_1MG6CNQ96gd0JLGv5ffLzi5E",
+				adams_reece: {
+					business_name: "Adams & Reece",
+					stripe_id: "acct_1MSaPkPsPvAlRtTq",
+					stripe_financial_account_id: "fa_1MSaPyPsPvAlRtTqEz1djYJi",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
@@ -51,46 +42,37 @@ module StripeTestData
 				}
 			},
 			insurance_companies: {
-				very_original_insurance: {
-					buisness_name: "Very Original Insurance",
-					stripe_id: "acct_1MG6COPoGssm9nHx",
-					stripe_financial_account_id: "fa_1MG6ChPoGssm9nHx37yjqvvr",
+				progressive: {
+					buisness_name: "Progressive",
+					stripe_id: "acct_1MSaPzQ60bcMdMNu",
+					stripe_financial_account_id: "fa_1MSaQCQ60bcMdMNuLr6A1ynA",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
 					}
 				},
-				high_insurance: {
-					buisness_name: "High Insurance",
-					stripe_id: "acct_1MG6CiPpAopd1QWE",
-					stripe_financial_account_id: "fa_1MG6D3PpAopd1QWEBprlvWAe",
+				allstate: {
+					buisness_name: "Allstate",
+					stripe_id: "acct_1MSaQDPtMFsOaX2C",
+					stripe_financial_account_id: "fa_1MSaQSPtMFsOaX2Cksqsgaqc",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
 					}
 				},
-				very_regular_insurance: {
-					buisness_name: "Very Regular Insurance",
-					stripe_id: "acct_1MG6D4Pp9cLBcfoG",
-					stripe_financial_account_id: "fa_1MG6DNPp9cLBcfoGaHSsMOZ4",
+				geico: {
+					buisness_name: "Geico",
+					stripe_id: "acct_1MSaQTQ6wBERo5EO",
+					stripe_financial_account_id: "fa_1MSaQgQ6wBERo5EOQ4UCk9lN",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""
 					}
 				},
-				cold_insurance: {
-					buisness_name: "Cold Insurance",
-					stripe_id: "acct_1MG6DOQ2bNICLuos",
-					stripe_financial_account_id: "fa_1MG6DfQ2bNICLuosqb98SpcC",
-					external_accounts: {
-						bank_account_1_payment_method_id: "",
-						bank_account_2_payment_method_id: ""
-					}
-				},
-				american_insurance: {
-					buisness_name: "American Insurance",
-					stripe_id: "acct_1MG6DhPqWsi7cAHC",
-					stripe_financial_account_id: "fa_1MG6DvPqWsi7cAHCiml37ObY",
+				state_farm: {
+					buisness_name: "State Farm",
+					stripe_id: "acct_1MSaQhQ8w6gjyX5f",
+					stripe_financial_account_id: "fa_1MSaQxQ8w6gjyX5fX9rYrlUR",
 					external_accounts: {
 						bank_account_1_payment_method_id: "",
 						bank_account_2_payment_method_id: ""

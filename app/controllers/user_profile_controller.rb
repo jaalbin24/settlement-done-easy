@@ -39,7 +39,7 @@ class UserProfileController < ApplicationController
             @settlements = Settlement.belonging_to(@owner).merge(Settlement.belonging_to(current_user))
         end
 
-        @documents = Document.belonging_to(current_user)
+        @documents = Document.belonging_to(current_user).order(created_at: :desc)
 
         if params[:section].blank?
             @section = "about"

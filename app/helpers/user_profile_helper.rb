@@ -36,7 +36,7 @@ module UserProfileHelper
     def whats_next_messages
         whats_next_messages = {
             needs_attr_approval_from: {
-                submit_value: '@owner.public_id',
+                submit_value: @owner.public_id,
                 message_text: "%n_settlements_need% your approval",
             },
             needs_document: {
@@ -48,8 +48,8 @@ module UserProfileHelper
                 message_text: "%n_settlements_are% ready for payment",
             },
             needs_document_approval_from: {
-                submit_value: '@owner.public_id',
-                message_text: "%n_documents_need% your approval",
+                submit_value: @owner.public_id,
+                message_text: "%n_settlements_need% document approval",
             },
             needs_signature: {
                 submit_value: :true,
@@ -69,7 +69,7 @@ module UserProfileHelper
                 message_text = whats_next_messages[k][:message_text].sub('%n_settlements_are%', "#{count == 1 ? 'A settlement is' : "#{count} settlements are"}")
             when :needs_document_approval_from
                 count = @documents.needs_approval_from(@owner).count
-                message_text = whats_next_messages[k][:message_text].sub('%n_documents_need%', "#{count == 1 ? 'A document needs' : "#{count} documents need"}")
+                message_text = whats_next_messages[k][:message_text].sub('%n_settlements_need%', "#{count == 1 ? 'A settlement needs' : "#{count} settlements need"}")
             when :needs_signature
                 count = @documents.unsigned.needs_signature.count
                 message_text = whats_next_messages[k][:message_text].sub('%n_documents_need%', "#{count == 1 ? 'A document needs' : "#{count} documents need"}")

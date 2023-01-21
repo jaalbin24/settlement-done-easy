@@ -46,7 +46,7 @@ SpecGenerator::SystemSpec.new(name: "active_settlements_card", generated_file_lo
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     find(\"[data-test-id='empty_active_settlement_link']\").click
-                                    sleep 0.05
+                                    sleep 0.1 # Pause test to allow active settlement table to load rows
                                     expect(current_path).to eq(settlement_new_path)"
                                 end
                             end
@@ -138,7 +138,7 @@ SpecGenerator::SystemSpec.new(name: "active_settlements_card", generated_file_lo
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     find(\"[data-test-id='empty_active_settlement_link']\").click
-                                    sleep 0.05
+                                    sleep 0.1 # Pause test to allow active settlement table to load rows
                                     expect(current_path).to eq(settlement_new_path)"
                                 end
                             end
@@ -303,7 +303,7 @@ SpecGenerator::SystemSpec.new(name: "active_settlements_card", generated_file_lo
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     find(\"[data-test-id='empty_active_settlement_link']\").click
-                                    sleep 0.05
+                                    sleep 0.1 # Pause test to allow active settlement table to load rows
                                     expect(current_path).to eq(settlement_new_path)"
                                 end
                             end
@@ -401,7 +401,7 @@ SpecGenerator::SystemSpec.new(name: "active_settlements_card", generated_file_lo
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: 'settlements')
                                     find(\"[data-test-id='empty_active_settlement_link']\").click
-                                    sleep 0.05
+                                    sleep 0.1 # Pause test to allow active settlement table to load rows
                                     expect(current_path).to eq(settlement_new_path)"
                                 end
                             end
