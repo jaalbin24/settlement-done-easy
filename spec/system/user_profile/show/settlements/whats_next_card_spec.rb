@@ -647,53 +647,11 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must have the ready for payment message" do
+                it "must not have the ready for payment message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
-                    expect(page).to have_css "[data-test-id='ready_for_payment_message']"
-                    expect(page).to have_text 'A settlement is ready for payment'
-                end
-                context "after the ready for payment message is clicked" do
-                    it "must hide all other whats next messages" do
-                        sign_in @visitor
-                        visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        find("[data-test-id='ready_for_payment_message']").click
-                        sleep 0.1 # To allow time for the whats next card to update
-                        expect(page).to_not have_css "[data-test-id='whats_next_wait_list']"
-                        expect(find("[data-test-id='whats_next_action_list']").all('form').count).to eq(1) # +1 because the table header counts as a row
-                        expect(find("[data-test-id='whats_next_action_list']")).to have_text 'A settlement is ready for payment'
-                    end
-                    it "must show only the settlements ready for payment in the active settlements card" do
-                        sign_in @visitor
-                        visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        find("[data-test-id='ready_for_payment_message']").click
-                        sleep 0.1 # To allow time for the active settlement table to update
-                        expect(all('tr').count).to eq(@ready_for_payment.size + 1) # +1 because the table header counts as a row
-                        @ready_for_payment.each do |s|
-                            expect(page).to have_text s.public_number
-                        end
-                    end
-                    it "must show the reset button" do
-                        sign_in @visitor
-                        visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        find("[data-test-id='ready_for_payment_message']").click
-                        sleep 0.1 # To allow time for the active settlement table to update
-                        expect(page).to have_css "button[data-test-id='reset_settlement_search_button']"
-                    end
-                    context "and the reset button is clicked" do
-                        it "must show all the owners settlements again" do
-                            sign_in @visitor
-                            visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            find("[data-test-id='ready_for_payment_message']").click
-                            sleep 0.1 # To allow time for the active settlement table to update
-                            click_on 'Reset'
-                            sleep 0.1 # To allow time for the active settlement table to update
-                            expect(all('tr').count).to eq(@owner.settlements.count + 1) # +1 because the table header counts as a row
-                            @owner.settlements.each_with_index do |s, i|
-                                expect(page).to have_text s.public_number
-                            end
-                        end
-                    end
+                    expect(page).to_not have_css "[data-test-id='ready_for_payment_message']"
+                    expect(page).to_not have_text 'A settlement is ready for payment'
                 end
             end
         end
@@ -710,53 +668,11 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must have the ready for payment message" do
+                it "must not have the ready for payment message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
-                    expect(page).to have_css "[data-test-id='ready_for_payment_message']"
-                    expect(page).to have_text '2 settlements are ready for payment'
-                end
-                context "after the ready for payment message is clicked" do
-                    it "must hide all other whats next messages" do
-                        sign_in @visitor
-                        visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        find("[data-test-id='ready_for_payment_message']").click
-                        sleep 0.1 # To allow time for the whats next card to update
-                        expect(page).to_not have_css "[data-test-id='whats_next_wait_list']"
-                        expect(find("[data-test-id='whats_next_action_list']").all('form').count).to eq(1) # +1 because the table header counts as a row
-                        expect(find("[data-test-id='whats_next_action_list']")).to have_text '2 settlements are ready for payment'
-                    end
-                    it "must show only the settlements ready for payment in the active settlements card" do
-                        sign_in @visitor
-                        visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        find("[data-test-id='ready_for_payment_message']").click
-                        sleep 0.1 # To allow time for the active settlement table to update
-                        expect(all('tr').count).to eq(@ready_for_payment.size + 1) # +1 because the table header counts as a row
-                        @ready_for_payment.each do |s|
-                            expect(page).to have_text s.public_number
-                        end
-                    end
-                    it "must show the reset button" do
-                        sign_in @visitor
-                        visit user_profile_show_path(@owner.profile, section: 'settlements')
-                        find("[data-test-id='ready_for_payment_message']").click
-                        sleep 0.1 # To allow time for the active settlement table to update
-                        expect(page).to have_css "button[data-test-id='reset_settlement_search_button']"
-                    end
-                    context "and the reset button is clicked" do
-                        it "must show all the owners settlements again" do
-                            sign_in @visitor
-                            visit user_profile_show_path(@owner.profile, section: 'settlements')
-                            find("[data-test-id='ready_for_payment_message']").click
-                            sleep 0.1 # To allow time for the active settlement table to update
-                            click_on 'Reset'
-                            sleep 0.1 # To allow time for the active settlement table to update
-                            expect(all('tr').count).to eq(@owner.settlements.count + 1) # +1 because the table header counts as a row
-                            @owner.settlements.each_with_index do |s, i|
-                                expect(page).to have_text s.public_number
-                            end
-                        end
-                    end
+                    expect(page).to_not have_css "[data-test-id='ready_for_payment_message']"
+                    expect(page).to_not have_text '2 settlements are ready for payment'
                 end
             end
         end
@@ -792,7 +708,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for document approval message" do
+                it "must have the waiting for document approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_document_approval_message']"
@@ -812,7 +728,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for document approval message" do
+                it "must have the waiting for document approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_document_approval_message']"
@@ -852,7 +768,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for attr approval message" do
+                it "must have the waiting for attr approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_attr_approval_message']"
@@ -872,7 +788,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for attr approval message" do
+                it "must have the waiting for attr approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_attr_approval_message']"
@@ -912,7 +828,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for payment sending message" do
+                it "must have the waiting for payment sending message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_payment_sending_message']"
@@ -932,7 +848,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for payment sending message" do
+                it "must have the waiting for payment sending message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_payment_sending_message']"
@@ -1738,7 +1654,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for document approval message" do
+                it "must have the waiting for document approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_document_approval_message']"
@@ -1758,7 +1674,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for document approval message" do
+                it "must have the waiting for document approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_document_approval_message']"
@@ -1798,7 +1714,7 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for attr approval message" do
+                it "must have the waiting for attr approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_attr_approval_message']"
@@ -1818,11 +1734,71 @@ RSpec.describe "The whats next card in the settlements section of the user profi
                 before :context do
                     @visitor = @owner
                 end
-                it "must  have the waiting for attr approval message" do
+                it "must have the waiting for attr approval message" do
                     sign_in @visitor
                     visit user_profile_show_path(@owner.profile, section: :settlements)
                     expect(page).to have_css "[data-test-id='awaiting_attr_approval_message']"
                     expect(page).to have_text '2 settlements to be approved'
+                end
+            end
+        end
+        context "with 0 settlements awaiting payment sending" do
+            before :context do
+                @payment_sending = create_list(:settlement, 0, :ready_for_payment, adjuster: @owner, attorney: User.attorneys.sample)
+                @owner.settlements = @payment_sending
+            end
+            after :context do
+                @payment_sending.each {|s| s.destroy}
+            end
+            context "and the visitor is the owner" do
+                before :context do
+                    @visitor = @owner
+                end
+                it "must not have the waiting for payment sending message" do
+                    sign_in @visitor
+                    visit user_profile_show_path(@owner.profile, section: :settlements)
+                    expect(page).to_not have_css "[data-test-id='awaiting_payment_sending_message']"
+                    expect(page).to_not have_text '0 payments to be sent'
+                end
+            end
+        end
+        context "with 1 settlement awaiting payment sending" do
+            before :context do
+                @payment_sending = create_list(:settlement, 1, :ready_for_payment, adjuster: @owner, attorney: User.attorneys.sample)
+                @owner.settlements = @payment_sending
+            end
+            after :context do
+                @payment_sending.each {|s| s.destroy}
+            end
+            context "and the visitor is the owner" do
+                before :context do
+                    @visitor = @owner
+                end
+                it "must not have the waiting for payment sending message" do
+                    sign_in @visitor
+                    visit user_profile_show_path(@owner.profile, section: :settlements)
+                    expect(page).to_not have_css "[data-test-id='awaiting_payment_sending_message']"
+                    expect(page).to_not have_text '1 payment to be sent'
+                end
+            end
+        end
+        context "with 2 settlements awaiting payment sending" do
+            before :context do
+                @payment_sending = create_list(:settlement, 2, :ready_for_payment, adjuster: @owner, attorney: User.attorneys.sample)
+                @owner.settlements = @payment_sending
+            end
+            after :context do
+                @payment_sending.each {|s| s.destroy}
+            end
+            context "and the visitor is the owner" do
+                before :context do
+                    @visitor = @owner
+                end
+                it "must not have the waiting for payment sending message" do
+                    sign_in @visitor
+                    visit user_profile_show_path(@owner.profile, section: :settlements)
+                    expect(page).to_not have_css "[data-test-id='awaiting_payment_sending_message']"
+                    expect(page).to_not have_text '2 payments to be sent'
                 end
             end
         end

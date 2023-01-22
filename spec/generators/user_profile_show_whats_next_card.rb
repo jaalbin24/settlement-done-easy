@@ -29,28 +29,38 @@ action = {
         context_string: "needing a document",
         test_id: "needs_document_message",
         expected_text: "%settlement% %needs% a document",
+        show_for_attorney?: true,
+        show_for_adjuster?: true,
     },
     needs_document_approval_from_: {
         context_string: "needing document approval",
         test_id: "needs_document_approval_from_message",
         expected_text: "%document% %needs% your approval",
-        from?: true
+        from?: true,
+        show_for_attorney?: true,
+        show_for_adjuster?: true,
     },
     needs_attr_approval_from_: {
         context_string: "needing attr approval",
         test_id: "needs_attr_approval_from_message",
         expected_text: "%settlement% %needs% your approval",
-        from?: true
+        from?: true,
+        show_for_attorney?: true,
+        show_for_adjuster?: true,
     },
     needs_signature: {
         context_string: "needing at least one signature",
         test_id: "needs_signature_message",
         expected_text: "%document% %needs% a signature",
+        show_for_attorney?: true,
+        show_for_adjuster?: true,
     },
     ready_for_payment: {
         context_string: "ready for payment",
         test_id: "ready_for_payment_message",
         expected_text: "%settlement% %is% ready for payment",
+        show_for_attorney?: false,
+        show_for_adjuster?: true,
     },
 }
 
@@ -125,13 +135,13 @@ SpecGenerator::SystemSpec.new(name: "whats_next_card", generated_file_location: 
                             end
                             s.context "and the visitor is the owner" do
                                 s.before(:context) {'@visitor = @owner'}
-                                s.it "must#{i == 0 ? " not" : ""} have the #{ak.to_s.gsub("_", " ")} message" do
+                                s.it "must#{i == 0 || (!action[ak]["show_for_#{mk}?".to_sym] && i != 0) ? " not" : ""} have the #{ak.to_s.gsub("_", " ")} message" do
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: :settlements)
-                                    expect(page).to#{i == 0 ? "_not" : ""} have_css \"[data-test-id='#{action[ak][:test_id]}']\"
-                                    expect(page).to#{i == 0 ? "_not" : ""} have_text '#{action[ak][:expected_text].sub('%settlement%', i == 1 ? 'A settlement' : "#{i} settlements").sub('%document%', i == 1 ? 'A document' : "#{i} documents").sub('%needs%', i == 1 ? 'needs' : 'need').sub('%is%', i == 1 ? 'is' : 'are')}'"
+                                    expect(page).to#{i == 0 || (!action[ak]["show_for_#{mk}?".to_sym] && i != 0) ? "_not" : ""} have_css \"[data-test-id='#{action[ak][:test_id]}']\"
+                                    expect(page).to#{i == 0 || (!action[ak]["show_for_#{mk}?".to_sym] && i != 0) ? "_not" : ""} have_text '#{action[ak][:expected_text].sub('%settlement%', i == 1 ? 'A settlement' : "#{i} settlements").sub('%document%', i == 1 ? 'A document' : "#{i} documents").sub('%needs%', i == 1 ? 'needs' : 'need').sub('%is%', i == 1 ? 'is' : 'are')}'"
                                 end
-                                unless i == 0
+                                unless i == 0 || (!action[ak]["show_for_#{mk}?".to_sym] && i != 0)
                                     s.context "after the #{ak.to_s.gsub("_", " ")} message is clicked" do
                                         s.it "must hide all other whats next messages" do
                                             "sign_in @visitor
@@ -180,7 +190,6 @@ SpecGenerator::SystemSpec.new(name: "whats_next_card", generated_file_location: 
                     end
                 end
                 waiting.keys.each do |wk|
-                    next unless waiting[wk]["#{mk}_can_wait_on?".to_sym]
                     [0,1,2].each do |i|
                         s.context "with #{i} #{'settlement'.pluralize(i)} awaiting #{wk.to_s.gsub("_", " ")}" do
                             s.before(:context) do
@@ -190,11 +199,11 @@ SpecGenerator::SystemSpec.new(name: "whats_next_card", generated_file_location: 
                             s.after(:context) {"@#{wk}.each {|s| s.destroy}"}
                             s.context "and the visitor is the owner" do
                                 s.before(:context) {'@visitor = @owner'}
-                                s.it "must#{i == 0 ? " not" : " "} have the waiting for #{wk.to_s.gsub("_", " ")} message" do
+                                s.it "must#{i == 0 || (!waiting[wk]["#{mk}_can_wait_on?".to_sym] && i != 0) ? " not" : ""} have the waiting for #{wk.to_s.gsub("_", " ")} message" do
                                     "sign_in @visitor
                                     visit user_profile_show_path(@owner.profile, section: :settlements)
-                                    expect(page).to#{i == 0 ? "_not" : ""} have_css \"[data-test-id='#{waiting[wk][:test_id]}']\"
-                                    expect(page).to#{i == 0 ? "_not" : ""} have_text '#{waiting[wk][:expected_text].sub('%settlement%', "#{i} #{'settlement'.pluralize(i)}").sub('%document%', "#{i} #{'document'.pluralize(i)}").sub('%payment%', "#{i} #{'payment'.pluralize(i)}")}'"
+                                    expect(page).to#{i == 0 || (!waiting[wk]["#{mk}_can_wait_on?".to_sym] && i != 0) ? "_not" : ""} have_css \"[data-test-id='#{waiting[wk][:test_id]}']\"
+                                    expect(page).to#{i == 0 || (!waiting[wk]["#{mk}_can_wait_on?".to_sym] && i != 0) ? "_not" : ""} have_text '#{waiting[wk][:expected_text].sub('%settlement%', "#{i} #{'settlement'.pluralize(i)}").sub('%document%', "#{i} #{'document'.pluralize(i)}").sub('%payment%', "#{i} #{'payment'.pluralize(i)}")}'"
                                 end
                             end
                         end

@@ -32,6 +32,10 @@ module UserProfileHelper
 
     def whats_next_action_messages
         whats_next_messages = {
+            ready_for_payment: {
+                submit_value: true,
+                message_text: "%settlement% %is% ready for payment",
+            },
             needs_attr_approval_from: {
                 submit_value: @owner.public_id,
                 message_text: "%settlement% %needs% your approval",
@@ -39,10 +43,6 @@ module UserProfileHelper
             needs_document: {
                 submit_value: true,
                 message_text: "%settlement% %needs% a document",
-            },
-            ready_for_payment: {
-                submit_value: true,
-                message_text: "%settlement% %is% ready for payment",
             },
             needs_document_approval_from: {
                 submit_value: @owner.public_id,
@@ -55,12 +55,13 @@ module UserProfileHelper
         }
         arr = whats_next_messages.keys.map do |k|
             case k
+            when :ready_for_payment
+                next if @owner.isAttorney? # Attorneys should not be prompted to send payments. As part of SDE's design, attorneys fundamentally cannot send money, so they should never be prompted to.
+                count = @settlements.ready_for_payment.count
             when :needs_attr_approval_from
                 count = @settlements.needs_attr_approval_from(@owner).count
             when :needs_document
                 count = @settlements.needs_document.count
-            when :ready_for_payment
-                count = @settlements.ready_for_payment.count # && owner.isAdjuster?
             when :needs_document_approval_from
                 count = @documents.needs_approval_from(@owner).count
             when :needs_signature
@@ -89,14 +90,14 @@ module UserProfileHelper
 
     def whats_next_wait_messages
         whats_next_messages = {
+            payment_sending: {
+                message_text: "%payment% to be sent",
+            },
             document_approval: {
                 message_text: "%document% to be approved",
             },
             attr_approval: {
                 message_text: "%settlement% to be approved",
-            },
-            payment_sending: {
-                message_text: "%payment% to be sent",
             },
         }
 
@@ -106,12 +107,13 @@ module UserProfileHelper
                 #{
                     wait_messages = whats_next_messages.keys.map do |k|
                         case k
+                        when :payment_sending
+                            next if @owner.isAdjuster? # Adjusters should not be prompted to wait on a payment to be sent. If there is a payment to be sent, it should be in an action whats next message.
+                            count = @settlements.ready_for_payment.count
                         when :document_approval
                             count = @settlements.needs_document_approval_from_anyone_except(@owner).count
                         when :attr_approval
                             count = @settlements.needs_attr_approval_from_anyone_except(@owner).count
-                        when :payment_sending
-                            count = @settlements.ready_for_payment.count
                         else
                             raise StandardError.new "Unhandled message type in the whats next card: #{k}"
                         end

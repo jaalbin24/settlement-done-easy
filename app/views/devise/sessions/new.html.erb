@@ -1,5 +1,5 @@
 <div class="row w-100 m-0">
-    <div class="col bg-bluegrey">
+    <div class="col">
         <div class="h-100 d-grid justify-content-center align-items-center">
             <div>
                 <div class="bg-secondary rounded-circle px-5 py-4">
@@ -9,7 +9,7 @@
             </div>
         </div>
     </div>
-    <div class="col">
+    <div class="col bg-light">
         <div class="h-100 d-flex justify-content-center">
             <div class="" style="width: 60%; margin-top: 20%">
                 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {method: :post, "data-js-styling": true, "data-wait-before-resubmit": true}) do |f|%>
