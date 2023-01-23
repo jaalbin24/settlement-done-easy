@@ -1,60 +1,81 @@
 <div class="container mt-4">
     <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-top">
-                <div>
+        <div class="card-header border-bottom-0">
+            <div class="row">
+                <div class="col">
                     <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
-                    <h3>Johnathan Williams</h3>
+                    <h3 class="m-0">Johnathan Williams</h3>
+                    <h6 class="m-0 text-muted">GKBM</h6>
                 </div>
-                <div>
+                <div class="col">
                     <h2 class="text-center">$2,400.57 for Paul Turner</h2>
-                    <%=image_tag "handshake.png", width: 380, height: 150%>
+                    <%=image_tag "handshake_color.png", width: 380, height: 150%>
                 </div>
-                <div>
+                <div class="col">
                     <%=image_tag "picture1.png", size: 96, class: "d-block ms-auto rounded-circle bg-secondary border"%>
-                    <h3>Amanda Perkins</h3>
+                    <h3 class="m-0 text-end ">Amanda Perkins</h3>
+                    <h6 class="m-0 text-end text-muted">State Farm</h6>
                 </div>
+            </div>
+            <div class="timeline-container">
+                <ul class="timeline w-75 mx-auto">
+                    <li class="active">
+                        <div><i class="m-0 fa-solid fa-flag-checkered"></i></div>
+                        <p class="m-0">Settlement started</p>
+                    </li>
+                    <li class="">
+                        <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
+                        <p class="m-0">Details approved</p>
+                    </li>
+                    <li class="">
+                        <div><i class="m-0 fa-solid fa-dollar-sign"></i></div>
+                        <p class="m-0">Payment sent</p>
+                    </li>
+                    <li class=" ">
+                        <div><i class="m-0 fa-solid fa-star"></i></div>
+                        <p class="m-0">Settlement completed</p>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
     <div class="row my-3">
         <div class="col">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>Details</h3>
-                    <button class="btn btn-primary">Action</button>
-                </div>
+            <div class="card h-100">
+                <h4 class="card-header d-flex justify-content-between align-items-center">
+                    Details
+                    <a href="" class="btn btn-secondary btn-sm d-flex align-items-center gap-1">
+                        Edit
+                        <i class="fa-solid fa-pen text-muted m-0"></i>
+                    </a>
+                </h4>
                 <div class="card-body">
-
+                    <h5>Amount</h5>
+                    <h5>Location</h5>
+                    <h5>Date</h5>
+                    <h5>Claim number</h5>
+                    <h5>Policy number</h5>
+                    <h5>Claimant name</h5>
+                    <h5>Policy holder name</h5>
                 </div>
             </div>
         </div>
         <div class="col">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>Progress</h3>
+                    <h4 class="m-0">Recent Activity</h4>
                     <button class="btn btn-primary">Action</button>
                 </div>
                 <div class="card-body">
-                    <div class="progress">
-                        <div class="w-100 d-flex position-absolute justify-content-around align-items-center" style="height: 16px; padding-right: 3rem;">
-                            <div class="bg-primary" style="height:24px; width:24px; border-radius:25px;"></div>
-                            <div class="bg-primary" style="height:24px; width:24px; border-radius:25px;"></div>
-                            <div class="bg-primary" style="height:24px; width:24px; border-radius:25px;"></div>
-                            <div class="bg-primary" style="height:24px; width:24px; border-radius:25px;"></div>
-                            <div style="height:24px; width:24px; border-radius:25px; background-color: #e9ecef"></div>
-                        </div>
-                        <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>Payment</h3>
+                    <h4 class="m-0">Payment</h4>
                     <button class="btn btn-primary">Action</button>
                 </div>
                 <div class="card-body">
@@ -63,9 +84,9 @@
             </div>
         </div>
          <div class="col">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>Documents</h3>
+                    <h4 class="m-0">Documents</h4>
                     <button class="btn btn-primary">Action</button>
                 </div>
                 <div class="card-body">

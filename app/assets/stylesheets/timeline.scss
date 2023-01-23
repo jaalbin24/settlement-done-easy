@@ -1,0 +1,69 @@
+// This is custom CSS for the timeline in the settlement show page
+
+.timeline{
+    overflow: hidden;
+    color: #878788;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    justify-content: stretch;
+    display: flex;
+}
+.timeline li{
+    list-style-type: none;
+    font-size: 13px;
+    float: left;
+    position: relative;
+    font-weight: 400;
+    color: #878788;
+    text-align: center;
+    flex-grow: 1;
+}
+.timeline li:first-child:before{
+    margin-left: 15px !important;
+    padding-left: 11px !important;
+    text-align : left !important
+}
+.timeline li:last-child:before{
+    margin-right: 5px !important;
+    padding-right: 11px !important;
+    text-align : right !important
+}
+.timeline li>div{
+    color: #fff;
+    width: 29px;
+    text-align: center;
+    line-height: 29px;
+    display: block;
+    font-size: 12px;
+    background: #878788;
+    border-radius: 50%;
+    margin: auto
+}
+.timeline li:after{
+    content: '';
+    height: 2px;
+    background: #878788;
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 15px;
+    z-index: -1
+}
+.timeline li:first-child:after{
+    left: 50% !important;
+}
+.timeline li:last-child:after{
+    right: 50% !important;
+}
+.timeline li.active{
+    font-weight: bold;
+    color: #3459e6
+}
+.timeline li.active>div{
+    background: #3459e6
+}.timeline li.active:after{
+    background: #3459e6
+}.timeline-container{
+    position: relative;
+    z-index: 0
+}

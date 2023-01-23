@@ -14,11 +14,11 @@ class SettlementsController < ApplicationController
     def new
         if current_user.isAttorney?
             @settlement = Settlement.new
-            @users = User.all_adjusters
+            @users = User.adjusters
             render :new
         elsif current_user.isAdjuster?
             @settlement = Settlement.new
-            @users = User.all_attorneys
+            @users = User.attorneys
             render :new
         else
             handle_invalid_request

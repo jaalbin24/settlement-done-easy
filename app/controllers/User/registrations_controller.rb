@@ -10,9 +10,9 @@ class User::RegistrationsController < Devise::RegistrationsController
         @user = User.new
         @profile = @user.build_profile
         if @role == "Adjuster"
-            @organizations = User.all_insurance_companies
+            @organizations = User.insurance_companies
         elsif @role == "Attorney"
-            @organizations = User.all_law_firms
+            @organizations = User.law_firms
         elsif @role == "Law Firm" || @role == "Insurance Company"
             @organizations = nil
         else
@@ -53,9 +53,9 @@ class User::RegistrationsController < Devise::RegistrationsController
             set_minimum_password_length
             @role = params[:user][:role]
             # if @role == "Adjuster"
-            #     @organizations = User.all_insurance_companies
+            #     @organizations = User.insurance_companies
             # elsif @role == "Attorney"
-            #     @organizations = User.all_law_firms
+            #     @organizations = User.law_firms
             # elsif @role == "Law Firm" || @role == "Insurance Company"
             #     @organizations = nil
             # else

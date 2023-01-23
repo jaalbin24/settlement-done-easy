@@ -332,26 +332,6 @@ class User < ApplicationRecord
         end
     end
 
-    def self.all_attorneys
-        return User.where(:role => "Attorney").order(:first_name, :last_name, :organization_id)
-    end
-
-    def self.all_adjusters
-        return User.where(:role => "Adjuster").order(:first_name, :last_name, :organization_id)
-    end
-
-    def self.all_law_firms
-        return User.where(:role => "Law Firm").order(:first_name, :organization_id)
-    end
-
-    def self.all_insurance_companies
-        return User.where(:role => "Insurance Company").order(:first_name, :organization_id)
-    end
-
-    def self.all_organizations
-        return User.where(:role => "Insurance Company").or(User.where(:role => "Law Firm")).order(:first_name, :organization_id)
-    end
-
     def isAttorney?
         return role == "Attorney"
     end

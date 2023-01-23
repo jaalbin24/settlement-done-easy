@@ -55,11 +55,11 @@
             <select class="form-select" name="partner_id" required>
                 <option disabled selected value>Select here</option>
                 <%if current_user.isAttorney?%>
-                    <%User.all_adjusters.each do |u|%>
+                    <%User.adjusters.each do |u|%>
                         <option id="<%=u.public_id%>" value="<%=u.public_id%>"><%="#{u.name} (#{u.organization.name})"%></option>
                     <%end%>
                 <%else%>
-                    <%User.all_attorneys.each do |u|%>
+                    <%User.attorneys.each do |u|%>
                         <option id="<%=u.public_id%>" value="<%=u.public_id%>"><%="#{u.name} (#{u.organization.name})"%></option>
                     <%end%>
                 <%end%>
