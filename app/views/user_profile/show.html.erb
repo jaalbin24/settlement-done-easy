@@ -1,17 +1,15 @@
-<div class="w-100">
-    <div class="container mt-4" data-test-id="user_profile_show_page">
-        <%=render "user_profile/owner_card"%>
-        <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade <%=@section == 'about' ? "active show" : ""%>" id="about" role="tabpanel">
-                <%if @owner.isMember?%>
-                    <%=render "user_profile/about/member"%>
-                <%else%>
-                    <%=render "user_profile/about/organization"%>
-                <%end%>           
-            </div>
-            <div class="tab-pane fade <%=@section == 'settlements' ? "active show" : ""%>" id="settlements" role="tabpanel">
-                <%=render "user_profile/settlements/all"%>
-            </div>
+<div class="container my-4" data-test-id="user_profile_show_page">
+    <%=render "user_profile/owner_card"%>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade <%=@section == 'about' ? "active show" : ""%>" id="about" role="tabpanel">
+            <%if @owner.isMember?%>
+                <%=render "user_profile/about/member"%>
+            <%else%>
+                <%=render "user_profile/about/organization"%>
+            <%end%>           
+        </div>
+        <div class="tab-pane fade <%=@section == 'settlements' ? "active show" : ""%>" id="settlements" role="tabpanel">
+            <%=render "user_profile/settlements/all"%>
         </div>
     </div>
 </div>

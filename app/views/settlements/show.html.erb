@@ -1,37 +1,45 @@
-<div class="container mt-4">
+<div class="container my-4">
     <div class="card">
         <div class="card-header border-bottom-0">
             <div class="row">
                 <div class="col">
                     <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
-                    <h3 class="m-0">Johnathan Williams</h3>
-                    <h6 class="m-0 text-muted">GKBM</h6>
+                    <h3 class="m-0" data-test-id="visitor_name">Johnathan Williams</h3>
+                    <h6 class="m-0 text-muted" data-test-id="visitor_organization_name">GKBM</h6>
                 </div>
                 <div class="col">
-                    <h2 class="text-center">$2,400.57 for Paul Turner</h2>
+                    <h2 class="text-center" data-test-id="settlement_summary">$2,400.57 for Paul Turner</h2>
                     <%=image_tag "handshake_color.png", width: 380, height: 150%>
                 </div>
                 <div class="col">
                     <%=image_tag "picture1.png", size: 96, class: "d-block ms-auto rounded-circle bg-secondary border"%>
-                    <h3 class="m-0 text-end ">Amanda Perkins</h3>
-                    <h6 class="m-0 text-end text-muted">State Farm</h6>
+                    <h3 class="m-0 text-end" data-test-id="partner_name">Amanda Perkins</h3>
+                    <h6 class="m-0 text-end text-muted" data-test-id="partner_organization_name">State Farm</h6>
                 </div>
             </div>
-            <div class="timeline-container">
+            <div class="timeline-container mt-2">
                 <ul class="timeline w-75 mx-auto">
-                    <li class="active">
+                    <li class="active" data-test-id="settlement_started_milestone">
                         <div><i class="m-0 fa-solid fa-flag-checkered"></i></div>
                         <p class="m-0">Settlement started</p>
                     </li>
-                    <li class="">
+                    <li class="" data-test-id="details_approved_milestone">
                         <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
                         <p class="m-0">Details approved</p>
                     </li>
-                    <li class="">
+                    <li class="" data-test-id="documents_approved_milestone">
+                        <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
+                        <p class="m-0">Documents approved</p>
+                    </li>
+                    <li class="" data-test-id="documents_signed_milestone">
+                        <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
+                        <p class="m-0">Documents signed</p>
+                    </li>
+                    <li class="" data-test-id="payment_sent_milestone">
                         <div><i class="m-0 fa-solid fa-dollar-sign"></i></div>
                         <p class="m-0">Payment sent</p>
                     </li>
-                    <li class=" ">
+                    <li class="" data-test-id="settlement_completed_milestone">
                         <div><i class="m-0 fa-solid fa-star"></i></div>
                         <p class="m-0">Settlement completed</p>
                     </li>
@@ -44,19 +52,139 @@
             <div class="card h-100">
                 <h4 class="card-header d-flex justify-content-between align-items-center">
                     Details
-                    <a href="" class="btn btn-secondary btn-sm d-flex align-items-center gap-1">
-                        Edit
-                        <i class="fa-solid fa-pen text-muted m-0"></i>
-                    </a>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="" class="btn btn-secondary btn-sm d-flex align-items-center gap-1">
+                            Edit
+                            <i class="fa-solid fa-pen text-muted m-0"></i>
+                        </a>
+                        <button class="btn btn-sm btn-success"><%=thumbs_up_icon(color: :white)%></button>
+                    </div>
                 </h4>
                 <div class="card-body">
-                    <h5>Amount</h5>
-                    <h5>Location</h5>
-                    <h5>Date</h5>
-                    <h5>Claim number</h5>
-                    <h5>Policy number</h5>
-                    <h5>Claimant name</h5>
-                    <h5>Policy holder name</h5>
+                    <div class="pb-2 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Amount</p>
+                            <h6 class="m-0 text-dark">$2,400.57</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                    <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Claimant</p>
+                            <h6 class="m-0 text-dark">Paul Turner</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                    <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Policy Holder</p>
+                            <h6 class="m-0 text-dark">Francis Sikes</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                    <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Claim number</p>
+                            <h6 class="m-0 text-dark">C-38883-1G0</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                    <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Policy Number</p>
+                            <h6 class="m-0 text-dark">P-17294934-F</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                    <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Date of Incident</p>
+                            <h6 class="m-0 text-dark">December 5, 2022</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                    <div class="pt-2 d-flex align-items-center justify-content-between">
+                        <div class="">
+                            <p class="m-0">Location of Incident</p>
+                            <h6 class="m-0 text-dark">Memphis, TN</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                        </div>
+                    </div>
+                
+                
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row pb-1 h-50">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="m-0">Payment</h4>
+                            <button class="btn btn-sm btn-primary">Send</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h5 class="m-0 fw-bold">Status: <strong class="text-success">Ready for payment</strong></h5>
+                                <p class="m-0">Click <a href="">here</a> to send payment.</p>
+                            </div>
+                            <label for="exampleSelect1" class="form-label flex-shrink-0 m-0">Deposit funds into</label>
+                            <div class="input-group">
+                                <select class="form-select flex-shrink-1" id="exampleSelect1">
+                                    <option>Charlie Escrow Account</option>
+                                    <option>Stripe Test Account</option>
+                                    <option>Default Escrow</option>
+                                </select>
+                                <button class="btn btn-sm btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-1 h-50">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="m-0">Documents</h4>
+                            <button class="btn btn-sm btn-primary d-flex gap-1 align-items-center">
+                                New
+                                <i class="fa-solid fa-plus m-0 h6"></i>
+                            </button>
+                        </div>
+                        <div class="list-group list-group-flush overflow-auto">
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-1 px-3">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <%=document_icon(color: :primary, size: :h4)%>
+                                    <div>
+                                        <h6 class="m-0">dummy_document(1).pdf</h6>
+                                        <p class="m-0 text-muted">Johnathan Williams</p>
+                                    </div>
+                                </div>
+                                <p class="m-0">1 minute ago</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,33 +192,62 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="m-0">Recent Activity</h4>
-                    <button class="btn btn-primary">Action</button>
                 </div>
-                <div class="card-body">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="m-0">Payment</h4>
-                    <button class="btn btn-primary">Action</button>
-                </div>
-                <div class="card-body">
-
-                </div>
-            </div>
-        </div>
-         <div class="col">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="m-0">Documents</h4>
-                    <button class="btn btn-primary">Action</button>
-                </div>
-                <div class="card-body">
-
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-signature text-primary m-0 h4"></i>
+                            <div>
+                                <h6 class="m-0">Signature requested</h6>
+                                <p class="text-muted m-0">dummy_document(1).pdf</p>
+                                <p class="text-muted m-0">Johnathan Williams</p>
+                            </div>
+                        </div>
+                        <p class="text-muted m-0">11 minutes ago</p>
+                    </div>
+                    <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <%=document_icon(color: :primary, size: :h4)%>
+                            <div>
+                                <h6 class="m-0">Document added</h6>
+                                <p class="text-muted m-0">dummy_document(1).pdf</p>
+                                <p class="text-muted m-0">Johnathan Williams</p>
+                            </div>
+                        </div>
+                        <p class="text-muted m-0">1 minute ago</p>
+                    </div>
+                    <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <%=document_icon(color: :red, size: :h4)%>
+                            <div>
+                                <h6 class="m-0 fw-normal">Document automatically deleted</h6>
+                                <p class="text-muted m-0">dummy_document.pdf</p>
+                            </div>
+                        </div>
+                        <p class="text-muted m-0">2 minutes ago</p>
+                    </div>
+                    <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <%=document_icon(color: :red, size: :h4)%>
+                            <div>
+                                <h6 class="m-0">Document rejected</h6>
+                                <p class="text-muted m-0">dummy_document.pdf</p>
+                                <p class="text-muted m-0">Amanda Perkins</p>
+                            </div>
+                        </div>
+                        <p class="text-muted m-0">5 minutes ago</p>
+                    </div>
+                    <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <%=document_icon(color: :primary, size: :h4)%>
+                            <div>
+                                <h6 class="m-0">Document added</h6>
+                                <p class="text-muted m-0">dummy_document.pdf</p>
+                                <p class="text-muted m-0">Johnathan Williams</p>
+                            </div>
+                        </div>
+                        <p class="text-muted m-0">11 minutes ago</p>
+                    </div>
                 </div>
             </div>
         </div>
