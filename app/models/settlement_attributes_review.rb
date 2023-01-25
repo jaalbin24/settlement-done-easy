@@ -32,6 +32,7 @@ class SettlementAttributesReview < ApplicationRecord
     scope :by,                  ->  (i) {where(reviewer: i)}
     scope :not_by,              ->  (i) {where.not(reviewer: i)}
     scope :not_fully_approved,  ->      {where(status: "Needs approval")}
+    scope :not_approved,        ->      {where.not(status: "Approved")}
     scope :approved,            ->      {where(status: "Approved")}
 
     belongs_to(

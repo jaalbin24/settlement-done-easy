@@ -36,7 +36,7 @@ module SettlementsHelper
         }
         completed_milestones = [:started]
         incomplete_milestones = [:details_approved, :documents_approved, :documents_signed, :payment_sent, :completed]
-        if @settlement.attribute_reviews.not_fully_approved.exists?
+        if @settlement.attribute_reviews.approved.count == 2
             incomplete_milestones.delete :details_approved
             completed_milestones.push :details_approved
         end
