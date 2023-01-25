@@ -349,11 +349,19 @@ class User < ApplicationRecord
     end
     
     def isOrganization?
-        return role == "Law Firm" || role == "Insurance Company"
+        return isLawFirm? || isInsuranceCompany?
     end
 
     def isMember?
-        return role == "Attorney" || role == "Adjuster"
+        return isAttorney? || isAdjuster?
+    end
+
+    def lawful?
+        return isAttorney? || isLawFirm?
+    end
+
+    def insureful?
+        return isAdjuster? || isInsuranceCompany?
     end
 
     def has_bank_account?

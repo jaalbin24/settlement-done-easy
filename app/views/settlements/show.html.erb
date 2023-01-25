@@ -4,47 +4,22 @@
             <div class="row">
                 <div class="col">
                     <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
-                    <h3 class="m-0" data-test-id="visitor_name">Johnathan Williams</h3>
-                    <h6 class="m-0 text-muted" data-test-id="visitor_organization_name">GKBM</h6>
+                    <h3 class="m-0" data-test-id="visitor_name"><%=@visitor.name%></h3>
+                    <h6 class="m-0 text-muted" data-test-id="visitor_organization_name"><%=@visitor.organization.name%></h6>
                 </div>
-                <div class="col">
-                    <h2 class="text-center" data-test-id="settlement_summary">$2,400.57 for Paul Turner</h2>
-                    <%=image_tag "handshake_color.png", width: 380, height: 150%>
+                <div class="col-auto d-grid align-items-center justify-content-center">
+                    <div>
+                        <h4 class="m-0 text-center text-muted" data-test-id="settlement_number">Settlement #<%="%04d" % @settlement.public_number%></h4>
+                        <h1 class="m-0 text-center" data-test-id="settlement_summary"><%=settlement_summary%></h1>
+                    </div>
                 </div>
                 <div class="col">
                     <%=image_tag "picture1.png", size: 96, class: "d-block ms-auto rounded-circle bg-secondary border"%>
-                    <h3 class="m-0 text-end" data-test-id="partner_name">Amanda Perkins</h3>
-                    <h6 class="m-0 text-end text-muted" data-test-id="partner_organization_name">State Farm</h6>
+                    <h3 class="m-0 text-end" data-test-id="partner_name"><%=@partner.name%></h3>
+                    <h6 class="m-0 text-end text-muted" data-test-id="partner_organization_name"><%=@partner.organization.name%></h6>
                 </div>
             </div>
-            <div class="timeline-container mt-2">
-                <ul class="timeline w-75 mx-auto">
-                    <li class="active" data-test-id="settlement_started_milestone">
-                        <div><i class="m-0 fa-solid fa-flag-checkered"></i></div>
-                        <p class="m-0">Settlement started</p>
-                    </li>
-                    <li class="" data-test-id="details_approved_milestone">
-                        <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
-                        <p class="m-0">Details approved</p>
-                    </li>
-                    <li class="" data-test-id="documents_approved_milestone">
-                        <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
-                        <p class="m-0">Documents approved</p>
-                    </li>
-                    <li class="" data-test-id="documents_signed_milestone">
-                        <div><i class="m-0 fa-solid fa-thumbs-up"></i></div>
-                        <p class="m-0">Documents signed</p>
-                    </li>
-                    <li class="" data-test-id="payment_sent_milestone">
-                        <div><i class="m-0 fa-solid fa-dollar-sign"></i></div>
-                        <p class="m-0">Payment sent</p>
-                    </li>
-                    <li class="" data-test-id="settlement_completed_milestone">
-                        <div><i class="m-0 fa-solid fa-star"></i></div>
-                        <p class="m-0">Settlement completed</p>
-                    </li>
-                </ul>
-            </div>
+            <%=settlement_timeline%>
         </div>
     </div>
     <div class="row my-3">

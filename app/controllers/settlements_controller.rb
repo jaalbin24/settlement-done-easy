@@ -65,8 +65,15 @@ class SettlementsController < ApplicationController
 
     def show
         begin
-            @settlement = Settlement.find_by!(public_id: params[:id])
+            @settlement = current_user.settlements.find_by!(public_id: params[:id])
             @attr_review_by_current_user = @settlement.attribute_reviews.by(current_user).first
+            if current_user.lawful?
+                @visitor = @settlement.attorney
+                @partner = @settlement.adjuster
+            elsif current_user.insureful?
+                @visitor = @settlement.adjuster
+                @partner = @settlement.attorney
+            end
         rescue => e
             puts "⚠️⚠️⚠️ ERROR: #{e.message}"
             handle_invalid_request
