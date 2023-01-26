@@ -42,8 +42,8 @@
                             <h6 class="m-0 text-dark">$2,400.57</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                     <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
@@ -52,8 +52,8 @@
                             <h6 class="m-0 text-dark">Paul Turner</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                     <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
@@ -62,8 +62,8 @@
                             <h6 class="m-0 text-dark">Francis Sikes</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                     <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
@@ -72,8 +72,8 @@
                             <h6 class="m-0 text-dark">C-38883-1G0</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                     <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
@@ -82,8 +82,8 @@
                             <h6 class="m-0 text-dark">P-17294934-F</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                     <div class="py-2 border-bottom d-flex align-items-center justify-content-between">
@@ -92,8 +92,8 @@
                             <h6 class="m-0 text-dark">December 5, 2022</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                     <div class="pt-2 d-flex align-items-center justify-content-between">
@@ -102,8 +102,8 @@
                             <h6 class="m-0 text-dark">Memphis, TN</h6>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up m-0 mb-1 text-success h5"></i>
-                            <i class="fa-solid fa-thumbs-down m-0 mt-1 text-danger h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                            <i class="fa-solid fa-thumbs-up m-0 text-muted h5" style="opacity: 50%;"></i>
                         </div>
                     </div>
                 
@@ -111,8 +111,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="row pb-1 h-50">
+        <div class="col d-flex flex-column">
+            <div class="row pb-1" style="flex: 1 1 50%;">
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -137,17 +137,17 @@
                     </div>
                 </div>
             </div>
-            <div class="row pt-1 h-50">
+            <div class="row pt-1" style="flex: 1 1 50%;">
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h4 class="m-0">Documents</h4>
-                            <button class="btn btn-sm btn-primary d-flex gap-1 align-items-center">
+                            <a href="<%=document_new_path(@settlement)%>" class="btn btn-sm btn-primary d-flex gap-1 align-items-center" data-test-id="new_document_button">
                                 New
                                 <i class="fa-solid fa-plus m-0 h6"></i>
-                            </button>
+                            </a>
                         </div>
-                        <div class="list-group list-group-flush overflow-auto">
+                        <div class="list-group list-group-flush overflow-auto" style="display: block;">
                             <div class="list-group-item d-flex justify-content-between align-items-center py-1 px-3">
                                 <div class="d-flex gap-3 align-items-center">
                                     <%=document_icon(color: :primary, size: :h4)%>
@@ -156,7 +156,9 @@
                                         <p class="m-0 text-muted">Johnathan Williams</p>
                                     </div>
                                 </div>
-                                <p class="m-0">1 minute ago</p>
+                                <div class="d-flex align-items-center gap-1">
+                                    <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,7 +173,9 @@
                 <div class="list-group list-group-flush">
                     <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-file-signature text-primary m-0 h4"></i>
+                            <div class="d-flex align-items-center" style="width: 27px;">
+                                <i class="fa-solid fa-file-signature text-primary m-0 h4"></i>
+                            </div>
                             <div>
                                 <h6 class="m-0">Signature requested</h6>
                                 <p class="text-muted m-0">dummy_document(1).pdf</p>
@@ -182,7 +186,9 @@
                     </div>
                     <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <%=document_icon(color: :primary, size: :h4)%>
+                            <div class="d-flex align-items-center" style="width: 27px;">
+                                <%=document_icon(color: :blue, size: :h4)%>
+                            </div>
                             <div>
                                 <h6 class="m-0">Document added</h6>
                                 <p class="text-muted m-0">dummy_document(1).pdf</p>
@@ -193,7 +199,9 @@
                     </div>
                     <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <%=document_icon(color: :red, size: :h4)%>
+                            <div class="d-flex align-items-center" style="width: 27px;">
+                                <%=document_icon(color: :red, size: :h4)%>
+                            </div>
                             <div>
                                 <h6 class="m-0 fw-normal">Document automatically deleted</h6>
                                 <p class="text-muted m-0">dummy_document.pdf</p>
@@ -203,7 +211,9 @@
                     </div>
                     <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <%=document_icon(color: :red, size: :h4)%>
+                            <div class="d-flex align-items-center" style="width: 27px;">
+                                <%=document_icon(color: :red, size: :h4)%>
+                            </div>
                             <div>
                                 <h6 class="m-0">Document rejected</h6>
                                 <p class="text-muted m-0">dummy_document.pdf</p>
@@ -214,7 +224,9 @@
                     </div>
                     <div class="list-group-item py-1 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <%=document_icon(color: :primary, size: :h4)%>
+                            <div class="d-flex align-items-center" style="width: 27px;">
+                                <%=document_icon(color: :blue, size: :h4)%>
+                            </div>
                             <div>
                                 <h6 class="m-0">Document added</h6>
                                 <p class="text-muted m-0">dummy_document.pdf</p>

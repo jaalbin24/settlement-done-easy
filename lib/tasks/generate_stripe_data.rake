@@ -1,5 +1,3 @@
-
-
 unless Rails.env.production?
     require 'english_language'
     include EnglishLanguage

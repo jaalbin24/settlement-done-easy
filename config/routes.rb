@@ -31,12 +31,11 @@ Rails.application.routes.draw do
   patch 'documents/:id/send_ds_signature_request',  to: 'documents#send_ds_signature_request', as: 'document_send_ds_signature_request'
   get 'documents/:id/get_ds_envelope_status',   to: 'documents#get_ds_envelope_status',   as: 'document_get_ds_envelope_status'  
   get 'documents/:id',                          to: 'documents#show',                     as: 'document_show'
-  get 'settlements/:id/documents',              to: 'documents#index',                    as: 'document_index'
 
 
   post 'settlements/:id/documents/new',         to: 'documents#create',                   as: 'document_create'
   get 'settlements/:id/documents/new',          to: 'documents#new',                      as: 'document_new'
-  post 'settlements/:id/generate_document',      to: 'settlements#generate_document',     as: 'settlement_generate_document'
+  post 'settlements/:id/generate_document',     to: 'settlements#generate_document',     as: 'settlement_generate_document'
   patch 'documents/:id',                        to: 'documents#update',                   as: 'document_update'
   delete 'documents/:id',                       to: 'documents#destroy',                  as: 'document_delete'
   

@@ -102,3 +102,7 @@ gem "font-awesome-sass"
 # For background job-processing
 gem 'sidekiq'
 
+# For signature block detection
+gem 'rmagick'
+gem 'rtesseract'
+gem 'pdftoimage'

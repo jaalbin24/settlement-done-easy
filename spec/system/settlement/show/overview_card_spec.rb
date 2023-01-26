@@ -23,7 +23,7 @@ RSpec.describe "The overview card in the settlement show page", type: :system do
         expect(find("[data-test-id='settlement_number']")).to have_text "Settlement ##{"%04d" % @settlement.public_number}"
     end
 
-    context "when the user is an attorney" do
+    context "when the visitor is an attorney" do
         it "must have the attorney's name on the visitor side" do
             sign_in @attorney
             visit settlement_show_path(@settlement)
@@ -45,7 +45,29 @@ RSpec.describe "The overview card in the settlement show page", type: :system do
             expect(find("[data-test-id='partner_organization_name']")).to have_text @adjuster.organization.name
         end
     end
-    context "when the user is an adjuster" do
+    context "when the visitor is the attorneys organization" do
+        it "must have the attorney's name on the visitor side" do
+            sign_in @attorney.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='visitor_name']")).to have_text @attorney.name
+        end
+        it "must have the attorney's organization's name on the visitor side" do
+            sign_in @attorney.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='visitor_organization_name']")).to have_text @attorney.organization.name
+        end
+        it "must have the adjuster's name on the partner side" do
+            sign_in @attorney.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='partner_name']")).to have_text @adjuster.name
+        end
+        it "must have the adjuster's organization's name on the partner side" do
+            sign_in @attorney.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='partner_organization_name']")).to have_text @adjuster.organization.name
+        end
+    end
+    context "when the visitor is an adjuster" do
         it "must have the adjuster's name on the visitor side" do
             sign_in @adjuster
             visit settlement_show_path(@settlement)
@@ -67,9 +89,31 @@ RSpec.describe "The overview card in the settlement show page", type: :system do
             expect(find("[data-test-id='partner_organization_name']")).to have_text @attorney.organization.name
         end
     end
+    context "when the visitor is the adjusters organization" do
+        it "must have the adjuster's name on the visitor side" do
+            sign_in @adjuster.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='visitor_name']")).to have_text @adjuster.name
+        end
+        it "must have the adjuster's organization's name on the visitor side" do
+            sign_in @adjuster.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='visitor_organization_name']")).to have_text @adjuster.organization.name
+        end
+        it "must have the attorney's name on the partner side" do
+            sign_in @adjuster.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='partner_name']")).to have_text @attorney.name
+        end
+        it "must have the attorney's organization's name on the partner side" do
+            sign_in @adjuster.organization
+            visit settlement_show_path(@settlement)
+            expect(find("[data-test-id='partner_organization_name']")).to have_text @attorney.organization.name
+        end
+    end
     context "when the settlement has no claimant name" do
         before do
-            @no_claimant_settlement = create(:settlement, claimant_name: nil)
+            @no_claimant_settlement = create(:settlement, claimant_name: nil, attorney: @attorney, adjuster: @adjuster)
         end
         it "must have only the settlement amount in the settlement summary" do
             sign_in @no_claimant_settlement.attorney
@@ -80,7 +124,7 @@ RSpec.describe "The overview card in the settlement show page", type: :system do
     end
     context "when the settlement has a claimant name" do
         before do
-            @no_claimant_settlement = create(:settlement, claimant_name: "Johnny Test")
+            @no_claimant_settlement = create(:settlement, claimant_name: "Johnny Test", attorney: @attorney, adjuster: @adjuster)
         end
         it "must have the settlement amount and claimant name in the settlement summary" do
             sign_in @no_claimant_settlement.attorney
@@ -92,7 +136,7 @@ RSpec.describe "The overview card in the settlement show page", type: :system do
     context "when the settlement has a document" do
         context "that is approved" do
             before do
-                @doc_approved_settlement = create(:settlement, :ready_for_payment)
+                @doc_approved_settlement = create(:settlement, :ready_for_payment, attorney: @attorney, adjuster: @adjuster)
             end
             it "must show the document approved milestone as active" do
                 expect(@doc_approved_settlement.reload.documents.approved.count).to eq @doc_approved_settlement.reload.documents.count
@@ -103,7 +147,7 @@ RSpec.describe "The overview card in the settlement show page", type: :system do
         end
         context "that is not approved" do
             before do
-                @doc_not_approved_settlement = create(:settlement, :needs_document_approval_from_adjuster)
+                @doc_not_approved_settlement = create(:settlement, :needs_document_approval_from_adjuster, attorney: @attorney, adjuster: @adjuster)
             end
             it "must show the document approved milestone as inactive" do
                 sign_in @doc_not_approved_settlement.attorney
