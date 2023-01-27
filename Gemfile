@@ -40,6 +40,9 @@ group :development, :test do
   gem "rspec-rails"
   # Factory Bot for dynamic test fixture generation
   gem 'factory_bot_rails'
+
+  # For starting Rails, Redis, and Sidekiq simultaneously and cohesively
+  gem 'foreman'
 end
 
 group :development do
