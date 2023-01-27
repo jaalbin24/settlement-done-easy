@@ -26,10 +26,10 @@ gem 'webpacker', '~> 5.0'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
-group :production do
-  # Use Redis adapter to run Action Cable in production
-  gem 'redis', '< 5'
-end
+# group :production do
+#   # Use Redis adapter to run Action Cable in production
+#   gem 'redis', '< 5'
+# end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -40,8 +40,6 @@ group :development, :test do
   gem "rspec-rails"
   # Factory Bot for dynamic test fixture generation
   gem 'factory_bot_rails'
-
-  gem 'async'
 end
 
 group :development do
@@ -63,6 +61,9 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'webdrivers'
+
+  # Async is used as the ActiveJob adapter to make tests run faster
+  gem 'async'
 end
 
 # Adds custom css themes
@@ -97,3 +98,6 @@ gem 'sidekiq'
 # gem 'rmagick'
 # gem 'rtesseract'
 # gem 'pdftoimage'
+
+# Redis for background job queueing
+gem 'redis', '< 5'

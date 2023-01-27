@@ -1,5 +1,5 @@
 class RegisterStripeAccountJob < ApplicationJob
-    queue_as :urgent
+    queue_as :internal
     
     retry_on Stripe::APIConnectionError
     retry_on Stripe::RateLimitError

@@ -90,7 +90,9 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: "#{Rails.configuration.URL_ROOT}/", port: 25 }
 
 
-  config.active_job.queue_adapter = :async
+  config.active_job.queue_adapter = :sidekiq
+  Sidekiq.configure_server { |c| c.redis = { url: ENV['REDIS_URL'] } }
+  # config.active_job.queue_name_prefix = "sde_development"
   
 end
 

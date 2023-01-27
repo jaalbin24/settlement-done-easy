@@ -1,5 +1,4 @@
-# == Route Map
-#
+require 'sidekiq/web'
 
 Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
@@ -12,6 +11,7 @@ Rails.application.routes.draw do
     get 'user/changephonenumber',               to: 'user/registrations#change_phone_number', as: 'change_phone_number'
   end
 
+  mount Sidekiq::Web => '/sidekiq'
   
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root to: "pages#root"
