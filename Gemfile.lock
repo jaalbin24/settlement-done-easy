@@ -123,6 +123,7 @@ GEM
     fiber-local (1.0.0)
     font-awesome-sass (6.2.0)
       sassc (~> 2.0)
+    foreman (0.87.2)
     globalid (1.0.0)
       activesupport (>= 5.0)
     httplog (1.6.0)
@@ -302,6 +303,7 @@ DEPENDENCIES
   docusign_esign
   factory_bot_rails
   font-awesome-sass
+  foreman
   httplog
   humanize
   jwt
