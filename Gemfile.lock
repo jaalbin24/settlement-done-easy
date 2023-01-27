@@ -308,6 +308,7 @@ PLATFORMS
 DEPENDENCIES
   annotate
   async
+  bcrypt (~> 3.1.18)
   bootsnap (>= 1.4.4)
   bootstrap
   bootstrap_form (~> 4.0)
