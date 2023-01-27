@@ -231,7 +231,7 @@ class User < ApplicationRecord
         create_settings(UserSettings.default_settings) if settings.nil?
         create_profile() if profile.nil?
         if isOrganization?
-            CreateStripeAccountJob.perform_later self if stripe_account.nil?
+            create_stripe_account() if stripe_account.nil?
             # if stripe_financial_account.nil?
             #     build_stripe_financial_account
             # end

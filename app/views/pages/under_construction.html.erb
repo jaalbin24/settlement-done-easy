@@ -1,13 +1,17 @@
 <div class="container">
     <div class="d-flex align-items-center justify-content-center h-100">
-        <div class="d-grid align-items-center">
-            <h1>Under Construction</h2>
-            <p class="m-0"><%=@page_name%> has not been added to SDE yet. Check back later to see the finished page.</p>
-            <hr class="mb-0">
-            <%=image_tag "under_construction.png", class: "mx-auto"%>
-            <hr class="mt-0">
-            <div>
-                <%=link_to @button_label, @continue_path, class: "btn btn-primary", style: "margin-top: -2;"%>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-grid align-items-center">
+                    <h1>Under Construction</h2>
+                    <p class="m-0"><%=@page_name%> has not been added to SDE yet. Check back later to see the finished page.</p>
+                    <hr class="mb-0">
+                    <%=image_tag "under_construction.png", class: "mx-auto"%>
+                    <hr class="mt-0">
+                    <div>
+                        <%=link_to @button_label, @continue_path, class: "btn btn-primary", style: "margin-top: -2;"%>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

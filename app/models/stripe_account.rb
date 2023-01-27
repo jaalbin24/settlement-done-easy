@@ -38,30 +38,12 @@ class StripeAccount < ApplicationRecord
         inverse_of: :stripe_account
     )
 
-    validates :stripe_id, inclusion: {in: -> (i) {[i.stripe_id_was]}, message: "cannot be changed after creation."}, on: :update
+    # validates :stripe_id, inclusion: {in: -> (i) {[i.stripe_id_was]}, message: "cannot be changed after creation."}, on: :update
     validates :user, presence: true
 
     before_validation do
         puts "❤️❤️❤️ StripeAccount before_validation block"
-        if stripe_id.blank?
-            # TODO: If this call to Stripe fails for network reasons, add a job to ActiveJobs to retry later.
-            unless Rails.env.test?
-                account = Stripe::Account.create({
-                    type: "custom",
-                    country: "US",
-                    capabilities: {
-                        treasury: {requested: true},
-                        us_bank_account_ach_payments: {requested: true},
-                        card_payments: {requested: true},
-                        transfers: {requested: true},
-                    },
-                    business_type: "company",
-                    business_profile: {url: "http://settlementdoneeasy.com/"},
-                })
-                self.stripe_id = account.id
-                sync_with(account)
-            end
-        end
+        
     end
 
     after_commit do
@@ -71,8 +53,11 @@ class StripeAccount < ApplicationRecord
         end
     end
 
-    before_create do
-        puts "❤️❤️❤️ StripeAccount before_create block"
+    after_create do
+        puts "❤️❤️❤️ StripeAccount after_create block"
+        if stripe_id.blank?
+            RegisterStripeAccountJob.perform_later self if stripe_id.nil?
+        end
         #sync_with_stripe unless Rails.env.test? # This 'unless' check was added to make tests run faster.
     end
 
@@ -113,7 +98,7 @@ class StripeAccount < ApplicationRecord
     end
 
     def onboarded?
-        return !requirements.besides_external_account.exists?
+        return !requirements.besides_external_account.exists? && !stripe_id.blank?
     end
 
     private
