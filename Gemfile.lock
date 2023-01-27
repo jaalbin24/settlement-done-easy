@@ -308,6 +308,7 @@ PLATFORMS
 DEPENDENCIES
   annotate
   async
+  bcrypt (~> 3.0)
   bootsnap (>= 1.4.4)
   bootstrap
   bootstrap_form (~> 4.0)
@@ -320,17 +321,22 @@ DEPENDENCIES
   font-awesome-sass
   httplog
   humanize
+  iconv (~> 1.0)
   jbuilder (~> 2.7)
   jwt
   listen (~> 3.3)
   mail
+  nio4r
+  orm_adapter (~> 0.1)
   pdftoimage
   pg
   prawn
   puma (< 6.0.0)
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.4, >= 6.1.4.6)
+  railties (>= 4.1.0)
   redis (< 5)
+  responders
   rmagick
   rspec-rails
   rtesseract
@@ -341,6 +347,7 @@ DEPENDENCIES
   stripe
   tzinfo
   tzinfo-data
+  warden (> 1.2.3)
   web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)
