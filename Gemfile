@@ -17,7 +17,7 @@ gem 'webpacker', '~> 5.0'
 gem 'jbuilder', '~> 2.7'
 
 # Use Active Model has_secure_password
-gem 'bcrypt', '~> 3.1.18'
+# gem 'bcrypt', '~> 3.0'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -29,8 +29,15 @@ group :production do
   # Use Redis adapter to run Action Cable in production
   gem 'redis', '< 5'
 
-  # Use nio4r for cross-platform asynchronous I/O primitives for scalable network clients and servers
-  gem 'nio4r'
+  # # ActionCable dependency gems must be explicitly declared in production
+  # gem 'nio4r'
+
+  # # Devise dependency gems must be explicitly declared in production
+  # gem 'bcrypt', '~> 3.0'
+  # gem 'orm_adapter', '~> 0.1'
+  # gem 'railties', '>= 4.1.0'
+  # gem 'responders', '>= 0'
+  # gem 'warden', '> 1.2.3'
 end
 
 group :development, :test do
