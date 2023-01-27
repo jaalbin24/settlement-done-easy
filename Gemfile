@@ -85,7 +85,7 @@ gem 'docusign_esign'
 gem 'jwt'
 
 # Payment Processor
-gem 'stripe' #, '~> 5.47.0'
+gem 'stripe'
 
 # For icons
 gem "font-awesome-sass"
