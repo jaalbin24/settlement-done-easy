@@ -6,7 +6,7 @@ class RegisterStripeAccountJob < ApplicationJob
     retry_on Stripe::APIConnectionError
 
     def perform(stripe_account)
-        if stripe_account.user.isOrganization? && !stripe_account.onboarded?
+        if stripe_account.user.isOrganization? && stripe_account.stripe_id.blank?
             unless Rails.env.test?
                 account = Stripe::Account.create({
                     type: "custom",
