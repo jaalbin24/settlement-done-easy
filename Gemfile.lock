@@ -325,6 +325,7 @@ DEPENDENCIES
   jwt
   listen (~> 3.3)
   mail
+  nio4r
   pdftoimage
   pg
   prawn

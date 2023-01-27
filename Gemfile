@@ -28,6 +28,9 @@ gem 'bootsnap', '>= 1.4.4', require: false
 group :production do
   # Use Redis adapter to run Action Cable in production
   gem 'redis', '< 5'
+
+  # Use nio4r for cross-platform asynchronous I/O primitives for scalable network clients and servers
+  gem 'nio4r'
 end
 
 group :development, :test do
