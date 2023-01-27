@@ -14,7 +14,8 @@ gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.7'
+# gem 'jbuilder', '~> 2.7'
+# This^ gem should be unnecessary because SDE is not an API
 
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.0'
@@ -28,19 +29,6 @@ gem 'bootsnap', '>= 1.4.4', require: false
 group :production do
   # Use Redis adapter to run Action Cable in production
   gem 'redis', '< 5'
-
-  # ActionCable dependency gems must be explicitly declared in production
-  gem 'nio4r'
-
-  # Devise dependency gems must be explicitly declared in production
-  gem 'bcrypt', '~> 3.0'
-  gem 'orm_adapter', '~> 0.1'
-  gem 'railties', '>= 4.1.0'
-  gem 'responders', '>= 0'
-  gem 'warden', '> 1.2.3'
-
-  # PDFtoImage dependency gems must be explicitly declared in production
-  gem 'iconv', '~> 1.0'
 end
 
 group :development, :test do
@@ -77,22 +65,12 @@ group :test do
   gem 'webdrivers'
 end
 
-gem 'tzinfo'
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data' #, platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-# Replaces Rails form helpers with bootstrap-specific form helpers
-gem "bootstrap_form", "~> 4.0"
-
 # Adds custom css themes
 gem 'bootswatch-rails'
 gem 'bootstrap'
 
 # Handles authentication for user accounts
 gem 'devise'
-
-# Do I need to declare this gem?
-gem 'mail'
 
 # Prawn PDF generation
 gem 'prawn'
@@ -116,6 +94,6 @@ gem "font-awesome-sass"
 gem 'sidekiq'
 
 # For signature block detection
-gem 'rmagick'
-gem 'rtesseract'
-gem 'pdftoimage'
+# gem 'rmagick'
+# gem 'rtesseract'
+# gem 'pdftoimage'
