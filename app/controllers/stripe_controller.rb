@@ -6,16 +6,34 @@ class StripeController < ApplicationController
 
     def onboard_account_link
         if current_user.isOrganization?
-            if current_user.stripe_account_onboarded?
+            if current_user.stripe_account.onboarded?
                 flash[:primary] = "Account already onboarded. No action needed."
                 redirect_to root_path
                 return
             end
-            if current_user.stripe_account_id.blank?
-                # Create a Stripe Connect account for the user
+            if current_user.stripe_account.stripe_id.blank?
+                if current_user.isOrganization? && !current_user.stripe_account.onboarded?
+                    unless Rails.env.test?
+                        account = Stripe::Account.create({
+                            type: "custom",
+                            country: "US",
+                            capabilities: {
+                                treasury: {requested: true},
+                                us_bank_account_ach_payments: {requested: true},
+                                card_payments: {requested: true},
+                                transfers: {requested: true},
+                            },
+                            business_type: "company",
+                            business_profile: {url: "http://settlementdoneeasy.com/"},
+                        })
+                        current_user.stripe_account.stripe_id = account.id
+                        current_user.stripe_account.sync_with(account)
+                        current_user.stripe_account.save
+                    end
+                end
             end
             account_link = Stripe::AccountLink.create(
-                account: current_user.stripe_account_id,
+                account: current_user.stripe_account.stripe_id,
                 refresh_url: "#{Rails.configuration.URL_ROOT}/stripe_handle_return_from_onboard",
                 return_url: "#{Rails.configuration.URL_ROOT}/stripe_handle_return_from_onboard",
                 type: 'account_onboarding',
