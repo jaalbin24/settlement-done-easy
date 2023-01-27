@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: redis://<%=ENV["REDIS_URL"]%>
+  url: <%=ENV["REDIS_URL"]%>
   channel_prefix: settlement_done_easy_production
