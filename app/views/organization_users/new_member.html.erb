@@ -1,19 +1,21 @@
-<div class="mx-auto w-50">
+<div class="mx-auto w-50 my-4">
     <div class="card">
         <h2 class="text-center card-header">New <%=member_role_name(current_user).capitalize%> Account</h2>
         <div class="card-body">
         <%= form_with model: @member, url: organization_create_member_path(@organization, @member), local: true do |f|%>
             <div class="container">
-                <div class="row">
-                    <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
-                        <label for="user_first_name" class="form-label mb-0 mt-2">First name</label>
-                        <input type="text" autofocus="autofocus" class="form-control" id="user_first_name" placeholder="First name" name="user[first_name]" required autocomplete="off">
-                    </div>
-                    <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
-                        <label for="user_last_name" class="form-label mb-0 mt-2">Last name</label>
-                        <input type="text" class="form-control" id="user_last_name" placeholder="Last name" name="user[last_name]" required autocomplete="off">
-                    </div>
-                </div>
+                <%=f.fields_for @profile, as: :profile, include_id: false do |pf|%>
+                    <div class="row">
+                        <div class="col form-group" style="padding-left: 0rem; padding-right: 0.5rem;">
+                            <label for="user_first_name" class="form-label mb-0 mt-2">First name</label>
+                            <input class="form-control" placeholder="First name" required="required" type="text" name="user[profile_attributes][first_name]" id="user_user_profile_first_name">
+                        </div>
+                        <div class="col form-group" style="padding-left: 0.5rem; padding-right: 0rem;">
+                            <label for="user_last_name" class="form-label mb-0 mt-2">Last name</label>
+                            <input class="form-control" placeholder="Last name" required="required" type="text" name="user[profile_attributes][last_name]" id="user_user_profile_last_name">                        </div>
+                        </div>
+                <%end%>
+
                 <div class="row">
                     <div class="col form-group px-0">
                         <label for="user_email" class="form-label mb-0 mt-2">Email address</label>

@@ -24,13 +24,13 @@ class User::SessionsController < Devise::SessionsController
             }
         elsif resource.activated?
             flash[:primary] = {
-                heading: "Welcome back, #{resource.business_name}!",
+                heading: "Welcome back, #{resource.name}!",
                 message: "You are now signed in."
             }
         else
             flash[:warning] = {
-                heading: "Account not activated",
-                message: "You have signed in, but your account is not activated. Click <a href=\"#{requirements_path}\" class=\"alert-link\">here</a> to activate your account."
+                heading: "Your account is not activated.",
+                message: "You have signed in, but your account is not activated. Click <a href=\"#{user_profile_show_path(current_user.profile, section: 'requirements')}\" class=\"alert-link\">here</a> to activate your account."
             }
         end
         respond_with resource, location: after_sign_in_path_for(resource)

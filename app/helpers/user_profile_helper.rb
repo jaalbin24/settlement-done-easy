@@ -1,6 +1,10 @@
 module UserProfileHelper
     def new_settlement_button_should_be_shown_for(user, user_profile)
-        
+        if user == user_profile.user
+            true
+        elsif member_role_name(user) == member_role_name(user_profile.user)
+            
+        end
         true # This method is not finished
         
         # if user.isAttorney? && user_profile.user.isAdjuster?

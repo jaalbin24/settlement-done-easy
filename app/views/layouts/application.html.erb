@@ -23,22 +23,12 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
             <% if user_signed_in? %>
-              <li class="nav-item">
-                <%= link_to "Payments", payment_index_path, class: 'nav-link'%>
-              </li>
-              <%if !current_user.isOrganization?%>
-                <li class="nav-item">
-                  <%= link_to current_user.organization.name, nil, class: 'nav-link'%>
-                </li>
-              <%else%>
+              <%if current_user.isOrganization?%>
                 <%if !current_user.stripe_account_onboarded?%>
                   <li class="nav-item">
-                    <%= link_to "Set up Stripe", stripe_onboard_account_link_path, class: 'nav-link'%>
+                    <%= link_to "Set up Stripe", stripe_onboard_account_link_path, class: 'nav-link text-warning fw-bold'%>
                   </li>
                 <%end%>
-                <li class="nav-item">
-                  <%= link_to "Members", organization_members_index_path, class: 'nav-link'%>
-                </li>
               <%end%>
             <%end%>
           </ul>

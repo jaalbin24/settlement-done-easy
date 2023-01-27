@@ -11,11 +11,19 @@
         <div class="tab-pane fade <%=@section == 'settlements' ? "active show" : ""%>" id="settlements" role="tabpanel">
             <%=render "user_profile/settlements/all"%>
         </div>
+        <%if @owner.isOrganization?%>
+            <div class="tab-pane fade <%=@section == 'requirements' ? "active show" : ""%>" id="requirements" role="tabpanel">
+                <%=render "user_profile/requirements/all"%>
+            </div>
+            <div class="tab-pane fade <%=@section == 'members' ? "active show" : ""%>" id="members" role="tabpanel">
+                <%=render "user_profile/members/all"%>
+            </div>
+        <%end%>
     </div>
+    <%if !@continue_path.blank? && @owner != current_user%>
+        <a href="<%=@continue_path%>" class="btn btn-primary my-3">
+            <%=chevron_icon(direction: :left)%>
+            Go back
+        </a>
+    <%end%>
 </div>
-
-
-
-
-
-

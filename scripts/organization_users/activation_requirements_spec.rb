@@ -7,7 +7,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @mfa_checklist_item = find("div.card[id='mfa_checklist_item']")
             end
             it "must have a green checkmark icon" do
@@ -31,7 +31,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm, )
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @mfa_checklist_item = find("div.card[id='mfa_checklist_item']")
             end
             it "must have a grey empty box icon" do
@@ -62,7 +62,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @add_ba_checklist_item = find("div.card[id='add_ba_checklist_item']")
             end
             it "must have a green checkmark icon" do
@@ -79,12 +79,12 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @add_ba_checklist_item = find("div.card[id='add_ba_checklist_item']")
                     find("div[id='add_ba_checklist_item']").click
                 end
                 it "must keep the user on the same page" do
-                    expect(current_path).to eq requirements_path
+                    expect(current_path).to eq user_profile_show_path(current_user.profile, section: 'requirements')
                 end
                 it "must show a flash message saying the user already has a bank account" do
                     pending "Implementation"
@@ -97,7 +97,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm, :not_activated_due_to_lack_of_bank_account)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @add_ba_checklist_item = find("div.card[id='add_ba_checklist_item']")
             end
             it "must have a grey empty box icon" do
@@ -116,7 +116,7 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm, :not_activated_due_to_lack_of_bank_account)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @add_ba_checklist_item = find("div.card[id='add_ba_checklist_item']")
                     find("div[id='add_ba_checklist_item']").click
                 end
@@ -132,7 +132,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @onboard_stripe_checklist_item = find("div.card[id='onboard_stripe_checklist_item']")
             end
             it "must have a green checkmark icon" do
@@ -149,12 +149,12 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @onboard_stripe_checklist_item = find("div.card[id='onboard_stripe_checklist_item']")
                     find("div[id='add_ba_checklist_item']").click
                 end
                 it "must keep the user on the same page" do
-                    expect(current_path).to eq requirements_path
+                    expect(current_path).to eq user_profile_show_path(current_user.profile, section: 'requirements')
                 end
                 it "must show a flash message saying the user's Stripe account has already been onboarded" do
                     pending "Implementation"
@@ -167,7 +167,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm, :not_activated_due_to_lack_of_onboarded_stripe_account)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @onboard_stripe_checklist_item = find("div.card[id='onboard_stripe_checklist_item']")
             end
             it "must have a grey empty box icon" do
@@ -186,7 +186,7 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm, :not_activated_due_to_lack_of_onboarded_stripe_account)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @onboard_stripe_checklist_item = find("div.card[id='onboard_stripe_checklist_item']")
                     find("div[id='onboard_stripe_checklist_item']").click
                 end
@@ -202,7 +202,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @add_member_checklist_item = find("div.card[id='add_member_checklist_item']")
             end
             it "must have a green checkmark icon" do
@@ -219,12 +219,12 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @add_member_checklist_item = find("div.card[id='add_member_checklist_item']")
                     find("div[id='add_member_checklist_item']").click
                 end
                 it "must keep the user on the same page" do
-                    expect(current_path).to eq requirements_path
+                    expect(current_path).to eq user_profile_show_path(current_user.profile, section: 'requirements')
                 end
                 it "must show a flash message saying the user already has a member account" do
                     pending "Implementation"
@@ -236,7 +236,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm, :not_activated_due_to_lack_of_members)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @add_member_checklist_item = find("div.card[id='add_member_checklist_item']")
             end
             it "must have a grey empty box icon" do
@@ -255,7 +255,7 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm, :not_activated_due_to_lack_of_members)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @add_member_checklist_item = find("div.card[id='add_member_checklist_item']")
                     find("div[id='add_member_checklist_item']").click
                 end
@@ -271,7 +271,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm)
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @verify_email_checklist_item = find("div.card[id='verify_email_checklist_item']")
             end
             it "must have a green checkmark icon" do
@@ -288,12 +288,12 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm)
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @verify_email_checklist_item = find("div.card[id='verify_email_checklist_item']")
                     find("div[id='verify_email_checklist_item']").click
                 end
                 it "must keep the user on the same page" do
-                    expect(current_path).to eq requirements_path
+                    expect(current_path).to eq user_profile_show_path(current_user.profile, section: 'requirements')
                 end
                 it "must show a flash message saying the user already verified their email" do
                     pending "Implementation"
@@ -305,7 +305,7 @@ RSpec.describe "The requirements page" do
             before do
                 @user = create(:law_firm) # not_activated_due_to_unverified_email
                 sign_in @user
-                visit requirements_path
+                visit user_profile_show_path(current_user.profile, section: 'requirements')
                 @verify_email_checklist_item = find("div.card[id='verify_email_checklist_item']")
             end
             it "must have a grey empty box icon" do
@@ -327,7 +327,7 @@ RSpec.describe "The requirements page" do
                 before do
                     @user = create(:law_firm) # not_activated_due_to_unverified_email
                     sign_in @user
-                    visit requirements_path
+                    visit user_profile_show_path(current_user.profile, section: 'requirements')
                     @verify_email_checklist_item = find("div.card[id='verify_email_checklist_item']")
                     find("div[id='verify_email_checklist_item']").click
                 end

@@ -63,6 +63,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -86,6 +88,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -109,6 +113,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -131,6 +137,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -165,6 +173,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -199,6 +209,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6
@@ -227,6 +239,8 @@ module ApplicationHelper
             css_classes.push("text-primary")
         when :yellow, :warning
             css_classes.push("text-warning")
+        when :info
+            css_classes.push("text-info")
         end
         case args[:size]
         when :h1, :h2, :h3, :h4, :h5, :h6

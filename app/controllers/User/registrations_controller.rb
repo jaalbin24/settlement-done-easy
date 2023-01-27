@@ -35,7 +35,7 @@ class User::RegistrationsController < Devise::RegistrationsController
                 if resource.activated?
                     # TODO: Send yourself an email because this should never happen. A user is activated as soon as they sign up? Something's fishy.
                 else
-                    flash[:warning] = "You have signed up, but your account is not activated. Click <a href=\"#{requirements_path}\" class=\"alert-link\">here</a> to activate your account.".html_safe
+                    flash[:warning] = "You have signed up, but your account is not activated. Click <a href=\"#{user_profile_show_path(current_user.profile, section: 'requirements')}\" class=\"alert-link\">here</a> to activate your account.".html_safe
                 end
                 # set_flash_message! :notice, :signed_up # Equivalent to flash[:notice] = "[whatever the signup message is]"
                 sign_up(resource_name, resource)
@@ -181,7 +181,7 @@ class User::RegistrationsController < Devise::RegistrationsController
 
     # The path used after sign up.
     def after_sign_up_path_for(resource)
-        requirements_path
+        user_profile_show_path(current_user.profile, section: 'requirements')
         # super(resource)
     end
 

@@ -4,7 +4,11 @@ class ApplicationController < ActionController::Base
     end
     # This^ is a defense against code injection attacks. Use it for ALL incoming params, and ESPECIALLY those that will be stored in a database.
     def handle_invalid_request
-        flash[:error] = "Invalid request"
-        redirect_to root_path
+        flash[:primary] = "Invalid request"
+        if params[:continue_path].nil?
+            redirect_to root_path
+        else
+            redirect_to params[:continue_path]
+        end
     end
 end

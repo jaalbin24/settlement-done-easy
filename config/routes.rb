@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   get 'stripe_add_payment_method',                    to: 'stripe#add_payment_method',          as: 'stripe_add_payment_method'
   get 'stripe_dashboard',                             to: 'stripe#dashboard',                   as: 'stripe_dashboard'
 
-  get 'organizations/:org_id/members/new',            to: 'organization_users#new_member',            as: 'organization_new_member'
+  get 'members/new',                                  to: 'organization_users#new_member',            as: 'member_new'
   get 'organizations/settlements',                    to: 'organization_users#settlements_index',     as: 'organization_settlements_index'
   get 'organizations/members',                        to: 'organization_users#members_index',         as: 'organization_members_index'
   get 'organizations/:org_id/members/:mem_id',        to: 'organization_users#show_member',           as: 'organization_show_member'

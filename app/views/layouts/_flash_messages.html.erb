@@ -1,7 +1,7 @@
-<div class="position-absolute top-10 end-0 m-3" style="z-index: 3;">
-    <%[:primary, :warning, :success, :danger].each do |level|%>
+<div class="position-absolute top-10 m-3" style="z-index: 3; width: 100vw;">
+    <%[:primary, :warning, :success, :danger, :info].each do |level|%>
         <%unless flash[level].nil?%>
-            <div class="alert alert-dismissible <%=flash_class(level.to_s)%> border border-<%=level.to_s%>" data-test-id="<%=level.to_s%>_flash_message">
+            <div class="alert alert-dismissible <%=flash_class(level.to_s)%> border border-<%=level.to_s%>" data-test-id="<%=level.to_s%>_flash_message" style="width: 700px; margin-left: -350px; left: 50%;">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <div class="d-flex align-items-center gap-3 pe-3">
                     <%=warning_icon(size: :h1, color: level)%>

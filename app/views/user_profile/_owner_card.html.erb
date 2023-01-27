@@ -27,5 +27,13 @@
         <li class="nav-item" role="presentation">
             <a class="nav-link<%=@section == 'settlements' ? " active" : ""%>" data-bs-toggle="tab" href="#settlements" aria-selected="false" role="tab" style="font-size: 1.2rem;">Settlements</a>
         </li>
+        <%if @owner == current_user && @owner.isOrganization?%>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link<%=@section == 'requirements' ? " active" : ""%>" data-bs-toggle="tab" href="#requirements" aria-selected="false" role="tab" style="font-size: 1.2rem;">Requirements</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link<%=@section == 'members' ? " active" : ""%>" data-bs-toggle="tab" href="#members" aria-selected="false" role="tab" style="font-size: 1.2rem;"><%=member_role_name(@owner).pluralize.capitalize%></a>
+            </li>
+        <%end%>
     </ul>
 </div>

@@ -42,6 +42,7 @@ class OrganizationUsersController < ApplicationController
     def new_member
         @organization = current_user
         @member = User.new
+        @profile = @member.build_profile
         render :new_member
     end
 
@@ -59,7 +60,7 @@ class OrganizationUsersController < ApplicationController
         else
             puts "========================== ERROR: OrganizationUsersController.create_member: #{member.errors.full_messages.inspect}"
         end
-        redirect_to organization_show_member_url(organization, member)
+        redirect_to user_profile_show_path(member.profile)
     end
 
     def member_params
@@ -68,7 +69,11 @@ class OrganizationUsersController < ApplicationController
             :last_name,
             :email,
             :password,
-            :password_confirmation
+            :password_confirmation,
+            profile_attributes: [
+                :first_name,
+                :last_name
+            ]
         )
     end
 end

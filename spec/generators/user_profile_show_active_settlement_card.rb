@@ -690,6 +690,32 @@ SpecGenerator::SystemSpec.new(name: "active_settlements_card", generated_file_lo
                     end
                 end
             end
+            s.context "and the visitor is the owner" do
+                s.before(:context) {"@visitor = @owner"}
+                s.it "must have the new settlement button" do
+                    "sign_in @visitor
+                    visit user_profile_show_path(@owner.profile, section: 'settlements')
+                    expect(page).to have_css \"[data-test-id='new_settlement_button']\""
+                end
+            end
+            s.context "and the visitor is not the owner" do
+                s.before(:context) do
+                    "another_law_firm = create(:law_firm)
+                    another_insurance_company = create(:insurance_company)
+                    another_adjuster = another_insurance_company.members.first
+                    another_attorney = another_law_firm.members.first
+                    member_of_organization = @owner.members.last
+                    @non_owner_users = [organization, member_of_organization, another_attorney, another_adjuster, another_law_firm, another_insurance_company]"
+                end
+                s.after(:context) {"@non_owner_users.each {|u| u.destroy}"}
+                s.it "must not have the new settlement button" do
+                    "@non_owner_users.each do |u|
+                        sign_in u
+                        visit user_profile_show_path(@owner.profile, section: 'settlements')
+                        expect(page).to_not have_css \"[data-test-id='new_settlement_button']\"
+                    end"
+                end
+            end
         end
         s.context "when the owner is an insurance company" do
             s.before(:context) {'@owner = create(:insurance_company)'}

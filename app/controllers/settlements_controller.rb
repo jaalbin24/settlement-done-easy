@@ -5,14 +5,33 @@ class SettlementsController < ApplicationController
     before_action :ensure_organization_is_activated, only: [:new, :create]
 
     def ensure_organization_is_activated
-        unless current_user.organization.activated?
+        if current_user.isOrganization?
+            return
+        elsif !current_user.organization.activated?
             flash[:primary] = "You cannot start a settlement until #{current_user.organization.name}'s account is activated."
             redirect_to root_path
         end
     end
 
     def new
-        if current_user.isAttorney?
+        if current_user.isOrganization?
+            if current_user.members.empty?
+                flash[:info] = {
+                    heading: "Only #{helpers.member_role_name(current_user).pluralize} can start settlements.",
+                    message: "You are logged in as #{helpers.indefinite_articleize(word: current_user.role)}. To start a settlement, you must create an #{helpers.member_role_name(current_user)} account."
+                }
+            else
+                flash[:info] = {
+                    heading: "Only #{helpers.member_role_name(current_user).pluralize} can start settlements.",
+                    message: "You are logged in as #{helpers.indefinite_articleize(word: current_user.role)}. To start a settlement, you must create an #{helpers.member_role_name(current_user)} account or log in with an existing one."
+                }
+            end
+            if params[:continue_path].nil?
+                redirect_to root_path
+            else
+                redirect_to params[:continue_path]
+            end
+        elsif current_user.isAttorney?
             @settlement = Settlement.new
             @users = User.adjusters
             render :new
@@ -55,7 +74,7 @@ class SettlementsController < ApplicationController
         }
         settlement = Settlement.new(settlement_creation_params)
         if settlement.save
-            flash[:primary] = "Started a new settlement with #{partner.name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
+            # flash[:primary] = "Started a new settlement with #{partner.name}! Click <a href=#{settlement_show_path(settlement)}>here<a> to view it."
             redirect_to settlement_show_url(settlement)
         else
             flash.now[:error] = "#{settlement.errors.full_messages.inspect}"

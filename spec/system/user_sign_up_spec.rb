@@ -157,7 +157,7 @@ RSpec.describe "The sign up page", type: :system do
             end
             it "must take the user to the requirements page" do
                 sleep(0.05)
-                expect(current_path).to eq requirements_path
+                expect(current_path).to eq user_profile_show_path(current_user.profile, section: 'requirements')
             end
         end
     end

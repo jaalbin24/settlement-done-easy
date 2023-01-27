@@ -38,6 +38,16 @@ class UserProfileController < ApplicationController
         else
             @settlements = Settlement.belonging_to(@owner).merge(Settlement.belonging_to(current_user))
         end
+        
+        if @owner.isOrganization? && current_user == @owner 
+            @activation_progress = 0
+            @activation_progress += 1 if @owner.stripe_account_onboarded?
+            @activation_progress += 1 if @owner.has_bank_account?
+            @activation_progress += 1 if @owner.has_member_account?
+            @activation_progress += 1 if @owner.two_factor_authentication_enabled?
+            @activation_progress += 1 if @owner.email_verified?
+            @activation_progress = @activation_progress * 100 / 5
+        end
 
         @documents = Document.belonging_to(current_user).order(created_at: :desc)
 
@@ -47,6 +57,7 @@ class UserProfileController < ApplicationController
         else
             @section = params[:section]
         end
+        @continue_path = params[:continue_path] unless params[:continue_path].blank?
         render :show
     end
 

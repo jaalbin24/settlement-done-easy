@@ -1,0 +1,49 @@
+<div class="card my-3" style="height: 400px;">
+    <div class="card-header d-flex justify-content-between align-items-center" style="min-height: 64px">
+        <h4 class="m-0"><%=member_role_name(@owner).pluralize.capitalize%></h4>
+    </div>
+    <%if @owner.members.empty?%>
+        <p class="my-auto text-center text-muted" data-test-id="empty_active_settlement_message">
+            You do not have any <%=member_role_name(@owner)%> accounts. Click 
+            <%=link_to "here", member_new_path%>
+            to create one.
+        </p>
+    <%else%>
+        <div class="scrollable-table-container mb-auto" style="overflow-y: auto;">
+            <table class="table table-hover table-sm shadow-none m-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Created</th>
+                        <th>Last Sign-in</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%@owner.members.each do |m|%>
+                        <tr class="clickable" href="<%=user_profile_show_path(m.profile)%>">
+                            <td class="border-bottom-0"><%=m.name.blank? ? "N/A" : m.name%></td>
+                            <td class="border-bottom-0"><%=m.email%></td>
+                            <td class="border-bottom-0"><%=m.profile.phone_number.nil? ? "N/A" : number_to_phone(m.profile.phone_number, area_code: true)%></td>
+                            <td class="border-bottom-0"><%=m.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y @ %l:%M%P ")%></td>
+                            <%if m.last_sign_in_at != nil%>
+                            <td class="border-bottom-0"><%=m.last_sign_in_at.in_time_zone("Central Time (US & Canada)").strftime("%B %-d, %Y @ %l:%M%P ")%></td>
+                            <%else%>
+                            <td class="border-bottom-0">Never</td>
+                            <%end%>
+                            <td class="border-bottom-0"><%=chevron_icon()%></td>
+                        </tr>
+                    <%end%>
+                </tbody>
+            </table>
+        </div>
+    <%end%>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <p class="m-0"><%=member_role_name(@owner).capitalize%> accounts: <%=@owner.members.count%></p>
+        <div>
+            <%=link_to "Add #{member_role_name(@owner)} account", member_new_path, class: "btn btn-primary btn-sm", "data-test-id": "new_settlement_button"%>
+        </div>
+    </div>
+</div>

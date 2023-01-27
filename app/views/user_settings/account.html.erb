@@ -5,7 +5,7 @@
             <div>
                 <h3 class="m-0">Account Settings</h3>
                 <%if !current_user.activated? && current_user.isOrganization?%>
-                    <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=requirements_path%>">here</a> to activate your account.</h6>
+                    <h6 class="card-subtitle text-danger m-0">Your account is not activated. Click <a href="<%=user_profile_show_path(current_user.profile, section: 'requirements')%>">here</a> to activate your account.</h6>
                 <%end%>
             </div>
             <%=link_to "Sign out", destroy_user_session_path, method: "delete", class: "btn btn-outline-danger"%>
