@@ -34,8 +34,8 @@ class StripeController < ApplicationController
             end
             account_link = Stripe::AccountLink.create(
                 account: current_user.stripe_account.stripe_id,
-                refresh_url: "#{Rails.configuration.URL_ROOT}/stripe_handle_return_from_onboard",
-                return_url: "#{Rails.configuration.URL_ROOT}/stripe_handle_return_from_onboard",
+                refresh_url: "#{ENV['APP_URL_DOMAIN']}/stripe_handle_return_from_onboard",
+                return_url: "#{ENV['APP_URL_DOMAIN']}/stripe_handle_return_from_onboard",
                 type: 'account_onboarding',
             )
             redirect_to account_link.url
@@ -93,7 +93,7 @@ class StripeController < ApplicationController
             # Retrieve the event by verifying the signature using the raw body and secret.
             signature = request.env['HTTP_STRIPE_SIGNATURE'];
             begin
-                dubious_event = Stripe::Webhook.construct_event(
+                event = Stripe::Webhook.construct_event(
                     payload, signature, endpoint_secret
                 )
             rescue Stripe::SignatureVerificationError => e
@@ -107,11 +107,6 @@ class StripeController < ApplicationController
             return
         end
 
-        begin 
-            event = Stripe::Event.retrieve(dubious_event.id, {stripe_account: dubious_event.account})
-        rescue NoMethodError
-            event = Stripe::Event.retrieve(dubious_event.id)
-        end
         puts event
         case event.type
         when "treasury.financial_account.features_status_updated"
@@ -138,6 +133,13 @@ class StripeController < ApplicationController
         when "financial_connections.account.created"
         when "setup_intent.created"
         when "setup_intent.succeeded"
+            setup_intent = event.data.object
+            user = User.joins(:stripe_account).where(stripe_account: {stripe_id: event.account}).distinct.first
+            raise StandardError.new "Wrong number of payment types!" if setup_intent.payment_method_types.size != 1
+            user.payment_methods.create!(
+                stripe_id: setup_intent.payment_method,
+                type: setup_intent.payment_method_types.first.camelize
+            )
         when "payment_method.attached"
             payment_method = event.data.object
             bank_account = BankAccount.with_stripe_id(payment_method.id).first

@@ -149,17 +149,14 @@ class User::RegistrationsController < Devise::RegistrationsController
     end
 
     def change_email
-        @continue_path = params[:continue_path]
         render :change_email
     end
 
     def change_phone_number
-        @continue_path = params[:continue_path]
         render :change_phone_number
     end
     
     def change_password
-        @continue_path = params[:continue_path]
         render :change_password
     end
 

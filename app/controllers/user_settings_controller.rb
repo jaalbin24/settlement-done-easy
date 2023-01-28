@@ -26,7 +26,11 @@ class UserSettingsController < ApplicationController
         @user_profile = current_user.profile
         @owner = current_user
         @user_profile_settings = current_user.settings.profile
-        @continue_path = params[:continue_path]
         render :profile
+    end
+
+    def wallet
+        @payment_methods = current_user.bank_accounts
+        render :wallet
     end
 end

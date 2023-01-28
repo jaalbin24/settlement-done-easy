@@ -110,7 +110,12 @@ class User < ApplicationRecord
         inverse_of: :added_by,
         dependent: :nullify
     )
-
+    has_many(
+        :payment_methods,
+        class_name: "PaymentMethod",
+        foreign_key: :user_id,
+        dependent: :destroy
+    )
     has_many(
         :a_settlements,
         class_name: 'Settlement',

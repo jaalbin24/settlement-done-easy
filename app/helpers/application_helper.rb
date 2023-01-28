@@ -9,6 +9,10 @@ module ApplicationHelper
         end
         return %w(a e i o u).include?(args[:word][0].downcase) ? "an #{args[:word]}" : "a #{args[:word]}"
     end
+
+    def path_to_url(path)
+        "#{ENV['APP_URL_DOMAIN']}#{path}"
+    end
     
     def active_class(path)
         if request.path == path

@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const secret = response.client_secret;
         const connectAccountId = response.connect_account_id;
-        stripe = Stripe(
+        let stripe = Stripe(
             stripe_key,
             {stripeAccount: connectAccountId}
         );

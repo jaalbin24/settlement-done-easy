@@ -27,7 +27,6 @@ class PagesController < ApplicationController
             @continue_path = root_path
             @button_label = "Go home"
         else
-            @continue_path = params[:continue_path]
             @button_label = "Go back"
         end
         render :under_construction

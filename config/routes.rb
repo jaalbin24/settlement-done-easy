@@ -89,6 +89,7 @@ Rails.application.routes.draw do
   get 'settings',                                     to: 'pages#settings',                           as: 'settings'
   get 'settings/account',                             to: 'user_settings#account',                    as: 'account_settings'
   get 'settings/profile',                             to: 'user_settings#profile',                    as: 'profile_settings'
+  get 'settings/wallet',                              to: 'user_settings#wallet',                     as: 'wallet_settings'
   put 'settings/profile',                             to: 'user_profile_settings#update',             as: 'user_profile_settings_update'
   
 
@@ -101,4 +102,6 @@ Rails.application.routes.draw do
   put 'user/profile/:public_id',                      to: 'user_profile#update',                      as: 'user_profile_update'
 
   get 'cancel_changes',                               to: 'pages#cancel_changes',                     as: 'cancel_changes'
+
+  get 'payment_method/new',                           to: 'payment_methods#new',                      as: 'payment_method_new'
 end

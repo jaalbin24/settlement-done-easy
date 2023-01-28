@@ -60,7 +60,6 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.string "stripe_payment_method_id", null: false
     t.string "nickname"
     t.integer "last4", limit: 2
-    t.string "fingerprint"
     t.string "status", default: "New", null: false
     t.boolean "default", default: false, null: false
     t.bigint "user_id", null: false
@@ -128,6 +127,18 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "payment_methods", force: :cascade do |t|
+    t.string "public_id"
+    t.string "type"
+    t.string "stripe_id"
+    t.integer "last4", limit: 2
+    t.string "nickname"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_payment_methods_on_user_id"
   end
 
   create_table "payment_requests", force: :cascade do |t|
@@ -364,6 +375,7 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   add_foreign_key "log_book_entries", "log_books"
   add_foreign_key "log_book_entries", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "payment_methods", "users"
   add_foreign_key "payment_requests", "log_books"
   add_foreign_key "payment_requests", "settlements"
   add_foreign_key "payment_requests", "users", column: "accepter_id"

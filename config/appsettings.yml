@@ -10,12 +10,9 @@ default: &default
 
 development:
   <<: *default
-  URL_ROOT: http://localhost:3000
 
 test:
   <<: *default
-  URL_ROOT: http://localhost:3000
 
 production:
   <<: *default
-  URL_ROOT: https://settlementdoneeasy.com

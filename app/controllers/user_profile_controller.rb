@@ -24,8 +24,6 @@ class UserProfileController < ApplicationController
         @owner = @user_profile.user
         if params[:continue_path].blank?
             @continue_path = user_profile_show_path(@user_profile)
-        else
-            @continue_path = params[:continue_path]
         end
         render :edit      
     end
@@ -57,7 +55,6 @@ class UserProfileController < ApplicationController
         else
             @section = params[:section]
         end
-        @continue_path = params[:continue_path] unless params[:continue_path].blank?
         render :show
     end
 

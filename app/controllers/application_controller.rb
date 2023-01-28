@@ -1,4 +1,11 @@
 class ApplicationController < ActionController::Base
+    before_action :continue_path
+    def continue_path
+        @continue_path = params[:continue_path] unless params[:continue_path].blank?
+    end
+
+
+
     def sanitize_param(param)
         param.gsub(/([^\w \-\@\.\,])+/, '')
     end

@@ -19,6 +19,8 @@ module GeneratePublicId
             id_prefix = "preq"
         when "Payment"
             id_prefix = "pmnt"
+        when "PaymentMethod"
+            id_prefix = "pmet"
         when "Settlement"
             id_prefix = "sett"
         when "SettlementAttributesReview"

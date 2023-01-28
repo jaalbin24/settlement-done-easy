@@ -37,6 +37,7 @@ window.clickableTableRows = new ClickableTableRows();
 window.searcher = new Searcher();
 
 
-// Load this one last. It will throw an error when developing offline because Stripe servers cannot be reached.
+// Load stripe js files last. They will throw an error when developing offline because Stripe servers cannot be reached.
 import 'stripe/bank_account'
+import 'stripe/payment_element'
 

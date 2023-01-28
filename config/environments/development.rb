@@ -87,7 +87,7 @@ Rails.application.configure do
     read_timeout:         5 }
 
   # Required for the Devise mailer to work
-  config.action_mailer.default_url_options = { host: "#{Rails.configuration.URL_ROOT}/", port: 25 }
+  # config.action_mailer.default_url_options = { host: "#{Rails.configuration.URL_ROOT}/", port: 25 }
 
 
   config.active_job.queue_adapter = :sidekiq

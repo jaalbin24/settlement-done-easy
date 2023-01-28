@@ -4,7 +4,6 @@
 #
 #  id                       :bigint           not null, primary key
 #  default                  :boolean          default(FALSE), not null
-#  fingerprint              :string
 #  last4                    :integer
 #  nickname                 :string
 #  status                   :string           default("New"), not null
