@@ -321,8 +321,6 @@ class Settlement < ApplicationRecord
     def build_default_payment
         if payments.empty?
             payments.build(
-                source: adjuster.organization.default_bank_account,
-                destination: attorney.organization.default_bank_account,
                 amount: amount
             )
         end

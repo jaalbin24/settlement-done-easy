@@ -159,7 +159,7 @@
                                                 <%end%>
                                             </h6>
                                         </div>
-                                        <%if current_user.organization.bank_accounts.empty?%>
+                                        <%if current_user.organization.payment_methods.empty?%>
                                             <div class="card-body py-0">
                                                 <p class="m-0 text-center text-muted">There are no bank accounts to <%=current_user.isAttorney? ? "deposit into" : "withdraw from"%>.</p>
                                             </div>
@@ -175,9 +175,9 @@
                                                 <%=form_for(@settlement.active_payment, url: payment_update_path(@settlement.active_payment), method: :patch) do |f|%>
                                                     <div class="form-group m-2">
                                                         <%if current_user.isAttorney?%>
-                                                            <%=f.select(:destination_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
+                                                            <%=f.select(:destination_id, options_for_select(current_user.organization.payment_methods.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
                                                         <%elsif current_user.isAdjuster?%>
-                                                            <%=f.select(:source_id, options_for_select(current_user.organization.bank_accounts.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
+                                                            <%=f.select(:source_id, options_for_select(current_user.organization.payment_methods.map{|ba| ["#{ba.nickname} XXXXX#{ba.last4}", ba.public_id]}), {}, { class: "form-select"})%>
                                                         <%end%>
                                                         <div class="text-end mt-2">
                                                             <%=f.submit "Update bank account", class: "btn btn-sm btn-primary"%>

@@ -40,7 +40,7 @@ class PagesController < ApplicationController
         if current_user.isOrganization?
             @activation_progress = 0
             @activation_progress += 1 if current_user.stripe_account_onboarded?
-            @activation_progress += 1 if current_user.has_bank_account?
+            @activation_progress += 1 if current_user.has_payment_method?
             @activation_progress += 1 if current_user.has_member_account?
             @activation_progress += 1 if current_user.two_factor_authentication_enabled?
             @activation_progress += 1 if current_user.email_verified?

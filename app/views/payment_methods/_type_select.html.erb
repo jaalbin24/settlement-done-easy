@@ -1,0 +1,16 @@
+<div class="d-flex gap-2">
+    <a id="show_new_bank_account_form_button" class="btn btn-<%=request.path == payment_method_new_path ? "primary" : "secondary"%> d-flex gap-3 align-items-center" style="flex: 1 1 50%;" href="<%=payment_method_new_path(continue_path: @continue_path)%>">
+        <i class="h4 fa-solid fa-building-columns m-0" style="color: inherit;"></i>
+        <div>
+            <h5 class="m-0 text-start fw-bold" style="color: inherit;">Bank Account</h5>
+            <p class="m-0 text-start">For settlements</p>
+        </div>
+    </a>
+    <a id="show_new_card_form_button" class="btn btn-<%=request.path == card_new_path ? "primary" : "secondary"%> d-flex gap-3 align-items-center" style="flex: 1 1 50%;" href="<%=card_new_path(continue_path: @continue_path)%>">
+        <i class="h4 fa-solid fa-credit-card m-0" style="color: inherit;"></i>
+        <div>
+            <h5 class="m-0 text-start fw-bold" style="color: inherit;">Card</h5>
+            <p class="m-0 text-start">For using SDE</p>
+        </div>
+    </a>
+</div>

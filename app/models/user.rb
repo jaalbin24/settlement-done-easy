@@ -160,25 +160,6 @@ class User < ApplicationRecord
         dependent: :destroy
     )
 
-    has_many(
-        :bank_accounts,
-        class_name: "BankAccount",
-        foreign_key: "user_id",
-        inverse_of: :user,
-        dependent: :destroy
-    )
-
-    has_many(
-        :payments_out,
-        through: :bank_accounts,
-        source: :payments_out
-    )
-
-    has_many(
-        :payments_in,
-        through: :bank_accounts,
-        source: :payments_in
-    )
 
     has_many(
         :payment_requests,
@@ -292,7 +273,7 @@ class User < ApplicationRecord
             return
         end
         if stripe_account_onboarded? &&
-            has_bank_account? &&
+            has_payment_method? &&
             two_factor_authentication_enabled? &&
             email_verified? &&
             has_member_account?
@@ -302,7 +283,7 @@ class User < ApplicationRecord
         self.activated = false
         if !stripe_account_onboarded?
             puts "❌❌❌ Account for #{business_name} not activated because stripe account is not onboarded!"
-        elsif !has_bank_account?
+        elsif !has_payment_method?
             puts "❌❌❌ Account for #{business_name} not activated because there is no bank account!"
         elsif !two_factor_authentication_enabled? 
             puts "❌❌❌ Account for #{business_name} not activated because MFA is not enabled!"
@@ -369,8 +350,8 @@ class User < ApplicationRecord
         return isAdjuster? || isInsuranceCompany?
     end
 
-    def has_bank_account?
-        return !bank_accounts.empty?
+    def has_payment_method?
+        return !payment_methods.empty?
     end
 
     def two_factor_authentication_enabled?
@@ -420,13 +401,8 @@ class User < ApplicationRecord
         # TODO: Add email verification mechanic
     end
 
-    def default_bank_account
-        default = bank_accounts.default.first
-        if default.nil?
-            bank_accounts.first
-        else
-            default
-        end
+    def default_payment_method
+        payment_methods.first
     end
 
     def destroy # Needed so that child models (namely the last bank account) can know when the user is being deleted and delete itself.

@@ -9,31 +9,25 @@
 #  status                      :string           not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
-#  destination_id              :bigint
 #  log_book_id                 :bigint
 #  public_id                   :string
 #  settlement_id               :bigint
-#  source_id                   :bigint
 #  stripe_inbound_transfer_id  :string
 #  stripe_outbound_payment_id  :string
 #  stripe_outbound_transfer_id :string
 #
 # Indexes
 #
-#  index_payments_on_destination_id               (destination_id)
 #  index_payments_on_log_book_id                  (log_book_id)
 #  index_payments_on_settlement_id                (settlement_id)
-#  index_payments_on_source_id                    (source_id)
 #  index_payments_on_stripe_inbound_transfer_id   (stripe_inbound_transfer_id) UNIQUE
 #  index_payments_on_stripe_outbound_payment_id   (stripe_outbound_payment_id) UNIQUE
 #  index_payments_on_stripe_outbound_transfer_id  (stripe_outbound_transfer_id) UNIQUE
 #
 # Foreign Keys
 #
-#  fk_rails_...  (destination_id => bank_accounts.id)
 #  fk_rails_...  (log_book_id => log_books.id)
 #  fk_rails_...  (settlement_id => settlements.id)
-#  fk_rails_...  (source_id => bank_accounts.id)
 #
 class Payment < ApplicationRecord
     scope :with_inbound_transfer_id,    ->  (stripe_id) {where(stripe_inbound_transfer_id: stripe_id)}
@@ -54,22 +48,6 @@ class Payment < ApplicationRecord
         foreign_key: "settlement_id",
         inverse_of: :payments,
         autosave: true
-    )
-
-    belongs_to(
-        :source,
-        class_name: "BankAccount",
-        foreign_key: "source_id",
-        inverse_of: :payments_out,
-        required: false
-    )
-
-    belongs_to(
-        :destination,
-        class_name: "BankAccount",
-        foreign_key: "destination_id",
-        inverse_of: :payments_in,
-        required: false
     )
 
     belongs_to(
@@ -106,19 +84,19 @@ class Payment < ApplicationRecord
     def amount_is_below_allowed_threshold
         errors.add(:amount, "must be less than $#{Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS}") unless amount < Rails.configuration.PAYMENT_MAXIMUM_IN_DOLLARS
     end
-    validate :source_belongs_to_insurance_company
-    def source_belongs_to_insurance_company
-        unless source.nil?
-            errors.add(:source, "must belong to an Insurance Company.") unless source.user.isInsuranceCompany?
-        end
-    end
+    # validate :source_belongs_to_insurance_company
+    # def source_belongs_to_insurance_company
+    #     unless source.nil?
+    #         errors.add(:source, "must belong to an Insurance Company.") unless source.user.isInsuranceCompany?
+    #     end
+    # end
 
-    validate :destination_belongs_to_law_firm
-    def destination_belongs_to_law_firm
-        unless destination.nil?
-            errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
-        end
-    end
+    # validate :destination_belongs_to_law_firm
+    # def destination_belongs_to_law_firm
+    #     unless destination.nil?
+    #         errors.add(:destination, "must belong to a Law Firm.") unless destination.user.isLawFirm?
+    #     end
+    # end
 
     validate :amount_matches_settlement_amount
     def amount_matches_settlement_amount
@@ -130,8 +108,8 @@ class Payment < ApplicationRecord
         if settlement.locked?
             changed_attributes.keys.each do |a|
                 unless Payment.attributes_that_can_be_changed_when_settlement_is_locked.include?(a.to_sym)
-                    raise SafetyError::PaymentSafetyError.new "You cannot change the source bank account while the settlement is locked."       if source_id_changed?
-                    raise SafetyError::PaymentSafetyError.new "You cannot change the destination bank account while the settlement is locked."  if destination_id_changed?
+                    # raise SafetyError::PaymentSafetyError.new "You cannot change the source bank account while the settlement is locked."       if source_id_changed?
+                    # raise SafetyError::PaymentSafetyError.new "You cannot change the destination bank account while the settlement is locked."  if destination_id_changed?
                     raise SafetyError::PaymentSafetyError.new "You cannot change the payment amount while the settlement is locked."            if amount_changed?
                     puts "❗❗❗ Changed payment attributes=#{changed_attributes}"
                     raise SafetyError::PaymentSafetyError.new "This settlement is locked. You cannot change payment details."
@@ -165,10 +143,8 @@ class Payment < ApplicationRecord
     before_save do
         puts "❤️❤️❤️ Payment before_save block"
         unless log_book.nil?
-            generate_any_logs
             log_book.save
         end
-        generate_any_notifications
     end
     
     after_commit do
@@ -178,104 +154,9 @@ class Payment < ApplicationRecord
         end
     end
 
-    def generate_any_logs
-        if status_changed?
-            if processing?
-                log_book.entries.build(
-                    user: settlement.adjuster,
-                    message: "Payment of $#{amount} initiated."
-                )
-            elsif failed?
-                log_book.entries.build(
-                    message: "Payment failed."
-                )
-            elsif canceled?
-                log_book.entries.build(
-                    message: "Payment canceled."
-                )
-            elsif completed?
-                log_book.entries.build(
-                    message: "Payment completed."
-                )
-            elsif returned?
-                log_book.entries.build(
-                    message: "Payment returned."
-                )
-            end
-        end
-        if stripe_outbound_payment_id_changed?
-            log_book.entries.build(
-                message: "SDE recieved funds from #{source.user.business_name}."
-            )
-            log_book.entries.build(
-                message: "SDE sent funds to #{destination.user.business_name}."
-            )
-        end
-    end
 
     def create_log_book_model_if_self_lacks_one
         self.log_book = LogBook.create! if log_book.nil?
-    end
-
-    def generate_any_notifications
-        if status_changed?
-            if processing?
-                Notification.create!(
-                    user: settlement.attorney,
-                    title: "Payment started!",
-                    message: "Click here for details."
-                )
-                Notification.create!(
-                    user: settlement.adjuster,
-                    title: "Payment started!",
-                    message: "Click here for details."
-                )
-            elsif failed?
-                Notification.create!(
-                    user: settlement.attorney,
-                    title: "Payment failed!",
-                    message: "Click here for details."
-                )
-                Notification.create!(
-                    user: settlement.adjuster,
-                    title: "Payment failed!",
-                    message: "Click here for details."
-                )
-            elsif canceled?
-                Notification.create!(
-                    user: settlement.attorney,
-                    title: "Payment canceled!",
-                    message: "Click here for details."
-                )
-                Notification.create!(
-                    user: settlement.adjuster,
-                    title: "Payment canceled!",
-                    message: "Click here for details."
-                )
-            elsif completed?
-                Notification.create!(
-                    user: settlement.attorney,
-                    title: "Payment completed!",
-                    message: "Click here for details."
-                )
-                Notification.create!(
-                    user: settlement.adjuster,
-                    title: "Payment completed!",
-                    message: "Click here for details."
-                )
-            elsif returned?
-                Notification.create!(
-                    user: settlement.attorney,
-                    title: "Payment returned!",
-                    message: "Click here for details."
-                )
-                Notification.create!(
-                    user: settlement.adjuster,
-                    title: "Payment returned!",
-                    message: "Click here for details."
-                )
-            end
-        end
     end
 
     def execute_inbound_transfer

@@ -1,22 +1,24 @@
 # == Schema Information
 #
-# Table name: bank_accounts
+# Table name: payment_methods
 #
-#  id                       :bigint           not null, primary key
-#  default                  :boolean          default(FALSE), not null
-#  last4                    :integer
-#  nickname                 :string
-#  status                   :string           default("New"), not null
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  public_id                :string
-#  stripe_payment_method_id :string           not null
-#  user_id                  :bigint           not null
+#  id         :bigint           not null, primary key
+#  bank_name  :string
+#  country    :string
+#  currency   :string
+#  last4      :integer
+#  nickname   :string
+#  status     :string
+#  type       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  public_id  :string
+#  stripe_id  :string
+#  user_id    :bigint
 #
 # Indexes
 #
-#  index_bank_accounts_on_stripe_payment_method_id  (stripe_payment_method_id) UNIQUE
-#  index_bank_accounts_on_user_id                   (user_id)
+#  index_payment_methods_on_user_id  (user_id)
 #
 # Foreign Keys
 #

@@ -3,8 +3,12 @@
 # Table name: payment_methods
 #
 #  id         :bigint           not null, primary key
+#  bank_name  :string
+#  country    :string
+#  currency   :string
 #  last4      :integer
 #  nickname   :string
+#  status     :string
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -20,6 +24,6 @@
 #
 #  fk_rails_...  (user_id => users.id)
 #
-class UsBankAccount < PaymentMethod
+class BankAccount < PaymentMethod
     
 end

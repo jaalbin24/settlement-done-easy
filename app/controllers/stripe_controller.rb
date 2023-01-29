@@ -106,7 +106,6 @@ class StripeController < ApplicationController
             head 400
             return
         end
-
         puts event
         case event.type
         when "treasury.financial_account.features_status_updated"
@@ -134,29 +133,16 @@ class StripeController < ApplicationController
         when "setup_intent.created"
         when "setup_intent.succeeded"
             setup_intent = event.data.object
-            user = User.joins(:stripe_account).where(stripe_account: {stripe_id: event.account}).distinct.first
-            raise StandardError.new "Wrong number of payment types!" if setup_intent.payment_method_types.size != 1
-            user.payment_methods.create!(
-                stripe_id: setup_intent.payment_method,
-                type: setup_intent.payment_method_types.first.camelize
+            user = User.joins(:stripe_account).where(stripe_account: {stripe_id: setup_intent.on_behalf_of}).distinct.first
+            payment_method = Stripe::PaymentMethod.retrieve(setup_intent.payment_method)
+            Stripe::Account.create_external_account(
+                setup_intent.on_behalf_of,
+                {external_account: payment_method.id},
             )
-        when "payment_method.attached"
-            payment_method = event.data.object
-            bank_account = BankAccount.with_stripe_id(payment_method.id).first
-            if !bank_account.nil?
-                bank_account.update(
-                    stripe_payment_method_id: event.data.object.id,
-                    nickname: payment_method.us_bank_account.bank_name,
-                    last4: payment_method.us_bank_account.last4,
-                )
-            else
-                user = StripeAccount.find_by(stripe_id: event.account).user
-                bank_account = user.bank_accounts.create(
-                    stripe_payment_method_id: event.data.object.id,
-                    nickname: payment_method.us_bank_account.bank_name,
-                    last4: payment_method.us_bank_account.last4,
-                )
-            end
+            user.payment_methods.create!(
+                stripe_id: payment_method.id,
+                type: payment_method.type
+            )
         when "treasury.inbound_transfer.created"
         when "treasury.inbound_transfer.failed"
             inbound_transfer = event.data.object

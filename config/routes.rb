@@ -18,10 +18,6 @@ Rails.application.routes.draw do
 
   get 'what_type_of_user',                      to: 'pages#user_type_select',             as: 'user_type_select'
   get 'under_construction',                     to: 'pages#under_construction',           as: 'under_construction'
-
-  post 'bank_account',                          to: 'bank_accounts#create',               as: 'bank_account_create'
-  get 'bank_account_secret',                    to: 'bank_accounts#secret',               as: 'bank_account_secret'
-  delete 'bank_account/:id',                    to: 'bank_accounts#destroy',              as: 'bank_account_delete'
   
   get 'documents/:id/ready_to_send',            to: 'documents#ready_to_send',            as: 'document_ready_to_send'
   post 'documents/:id/approve',                 to: 'document_reviews#approve',           as: 'document_approve'
@@ -104,4 +100,6 @@ Rails.application.routes.draw do
   get 'cancel_changes',                               to: 'pages#cancel_changes',                     as: 'cancel_changes'
 
   get 'payment_method/new',                           to: 'payment_methods#new',                      as: 'payment_method_new'
+  post 'payment_method',                              to: 'payment_methods#create',                   as: 'payment_method_create'
+  get 'payment_method/new/card',                      to: 'payment_methods#new_card',                 as: 'card_new'
 end

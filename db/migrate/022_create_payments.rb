@@ -4,8 +4,6 @@ class CreatePayments < ActiveRecord::Migration[6.1]
       t.string      :public_id
 
       t.references  :settlement,                  foreign_key: {to_table: :settlements}
-      t.references  :source,                      foreign_key: {to_table: :bank_accounts}
-      t.references  :destination,                 foreign_key: {to_table: :bank_accounts}
       t.string      :status,                      null: false
       t.string      :stripe_inbound_transfer_id
       t.string      :stripe_outbound_payment_id

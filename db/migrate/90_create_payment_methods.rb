@@ -8,6 +8,11 @@ class CreatePaymentMethods < ActiveRecord::Migration[6.1]
       t.integer     :last4,                       limit: 2 # last4 is a small integer (size: 2 bytes) in the database
       t.string      :nickname
 
+      t.string      :bank_name
+      t.string      :country
+      t.string      :currency
+      t.string      :status
+
       t.references  :user,       foreign_key: {to_table: :users}
 
       t.timestamps

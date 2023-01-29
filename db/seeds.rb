@@ -34,14 +34,13 @@ law_firm_users = Array.new(1) {|i|
         raise StandardError.new "⚠️⚠️⚠️ ERROR creating law firm user: #{law_firm.errors.full_messages.inspect}"
     end
 
-    law_firm.bank_accounts.create!(
-        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
+    law_firm.payment_methods.create!(
+        stripe_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #1)",
         last4: 6789,
-        default: true
     )
-    law_firm.bank_accounts.create!(
-        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
+    law_firm.payment_methods.create!(
+        stripe_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #2)",
         last4: 6789,
     )
@@ -69,14 +68,13 @@ insurance_company_users = Array.new(1) {|i|
         raise StandardError.new "⚠️⚠️⚠️ ERROR creating insurance company user: #{insurance_company.errors.full_messages.inspect}"
     end
 
-    insurance_company.bank_accounts.create!(
-        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
+    insurance_company.payment_methods.create!(
+        stripe_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #1)",
-        last4: 6789,
-        default: true
+        last4: 6789
     )
-    insurance_company.bank_accounts.create!(
-        stripe_payment_method_id: "FakePaymentId#{rand(0..9999999)}",
+    insurance_company.payment_methods.create!(
+        stripe_id: "FakePaymentId#{rand(0..9999999)}",
         nickname: "STRIPE TEST BANK (Seeded #2)",
         last4: 6789,
     )

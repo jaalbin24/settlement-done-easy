@@ -165,8 +165,8 @@ FactoryBot.define do
                 puts "🤖🤖🤖 settlement:with_processing_payment after(:build) block"
                 s.payments = build_list(:payment, 1, 
                     :processing,
-                    source: s.adjuster.organization.default_bank_account,
-                    destination: s.attorney.organization.default_bank_account,
+                    source: s.adjuster.organization.default_payment_method,
+                    destination: s.attorney.organization.default_payment_method,
                     settlement: s
                 )
                 s.documents = build_list(:document, e.num_documents,
@@ -193,8 +193,8 @@ FactoryBot.define do
                 puts "🤖🤖🤖 settlement:with_completed_payment after(:build) block"
                 s.payments = build_list(:payment, 1, 
                     :completed,
-                    source: s.adjuster.organization.default_bank_account,
-                    destination: s.attorney.organization.default_bank_account,
+                    source: s.adjuster.organization.default_payment_method,
+                    destination: s.attorney.organization.default_payment_method,
                     settlement: s
                 )
                 s.documents = build_list(:document, e.num_documents,

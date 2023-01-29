@@ -16,6 +16,7 @@ export default class FormErrorStyling {
                 }
                 submitButton.addEventListener("click", async event => {
                     event.preventDefault();
+                    console.log("Form Styling");
                     event.target.disabled = true;
                     FormErrorStyling.removeAllErrorsFromForm(FORM);
                     let inputFields = FORM.querySelectorAll("input.form-control");

@@ -35,12 +35,12 @@
             <div class="card">
                 <h3 class="card-header">Linked Bank Accounts</h3>
                 <ul class="list-group list-group-flush">
-                    <%if current_user.bank_accounts.empty?%>
+                    <%if current_user.payment_methods.empty?%>
                     <div class="list-group-item">
                         <h5 class="m-0 text-center text-muted">No bank accounts have been linked to SDE.</h5>
                     </div>
                     <%else%>
-                    <%current_user.bank_accounts.each do |ba|%>
+                    <%current_user.payment_methods.each do |ba|%>
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col">

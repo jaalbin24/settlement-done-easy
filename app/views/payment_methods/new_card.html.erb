@@ -1,0 +1,32 @@
+<div class="row w-100 m-0">
+    <div class="col">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div>
+                <div class="bg-secondary rounded-circle px-5 py-4">
+                    <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
+                </div>
+                <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col bg-light">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div style="min-width: 28rem;">
+                <div class="mb-4 ms-1">
+                    <h1 class="">Add Payment Method</h1>
+                    <!-- 
+                    <p class="">You are adding a bank account. If you want to add a credit card, click <%=link_to "here", payment_method_new_path(type: "us_bank_account"), class: "link-dark"%>.</p>
+                    -->
+                </div>
+                <div>
+                    <%=render "payment_methods/type_select"%>
+                    <div id="stripe_payment_element" class="my-5" data-secret="<%=@secret%>" data-stripe-acct="<%=@stripe_account%>" data-return-url="<%=path_to_url(@continue_path)%>"></div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button id="submit_elements_button" class="btn btn-primary">Save</button>
+                        <%=link_to 'Cancel', @continue_path, class: "btn btn-outline-primary" unless @continue_path.blank?%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

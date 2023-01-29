@@ -55,20 +55,6 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "bank_accounts", force: :cascade do |t|
-    t.string "public_id"
-    t.string "stripe_payment_method_id", null: false
-    t.string "nickname"
-    t.integer "last4", limit: 2
-    t.string "status", default: "New", null: false
-    t.boolean "default", default: false, null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["stripe_payment_method_id"], name: "index_bank_accounts_on_stripe_payment_method_id", unique: true
-    t.index ["user_id"], name: "index_bank_accounts_on_user_id"
-  end
-
   create_table "document_reviews", force: :cascade do |t|
     t.string "public_id"
     t.bigint "reviewer_id"
@@ -135,6 +121,10 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.string "stripe_id"
     t.integer "last4", limit: 2
     t.string "nickname"
+    t.string "bank_name"
+    t.string "country"
+    t.string "currency"
+    t.string "status"
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -159,8 +149,6 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   create_table "payments", force: :cascade do |t|
     t.string "public_id"
     t.bigint "settlement_id"
-    t.bigint "source_id"
-    t.bigint "destination_id"
     t.string "status", null: false
     t.string "stripe_inbound_transfer_id"
     t.string "stripe_outbound_payment_id"
@@ -171,10 +159,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.bigint "log_book_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["destination_id"], name: "index_payments_on_destination_id"
     t.index ["log_book_id"], name: "index_payments_on_log_book_id"
     t.index ["settlement_id"], name: "index_payments_on_settlement_id"
-    t.index ["source_id"], name: "index_payments_on_source_id"
     t.index ["stripe_inbound_transfer_id"], name: "index_payments_on_stripe_inbound_transfer_id", unique: true
     t.index ["stripe_outbound_payment_id"], name: "index_payments_on_stripe_outbound_payment_id", unique: true
     t.index ["stripe_outbound_transfer_id"], name: "index_payments_on_stripe_outbound_transfer_id", unique: true
@@ -263,6 +249,12 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["stripe_id"], name: "index_stripe_accounts_on_stripe_id", unique: true
     t.index ["user_id"], name: "index_stripe_accounts_on_user_id"
+  end
+
+  create_table "stripe_financial_accounts", force: :cascade do |t|
+    t.string "stripe_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "user_profile_settings", force: :cascade do |t|
@@ -365,7 +357,6 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "bank_accounts", "users"
   add_foreign_key "document_reviews", "documents"
   add_foreign_key "document_reviews", "log_books"
   add_foreign_key "document_reviews", "users", column: "reviewer_id"
@@ -380,8 +371,6 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   add_foreign_key "payment_requests", "settlements"
   add_foreign_key "payment_requests", "users", column: "accepter_id"
   add_foreign_key "payment_requests", "users", column: "requester_id"
-  add_foreign_key "payments", "bank_accounts", column: "destination_id"
-  add_foreign_key "payments", "bank_accounts", column: "source_id"
   add_foreign_key "payments", "log_books"
   add_foreign_key "payments", "settlements"
   add_foreign_key "settlement_attributes_reviews", "settlements"
