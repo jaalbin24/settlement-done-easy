@@ -6,6 +6,7 @@ class PaymentMethodsController < ApplicationController
     end
 
     def new_card
+        @public_key = "EXAMPLE"
         setup_intent = Stripe::SetupIntent.create(
             {
                 payment_method_types: ["card"],

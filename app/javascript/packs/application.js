@@ -24,7 +24,7 @@ import AttributeReview                  from 'packs/settlement_attribute_review'
 import EnglishLanguage                  from 'packs/english_language'
 import ClickableTableRows               from "packs/clickable_table_rows"
 import Searcher                         from "packs/searcher"
-import Encryptor                        from "packs/encryptor"
+import "packs/encryptor"
 
 
 // Instantiate objects to call methods on such as bootstrap.Modal()

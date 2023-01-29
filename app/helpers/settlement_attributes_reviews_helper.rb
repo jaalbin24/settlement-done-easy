@@ -1,2 +1,0 @@
-module SettlementAttributesReviewsHelper
-end
