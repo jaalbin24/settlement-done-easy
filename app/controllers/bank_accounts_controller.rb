@@ -1,27 +1,8 @@
-class PaymentMethodsController < ApplicationController
+class BankAccountsController < ApplicationController
     before_action :authenticate_user!
 
     def new
-        render :new_bank_account
-    end
-
-    def new_card
-        @public_key = "EXAMPLE"
-        setup_intent = Stripe::SetupIntent.create(
-            {
-                payment_method_types: ["card"],
-                payment_method_options: {
-
-                },
-                # attach_to_self: true,
-                # on_behalf_of: current_user.stripe_account.stripe_id,
-                # flow_directions: ["inbound", "outbound"],
-            },
-            # {stripe_account: current_user.stripe_account.stripe_id}
-        )
-        @secret = setup_intent.client_secret
-        @stripe_account = current_user.stripe_account.stripe_id
-        render :new_card
+        render :new
     end
 
     def create
@@ -58,4 +39,5 @@ class PaymentMethodsController < ApplicationController
             :continue_path
         )
     end
+
 end

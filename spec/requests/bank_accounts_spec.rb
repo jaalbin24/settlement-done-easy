@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "PaymentMethods", type: :request do
+RSpec.describe "BankAccounts", type: :request do
   describe "GET /index" do
     pending "add some examples (or delete) #{__FILE__}"
   end

@@ -1,0 +1,51 @@
+<div class="row w-100 m-0">
+    <div class="col">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div>
+                <div class="bg-secondary rounded-circle px-5 py-4">
+                    <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
+                </div>
+                <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col bg-light">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div style="min-width: 28rem;">
+                <div class="mb-4 ms-1">
+                    <h1 class="">Add Payment Method</h1>
+                    <!-- 
+                    <p class="">You are adding a bank account. If you want to add a credit card, click <%=link_to "here", payment_method_new_path(type: "us_bank_account"), class: "link-dark"%>.</p>
+                    -->
+                </div>
+                <div>
+                    <%=render "payment_methods/type_select"%>
+                    <%# This form depends on javascript to function correctly. A Stripe token is obtained client-side,
+                    and that is what is actually returned to the server. The fields in this form are there just to gather the info
+                    for the client to send to Stripe.%>
+                    <%=form_with id: "new_bank_account_form", url: bank_account_create_path do |f|%>
+                        <input type='hidden' name='authenticity_token' value='<%=form_authenticity_token%>' autocomplete='off'>
+                        <div class="d-grid gap-2 my-5">
+                            <div class="form-group">
+                                <%=f.label :routing_number, class: "fw-bold"%>
+                                <%=f.text_field :routing_number, class: "form-control", placeholder: :routing_number, required: true%>
+                            </div>
+                            <div class="form-group">
+                                <%=f.label :account_number, class: "fw-bold"%>
+                                <%=f.text_field :account_number, class: "form-control", placeholder: :account_number, required: true%>
+                            </div>
+                            <div class="form-group">
+                                <%=f.label :account_number_again, class: "fw-bold"%>
+                                <%=f.text_field :account_number_confirmation, class: "form-control", placeholder: :account_number_again, required: true%>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex gap-2">
+                            <%=f.submit "Save", class: "btn btn-primary"%>
+                            <%=link_to 'Cancel', @continue_path, class: "btn btn-outline-primary", id: "continue_path_button" if @continue_path%>
+                        </div>
+                    <%end%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -99,7 +99,10 @@ Rails.application.routes.draw do
 
   get 'cancel_changes',                               to: 'pages#cancel_changes',                     as: 'cancel_changes'
 
-  get 'payment_method/new',                           to: 'payment_methods#new',                      as: 'payment_method_new'
-  post 'payment_method',                              to: 'payment_methods#create',                   as: 'payment_method_create'
-  get 'payment_method/new/card',                      to: 'payment_methods#new_card',                 as: 'card_new'
+  get 'payment_method/new',                           to: 'bank_accounts#new',                        as: 'payment_method_new'
+  get 'payment_method/new/bank_account',              to: 'bank_accounts#new',                        as: 'bank_account_new'
+  post 'payment_method/bank_account',                 to: 'bank_accounts#create',                     as: 'bank_account_create'
+  get 'payment_method/new/card',                      to: 'cards#new',                                as: 'card_new'
+  post 'payment_method/card',                         to: 'cards#create',                             as: 'card_create'
+
 end
