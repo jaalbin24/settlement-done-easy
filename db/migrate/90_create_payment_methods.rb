@@ -14,6 +14,7 @@ class CreatePaymentMethods < ActiveRecord::Migration[6.1]
       t.string      :status
 
       t.references  :user,       foreign_key: {to_table: :users}
+      t.references  :address,    foreign_key: {to_table: :addresses}
 
       t.timestamps
     end

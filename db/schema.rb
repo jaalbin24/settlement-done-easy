@@ -126,8 +126,10 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.string "currency"
     t.string "status"
     t.bigint "user_id"
+    t.bigint "address_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["address_id"], name: "index_payment_methods_on_address_id"
     t.index ["user_id"], name: "index_payment_methods_on_user_id"
   end
 
@@ -366,6 +368,7 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   add_foreign_key "log_book_entries", "log_books"
   add_foreign_key "log_book_entries", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "payment_methods", "addresses"
   add_foreign_key "payment_methods", "users"
   add_foreign_key "payment_requests", "log_books"
   add_foreign_key "payment_requests", "settlements"

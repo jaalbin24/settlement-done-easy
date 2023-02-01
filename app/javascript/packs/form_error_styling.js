@@ -132,7 +132,6 @@ export default class FormErrorStyling {
     }
 
     static removeAllErrorsFromForm(form) {
-        let errorMessages = form.querySelectorAll("div.invalid-feedback");
         let inputs = form.querySelectorAll("input");
 
         for(const message of errorMessages) {
@@ -140,11 +139,20 @@ export default class FormErrorStyling {
         }
         for(const input of inputs) {
             input.classList.remove("is-invalid");
+            inputElement.style.color = "";
         }
     }
 
+    static removeErrorFromInput(inputElement) {
+        Array.from(inputElement.parentElement.querySelectorAll("div.invalid-feedback")).forEach(el => el.remove());
+        inputElement.classList.remove("is-invalid");
+        inputElement.style.color = "";
+    }
+
     static styleInputAsInvalid(inputElement, message) {
+        FormErrorStyling.removeErrorFromInput(inputElement);
         inputElement.classList.add("is-invalid");
+        inputElement.style.color = "#da292e";
         let errorMessageElement = document.createElement("div");
         errorMessageElement.setAttribute("data-test-id", inputElement.name + "_" + message.toLowerCase().split(" ").join("_"))
         errorMessageElement.innerHTML = message;
