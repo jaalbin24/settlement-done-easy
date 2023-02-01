@@ -2,6 +2,9 @@ import FormErrorStyling from "../packs/form_error_styling";
 
 const stripe_key = 'pk_test_51KvBlgLjpnfKvSk6FTI71JbrjyOt2JiMNLhUqKR9dJDt4CvnhudKy1yP5zztbuLxsOKSQb9sBhvRLl5qGKpdWxJl00sjgbjMEp';
 
+const fontFamily = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
+
+
 document.addEventListener("DOMContentLoaded", () => {
     let stripePaymentElement = document.getElementById("stripe_payment_element");
     let newBankAccountForm = document.getElementById("new_bank_account_form");
@@ -10,13 +13,54 @@ document.addEventListener("DOMContentLoaded", () => {
         var elements = stripe.elements({
             clientSecret: stripePaymentElement.getAttribute("data-secret"),
         });
-        let cardElement = elements.create("card");
-        cardElement.mount(stripePaymentElement);
-        let submitButton = document.getElementById("submit_elements_button");
-        submitButton.addEventListener("click", () => {
-            stripe.createToken(cardElement).then((result) => {
-                console.log(result);
+
+        let cardNumberElement = elements.create("cardNumber", {style: {base: {fontFamily: fontFamily}}, classes: {base: "form-control py-2", invalid: "is-invalid", complete: "is-valid"}});
+        let cardExpElement = elements.create("cardExpiry", {style: {base: {fontFamily: fontFamily}}, classes: {base: "form-control py-2", invalid: "is-invalid", complete: "is-valid"}});
+        let cardCvcElement = elements.create("cardCvc", {style: {base: {fontFamily: fontFamily}}, classes: {base: "form-control py-2", invalid: "is-invalid", complete: "is-valid"}});
+        cardNumberElement.mount(stripePaymentElement.querySelector("#card_number_mount_point"));
+        cardExpElement.mount(stripePaymentElement.querySelector("#card_expiry_mount_point"));
+        cardCvcElement.mount(stripePaymentElement.querySelector("#card_cvc_mount_point"));
+
+        cardNumberElement.addEventListener("change", (e) => {
+            let feedbackEl = stripePaymentElement.querySelector("#card_number_feedback");
+            if (e.error) {
+                feedbackEl.innerHTML = e.error.message;
+                feedbackEl.style.display = "block";
+            } else {
+                feedbackEl.style.display = "none";
+            }
+            console.log("CHANGE EVENT: %O", e);
+        });
+        cardExpElement.addEventListener("change", (e) => {
+            let feedbackEl = stripePaymentElement.querySelector("#card_expiry_feedback");
+            if (e.error) {
+                feedbackEl.innerHTML = e.error.message;
+                feedbackEl.style.display = "block";
+            } else {
+                feedbackEl.style.display = "none";
+            }
+            console.log("CHANGE EVENT: %O", e);
+        });
+        cardCvcElement.addEventListener("change", (e) => {
+            let feedbackEl = stripePaymentElement.querySelector("#card_cvc_feedback");
+            if (e.error) {
+                feedbackEl.innerHTML = e.error.message;
+                feedbackEl.style.display = "block";
+            } else {
+                feedbackEl.style.display = "none";
+            }
+            console.log("CHANGE EVENT: %O", e);
+        });
+
+        let submitButton = document.getElementById("submit_card_button");
+        submitButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            stripe.createToken(cardNumberElement).then((result) => {
+                console.log("RESULT OF TOKEN CREATION: %O", result);
+                console.log("result.token.id: %s", result.token.id);
                 // Handle result.error or result.token
+                submitButton.form.querySelector("input#stripe_token").value = result.token.id;
+                submitButton.form.submit();
             });
         });
 

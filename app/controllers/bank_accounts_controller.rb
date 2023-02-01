@@ -36,7 +36,9 @@ class BankAccountsController < ApplicationController
         params.permit(
             :token,
             :authenticity_token,
-            :continue_path
+            :continue_path,
+            :country,
+            :zip_code
         )
     end
 
