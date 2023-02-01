@@ -133,13 +133,14 @@ export default class FormErrorStyling {
 
     static removeAllErrorsFromForm(form) {
         let inputs = form.querySelectorAll("input");
+        let errorMessages = form.querySelectorAll("invalid-feedback")
 
         for(const message of errorMessages) {
             message.remove();
         }
         for(const input of inputs) {
             input.classList.remove("is-invalid");
-            inputElement.style.color = "";
+            input.style.color = "";
         }
     }
 

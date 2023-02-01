@@ -8,7 +8,7 @@ class CardsController < ApplicationController
     end
 
     def create
-        Stripe::Token.create(
+        token = Stripe::Token.create(
             card: {
                 number: allowed_params[:number],
                 exp_month: allowed_params[:exp_month],

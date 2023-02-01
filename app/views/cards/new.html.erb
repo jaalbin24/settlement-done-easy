@@ -21,7 +21,17 @@
                         <div class="d-grid gap-2 my-5">
                             <div class="form-group">
                                 <%=f.label :card_number, class: "fw-bold"%>
-                                <%=f.text_field :number, class: "form-control", placeholder: "1234 1234 1234 1234", required: true%>
+                                <div class="input-group">
+                                    <%=f.text_field :number, class: "form-control", placeholder: "1234 1234 1234 1234", required: true%>
+                                    <span class="input-group-text d-flex gap-1">
+
+                                    <%=credit_card_icon({issuer: :visa})%>
+                                    <%=credit_card_icon({issuer: :mastercard})%>
+                                    <%=credit_card_icon({issuer: :amex})%>
+                                    <%=credit_card_icon({issuer: :discover})%>
+                                    
+                                    </span>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col form-group">

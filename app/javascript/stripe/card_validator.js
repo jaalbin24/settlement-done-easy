@@ -1,6 +1,16 @@
 import FormErrorStyling from "../packs/form_error_styling";
 
 export default class CardValidator {
+    static issuers = [
+        { issuer: 'VISA', prefixes: ['4'] },
+        { issuer: 'Mastercard', prefixes: ['51', '52', '53', '54', '55'] },
+        { issuer: 'American Express', prefixes: ['34', '37'] },
+        { issuer: 'Discover', prefixes: ['6011', '622126', '622127', '622128', '622129', '62213', '62214', '62215', '62216', '62217', '62218', '62219', '6222', '6223', '6224', '6225', '6226', '6227', '6228', '62290', '62291', '622920', '622921', '622922', '622923', '622924', '622925'] },
+        { issuer: 'JCB', prefixes: ['3528', '3529', '353', '354', '355', '356', '357', '358'] },
+        { issuer: 'Diners Club', prefixes: ['300', '301', '302', '303', '304', '305', '36', '38'] }
+    ];
+
+    
     constructor(form) {
         this.initEventListeners(form);
     }
@@ -59,7 +69,6 @@ export default class CardValidator {
         let expirationField = form.querySelector("input#card_expiration");
         let cvcField = form.querySelector("input#card_cvc");
         this.initCardNumberEventListeners(form);
-
     }
 
     initCardNumberEventListeners(form) {
@@ -83,6 +92,7 @@ export default class CardValidator {
                     e.target.value = cardNum.substring(0, cardNum.length-1).match(/.{1,4}/g).join(' ');
                 }
             }
+            console.log(this.getIssuer(cardNum));
         });
         numberField.addEventListener("blur", (e) => {
             let cardNum = e.target.value.replaceAll(/\s/g, "");
@@ -101,5 +111,32 @@ export default class CardValidator {
     }
     initCardCvcEventListeners() {
         
+    }
+
+    getIssuer(cardNum) {
+        var issuer = "Unknown";
+        if (cardNum.length === 0) {
+            return issuer;
+        }
+        var matches = 0;
+        var potentialIssuer = "";
+        for (const hash of CardValidator.issuers) {
+            let foundMatch = false;
+            let prefixes = hash.prefixes;
+            for (const prefix of prefixes) {
+                if (prefix.startsWith(cardNum.substring(0, prefix.length))) {
+                    console.log(`${hash.issuer}:${prefix} starts with ${cardNum.substring(0, prefix.length)}`);
+                    potentialIssuer = hash.issuer;
+                    foundMatch = true;
+                }
+            }
+            if (foundMatch) {
+                matches += 1;
+            }
+        }
+        if (matches === 1) {
+            issuer = potentialIssuer;
+        }
+        return issuer;
     }
 }

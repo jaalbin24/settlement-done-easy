@@ -60,4 +60,9 @@ Rails.application.configure do
 
 
   config.active_job.queue_adapter = :async
+
+
+    
+  # For SVG icons
+  config.assets.precompile += %w( '.svg' )  
 end

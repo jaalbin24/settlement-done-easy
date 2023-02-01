@@ -94,5 +94,6 @@ Rails.application.configure do
   Sidekiq.configure_server { |c| c.redis = { url: ENV['REDIS_URL'] } }
   # config.active_job.queue_name_prefix = "sde_development"
   
+  # For SVG icons
+  config.assets.precompile += %w( '.svg' )  
 end
-
