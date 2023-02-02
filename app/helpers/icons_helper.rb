@@ -18,6 +18,8 @@ module IconsHelper
           svg["class"] = options[:class] if options[:class].present?
           #svg["viewbox"] = "0 0 1000 1000" # options[:viewbox] if options[:viewbox].present?
           svg["style"] = "width: 39px; height: 25px;" # options[:style] if options[:style].present?
+          svg["id"] = "#{options[:issuer]}_card_icon" 
+          svg["type"] = "card_icon" # options[:style] if options[:style].present?
         else
           doc = "<!-- SVG #{filename} not found -->"
         end

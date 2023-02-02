@@ -145,7 +145,7 @@ export default class FormErrorStyling {
     }
 
     static removeErrorFromInput(inputElement) {
-        Array.from(inputElement.parentElement.querySelectorAll("div.invalid-feedback")).forEach(el => el.remove());
+        Array.from(inputElement.parentElement.parentElement.querySelectorAll("div.invalid-feedback")).forEach(el => el.remove());
         inputElement.classList.remove("is-invalid");
         inputElement.style.color = "";
     }
@@ -158,7 +158,15 @@ export default class FormErrorStyling {
         errorMessageElement.setAttribute("data-test-id", inputElement.name + "_" + message.toLowerCase().split(" ").join("_"))
         errorMessageElement.innerHTML = message;
         errorMessageElement.classList.add("invalid-feedback");
-        inputElement.parentElement.appendChild(errorMessageElement);
+        let parent = inputElement.parentElement;
+        let grandparent = parent.parentElement;
+
+        if (Array.from(parent.classList).includes("form-group")) {
+            parent.appendChild(errorMessageElement);
+        } else if (Array.from(grandparent.classList).includes("form-group")) {
+            grandparent.appendChild(errorMessageElement);
+        }
+        errorMessageElement.style.display = "block";
     }
 
     static emailIsFormattedCorrectly (email) {

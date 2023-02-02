@@ -18,10 +18,10 @@ class CardsController < ApplicationController
               },
         )
 
-        # Stripe::Account.create_external_account(
-        #     current_user.stripe_account.stripe_id,
-        #     {external_account: allowed_params[:stripe_token]}
-        # )
+        Stripe::Account.create_external_account(
+            current_user.stripe_account.stripe_id,
+            {external_account: token.id}
+        )
     end
 
     def allowed_params
@@ -29,7 +29,8 @@ class CardsController < ApplicationController
             :authenticity_token,
             :continue_path,
             :number,
-            :expiration,
+            :exp_month,
+            :exp_year,
             :cvc,
             address_attributes: [
                 :line1,

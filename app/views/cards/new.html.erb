@@ -11,25 +11,33 @@
     </div>
     <div class="col bg-light">
         <div class="h-100 d-grid justify-content-center align-items-center">
-            <div style="min-width: 28rem;">
+            <div style="min-width: 32rem;">
                 <div class="mb-4 ms-1">
                     <h1 class="">Add Payment Method</h1>
                 </div>
                 <div>
                     <%=render "payment_methods/type_select"%>
                     <%=form_for @card, url: card_create_path do |f|%>
+                        <%=f.hidden_field :exp_month%>
+                        <%=f.hidden_field :exp_year%>
                         <div class="d-grid gap-2 my-5">
                             <div class="form-group">
                                 <%=f.label :card_number, class: "fw-bold"%>
                                 <div class="input-group">
-                                    <%=f.text_field :number, class: "form-control", placeholder: "1234 1234 1234 1234", required: true%>
-                                    <span class="input-group-text d-flex gap-1">
-
-                                    <%=credit_card_icon({issuer: :visa})%>
-                                    <%=credit_card_icon({issuer: :mastercard})%>
-                                    <%=credit_card_icon({issuer: :amex})%>
-                                    <%=credit_card_icon({issuer: :discover})%>
-                                    
+                                    <%=f.text_field :number, class: "form-control animated-width", placeholder: "1234 1234 1234 1234", required: true%>
+                                    <span class="input-group-text d-flex animated-width">
+                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="visa">
+                                            <%=credit_card_icon({issuer: :visa})%>
+                                        </div>
+                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="mastercard">
+                                            <%=credit_card_icon({issuer: :mastercard})%>
+                                        </div>
+                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="amex">
+                                            <%=credit_card_icon({issuer: :amex})%>
+                                        </div>
+                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="discover">
+                                            <%=credit_card_icon({issuer: :discover})%>
+                                        </div>
                                     </span>
                                 </div>
                             </div>
@@ -54,3 +62,9 @@
         </div>
     </div>
 </div>
+<style>
+    .animated-width {
+        transition: width 0.5s ease-out;
+    }
+</style>
+
