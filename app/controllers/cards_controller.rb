@@ -2,23 +2,24 @@ class CardsController < ApplicationController
     before_action :authenticate_user!
 
     def new
-
-
-        # setup_intent = Stripe::SetupIntent.create(
-        #     {
-        #         payment_method_types: ['us_bank_account', 'card'],
-        #         attach_to_self: true,
-        #     },
-        #     {stripe_account: current_user.stripe_account.stripe_id}
-        # )
-        # @client_secret = setup_intent.client_secret
-
-        # <div id="test_form" data-client-secret="<%=@client_secret%>" data-connect-account="<%=current_user.stripe_account.stripe_id%>">
-        # </div>
-
-        # <button id="test_button" class="btn btn-primary btn-lg">Submit!</button>
-
-
+        if session[:card_setup_intent].blank?
+            setup_intent = create_setup_intent
+        else
+            begin
+                setup_intent = Stripe::SetupIntent.retrieve(
+                    session[:card_setup_intent],
+                    {stripe_account: current_user.stripe_account.stripe_id}
+                )
+            rescue
+                setup_intent = create_setup_intent
+            end
+            if setup_intent.status == "canceled"
+                setup_intent = create_setup_intent
+            end
+        end
+        session[:card_setup_intent] = setup_intent.id
+        @client_secret = setup_intent.client_secret
+        @stripe_account = current_user.stripe_account.stripe_id
 
         @card = Card.new
         @billing_address = @card.build_billing_address
@@ -26,43 +27,67 @@ class CardsController < ApplicationController
     end
 
     def create
-        token = Stripe::Token.create(
-            card: {
-                number: allowed_params[:number],
-                exp_month: allowed_params[:exp_month],
-                exp_year: allowed_params[:exp_year],
-                cvc: allowed_params[:cvc],
-                currency: "usd",
-              },
-        )
-        if token.card.funding != "debit"
-            flash[:info] = "That card is not a debit card."
-
+        if allowed_params[:token].blank?
+            flash[:info] = "It failed because the token param was blank!"
+            redirect_to card_new_path(continue_path: allowed_params[:continue_path])
+            return
         end
-        external_account = Stripe::Account.create_external_account(
-            current_user.stripe_account.stripe_id,
-            {external_account: token.id}
-        )
+        begin
+            external_account = Stripe::Account.create_external_account(
+                current_user.stripe_account.stripe_id,
+                {external_account: allowed_params[:token]}
+            )
+            billing_address = Address.new(
+                line1:          external_account.address_line1,
+                line2:          external_account.address_line2,
+                city:           external_account.address_city,
+                state:          external_account.address_state,
+                postal_code:    external_account.address_zip,
+                country:        external_account.address_country,
+            )
+            card = current_user.payment_methods.build(
+                type:       external_account.object.camelize,
+                stripe_id:  external_account.id,
+                last4:      external_account.last4,
+                bank_name:  external_account.brand,
+                exp_month:  external_account.exp_month,
+                exp_year:   external_account.exp_year,
+                currency:   external_account.currency,
+                status:     external_account.status,
+                added_by:   current_user,
+                billing_address: billing_address
+            )
+            card.save!
+            flash[:info] = "Your new card was validated."
+            if allowed_params[:continue_path].blank?
+                redirect_to root_path
+            else
+                redirect_to allowed_params[:continue_path]
+            end
+        rescue Stripe::InvalidRequestError => e
+            flash[:danger] = ErrorHandler::FlashMessage.for(e)
+            redirect_to card_new_path(continue_path: allowed_params[:continue_path])
+        end
+        
     end
+
+    private
 
     def allowed_params
         params.require(:card).permit(
-            :authenticity_token,
             :continue_path,
-            :number,
-            :exp_month,
-            :exp_year,
-            :cvc,
-            address_attributes: [
-                :line1,
-                :line2,
-                :city,
-                :state,
-                :zip_code,
-                :country,
-            ]
+            :token,
         )
-    end    
+    end
+
+    def create_setup_intent
+        Stripe::SetupIntent.create(
+            {
+                payment_method_types: ['card'],
+            },
+            {stripe_account: current_user.stripe_account.stripe_id}
+        )
+    end
 end
 # ======= Instructions for settlement-intended payment methods
 
@@ -75,20 +100,47 @@ end
 #    - stripe account id
 #    - payment method id
 
-# 4 User is redirected to page showing status of newly added payment method. 
+# 4 User is redirected to page showing status of newly added payment method.
+
+# 5 When time comes to initiate settlement payment (inbound transfer)
+
+    # Stripe::Treasury::InboundTransfer.create({
+    #     financial_account: 'fa_1MXSROLjpnfKvSk6koNbT30c',
+    #     amount: 10000,
+    #     currency: 'usd',
+    #     origin_payment_method: 'pm_1KMDdkGPnV27VyGeAgGz8bsi',
+    #     description: 'InboundTransfer from my bank account',
+    # })
 
 
-# ======= Instructions for creating billing-intended payment methods (ONLY WORKS WITH BANK ACCOUNTS)
+# ======= Instructions for creating billing-intended payment methods
 
-# 1 Client clicks button request to /secret endpoint. SetupIntent created server-side, and secret sent.
+# 1 Client clicks button which sends request to /secret endpoint. SetupIntent created server-side, and secret sent.
 
 # 2 Client receives secret and uses it to call collectBankAccountToken() JS code.
 
 # 3 User is guided through Stripe Modal. When they are done, a form with the token is submitted to the SDE server.
 
 # 4 Server-side, create the Stripe external account using the client token.
+# NOTE: The newly added account will become the default for all future charges. Provide a path for the user to change which payment gets charged.
 
+# 5 When the time comes to bill the user for using SDE, create a charge object...
+
+    # Stripe::Charge.create({
+    #     amount: 500 * n_settlements,
+    #     currency: 'usd',
+    #     source: acct_nl49fnnmHf22AP1,
+    #     description: 'Settlement Done Easy services',
+    # })
+
+# 6
 
 # TAKEAWAY
 # External accounts are for billing
+
+
 # Attached payment methods are for settlements
+
+
+
+# HOW DO YOU DELETE ATTACHED PAYMENT METHODS????

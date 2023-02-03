@@ -7,7 +7,6 @@ class CreatePaymentMethods < ActiveRecord::Migration[6.1]
 
       t.string      :stripe_id 
       # ba_ for bank accounts
-      # pm_ for credit cards
       # card_ for debit cards
 
       t.integer     :last4,                       limit: 2 # last4 is a small integer (size: 2 bytes) in the database
@@ -17,9 +16,10 @@ class CreatePaymentMethods < ActiveRecord::Migration[6.1]
       t.string      :currency
       t.string      :status
 
-      t.string      :funding      # credit or debit
+      t.integer     :exp_month
+      t.integer     :exp_year
 
-      t.references  :user,        foreign_key: {to_table: :users}
+      t.references  :added_by,    foreign_key: {to_table: :users}
       t.references  :address,     foreign_key: {to_table: :addresses}
 
       t.timestamps

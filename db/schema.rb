@@ -125,12 +125,14 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.string "country"
     t.string "currency"
     t.string "status"
-    t.bigint "user_id"
+    t.integer "exp_month"
+    t.integer "exp_year"
+    t.bigint "added_by_id"
     t.bigint "address_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["added_by_id"], name: "index_payment_methods_on_added_by_id"
     t.index ["address_id"], name: "index_payment_methods_on_address_id"
-    t.index ["user_id"], name: "index_payment_methods_on_user_id"
   end
 
   create_table "payment_requests", force: :cascade do |t|
@@ -369,7 +371,7 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   add_foreign_key "log_book_entries", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "payment_methods", "addresses"
-  add_foreign_key "payment_methods", "users"
+  add_foreign_key "payment_methods", "users", column: "added_by_id"
   add_foreign_key "payment_requests", "log_books"
   add_foreign_key "payment_requests", "settlements"
   add_foreign_key "payment_requests", "users", column: "accepter_id"

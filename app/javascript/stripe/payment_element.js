@@ -79,26 +79,68 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    let testForm = document.querySelector("#test_form")
-    if (testForm == null) {
+    let paymentForm = document.querySelector("#payment_form")
+    if (paymentForm == null) {
         return;
     } else {
-        let stripe = Stripe(stripe_key, {stripeAccount: testForm.getAttribute("data-connect-account")});
+        let stripe = Stripe(stripe_key, {stripeAccount: paymentForm.getAttribute("data-connect-account")});
         var elements = stripe.elements({
-            clientSecret: testForm.getAttribute("data-client-secret"),
+            clientSecret: paymentForm.getAttribute("data-client-secret"),
         });
-        let paymentElement = elements.create('payment');
-        paymentElement.mount(testForm);
-
-        document.querySelector("#test_button").addEventListener("click", async (e) => {
-            let error = await stripe.confirmSetup({
-                //`Elements` instance that was used to create the Payment Element
-                elements,
-                confirmParams: {
-                  return_url: 'http://localhost:3000',
+        let addressElement = elements.create('address', {mode: 'billing'});
+        let cardElement = elements.create('card', {
+            hidePostalCode: true,
+            style: {
+                base: {
+                    fontSize: "16px"
                 }
-            });
-            console.log("%O", error);
+            },
+            classes: {
+                base: "form-control",
+                invalid: "is-invalid"
+            },
+        });
+        addressElement.mount(paymentForm.querySelector("#address_form"));
+        cardElement.mount(paymentForm.querySelector("#card_form"));
+        cardElement.on('change', (event) => {
+            console.log(`Change event it the card element: %O`, event)
+            var errorMessage = document.querySelector("#error_message_for_card_form");
+            if (event.error) {
+                errorMessage.textContent = event.error.message;
+                errorMessage.style.display = "block";
+            } else {
+                errorMessage.style.display = "none";
+            }
+        });
+
+        document.querySelector("#tokenize_button").addEventListener("click", async (e) => {
+            var errorMessage = document.querySelector("#error_message_for_card_form");
+            addressElement.getValue().then((result) => {
+                if (result.complete) {
+                    stripe.createToken(cardElement, {
+                        currency: 'usd',
+                        name: result.value.name == null                         ? "" : result.value.name,
+                        address_line1: result.value.address.line1 == null       ? "" : result.value.address.line1,
+                        address_line2: result.value.address.line2 == null       ? "" : result.value.address.line2,
+                        address_city: result.value.address.city == null         ? "" : result.value.address.city,
+                        address_state: result.value.address.state == null       ? "" : result.value.address.state,
+                        address_zip: result.value.address.postal_code == null   ? "" : result.value.address.postal_code,
+                        address_country: "US"
+                    }).then((result) => {
+                        if (result.error) {
+                            console.error(result.error);
+                        } else if (result.token) {
+                            console.log(result.token);
+                            let cardForm = document.querySelector("form#new_card");
+                            let tokenField = cardForm.querySelector("input#card_token[name='card[token]'][type='hidden']");
+                            tokenField.value = result.token.id;
+                            cardForm.submit();
+                        }
+                    });
+                }
+                console.log(result);
+            })
+            
         });
     }
 

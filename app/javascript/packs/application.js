@@ -15,7 +15,6 @@ import 'autosize'
 
 import 'stripe/bank_account'
 import 'stripe/payment_element'
-import 'stripe/card_form'
 
 // ModalMaker is the class that handles the big modal notifications that appear in the center of the screen and blur the background.
 import ModalMaker                       from 'packs/modal_maker'

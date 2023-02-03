@@ -12,56 +12,35 @@
     <div class="col bg-light">
         <div class="h-100 d-grid justify-content-center align-items-center">
             <div style="min-width: 32rem;">
-                <div class="mb-4 ms-1">
-                    <h1 class="">Add Payment Method</h1>
+                <div class="mb-5 ms-1">
+                    <h1 class="m-0">Add Debit Card</h1>
+                    <p class="m-0">Click <a href="">here</a> to add a bank account instead.</p>
                 </div>
                 <div>
-                    <%=render "payment_methods/type_select"%>
                     <%=form_for @card, url: card_create_path do |f|%>
-                        <%=f.hidden_field :exp_month%>
-                        <%=f.hidden_field :exp_year%>
-                        <div class="d-grid gap-2 my-5">
-                            <div class="form-group">
-                                <%=f.label :card_number, class: "fw-bold"%>
-                                <div class="input-group">
-                                    <%=f.text_field :number, class: "form-control animated-width", placeholder: "1234 1234 1234 1234", required: true%>
-                                    <span class="input-group-text d-flex animated-width">
-                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="visa">
-                                            <%=credit_card_icon({issuer: :visa})%>
-                                        </div>
-                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="mastercard">
-                                            <%=credit_card_icon({issuer: :mastercard})%>
-                                        </div>
-                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="amex">
-                                            <%=credit_card_icon({issuer: :amex})%>
-                                        </div>
-                                        <div class="d-flex justify-content-center overflow-hidden animated-width" name="card_icon_container" data-default="true" for="discover">
-                                            <%=credit_card_icon({issuer: :discover})%>
-                                        </div>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col form-group">
-                                    <%=f.label :expiration, class: "fw-bold"%>
-                                    <%=f.text_field :expiration, class: "form-control", placeholder: "MM/YY", required: true%>
-                                </div>
-                                <div class="col form-group">
-                                    <label class="fw-bold">CVC</label>
-                                    <%=f.text_field :cvc, class: "form-control", placeholder: "CVC", required: true%>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3 d-flex gap-2">
-                            <%=f.submit "Save", class: "btn btn-primary"%>
-                            <%=link_to 'Cancel', @continue_path, class: "btn btn-outline-primary", id: "continue_path_button" if @continue_path%>
-                        </div>
+                        <%=f.hidden_field :token%>
+                        <%=f.hidden_field :continue_path, value: @continue_path%>
                     <%end%>
+                    <div id="payment_form" data-client-secret="<%=@client_secret%>" data-connect-account="<%=@stripe_account%>">
+                        <p class="border-bottom mb-3" style="line-height: 0.1em; color: rgb(48, 49, 61);"><span class="pe-2 bg-light fw-bold">Card</span></p>
+                        <div id="card_form">
+
+                        </div>
+                        <div id="error_message_for_card_form" class="invalid-feedback"></div>
+                        <p class="border-bottom mt-5 mb-3" style="line-height: 0.1em; color: rgb(48, 49, 61);"><span class="pe-2 bg-light fw-bold">Billing Address</span></p>
+                        <div id="address_form"></div>
+                    </div>
+                    <p class="my-2 text-muted">Settlement Done Easy currently does not support credit cards.</p>
+                    <div class=" mt-4 d-flex gap-2">
+                        <button id="tokenize_button" class="btn btn-primary">Save</button>
+                        <%=link_to 'Cancel', @continue_path, class: "btn btn-outline-primary", id: "continue_path_button" if @continue_path%>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <style>
     .animated-width {
         transition: width 0.5s ease-out;
