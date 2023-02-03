@@ -5,12 +5,11 @@ const stripe_key = 'pk_test_51KvBlgLjpnfKvSk6FTI71JbrjyOt2JiMNLhUqKR9dJDt4Cvnhud
 
 document.addEventListener("DOMContentLoaded", () => {
     let newBankAccountForm = document.getElementById("new_bank_account_form");
-    let stripe = Stripe(stripe_key);
     if (newBankAccountForm != null) {
+        let stripe = Stripe(stripe_key);
         let submitButton = newBankAccountForm.querySelector("input.btn-primary[type='submit']");
         let routingNumberField = newBankAccountForm.querySelector("input[name='routing_number']");
         let accountNumberField = newBankAccountForm.querySelector("input[name='account_number']");
-        let submissionURL = newBankAccountForm.action;
         submitButton.addEventListener("click", async (e) => {
             FormErrorStyling.removeAllErrorsFromForm(newBankAccountForm);
             e.preventDefault();
@@ -28,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     FormErrorStyling.styleInputAsInvalid(input, "This field can't be blank");
                 }
             }
-            console.log("Payment Element");
             if (newBankAccountForm.querySelector(".is-invalid") != null) {
                 return;
             }
@@ -79,9 +77,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 submittableForm.submit();
             }
         });
-    } else {
-        return;
     }
+
+    let testForm = document.querySelector("#test_form")
+    if (testForm == null) {
+        return;
+    } else {
+        let stripe = Stripe(stripe_key, {stripeAccount: testForm.getAttribute("data-connect-account")});
+        var elements = stripe.elements({
+            clientSecret: testForm.getAttribute("data-client-secret"),
+        });
+        let paymentElement = elements.create('payment');
+        paymentElement.mount(testForm);
+
+        document.querySelector("#test_button").addEventListener("click", async (e) => {
+            let error = await stripe.confirmSetup({
+                //`Elements` instance that was used to create the Payment Element
+                elements,
+                confirmParams: {
+                  return_url: 'http://localhost:3000',
+                }
+            });
+            console.log("%O", error);
+        });
+    }
+
+
+
+
+
+
 });
 
 function cloneAttributes(target, source) {

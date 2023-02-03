@@ -108,10 +108,6 @@ class StripeController < ApplicationController
         end
         puts event
         case event.type
-        when "treasury.financial_account.features_status_updated"
-        when "capability.updated"
-        when "person.created"
-        when "person.updated"
         when "account.updated"
             remote_stripe_account = event.data.object
             local_stripe_account = StripeAccount.find_by(stripe_id: event.account)
@@ -127,23 +123,6 @@ class StripeController < ApplicationController
                     puts "⚠️⚠️⚠️ ERROR saving Stripe Account: #{local_stripe_account.errors.full_messages.inspect}"
                 end
             end
-        when "account.external_account.created"
-        when "account.external_account.updated"
-        when "financial_connections.account.created"
-        when "setup_intent.created"
-        when "setup_intent.succeeded"
-            setup_intent = event.data.object
-            user = User.joins(:stripe_account).where(stripe_account: {stripe_id: setup_intent.on_behalf_of}).distinct.first
-            payment_method = Stripe::PaymentMethod.retrieve(setup_intent.payment_method)
-            Stripe::Account.create_external_account(
-                setup_intent.on_behalf_of,
-                {external_account: payment_method.id},
-            )
-            user.payment_methods.create!(
-                stripe_id: payment_method.id,
-                type: payment_method.type
-            )
-        when "treasury.inbound_transfer.created"
         when "treasury.inbound_transfer.failed"
             inbound_transfer = event.data.object
             payment = Payment.with_inbound_transfer_id(inbound_transfer.id).first
@@ -160,7 +139,6 @@ class StripeController < ApplicationController
                 puts payment
                 payment.execute_outbound_payment
             end
-        when "treasury.outbound_payment.created"
         when "treasury.outbound_payment.posted"
             outbound_payment = event.data.object
             payment = Payment.with_outbound_payment_id(outbound_payment.id).first
@@ -171,7 +149,6 @@ class StripeController < ApplicationController
                 puts payment
                 payment.execute_outbound_transfer
             end
-        when "treasury.outbound_transfer.created"
         when "treasury.outbound_transfer.posted"
             outbound_transfer = event.data.object
             payment = Payment.with_outbound_transfer_id(outbound_transfer.id).first
