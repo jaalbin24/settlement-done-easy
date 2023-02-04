@@ -105,4 +105,6 @@ Rails.application.routes.draw do
   get 'payment_method/new/card',                      to: 'cards#new',                                as: 'card_new'
   post 'payment_method/card',                         to: 'cards#create',                             as: 'card_create'
 
+  get 'card/new/secret',                              to: 'cards#secret',                             as: 'new_card_secret'
+
 end

@@ -3,7 +3,7 @@ import FormErrorStyling from "../packs/form_error_styling";
 const stripe_key = 'pk_test_51KvBlgLjpnfKvSk6FTI71JbrjyOt2JiMNLhUqKR9dJDt4CvnhudKy1yP5zztbuLxsOKSQb9sBhvRLl5qGKpdWxJl00sjgbjMEp';
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     let newBankAccountForm = document.getElementById("new_bank_account_form");
     if (newBankAccountForm != null) {
         let stripe = Stripe(stripe_key);
@@ -83,9 +83,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (paymentForm == null) {
         return;
     } else {
-        let stripe = Stripe(stripe_key, {stripeAccount: paymentForm.getAttribute("data-connect-account")});
+        // Request the secret from server side
+        let response = await fetch(paymentForm.getAttribute("data-secret-path"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept":       "application/json"
+            },
+        }).then(res => {
+            return res.json();
+        }).catch(error => {
+            console.error(error);
+        });
+        let stripe = Stripe(stripe_key, {stripeAccount: response.stripe_account});
         var elements = stripe.elements({
-            clientSecret: paymentForm.getAttribute("data-client-secret"),
+            clientSecret: response.secret,
         });
         let addressElement = elements.create('address', {mode: 'billing'});
         let cardElement = elements.create('card', {
@@ -112,9 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorMessage.style.display = "none";
             }
         });
-
         document.querySelector("#tokenize_button").addEventListener("click", async (e) => {
-            var errorMessage = document.querySelector("#error_message_for_card_form");
             addressElement.getValue().then((result) => {
                 if (result.complete) {
                     stripe.createToken(cardElement, {
@@ -140,15 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 console.log(result);
             })
-            
         });
     }
-
-
-
-
-
-
 });
 
 function cloneAttributes(target, source) {

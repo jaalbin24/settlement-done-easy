@@ -21,7 +21,7 @@
                         <%=f.hidden_field :token%>
                         <%=f.hidden_field :continue_path, value: @continue_path%>
                     <%end%>
-                    <div id="payment_form" data-client-secret="<%=@client_secret%>" data-connect-account="<%=@stripe_account%>">
+                    <div id="payment_form" data-secret-path="<%=new_card_secret_path%>" data-connect-account="<%=@stripe_account%>">
                         <p class="border-bottom mb-3" style="line-height: 0.1em; color: rgb(48, 49, 61);"><span class="pe-2 bg-light fw-bold">Card</span></p>
                         <div id="card_form">
 

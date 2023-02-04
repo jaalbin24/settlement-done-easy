@@ -1,26 +1,24 @@
 class CardsController < ApplicationController
     before_action :authenticate_user!
 
-    def new
-        if session[:card_setup_intent].blank?
-            setup_intent = create_setup_intent
-        else
-            begin
-                setup_intent = Stripe::SetupIntent.retrieve(
-                    session[:card_setup_intent],
-                    {stripe_account: current_user.stripe_account.stripe_id}
-                )
-            rescue
-                setup_intent = create_setup_intent
-            end
-            if setup_intent.status == "canceled"
-                setup_intent = create_setup_intent
-            end
+    # Called by client-side JS
+    def secret
+        if session[:card_setup_intent_secret].blank?
+            # If there is no secret stored in the session, we will have to create a new SetupIntent by calling the Stripe API.
+            secret = create_setup_intent.client_secret
+        elsif session[:card_setup_intent_secret]
+            # If there is a secret stored in the session, send that.
+            secret = session[:card_setup_intent_secret]
         end
-        session[:card_setup_intent] = setup_intent.id
-        @client_secret = setup_intent.client_secret
-        @stripe_account = current_user.stripe_account.stripe_id
+        session[:card_setup_intent_secret] = secret
 
+        render json: {
+            secret: secret, 
+            stripe_account: current_user.stripe_account.stripe_id
+        }
+    end
+
+    def new
         @card = Card.new
         @billing_address = @card.build_billing_address
         render :new
