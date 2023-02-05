@@ -7,58 +7,44 @@
             </div>
             <%=link_to "Add payment method", payment_method_new_path(continue_path: request.path), class: "btn btn-outline-primary"%>
         </div>
-        <div class="card-body">
-            <p class="m-0">Settlement funds will <%=current_user.lawful? ? 'go into': 'come from'%> these accounts.</p>
-        </div>
-        <table class="table table-sm table-hover" style="box-shadow: none;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Account #</th>
-                    <th>Added on</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <%@payment_methods.each do |pm|%>
+        <%if current_user.payment_methods.count == 0%>
+            <div class="card-body">
+                <p class="m-0">You do not have any payment methods.</p>
+            </div>
+        <%else%>
+            <table class="table table-sm table-hover" style="box-shadow: none;">
+                <thead>
                     <tr>
-                        <td><i class="h6 fa-solid fa-<%=pm ? 'building-columns' : 'credit-card'%> m-0"></i></td>
-                        <td>Chester Checking</td>
-                        <td>*****0529</td>
-                        <td>5/26/22</td>
-                        <td>Good</td>
-                        <td>
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis h6 m-0"></i></a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Rename</a>
-                                <a class="dropdown-item" href="#">Make default</a>
-                                <a class="dropdown-item" href="#">Use in settlements</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Delete</a>
-                            </div>
-                        </td>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Last 4</th>
+                        <th>Added on</th>
+                        <th>Status</th>
+                        <th></th>
                     </tr>
-                <%end%>
-                <tr>
-                    <td><i class="h6 fa-solid fa-<%=false ? 'building-columns' : 'credit-card'%> m-0"></i></td>
-                    <td>Visa</td>
-                    <td>*****0529</td>
-                    <td>9/4/22</td>
-                    <td>Good</td>
-                    <td>
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis h6 m-0"></i></a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Rename</a>
-                            <a class="dropdown-item" href="#">Make default</a>
-                            <a class="dropdown-item" href="#">Use in settlements</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Delete</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <%@payment_methods.each do |pm|%>
+                        <tr>
+                            <td><i class="h6 fa-solid fa-<%=pm.type == "BankAccount" ? 'building-columns' : 'credit-card'%> m-0"></i></td>
+                            <td><%=pm.nickname.blank? ? "None" : pm.nickname%></td>
+                            <td><%=pm.last4.blank? ? "Unknown" : pm.last4%></td>
+                            <td><%=pm.created_at.strftime("%B %-d, %Y")%></td>
+                            <td><%=pm.status.blank? ? "Unknown" : pm.status.capitalize%></td>
+                            <td>
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis h6 m-0"></i></a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Rename</a>
+                                    <a class="dropdown-item" href="#">Make default</a>
+                                    <a class="dropdown-item" href="#">Use in settlements</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    <%end%>
+                </tbody>
+            </table>
+        <%end%>
     </div>
 </div>

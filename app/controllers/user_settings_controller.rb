@@ -30,7 +30,7 @@ class UserSettingsController < ApplicationController
     end
 
     def wallet
-        @payment_methods = current_user.payment_methods
+        @payment_methods = PaymentMethod.where(added_by: current_user)
         render :wallet
     end
 end

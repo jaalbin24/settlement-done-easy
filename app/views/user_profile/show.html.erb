@@ -19,6 +19,9 @@
                 <%=render "user_profile/members/all"%>
             </div>
         <%end%>
+        <div class="tab-pane fade <%=@section == 'bank_accounts' ? "active show" : ""%>" id="bank_accounts" role="tabpanel">
+            <%=render "user_profile/bank_accounts/all"%>
+        </div>
     </div>
     <%if !@continue_path.blank? && @owner != current_user%>
         <a href="<%=@continue_path%>" class="btn btn-primary my-3">

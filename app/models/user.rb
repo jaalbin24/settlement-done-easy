@@ -424,4 +424,14 @@ class User < ApplicationRecord
         return false if u.members.nil?
         u.members.include?(self)
     end
+
+    def to_organization
+        if isOrganization?
+            self
+        elsif isMember?
+            organization
+        else
+            raise StandardError.new "Unhandeled role type! User is neither a member nor organization."
+        end
+    end
 end

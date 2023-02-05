@@ -14,13 +14,12 @@ class CardsController < ApplicationController
 
         render json: {
             secret: secret, 
-            stripe_account: current_user.stripe_account.stripe_id
+            stripe_account: current_user.to_organization.stripe_account.stripe_id
         }
     end
 
     def new
         @card = Card.new
-        @billing_address = @card.build_billing_address
         render :new
     end
 
@@ -32,7 +31,7 @@ class CardsController < ApplicationController
         end
         begin
             external_account = Stripe::Account.create_external_account(
-                current_user.stripe_account.stripe_id,
+                current_user.to_organization.stripe_account.stripe_id,
                 {external_account: allowed_params[:token]}
             )
             billing_address = Address.new(
@@ -48,6 +47,7 @@ class CardsController < ApplicationController
                 stripe_id:  external_account.id,
                 last4:      external_account.last4,
                 bank_name:  external_account.brand,
+                nickname:   "#{external_account.brand} #{external_account.last4}",
                 exp_month:  external_account.exp_month,
                 exp_year:   external_account.exp_year,
                 currency:   external_account.currency,
@@ -57,6 +57,7 @@ class CardsController < ApplicationController
             )
             card.save!
             flash[:info] = "Your new card was validated."
+            session.delete(:card_setup_intent_secret)
             if allowed_params[:continue_path].blank?
                 redirect_to root_path
             else
@@ -83,7 +84,7 @@ class CardsController < ApplicationController
             {
                 payment_method_types: ['card'],
             },
-            {stripe_account: current_user.stripe_account.stripe_id}
+            {stripe_account: current_user.to_organization.stripe_account.stripe_id}
         )
     end
 end

@@ -35,5 +35,8 @@
                 <a class="nav-link<%=@section == 'members' ? " active" : ""%>" data-bs-toggle="tab" href="#members" aria-selected="false" role="tab" style="font-size: 1.2rem;"><%=member_role_name(@owner).pluralize.capitalize%></a>
             </li>
         <%end%>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link<%=@section == 'bank_accounts' ? " active" : ""%>" data-bs-toggle="tab" href="#bank_accounts" aria-selected="false" role="tab" style="font-size: 1.2rem;">Bank Accounts</a>
+        </li>
     </ul>
 </div>
