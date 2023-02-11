@@ -434,4 +434,12 @@ class User < ApplicationRecord
             raise StandardError.new "Unhandeled role type! User is neither a member nor organization."
         end
     end
+
+    def bank_accounts
+        if isOrganization?
+            BankAccount.joins(:added_by).where(added_by: {id: id}).or(BankAccount.joins(:added_by).where(added_by: {organization_id: id})).distinct
+        else
+            payment_methods.bank_accounts
+        end
+    end
 end

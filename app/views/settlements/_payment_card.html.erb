@@ -1,7 +1,6 @@
 <div class="card h-100">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="m-0">Payment</h4>
-        
         <a href="<%=under_construction_path(continue_path: request.path, page_name: "send payment")%>" class="btn btn-sm btn-primary d-flex gap-1 align-items-center">
             Send
         </a>
@@ -14,9 +13,9 @@
         <label for="exampleSelect1" class="form-label flex-shrink-0 m-0">Deposit funds into</label>
         <div class="input-group">
             <select class="form-select flex-shrink-1" id="exampleSelect1">
-                <option>Charlie Escrow Account</option>
-                <option>Stripe Test Account</option>
-                <option>Default Escrow</option>
+                <%current_user.bank_accounts.each do |ba|%>
+                    <option id="<%=ba.public_id%>" value="<%=ba.public_id%>"><%=ba.nickname%></option>
+                <%end%>
             </select>
             <button class="btn btn-sm btn-primary">Save</button>
         </div>

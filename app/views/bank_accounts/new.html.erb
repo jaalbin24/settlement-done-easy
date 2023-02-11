@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <%=render "payment_methods/type_select"%>
-                    <%# This form depends on javascript to function correctly. A Stripe token is obtained client-side,
+                    <%# This form depends on separate javascript to function correctly. A Stripe token is obtained client-side,
                     and that is what is actually returned to the server. The fields in this form are there just to gather the info
                     for the client to send to Stripe.%>
                     <%=form_with id: "new_bank_account_form", url: bank_account_create_path do |f|%>

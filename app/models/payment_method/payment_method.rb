@@ -32,6 +32,7 @@
 class PaymentMethod < ApplicationRecord
     self.inheritance_column = 'type'
 
+    scope :bank_accounts,           ->  {where(type: "BankAccount")}
 
     belongs_to(
         :added_by,
@@ -48,4 +49,18 @@ class PaymentMethod < ApplicationRecord
         optional: true,
     )
     accepts_nested_attributes_for :billing_address
+
+
+
+    before_create do
+        self.nickname = default_nickname
+    end
+
+
+
+    private
+
+    def default_nickname
+        "#{bank_name.blank? ? sentence_case(type) : bank_name} #{last4.blank? ? "****" : "****#{last4}"}"
+    end
 end

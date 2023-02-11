@@ -48,7 +48,7 @@ class UserProfileController < ApplicationController
         end
 
         @documents = Document.belonging_to(current_user).order(created_at: :desc)
-        @bank_accounts = current_user.to_organization.payment_methods.where(type: "BankAccount")
+        @bank_accounts = @owner.bank_accounts
 
         if params[:section].blank?
             @section = "about"

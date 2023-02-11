@@ -12,26 +12,30 @@
     <div class="col bg-light">
         <div class="h-100 d-flex align-items-center">
             <div class="w-100">
-                <div class="alert alert-dismissible alert-primary w-75 mx-auto">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <h4 class="alert-heading">You can use these login credentials.</h4>
-                    <p class="m-0">Settlement Done Easy is currently in an unfinished state. To make it easier to explore the site, you can use the following emails.</p>
-                    <ul class="my-2">
-                        <li>
-                            Use <span class="fw-bold">attorney0@example.com</span> to log in as an attorney.
-                        </li>
-                        <li>
-                            Use <span class="fw-bold">adjuster0@example.com</span> to log in as an adjuster.
-                        </li>
-                        <li>
-                            Use <span class="fw-bold">law_firm0@example.com</span> to log in as a law firm.
-                        </li>
-                        <li>
-                            Use <span class="fw-bold">insurance_company0@example.com</span> to log in as an insurance company.
-                        </li>
-                    </ul>
-                    <p class="m-0">All passwords are '<span class="fw-bold">password123</span>'</p>
-                </div>
+                <%# This unless block is here because free-use accounts should not be advertised when they do not exist.%>
+                <%unless User.where(email: "attorney0@example.com").count == 0%>
+                    <div class="alert alert-dismissible alert-primary w-75 mx-auto">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <h4 class="alert-heading m-0 fw-bold">You can use these login credentials.</h4>
+                        <hr class="my-1">
+                        <p class="m-0">Settlement Done Easy is currently unfinished. Until it is complete, the following emails will be available for anyone wanting to explore the site.</p>
+                        <ul class="my-2">
+                            <li>
+                                <span class="fw-bold">attorney0@example.com</span> will log you in as an attorney.
+                            </li>
+                            <li>
+                                <span class="fw-bold">adjuster0@example.com</span> will log you in as an adjuster.
+                            </li>
+                            <li>
+                                <span class="fw-bold">law_firm0@example.com</span> will log you in as a law firm.
+                            </li>
+                            <li>
+                                <span class="fw-bold">insurance_company0@example.com</span> will log you in as an insurance company.
+                            </li>
+                        </ul>
+                        <p class="m-0">All passwords are '<span class="fw-bold">password123</span>'</p>
+                    </div>
+                <%end%>
                 <div class="w-50 mx-auto">
                     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {method: :post, "data-js-styling": true, "data-wait-before-resubmit": true}) do |f|%>
                         <div class="mb-4 ms-1">

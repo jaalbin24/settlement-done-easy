@@ -108,6 +108,30 @@ class StripeController < ApplicationController
         end
         puts event
         case event.type
+        when "setup_intent.succeeded"
+            setup_intent = event.data.object
+
+            # The user who started the setupIntent should have been stored in the metadata.
+            added_by = User.find_by(public_id: setup_intent.metadata.added_by)
+            # But if that user is not found, the organization corresponding to the account id will be listed as the one who added the bank account.
+            added_by = User.joins(:stripe_account).where(stripe_account: {stripe_id: event.account}).distinct.first if added_by.nil?
+            
+            payment_method = Stripe::PaymentMethod.retrieve(
+                setup_intent.payment_method,
+                {stripe_account: event.account}
+            )
+            bank_account = added_by.payment_methods.build(
+                type: "BankAccount",
+                stripe_id: payment_method.id,
+                last4: payment_method.us_bank_account.last4,
+                status: setup_intent.status,
+                bank_name: payment_method.us_bank_account.bank_name,
+            )
+            if bank_account.save!
+                head 200
+            else
+                # Send yourself an email
+            end
         when "account.updated"
             remote_stripe_account = event.data.object
             local_stripe_account = StripeAccount.find_by(stripe_id: event.account)
