@@ -61,6 +61,6 @@ class PaymentMethod < ApplicationRecord
     private
 
     def default_nickname
-        "#{bank_name.blank? ? sentence_case(type) : bank_name} #{last4.blank? ? "****" : "****#{last4}"}"
+        "#{bank_name.blank? ? sentence_case(type.blank? ? "Payment method" : type) : bank_name} #{last4.blank? ? "****" : "****#{last4}"}"
     end
 end

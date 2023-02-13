@@ -72,7 +72,7 @@ module EnglishLanguage
     end
 
     # Converts strings from CamelCase or snake_case to Sentence case
-    def sentence_case(string)
+    def sentence_case(str)
         str = str.gsub(/([A-Z]+)([A-Z][a-z])/, '\1 \2')
         str = str.gsub(/([a-z\d])([A-Z])/, '\1 \2')
         str.gsub(/_/, ' ').split.map(&:capitalize).join(' ')
