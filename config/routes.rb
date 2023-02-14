@@ -107,5 +107,6 @@ Rails.application.routes.draw do
 
   get 'card/new/secret',                              to: 'cards#secret',                             as: 'new_card_secret'
   get 'bank_account/new/secret',                      to: 'bank_accounts#secret',                     as: 'new_bank_account_secret'
+  get 'bank_account/new/after',                       to: 'bank_accounts#after_create',               as: 'bank_account_after_create'
 
 end

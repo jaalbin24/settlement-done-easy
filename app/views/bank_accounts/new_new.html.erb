@@ -1,8 +1,8 @@
 <div class="row w-100 m-0">
     <div class="col">
         <div class="h-100 d-grid justify-content-center align-items-center">
-            <div>
-                <div class="bg-secondary rounded-circle px-5 py-4">
+            <div class="d-grid justify-content-center align-items-center">
+                <div class="bg-secondary rounded-circle flex-shrink-1 px-5 py-2">
                     <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
                 </div>
                 <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
@@ -15,7 +15,7 @@
                 <div class="ms-1">
                     <h1 class="">Add a Bank Account</h1>
                 </div>
-                <div id="bank_account_form" class="my-4" data-secret-path="<%=new_bank_account_secret_path%>" data-continue-url="<%=path_to_url(@continue_path.blank? ? root_path : @continue_path)%>">
+                <div id="bank_account_form" class="my-4" data-secret-path="<%=new_bank_account_secret_path%>">
                     <h3 class="placeholder-glow">
                         <span class="placeholder col-6"></span>
                     </h3>

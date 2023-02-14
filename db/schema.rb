@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   create_table "payment_methods", force: :cascade do |t|
     t.string "public_id"
     t.string "type"
+    t.boolean "default"
     t.string "stripe_id"
     t.integer "last4", limit: 2
     t.string "nickname"

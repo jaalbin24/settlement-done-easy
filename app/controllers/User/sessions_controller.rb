@@ -6,7 +6,10 @@ class User::SessionsController < Devise::SessionsController
     # GET /resource/sign_in
     def new
         # This unless block is here because free-use accounts should not be advertised when they do not exist.
-        flash[:info] = {
+        self.resource = resource_class.new(sign_in_params)
+        clean_up_passwords(resource)
+        yield resource if block_given?
+        flash.now[:info] = {
             heading: "You can use these login credentials.",
             message: '
             <p class="m-0">Settlement Done Easy is currently unfinished. Until it is complete, the following emails will be available for anyone wanting to explore the site.</p>
@@ -27,9 +30,6 @@ class User::SessionsController < Devise::SessionsController
             <p class="m-0">All passwords are \'<span class="fw-bold">password123</span>\'</p>
             '
         } if User.where(email: "attorney0@example.com").count != 0
-        self.resource = resource_class.new(sign_in_params)
-        clean_up_passwords(resource)
-        yield resource if block_given?
         respond_with(resource, serialize_options(resource))
     end
 

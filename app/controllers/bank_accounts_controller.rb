@@ -8,10 +8,7 @@ class BankAccountsController < ApplicationController
         elsif session[:bank_account_setup_intent_id]
             # If there is a setup intent id stored in the session, retrieve that to make sure it can still be used to collect
             # bank account info.
-            setup_intent = Stripe::SetupIntent.retrieve(
-                session[:bank_account_setup_intent_id],
-                {stripe_account: current_user.to_organization.stripe_account.stripe_id}
-            )
+            setup_intent = retrieve_setup_intent(session[:bank_account_setup_intent_id])
             # Make sure setup intent is still able to collect bank account info.
             if setup_intent.status.in?(["processing", "canceled", "succeeded"])
                 setup_intent = create_setup_intent
@@ -22,41 +19,22 @@ class BankAccountsController < ApplicationController
         session[:bank_account_setup_intent_id] = setup_intent.id
 
         render json: {
-            secret: setup_intent.client_secret, 
-            stripe_account: current_user.to_organization.stripe_account.stripe_id
+            secret: setup_intent.client_secret,
+            stripe_account: current_user.to_organization.stripe_account.stripe_id,
+            continue_url: bank_account_after_create_url,
         }
     end
 
     
     def new
+        @continue_path ||= bank_account_after_create_path()
         render :new_new
     end
 
-    def create
-        begin
-            external_account = Stripe::Account.create_external_account(
-                current_user.stripe_account.stripe_id,
-                {external_account: allowed_params[:token]}
-            )
-            payment_method = current_user.payment_methods.create!(
-                stripe_id: external_account.id,
-                type: external_account.object.camelize,
-                bank_name: external_account.bank_name,
-                country: external_account.country,
-                currency: external_account.currency,
-                last4: external_account.last4,
-                status: external_account.status
-            )
-            flash[:info] = {
-                heading: "New #{payment_method.type.underscore.gsub("_"," ")} added",
-                message: "Your #{payment_method.type.underscore.gsub("_"," ")} was added, but it is not yet verified. Two amounts less than $1 were deposited into your new account. Enter those amounts to verify your account."
-            }
-        rescue => e
-            
-        end
+    def after_create
+        flash[:primary] = FlashMessages::BankAccountMessage.for(params[:redirect_status])
 
-        @continue_path = root_path if @continue_path.blank?
-        redirect_to @continue_path
+        redirect_to user_profile_show_path(current_user.profile, section: "bank_accounts")
     end
 
     private
@@ -80,6 +58,13 @@ class BankAccountsController < ApplicationController
                     added_by: current_user.public_id,
                 },
             },
+            {stripe_account: current_user.to_organization.stripe_account.stripe_id}
+        )
+    end
+
+    def retrieve_setup_intent(id)
+        Stripe::SetupIntent.retrieve(
+            id,
             {stripe_account: current_user.to_organization.stripe_account.stripe_id}
         )
     end

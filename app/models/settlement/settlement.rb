@@ -434,9 +434,9 @@ class Settlement < ApplicationRecord
         elsif documents.unsigned.needs_signature.exists? # If settlement has unsigned documents that should be signed
             puts "🅱️🅱️🅱️🅱️🅱️🅱️> 4"
             self.ready_for_payment = false
-        elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
-            puts "🅱️🅱️🅱️🅱️🅱️🅱️> 5"
-            self.ready_for_payment = false
+        # elsif !payments.not_sent.exists? # If settlement does not have a payment model ready to execute payment
+        #     puts "🅱️🅱️🅱️🅱️🅱️🅱️> 5"
+        #     self.ready_for_payment = false
         elsif !documents.first.persisted? # This check was placed here so that ready_for_payment is still false when the last document is deleted as a part of a rejection review
             puts "🅱️🅱️🅱️🅱️🅱️🅱️> 6"
             self.ready_for_payment = false

@@ -64,7 +64,7 @@ class CardsController < ApplicationController
                 redirect_to allowed_params[:continue_path]
             end
         rescue Stripe::InvalidRequestError => e
-            flash[:danger] = ErrorHandler::FlashMessage.for(e)
+            flash[:danger] = FlashMessages::ErrorMessage.for(e)
             redirect_to card_new_path(continue_path: allowed_params[:continue_path])
         end
         

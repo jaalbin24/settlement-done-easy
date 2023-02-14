@@ -2,9 +2,8 @@ class CreatePaymentMethods < ActiveRecord::Migration[6.1]
   def change
     create_table :payment_methods do |t|
       t.string      :public_id
-
       t.string      :type
-
+      t.boolean     :default
       t.string      :stripe_id 
       # ba_ for bank accounts
       # card_ for debit cards

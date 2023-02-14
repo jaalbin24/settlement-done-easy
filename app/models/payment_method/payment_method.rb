@@ -6,6 +6,7 @@
 #  bank_name   :string
 #  country     :string
 #  currency    :string
+#  default     :boolean
 #  exp_month   :integer
 #  exp_year    :integer
 #  last4       :integer
@@ -50,10 +51,10 @@ class PaymentMethod < ApplicationRecord
     )
     accepts_nested_attributes_for :billing_address
 
-
-
+    
     before_create do
         self.nickname = default_nickname
+        self.default = true if added_by.payment_methods.where(default: true).count == 0
     end
 
 

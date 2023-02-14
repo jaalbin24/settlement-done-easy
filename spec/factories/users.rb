@@ -126,7 +126,6 @@ FactoryBot.define do
             role {"Law Firm"}
             after(:create) do |u, e|
                 puts "🤖🤖🤖 law_firm after(:create) block"
-                u.bank_accounts = create_list(:bank_account_for_law_firm, e.num_bank_accounts, user: u)  if u.bank_accounts.empty? && e.num_bank_accounts > 0
                 u.members = create_list(:attorney, e.num_members, organization: u)                       if u.members.empty? && e.num_members > 0
                 u.touch
             end
@@ -153,6 +152,11 @@ FactoryBot.define do
                     end
                 end
                 u.profile = build(:user_profile_for_law_firm, user: u) if u.profile.nil?
+                u.payment_methods = build_list(
+                    :payment_method,
+                    1,
+                    type: "BankAccount"
+                )
             end
         end
 
@@ -160,7 +164,6 @@ FactoryBot.define do
             role {"Insurance Company"}
             after(:create) do |u, e|
                 puts "🤖🤖🤖 insurance_company after(:create) block"
-                u.bank_accounts = create_list(:bank_account_for_insurance_company, e.num_bank_accounts, user: u) if u.bank_accounts.empty? && e.num_bank_accounts > 0
                 u.members = create_list(:adjuster, e.num_members, organization: u)                               if u.members.empty? && e.num_members > 0
                 u.touch
             end
@@ -187,6 +190,11 @@ FactoryBot.define do
                     end
                 end
                 u.profile = build(:user_profile_for_insurance_company, user: u) if u.profile.nil?
+                u.payment_methods = build_list(
+                    :payment_method,
+                    1,
+                    type: "BankAccount"
+                )
             end
         end
         

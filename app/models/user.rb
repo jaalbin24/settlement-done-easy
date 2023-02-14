@@ -274,7 +274,7 @@ class User < ApplicationRecord
             return
         end
         if stripe_account_onboarded? &&
-            has_payment_method? &&
+            has_bank_account? &&
             two_factor_authentication_enabled? &&
             email_verified? &&
             has_member_account?
@@ -284,7 +284,7 @@ class User < ApplicationRecord
         self.activated = false
         if !stripe_account_onboarded?
             puts "❌❌❌ Account for #{business_name} not activated because stripe account is not onboarded!"
-        elsif !has_payment_method?
+        elsif !has_bank_account?
             puts "❌❌❌ Account for #{business_name} not activated because there is no bank account!"
         elsif !two_factor_authentication_enabled? 
             puts "❌❌❌ Account for #{business_name} not activated because MFA is not enabled!"
@@ -351,8 +351,8 @@ class User < ApplicationRecord
         return isAdjuster? || isInsuranceCompany?
     end
 
-    def has_payment_method?
-        return !payment_methods.empty?
+    def has_bank_account?
+        return !bank_accounts.empty?
     end
 
     def two_factor_authentication_enabled?

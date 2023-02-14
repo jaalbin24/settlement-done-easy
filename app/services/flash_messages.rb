@@ -1,6 +1,5 @@
-module ErrorHandler
-
-    module FlashMessage
+module FlashMessages
+    module ErrorMessage
         def self.for(e)
             case e.class.name
             when 'Stripe::InvalidRequestError'
@@ -29,4 +28,27 @@ module ErrorHandler
         end
     end
 
+    module BankAccountMessage
+        def self.for(status, options={})
+            case status.to_sym
+            when :succeeded
+                "Your bank account was successfully added."
+            when :canceled
+                "No bank account was added."
+            when :processing
+                {
+                    heading: "Your bank account is being verified.",
+                    message: "Your bank account is being verified. After verification is complete, it will appear in the Bank Accounts tab on your home page."
+                }
+            when :requires_action
+                "requires_action"
+            when :requires_confirmation
+                "requires_confirmation"
+            when :requires_payment_method
+                "requires_payment_method"
+            else
+                raise StandardError.new "Unhandled status code: #{status}"
+            end
+        end
+    end
 end

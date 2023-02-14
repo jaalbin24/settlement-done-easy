@@ -6,6 +6,7 @@
 #  bank_name   :string
 #  country     :string
 #  currency    :string
+#  default     :boolean
 #  exp_month   :integer
 #  exp_year    :integer
 #  last4       :integer

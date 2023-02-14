@@ -40,7 +40,7 @@ class UserProfileController < ApplicationController
         if @owner.isOrganization? && current_user == @owner 
             @activation_progress = 0
             @activation_progress += 1 if @owner.stripe_account_onboarded?
-            @activation_progress += 1 if @owner.has_payment_method?
+            @activation_progress += 1 if @owner.has_bank_account?
             @activation_progress += 1 if @owner.has_member_account?
             @activation_progress += 1 if @owner.two_factor_authentication_enabled?
             @activation_progress += 1 if @owner.email_verified?

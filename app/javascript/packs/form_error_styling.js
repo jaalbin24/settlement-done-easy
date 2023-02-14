@@ -23,7 +23,7 @@ export default class FormErrorStyling {
                     // Iterate through all inputs in the FORM
                     let formHasErrors = false;
                     for (const inputField of inputFields) {
-                        if (inputField.required && inputField.value == "") { // If a required field is blank
+                        if (inputField.required && inputField.value === "") { // If a required field is blank
                             FormErrorStyling.styleInputAsInvalid(inputField, "Cannot be blank");
                             formHasErrors = true;
                         } else if (inputField.type == "email") {
@@ -144,14 +144,15 @@ export default class FormErrorStyling {
         }
     }
 
-    static removeErrorFromInput(inputElement) {
-        Array.from(inputElement.parentElement.parentElement.querySelectorAll("div.invalid-feedback")).forEach(el => el.remove());
+    static async removeErrorFromInput(inputElement) {
+        await Array.from(inputElement.parentElement.parentElement.querySelectorAll("div.invalid-feedback")).forEach(el => el.remove());
         inputElement.classList.remove("is-invalid");
         inputElement.style.color = "";
     }
 
-    static styleInputAsInvalid(inputElement, message) {
-        FormErrorStyling.removeErrorFromInput(inputElement);
+    static async styleInputAsInvalid(inputElement, message) {
+        console.log(`Styling ${inputElement.name}: 1, message=${message}`);
+        await FormErrorStyling.removeErrorFromInput(inputElement);
         inputElement.classList.add("is-invalid");
         inputElement.style.color = "#da292e";
         let errorMessageElement = document.createElement("div");
@@ -162,8 +163,10 @@ export default class FormErrorStyling {
         let grandparent = parent.parentElement;
 
         if (Array.from(parent.classList).includes("form-group")) {
+            console.log(`Styling ${inputElement.name}: 2`);
             parent.appendChild(errorMessageElement);
         } else if (Array.from(grandparent.classList).includes("form-group")) {
+            console.log(`Styling ${inputElement.name}: 3`);
             grandparent.appendChild(errorMessageElement);
         }
         errorMessageElement.style.display = "block";

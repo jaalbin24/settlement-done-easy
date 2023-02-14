@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <div class="form-floating mb-3">
-                            <%= f.telephone_field :phone_number, autofocus: true, autocomplete: "phone-number", class: "form-control", placeholder: current_user.phone_number, value: "", required: true%>
+                            <%= f.telephone_field :phone_number, autofocus: true, autocomplete: "phone-number", class: "form-control", placeholder: current_user.phone_number.blank? ? "Phone number": current_user.phone_number, value: "", required: true%>
                             <label for="user_phone_number">New phone number</label>
                         </div>
                     </div>

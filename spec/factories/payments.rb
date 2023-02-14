@@ -31,8 +31,6 @@
 #
 FactoryBot.define do
     factory :payment, class: "Payment" do
-        association :source, factory: :bank_account_for_insurance_company
-        association :destination, factory: :bank_account_for_law_firm
         association :settlement
         amount {}
         status {"Not sent"}
@@ -49,8 +47,6 @@ FactoryBot.define do
                 p.settlement.touch
             end
             puts "========> PAYMENT created!\n"+
-                "========> source: #{p.source.user.name}\n"+
-                "========> destination: #{p.destination.user.name}\n"+
                 "========> p.to_json: #{p.to_json}\n"+
                 "========> p.settlement.to_json: #{p.settlement.to_json}\n"+
                 "========> p.settlement.payments.size: #{p.settlement.payments.size}\n"+
@@ -72,8 +68,6 @@ FactoryBot.define do
             after(:create) do |p, e|
                 puts "🤖🤖🤖 payment:from_the_ground_up after(:create) block"
                 # Ensure this payment model is the only one attached to the settlement
-                destination = p.settlement.attorney.organization.default_payment_method
-                source = p.settlement.adjuster.organization.default_payment_method
                 p.settlement.payments.excluding(p).each do |destroy_me|
                     destroy_me.destroy!
                 end
@@ -92,15 +86,7 @@ FactoryBot.define do
                 @adjuster = select_random_adjuster_or_create_one_if_none_exist
                 p.settlement = build(:settlement, attorney: @attorney, adjuster: @adjuster) 
             end
-            if e.source.nil?
-                p.source = build(:bank_account_for_insurance_company, user: @attorney.organization)
-            end
-            if e.destination.nil?
-                p.destination = build(:bank_account_for_law_firm, user: @attorney.organization)
-            end
             puts "========> PAYMENT before building!\n"+
-            "========> source: #{p.source.user.name}\n"+
-            "========> destination: #{p.destination.user.name}\n"+
             "========> p.to_json: #{p.to_json}\n"+
             "========> p.settlement.to_json: #{p.settlement.to_json}\n"+
             "========> p.settlement.payments.size: #{p.settlement.payments.size}\n"+
@@ -114,15 +100,6 @@ FactoryBot.define do
             after(:create) do |p, e|
                 puts "🤖🤖🤖 payment:processing after(:create) block"
                 # Ensure this payment model is the only one attached to the settlement
-                destination = p.settlement.attorney.organization.default_payment_method
-                source = p.settlement.adjuster.organization.default_payment_method
-                atties = p.attributes
-                atties[:source] = source
-                atties[:destination] = destination
-                p.settlement.payments.without(p).each do |p|
-                    p.destroy!
-                end
-                p.settlement.touch # Touch the settlement to make self-correcting callbacks run
             end
         end
 
@@ -134,15 +111,6 @@ FactoryBot.define do
             after(:create) do |p, e|
                 puts "🤖🤖🤖 payment:completed after(:create) block"
                 # Ensure this payment model is the only one attached to the settlement
-                destination = p.settlement.attorney.organization.default_payment_method
-                source = p.settlement.adjuster.organization.default_payment_method
-                atties = p.attributes
-                atties[:source] = source
-                atties[:destination] = destination
-                p.settlement.payments.without(p).each do |p|
-                    p.destroy!
-                end
-                p.settlement.touch # Touch the settlement to make self-correcting callbacks run
             end
         end
 
