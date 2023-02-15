@@ -95,6 +95,14 @@ class User < ApplicationRecord
         end
     end
 
+    has_many(
+        :setup_intents,
+        class_name: "StripeSetupIntent",
+        foreign_key: :created_by_id,
+        inverse_of: :created_by,
+        dependent: :destroy
+    )
+
     has_one(
         :profile,
         class_name: "UserProfile",
@@ -106,7 +114,7 @@ class User < ApplicationRecord
     has_many(
         :documents,
         class_name: "Document",
-        foreign_key: "added_by_id",
+        foreign_key: :added_by_id,
         inverse_of: :added_by,
         dependent: :nullify
     )
@@ -120,7 +128,7 @@ class User < ApplicationRecord
     has_many(
         :a_settlements,
         class_name: 'Settlement',
-        foreign_key: 'attorney_id',
+        foreign_key: :attorney_id,
         inverse_of: :attorney,
         dependent: :destroy
     )
@@ -128,7 +136,7 @@ class User < ApplicationRecord
     has_many(
         :ia_settlements,
         class_name: 'Settlement',
-        foreign_key: 'adjuster_id',
+        foreign_key: :adjuster_id,
         inverse_of: :adjuster,
         dependent: :destroy
     )
@@ -148,7 +156,7 @@ class User < ApplicationRecord
     belongs_to(
         :organization,
         class_name: "User",
-        foreign_key: "organization_id",
+        foreign_key: :organization_id,
         inverse_of: :members,
         optional: true
     )
@@ -156,7 +164,7 @@ class User < ApplicationRecord
     has_many(
         :members,
         class_name: "User",
-        foreign_key: "organization_id",
+        foreign_key: :organization_id,
         inverse_of: :organization,
         dependent: :destroy
     )
@@ -165,7 +173,7 @@ class User < ApplicationRecord
     has_many(
         :payment_requests,
         class_name: "PaymentRequest",
-        foreign_key: "requester_id",
+        foreign_key: :requester_id,
         inverse_of: :requester,
         dependent: :destroy
     )
@@ -173,7 +181,7 @@ class User < ApplicationRecord
     has_many(
         :document_reviews,
         class_name: "DocumentReview",
-        foreign_key: "reviewer_id",
+        foreign_key: :reviewer_id,
         inverse_of: :reviewer,
         dependent: :destroy
     )
@@ -181,7 +189,7 @@ class User < ApplicationRecord
     has_one(
         :stripe_account,
         class_name: "StripeAccount",
-        foreign_key: "user_id",
+        foreign_key: :user_id,
         inverse_of: :user,
         dependent: :destroy
     )
@@ -189,7 +197,7 @@ class User < ApplicationRecord
     has_many(
         :notifications,
         class_name: "Notification",
-        foreign_key: "user_id",
+        foreign_key: :user_id,
         inverse_of: :user,
         dependent: :destroy
     )
@@ -197,7 +205,7 @@ class User < ApplicationRecord
     has_one(
         :settings,
         class_name: "UserSettings",
-        foreign_key: "user_id",
+        foreign_key: :user_id,
         inverse_of: :user,
         dependent: :destroy
     )

@@ -1,0 +1,40 @@
+<div class="row w-100 m-0">
+    <div class="col">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div class="d-grid justify-content-center align-items-center">
+                <div class="bg-secondary rounded-circle flex-shrink-1 px-5 py-2">
+                    <%=image_tag "sde_cube_logo_blue_large.png", height: "400rem"%>
+                </div>
+                <h2 class="text-center text-primary mt-3"><strong>Settlement Done Easy</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col bg-light">
+        <div class="h-100 d-grid justify-content-center align-items-center">
+            <div style="min-width: 32rem;">
+                <div class="ms-1">
+                    <h1 class="m-0"><%=@title%></h1>
+                </div>
+                <div>
+                    <p class="m-0">
+                        You will be redirected in <span class="fw-bold" id="redirect_countdown">5</span> seconds.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let countdownEl = document.querySelector("#redirect_countdown");
+    async function redirectCountdown() {
+        for(let i = 5; i >= 0; i--) {
+            if (i === 0) {
+                document.location.href = '<%=user_profile_show_path(current_user.profile, section: "bank_accounts")%>';
+            }
+            countdownEl.innerHTML = i;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+    redirectCountdown();
+</script>

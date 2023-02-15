@@ -33,6 +33,8 @@ module GeneratePublicId
             id_prefix = "sreq"
         when "StripeAccount"
             id_prefix = "sacc"
+        when "StripeSetupIntent"
+            id_prefix = "sint"
         when "UserProfile"
             id_prefix = "upro"
         when "UserProfileSettings"

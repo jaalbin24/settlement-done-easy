@@ -2,39 +2,42 @@ class BankAccountsController < ApplicationController
     before_action :authenticate_user!
 
     def secret
-        if session[:bank_account_setup_intent_id].blank?
-            # If there is no setup intent id stored in the session, we will have to create a new SetupIntent by calling the Stripe API.
-            setup_intent = create_setup_intent
-        elsif session[:bank_account_setup_intent_id]
-            # If there is a setup intent id stored in the session, retrieve that to make sure it can still be used to collect
-            # bank account info.
-            setup_intent = retrieve_setup_intent(session[:bank_account_setup_intent_id])
-            # Make sure setup intent is still able to collect bank account info.
-            if setup_intent.status.in?(["processing", "canceled", "succeeded"])
-                setup_intent = create_setup_intent
-            end
+        local_setup_intent = current_user.setup_intents.for(:bank_account).needs_action.first
+        if local_setup_intent.nil?
+            remote_setup_intent = create_setup_intent
+            local_setup_intent = current_user.setup_intents.create!(
+                payment_method_type:    "BankAccount",
+                stripe_id:              remote_setup_intent.id,
+                client_secret:          remote_setup_intent.client_secret,
+                status:                 remote_setup_intent.status,
+                stripe_account_id:      current_user.to_organization.stripe_account.stripe_id
+            )
         end
 
-        # Store the secret in the session whether it's already there or not.
-        session[:bank_account_setup_intent_id] = setup_intent.id
-
         render json: {
-            secret: setup_intent.client_secret,
-            stripe_account: current_user.to_organization.stripe_account.stripe_id,
+            secret: local_setup_intent.client_secret,
+            stripe_account: local_setup_intent.stripe_account_id,
             continue_url: bank_account_after_create_url,
         }
     end
 
     
     def new
-        @continue_path ||= bank_account_after_create_path()
         render :new_new
     end
 
     def after_create
-        flash[:primary] = FlashMessages::BankAccountMessage.for(params[:redirect_status])
-
-        redirect_to user_profile_show_path(current_user.profile, section: "bank_accounts")
+        #flash[:primary] = FlashMessages::BankAccountMessage.for(params[:redirect_status])
+        case params[:redirect_status].to_sym
+        when :succeeded
+            @title = "Your bank account was added successfully!"
+            @body = "You will be redirected to the bank accounts section in 5 seconds."
+        end
+        render :after_create
+        setup_intent = StripeSetupIntent.find_by(stripe_id: params[:setup_intent])
+        setup_intent.update(
+            status: params[:redirect_status],
+        )
     end
 
     private

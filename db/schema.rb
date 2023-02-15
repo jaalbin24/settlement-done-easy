@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_02_161640) do
+ActiveRecord::Schema.define(version: 201) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -262,6 +262,21 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "stripe_setup_intents", force: :cascade do |t|
+    t.string "public_id"
+    t.string "payment_method_type"
+    t.bigint "payment_method_id"
+    t.bigint "created_by_id"
+    t.string "stripe_id"
+    t.string "stripe_account_id"
+    t.string "client_secret"
+    t.string "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by_id"], name: "index_stripe_setup_intents_on_created_by_id"
+    t.index ["payment_method_id"], name: "index_stripe_setup_intents_on_payment_method_id"
+  end
+
   create_table "user_profile_settings", force: :cascade do |t|
     t.string "public_id"
     t.boolean "show_tax_id_to_public"
@@ -389,6 +404,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_161640) do
   add_foreign_key "settlements", "users", column: "started_by_id"
   add_foreign_key "stripe_account_requirements", "stripe_accounts"
   add_foreign_key "stripe_accounts", "users"
+  add_foreign_key "stripe_setup_intents", "payment_methods"
+  add_foreign_key "stripe_setup_intents", "users", column: "created_by_id"
   add_foreign_key "user_profile_settings", "user_settings", column: "user_settings_id"
   add_foreign_key "user_profiles", "addresses"
   add_foreign_key "user_profiles", "users"

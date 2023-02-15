@@ -57,11 +57,18 @@ class PaymentMethod < ApplicationRecord
         self.default = true if added_by.payment_methods.where(default: true).count == 0
     end
 
-
-
     private
 
     def default_nickname
-        "#{bank_name.blank? ? sentence_case(type.blank? ? "Payment method" : type) : bank_name} #{last4.blank? ? "****" : "****#{last4}"}"
+        name = bank_name.blank? ? "New #{sentence_case(type.blank? ? "payment method" : type).downcase}" : bank_name
+        title = last4.blank? ? nil : "****#{last4}"
+        base_nickname = [name, title].reject(&:blank?).join(" ")
+        final_nickname = base_nickname
+        all_nicknames = added_by.payment_methods.pluck(:nickname)
+        i = 0
+        while final_nickname.in?(all_nicknames)
+            final_nickname = [base_nickname, "(#{i += 1})"].join(" ")
+        end
+        final_nickname
     end
 end
