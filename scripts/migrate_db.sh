@@ -1,2 +1,2 @@
 #!/bin/bash
-rails db:migrate:reset
+bundle exec rails db:migrate:reset
