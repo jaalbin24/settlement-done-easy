@@ -1,2 +1,3 @@
 #!/bin/bash
-bundle exec rails db:migrate:reset
+echo "Running >>>>>>>>>>>>>>>>>>>>>>>> scripts/migrate_db.sh <<<<<<<<<<<<<<<<<<<<<<<<"
+bundle exec rails db:migrate:reset db:seed

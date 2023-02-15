@@ -31,7 +31,9 @@
 #  fk_rails_...  (address_id => addresses.id)
 #
 class PaymentMethod < ApplicationRecord
+    require 'english_language'
     include EnglishLanguage # for the sentence_case method
+    
     self.inheritance_column = 'type'
 
     scope :bank_accounts,           ->  {where(type: "BankAccount")}
