@@ -26,10 +26,9 @@ gem 'webpacker', '~> 5.0'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
-# group :production do
-#   # Use Redis adapter to run Action Cable in production
-#   gem 'redis', '< 5'
-# end
+group :production do
+  gem 'aws-sdk-s3'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

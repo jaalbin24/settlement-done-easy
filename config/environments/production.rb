@@ -43,15 +43,15 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  config.active_storage.service = :amazon
 
   # Mount Action Cable outside main process or domain.
   config.action_cable.mount_path = "/cable"
   config.action_cable.url = 'https://settlementdoneeasy.com/cable'
-  config.action_cable.allowed_request_origins = [ 'http://settlement-done-easy.herokuapp.com', 'https://settlement-done-easy.herokuapp.com', 'http://settlementdoneeasy.com', 'https://settlementdoneeasy.com']
+  config.action_cable.allowed_request_origins = ['https://settlementdoneeasy.com']
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   config.logger = Logger.new(STDOUT)
   
