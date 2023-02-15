@@ -71,6 +71,22 @@ GEM
       timers (~> 4.1)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
+    aws-eventstream (1.2.0)
+    aws-partitions (1.711.0)
+    aws-sdk-core (3.170.0)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.651.0)
+      aws-sigv4 (~> 1.5)
+      jmespath (~> 1, >= 1.6.1)
+    aws-sdk-kms (1.62.0)
+      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.119.1)
+      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.4)
+    aws-sigv4 (1.5.2)
+      aws-eventstream (~> 1, >= 1.0.2)
     bcrypt (3.1.18)
     bindex (0.8.1)
     bootsnap (1.13.0)
@@ -132,6 +148,7 @@ GEM
     humanize (2.5.1)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    jmespath (1.6.2)
     json (2.6.2)
     jwt (2.5.0)
     listen (3.7.1)
@@ -294,6 +311,7 @@ PLATFORMS
 DEPENDENCIES
   annotate
   async
+  aws-sdk-s3
   bootsnap (>= 1.4.4)
   bootstrap
   bootswatch-rails
