@@ -28,7 +28,18 @@
                             <%@bank_accounts.each do |pm|%>
                                 <tr>
                                     <td class="border-bottom-0 text-center"><i class="h6 fa-solid fa-<%=pm.type == "BankAccount" ? 'building-columns' : 'credit-card'%> m-0"></i></td>
-                                    <td class="border-bottom-0"><%=pm.nickname.blank? ? "None" : pm.nickname%></td>
+                                    <td class="border-bottom-0">
+                                        <div id="bank_account_<%=pm.id%>_nickname"><%=pm.nickname.blank? ? "None" : pm.nickname%></div>
+                                        <%=form_for pm, url: bank_account_update_path(pm), html: {style: "display: none;"} do |f|%>
+                                            <div class="form-group">
+                                                <div class="input-group input-group-sm">
+                                                    <%=f.text_field :nickname, class: "form-control form-control-sm", placeholder: :nickname%>
+                                                    <button id="cancel_rename_<%=pm.id%>_button" type="button" class="btn btn-secondary">Cancel</button>
+                                                    <%=f.submit "Save", class: "btn btn-primary"%>
+                                                </div>
+                                            </div>
+                                        <%end%>
+                                    </td>
                                     <td class="border-bottom-0"><%=pm.last4.blank? ? "Unknown" : pm.last4%></td>
                                     <td class="border-bottom-0"><%=pm.created_at.strftime("%B %-d, %Y")%></td>
                                     <td class="border-bottom-0">
@@ -38,13 +49,23 @@
                                     <td class="border-bottom-0">
                                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis h6 m-0"></i></a>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#">Rename</a>
+                                            <button class="dropdown-item" id="rename_<%=pm.id%>_button" href="#">Rename</button>
                                             <a class="dropdown-item" href="#">Make default</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Delete</a>
                                         </div>
                                     </td>
                                 </tr>
+                                <script>
+                                    document.querySelector("#cancel_rename_<%=pm.id%>_button").addEventListener("click", () => {
+                                        document.querySelector("#bank_account_<%=pm.id%>_nickname").style.display = "block";
+                                        document.querySelector("#edit_bank_account_<%=pm.id%>").style.display = "none";
+                                    });
+                                    document.querySelector("#rename_<%=pm.id%>_button").addEventListener("click", () => {
+                                        document.querySelector("#bank_account_<%=pm.id%>_nickname").style.display = "none";
+                                        document.querySelector("#edit_bank_account_<%=pm.id%>").style.display = "block";
+                                    });
+                                </script>
                             <%end%>
                         </tbody>
                     </table>

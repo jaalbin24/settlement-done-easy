@@ -40,15 +40,18 @@ class BankAccountsController < ApplicationController
         )
     end
 
+    def update
+        bank_account = BankAccount.find_by(public_id: params[:public_id])
+        bank_account.update(allowed_params)
+        flash[:primary] = "Updated!"
+        redirect_to root_path
+    end
+
     private
 
     def allowed_params
-        params.permit(
-            :token,
-            :authenticity_token,
-            :continue_path,
-            :country,
-            :zip_code
+        params.require(:bank_account).permit(
+            :nickname
         )
     end
 
