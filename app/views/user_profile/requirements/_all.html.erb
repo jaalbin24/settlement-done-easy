@@ -25,7 +25,7 @@
             </a>
         </div>
         <div class="card" id="add_ba_checklist_item" style="<%=@owner.has_bank_account? ? "opacity: 50%;": ""%>">
-            <a class="card-body list-group-item-action text-decoration-none d-flex align-items-center justify-content-between" href="">
+            <a class="card-body list-group-item-action text-decoration-none d-flex align-items-center justify-content-between" href="<%=bank_account_new_path(continue_path: user_profile_show_path(section: :requirements))%>">
                 <div class="d-flex gap-4 align-items-center">
                     <%if @owner.has_bank_account?%>
                         <%=checkbox_icon(checked: true, color: :green, size: :h1, solid: true)%>
@@ -48,7 +48,7 @@
             </a>
         </div>
         <div class="card" id="add_member_checklist_item" style="<%=@owner.has_member_account? ? "opacity: 50%;": ""%>">
-            <a class="card-body list-group-item-action text-decoration-none d-flex align-items-center justify-content-between" href="">
+            <a class="card-body list-group-item-action text-decoration-none d-flex align-items-center justify-content-between" href="<%=member_new_path%>">
                 <div class="d-flex gap-4 align-items-center">
                     <%if @owner.has_member_account?%>
                         <%=checkbox_icon(checked: true, color: :green, size: :h1, solid: true)%>

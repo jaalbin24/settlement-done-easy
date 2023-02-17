@@ -104,9 +104,10 @@ Rails.application.routes.draw do
   get 'payment_method/new/card',                      to: 'cards#new',                                as: 'card_new'
   post 'payment_method/card',                         to: 'cards#create',                             as: 'card_create'
 
-  patch 'bank_accounts/:public_id',                     to: 'bank_accounts#update',                     as: 'bank_account_update'
+  patch 'bank_accounts/:public_id',                   to: 'bank_accounts#update',                     as: 'bank_account_update'
   get 'card/new/secret',                              to: 'cards#secret',                             as: 'new_card_secret'
   get 'bank_account/new/secret',                      to: 'bank_accounts#secret',                     as: 'new_bank_account_secret'
   get 'bank_account/new/after',                       to: 'bank_accounts#after_create',               as: 'bank_account_after_create'
+  delete 'bank_account/:public_id',                   to: 'bank_accounts#delete',                     as: 'bank_account_delete'
 
 end

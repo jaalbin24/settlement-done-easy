@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         stripe.confirmSetup({
             elements,
             confirmParams: {
-                return_url: response.continue_url,
+                return_url: bankAccountSubmitButton.getAttribute("data-return-url"),
             },
         }).then((result) => {
             if (result.error) {

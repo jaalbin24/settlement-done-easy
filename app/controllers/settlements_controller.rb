@@ -93,6 +93,7 @@ class SettlementsController < ApplicationController
                 @visitor = @settlement.adjuster
                 @partner = @settlement.attorney
             end
+            @bank_accounts = @visitor.bank_accounts
         rescue => e
             puts "⚠️⚠️⚠️ ERROR: #{e.message}"
             handle_invalid_request

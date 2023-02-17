@@ -30,7 +30,7 @@
     async function redirectCountdown() {
         for(let i = 5; i >= 0; i--) {
             if (i === 0) {
-                document.location.href = '<%=user_profile_show_path(current_user.profile, section: "bank_accounts")%>';
+                document.location.href = '<%=@continue_path.blank? ? user_profile_show_path(current_user.profile, section: "bank_accounts") : @continue_path%>';
             }
             countdownEl.innerHTML = i;
             await new Promise(resolve => setTimeout(resolve, 1000));

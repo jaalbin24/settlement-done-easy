@@ -10,14 +10,22 @@
             <h5 class="m-0 fw-bold">Status: <strong class="text-success">Ready for payment</strong></h5>
             <p class="m-0">Click <a href="">here</a> to send payment.</p>
         </div>
-        <label for="exampleSelect1" class="form-label flex-shrink-0 m-0">Deposit funds into</label>
-        <div class="input-group">
-            <select class="form-select flex-shrink-1" id="exampleSelect1">
-                <%current_user.bank_accounts.each do |ba|%>
-                    <option id="<%=ba.public_id%>" value="<%=ba.public_id%>"><%=ba.nickname%></option>
-                <%end%>
-            </select>
-            <button class="btn btn-sm btn-primary">Save</button>
-        </div>
+        <%if @bank_accounts.count == 0%>
+            <p class="my-auto alert alert-primary">
+                You do not have any bank accounts to <%=current_user.lawful? ? "deposit funds into" : "withdraw funds from"%>. Click 
+                <%=link_to 'here', bank_account_new_path(continue_path: request.path), class: "alert-link", html: {"data-method": "delete"}%> 
+                to add a bank account.
+            </p>
+        <%else%>
+            <label for="exampleSelect1" class="form-label flex-shrink-0 m-0"><%=current_user.lawful? ? "Deposit funds into" : "Withdraw funds from"%></label>
+            <div class="input-group">
+                <select class="form-select flex-shrink-1" id="exampleSelect1">
+                    <%@bank_accounts.each do |ba|%>
+                        <option id="<%=ba.public_id%>" value="<%=ba.public_id%>"><%=ba.nickname%></option>
+                    <%end%>
+                </select>
+                <button class="btn btn-sm btn-primary">Save</button>
+            </div>
+        <%end%>
     </div>
 </div>

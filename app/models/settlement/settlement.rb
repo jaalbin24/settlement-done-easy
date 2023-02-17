@@ -412,13 +412,13 @@ class Settlement < ApplicationRecord
     end
 
     def update_attribute_reviews
-        Settlement.reviewable_attributes.each do |reviewable_attr|
-            if attribute_changed?(reviewable_attr) && !new_record?
-                reformatted_attribute = (reviewable_attribute.to_s + "_approved").to_sym
-                attribute_reviews.by(current_user).write_attribute(reformatted_attribute, true)
-                attribute_reviews.not_by(current_user).write_attribute(reformatted_attribute, false)
-            end
-        end
+        # Settlement.reviewable_attributes.each do |reviewable_attr|
+        #     if attribute_changed?(reviewable_attr) && !new_record?
+        #         reformatted_attribute = (reviewable_attr.to_s + "_approved").to_sym
+        #         attribute_reviews.by(current_user).write_attribute(reformatted_attribute, true)
+        #         attribute_reviews.not_by(current_user).write_attribute(reformatted_attribute, false)
+        #     end
+        # end
     end
 
     def update_ready_for_payment_attribute

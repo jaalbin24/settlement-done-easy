@@ -17,13 +17,11 @@ class BankAccountsController < ApplicationController
         render json: {
             secret: local_setup_intent.client_secret,
             stripe_account: local_setup_intent.stripe_account_id,
-            continue_url: bank_account_after_create_url,
         }
     end
 
-    
     def new
-        render :new_new
+        render :new
     end
 
     def after_create
@@ -43,8 +41,25 @@ class BankAccountsController < ApplicationController
     def update
         bank_account = BankAccount.find_by(public_id: params[:public_id])
         bank_account.update(allowed_params)
-        flash[:primary] = "Updated!"
-        redirect_to root_path
+        flash[:primary] = "Your bank account was updated."
+        redirect_to @continue_path.blank? ? root_path : @continue_path
+    end
+
+    def delete
+        begin
+            bank_account = current_user.bank_accounts.find_by!(public_id: params[:public_id])
+        rescue => e
+            flash[:danger] = FlashMessages::ErrorMessage.for(e)
+            redirect_to @continue_path.blank? ? root_path : @continue_path
+            return
+        end
+
+        if bank_account.destroy
+            flash[:primary] = "Your bank account was deleted."
+        else
+            flash[:danger] = "There was an error deleting your bank account."
+        end
+        redirect_to @continue_path.blank? ? root_path : @continue_path
     end
 
     private

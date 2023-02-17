@@ -4,7 +4,10 @@ module FlashMessages
             case e.class.name
             when 'Stripe::InvalidRequestError'
                 for_stripe_invalid_request_error e
+            when 'ActiveRecord::RecordNotFound'
+                raise StandardError.new "Unhandled error type: #{e.class}"
             else
+                raise e
                 raise StandardError.new "Unhandled error type: #{e.class}"
             end
         end
