@@ -199,7 +199,7 @@
             </div>
         </div>
         <div class="col">
-            <embed src="<%=rails_blob_path(@document.pdf)%>" type="application/pdf"  width="100%" height="700" style="border: none;">
+            <iframe src="<%=rails_blob_url(@document.html, content_type: "text/html")%>" type="application/xhtml+xml"></iframe>
         </div>
     </div>
 </div>

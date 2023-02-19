@@ -1,10 +1,23 @@
 <div class="container my-4">
-    <div class="card mx-auto-lg w-50-lg">
-        <div class="card-header">
-            <h4 class="m-0">New Document</h4>
+    <div class="row h-100">
+        <div class="col d-flex">
+            <div class="card m-auto w-50">
+                <div class="card-header">
+                    <h4 class="m-0">Add a document</h4>
+                </div>
+                <div class="card-body">
+                    <%=form_for @document, url: document_create_path(@settlement) do |f|%>
+                        <div class="form-group mb-3">
+                            <%=f.label :document, class: "form-label"%>
+                            <%=f.file_field :pdf, class: "form-control", required: true%>
+                        </div>
+                        <%=f.submit "Submit", class: "btn btn-primary"%>
+                    <%end%>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-
+        <div class="col">
+            <iframe src="<%=rails_blob_path(Document.first.pdf)%>" type="application/html"></iframe>
         </div>
     </div>
 </div>

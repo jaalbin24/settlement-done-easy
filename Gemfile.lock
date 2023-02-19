@@ -151,6 +151,8 @@ GEM
     jmespath (1.6.2)
     json (2.6.2)
     jwt (2.5.0)
+    kristin (0.4.1)
+      spoon
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -264,6 +266,8 @@ GEM
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
       redis-client (>= 0.11.0)
+    spoon (0.0.6)
+      ffi
     spring (4.1.0)
     sprockets (4.1.1)
       concurrent-ruby (~> 1.0)
@@ -319,12 +323,14 @@ DEPENDENCIES
   capybara (>= 3.26)
   devise
   docusign_esign
+  execjs
   factory_bot_rails
   font-awesome-sass
   foreman
   httplog
   humanize
   jwt
+  kristin
   listen (~> 3.3)
   pg
   prawn

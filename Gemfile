@@ -103,3 +103,6 @@ gem 'sidekiq'
 
 # Redis for background job queueing
 gem 'redis', '< 5'
+
+# Kristin converts PDFs to HTML documents
+gem 'kristin'

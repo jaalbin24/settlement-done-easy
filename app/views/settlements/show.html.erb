@@ -130,24 +130,26 @@
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h4 class="m-0">Documents</h4>
-                            <a href="<%=under_construction_path(continue_path: request.path, page_name: "new document")%>" class="btn btn-sm btn-primary d-flex gap-1 align-items-center" data-test-id="new_document_button">
+                            <a href="<%=document_new_path(@settlement)%>" class="btn btn-sm btn-primary d-flex gap-1 align-items-center" data-test-id="new_document_button">
                                 New
                                 <i class="fa-solid fa-plus m-0 h6"></i>
                             </a>
                         </div>
                         <div class="list-group list-group-flush overflow-auto" style="display: block;">
-                            <div class="list-group-item d-flex justify-content-between align-items-center py-1 px-3">
-                                <div class="d-flex gap-3 align-items-center">
-                                    <%=document_icon(color: :primary, size: :h4)%>
-                                    <div>
-                                        <h6 class="m-0">dummy_document(1).pdf</h6>
-                                        <p class="m-0 text-muted">Johnathan Williams</p>
+                            <%@settlement.documents.each do |d|%>
+                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-1 px-3" href="<%=document_show_path(d)%>">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <%=document_icon(color: :primary, size: :h4)%>
+                                        <div>
+                                            <h6 class="m-0"><%=d.pdf.filename%></h6>
+                                            <p class="m-0 text-muted"><%=d.added_by.name%></p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
-                                </div>
-                            </div>
+                                    <div class="d-flex align-items-center gap-1">
+                                        <i class="fa-solid fa-thumbs-up m-0 text-success h5"></i>
+                                    </div>
+                                </a>
+                            <%end%>
                         </div>
                     </div>
                 </div>

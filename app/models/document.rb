@@ -45,6 +45,7 @@ class Document < ApplicationRecord
 
 
     has_one_attached :pdf
+    has_one_attached :html
 
     has_many(
         :reviews,
@@ -97,30 +98,30 @@ class Document < ApplicationRecord
         []
     end
     
-    before_validation do |document|
+    before_validation do
         puts "❤️❤️❤️ Document before_validation block"
-        if !document.pdf.attached?
+        unless pdf.attached?
             begin
-                document.pdf.attach(io: File.open(Rails.root.join("dummy_document.pdf")), filename: 'dummy_document.pdf')
+                pdf.attach(io: File.open(Rails.root.join("dummy_document.pdf")), filename: 'dummy_document.pdf')
             rescue
-                document.pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'blank_document.pdf')
+                pdf.attach(io: StringIO.new(Prawn::Document.new().render), filename: 'blank_document.pdf')
             end
         end
         # This^ if-statement is only here to allow rails db:seed to run without error. 
         # It should be commented out for all other cases.
+       
         if reviews.size != 2
             # Create document reviews for the two required reviewers (adjuster and attorney)
             reviews.destroy_all
 
             reviews.build(
-                document: document,
                 reviewer: settlement.adjuster
             )
             reviews.build(
-                document: document,
                 reviewer: settlement.attorney
             )
         end
+        self.status = "Waiting for review" if status.blank?
     end
 
     before_save do 
@@ -152,6 +153,7 @@ class Document < ApplicationRecord
             # end
         end
         settlement.save
+        ConvertPdfToHtmlJob.perform_later self
     end
 
     def self.statuses
@@ -211,10 +213,11 @@ class Document < ApplicationRecord
   
     def filename
         if pdf.attached?
-            return pdf.filename.to_s
+            pdf.filename.base.to_s
         else
-            return name = settlement.claim_number + "_document.pdf"
+            "new_release"
         end
+        "HTML_FILE"
     end
 
     def rejected?
