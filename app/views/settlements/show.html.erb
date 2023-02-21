@@ -3,7 +3,7 @@
         <div class="card-header border-bottom-0">
             <div class="row">
                 <div class="col">
-                    <%=image_tag "picture1.png", size: 96, class: "rounded-circle bg-secondary border"%>
+                    <%=image_tag "default_profile_picture.png", size: 96, class: "rounded-circle bg-secondary border"%>
                     <a href="<%=user_profile_show_path(@visitor.profile, continue_path: request.path)%>" class="text-decoration-none" style="color: rgb(73, 80, 87);">
                         <h3 class="m-0" data-test-id="visitor_name"><%=@visitor.name%></h3>
                     </a>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <%=image_tag "picture1.png", size: 96, class: "d-block ms-auto rounded-circle bg-secondary border"%>
+                    <%=image_tag "default_profile_picture.png", size: 96, class: "d-block ms-auto rounded-circle bg-secondary border"%>
                     <a href="<%=user_profile_show_path(@partner.profile, continue_path: request.path)%>" class="text-decoration-none" style="color: rgb(73, 80, 87);">
                         <h3 class="m-0 text-end" data-test-id="partner_name"><%=@partner.name%></h3>
                     </a>
@@ -137,7 +137,7 @@
                         </div>
                         <div class="list-group list-group-flush overflow-auto" style="display: block;">
                             <%@settlement.documents.each do |d|%>
-                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-1 px-3" href="<%=document_show_path(d)%>">
+                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-1 px-3" href="<%=document_show_path(d, continue_path: request.path)%>">
                                     <div class="d-flex gap-3 align-items-center">
                                         <%=document_icon(color: :primary, size: :h4)%>
                                         <div>

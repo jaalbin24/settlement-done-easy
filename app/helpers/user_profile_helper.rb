@@ -16,11 +16,19 @@ module UserProfileHelper
         # end
     end
 
+    def add_bank_account_button_should_be_shown_for(user, user_profile)
+        if user == user_profile.user
+            true
+        else
+            false
+        end
+    end
+
     def empty_active_settlement_message
         if @owner == current_user # If the visitor is the owner
             "You do not have any active settlements. Click <a data-test-id='empty_active_settlement_link' href='#{settlement_new_path}'>here</a> to start one.".html_safe
         elsif @owner == current_user.organization # If the visitor is one of the owners members
-            "#{@owner.name} does not have any active settlements. Click <a data-test-id='empty_active_settlement_link' href='#{settlement_new_path}'>here</a> to start one.".html_safe
+            "#{sanitize @owner.name} does not have any active settlements. Click <a data-test-id='empty_active_settlement_link' href='#{settlement_new_path}'>here</a> to start one.".html_safe
         elsif @owner.in?(current_user.members) || @owner.organization == current_user.organization # If the visitor is a member of the same organization or the owners organization
             "#{sanitize @owner.name} does not have any active settlements."
         elsif (current_user.isAttorney? || current_user.isLawFirm?) && (@owner.isAttorney? || @owner.isLawFirm?)
@@ -31,6 +39,16 @@ module UserProfileHelper
             "You do not have any active settlements with #{sanitize @owner.name}. Click <a data-test-id='empty_active_settlement_link' href='#{settlement_new_path}'>here</a> to start one.</p>".html_safe
         else
             "You do not have any active settlements with #{sanitize @owner.name}."
+        end
+    end
+
+    def empty_bank_account_message
+        if @owner == current_user # If the visitor is the owner
+            "You do not have any bank accounts. Click <a data-test-id='empty_active_settlement_link' href='#{bank_account_new_path(continue_path: user_profile_show_path(section: :bank_accounts))}'>here</a> to add one.".html_safe
+        elsif @owner.in?(current_user.members) || @owner.organization == current_user.organization || @owner == current_user.organization # If the visitor is a member of the same organization or the owners organization or one of the owners members
+            "#{sanitize @owner.name} does not have any bank accounts."
+        else
+            "Bank accounts owned by #{sanitize @owner.name} are private."
         end
     end
 

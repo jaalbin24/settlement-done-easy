@@ -26,10 +26,10 @@ class SettlementsController < ApplicationController
                     message: "You are logged in as #{helpers.indefinite_articleize(word: current_user.role)}. To start a settlement, you must create an #{helpers.member_role_name(current_user)} account or log in with an existing one."
                 }
             end
-            if params[:continue_path].nil?
+            if @continue_path.nil?
                 redirect_to root_path
             else
-                redirect_to params[:continue_path]
+                redirect_to @continue_path
             end
         elsif current_user.isAttorney?
             @settlement = Settlement.new

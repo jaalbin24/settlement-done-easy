@@ -3,10 +3,10 @@
 # Table name: documents
 #
 #  id              :bigint           not null, primary key
-#  auto_generated  :boolean          default(FALSE), not null
-#  needs_signature :boolean          default(FALSE), not null
+#  auto_generated  :boolean
+#  needs_signature :boolean
 #  nickname        :string
-#  signed          :boolean          default(FALSE), not null
+#  signed          :boolean
 #  status          :string           default("Waiting for review"), not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null

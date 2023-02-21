@@ -46,7 +46,6 @@ class DocumentsController < ApplicationController
         end
         if @document.update(document_params)
             flash[:primary] = "Release form updated!"
-            @document.update_pdf
             # This^ should be moved to the document.rb file.
             # TODO: Move the PDF-updating feature to the model file. This should not be in the controller.
             redirect_to document_show_url(@document)
@@ -95,6 +94,11 @@ class DocumentsController < ApplicationController
                 send_data @document.pdf.download, filename: @document.pdf.filename
             end
         end
+    end
+
+    def show_inline_html
+        @document = Document.find_by!(public_id: params[:public_id])
+        send_data @document.html.download, type: 'text/html', disposition: 'inline'       
     end
     
     def ready_to_send
@@ -182,9 +186,9 @@ class DocumentsController < ApplicationController
         redirect_to root_path
     end
 
-    # Defines what parameters can be accepted from a browser. This is for security. Without defining the data expected from the browser,
-    # potentially malicious data can be accepted as valid.
+    private
+
     def document_params
-        params.require(:document).permit(:claim_number, :policy_number, :pdf, :signed)
+        params.require(:document).permit(:claim_number, :policy_number, :pdf, :signed, :needs_signature)
     end
 end

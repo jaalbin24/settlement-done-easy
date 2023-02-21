@@ -12,7 +12,7 @@
         </div>
         <%if @bank_accounts.count == 0%>
             <p class="my-auto alert alert-primary">
-                You do not have any bank accounts to <%=current_user.lawful? ? "deposit funds into" : "withdraw funds from"%>. Click 
+                <%=current_user == @visitor ? "You do": "#{@visitor.name} does"%> not have any bank accounts to <%=current_user.lawful? ? "deposit funds into" : "withdraw funds from"%>. Click 
                 <%=link_to 'here', bank_account_new_path(continue_path: request.path), class: "alert-link", html: {"data-method": "delete"}%> 
                 to add a bank account.
             </p>

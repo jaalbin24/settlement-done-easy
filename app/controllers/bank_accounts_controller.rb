@@ -21,7 +21,22 @@ class BankAccountsController < ApplicationController
     end
 
     def new
-        render :new
+        if current_user.isOrganization?
+            if current_user.members.empty?
+                flash[:info] = {
+                    heading: "Only #{helpers.member_role_name(current_user).pluralize} can add bank accounts.",
+                    message: "You are logged in as #{helpers.indefinite_articleize(word: current_user.role)}. To add a bank account, you must create #{helpers.indefinite_articleize(word: helpers.member_role_name(current_user))} account."
+                }
+            else
+                flash[:info] = {
+                    heading: "Only #{helpers.member_role_name(current_user).pluralize} can add bank accounts.",
+                    message: "You are logged in as #{helpers.indefinite_articleize(word: current_user.role)}. To add a bank account, you must create #{helpers.indefinite_articleize(word: helpers.member_role_name(current_user))} account or log in with an existing one."
+                }
+            end
+            @continue_path.blank? ? redirect_to(root_path) : redirect_to(@continue_path)
+        else
+            render :new
+        end
     end
 
     def after_create

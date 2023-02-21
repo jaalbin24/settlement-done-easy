@@ -71,9 +71,9 @@ ActiveRecord::Schema.define(version: 201) do
 
   create_table "documents", force: :cascade do |t|
     t.string "public_id"
-    t.boolean "signed", default: false, null: false
-    t.boolean "needs_signature", default: false, null: false
-    t.boolean "auto_generated", default: false, null: false
+    t.boolean "signed"
+    t.boolean "needs_signature"
+    t.boolean "auto_generated"
     t.string "status", default: "Waiting for review", null: false
     t.string "nickname"
     t.bigint "settlement_id"

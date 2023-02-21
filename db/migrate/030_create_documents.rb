@@ -3,9 +3,9 @@ class CreateDocuments < ActiveRecord::Migration[6.1]
     create_table :documents do |t|
       t.string      :public_id
 
-      t.boolean     :signed,                  null: false, default: false
-      t.boolean     :needs_signature,         null: false, default: false
-      t.boolean     :auto_generated,          null: false, default: false
+      t.boolean     :signed
+      t.boolean     :needs_signature
+      t.boolean     :auto_generated
       t.string      :status,                  null: false, default: "Waiting for review"
       t.string      :nickname
 
