@@ -40,7 +40,7 @@
 
 
 // For the app-wide footer containing customer support info
-#page-container {
+body {
     position: relative;
     min-height: 100vh;
 }
@@ -69,3 +69,11 @@
 tr.clickable:hover {
     cursor: pointer;
 }
+
+
+
+
+div[data-page-no] .h6, .h5, .h4, .h3, .h2, .h1 {
+    margin-bottom: 0rem;
+}
+  

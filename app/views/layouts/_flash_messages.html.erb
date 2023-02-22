@@ -4,7 +4,7 @@
             <div class="alert alert-dismissible <%=flash_class(level.to_s)%> border border-<%=level.to_s%>" data-test-id="<%=level.to_s%>_flash_message" style="width: 700px; margin-left: -350px; left: 50%;">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <div class="d-flex align-items-center gap-3 pe-3">
-                    <%=warning_icon(size: :h1, color: level)%>
+                    <%= image_tag 'notice_icon.svg', size: 36%>
                     <div>
                         <%if flash[level].is_a? Hash%>
                             <%if !flash[level][:heading].nil?%>

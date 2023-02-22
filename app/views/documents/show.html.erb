@@ -2,7 +2,12 @@
     <div class="row">
         <div class="col d-flex">
             <div class="my-auto w-100">
-                <div class="card mb-4">
+                <%if @continue_path%>
+                    <%=link_to "Go back", @continue_path, class: "btn btn-secondary"%>
+                <%else%>
+                    <%=link_to "Go to settlement", settlement_show_path(@document.settlement), class: "btn btn-secondary"%>
+                <%end%>
+                <div class="card mt-4">
                     <%if @document.needs_signature.nil?%>
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <p class="m-0">Does this document need a signature?</p>
@@ -14,7 +19,7 @@
                     <%end%>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h1><%=@document.pdf.filename.base%></h1>
+                            <h3><%=@document.pdf.filename%></h3>
                             <a class="btn btn-sm btn-primary" href="#">
                                 <%=image_tag 'download_file.svg', size: 25%>
                                 Download
@@ -48,29 +53,10 @@
                         <%end%>
                     </div>
                 </div>
-                <%if @continue_path%>
-                    <%=link_to "Go back", @continue_path, class: "btn btn-secondary"%>
-                <%else%>
-                    <%=link_to "Go to settlement", settlement_show_path(@document.settlement), class: "btn btn-secondary"%>
-                <%end%>
             </div>
         </div>
         <div class="col">
-            <iframe id="doc_viewer" src="<%=inline_document_path(@document)%>" type="text/html" class="card"></iframe>
-            <script>
-                var iframe = document.getElementById('doc_viewer');
-                iframe.addEventListener('load', function() {
-                    let body = iframe.contentWindow.document.documentElement;
-                    body.style.zoom = '1';
-                    let page1 = iframe.contentWindow.document.getElementById("pf1");
-                    page1.style.marginTop = '0px';
-                    page1.style.marginBottom = '0px';
-                    let height = page1.offsetHeight;
-                    let width = page1.offsetWidth;
-                    iframe.style.height = (height + 2) + 'px';
-                    iframe.style.width = (width+ 2) + 'px';
-                });
-            </script>
+            <%=Nokogiri::HTML(@document.html.download).to_html.html_safe%>
         </div>
     </div>
 </div>
