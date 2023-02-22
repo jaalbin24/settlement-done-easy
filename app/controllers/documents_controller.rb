@@ -91,7 +91,7 @@ class DocumentsController < ApplicationController
                 render :show
             end
             format.pdf do
-                send_data @document.pdf.download, filename: @document.pdf.filename
+                send_data @document.pdf.download, filename: @document.pdf.filename.to_s, disposition: 'attachment'
             end
         end
     end

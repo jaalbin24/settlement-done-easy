@@ -41,12 +41,12 @@ class User::SessionsController < Devise::SessionsController
         yield resource if block_given?
         if current_user.isMember?
             flash[:primary] = {
-                heading: "Welcome back, #{resource.profile.first_name}!",
+                heading: "Welcome back, #{helpers.sanitize resource.profile.first_name}!",
                 message: "You are now signed in."
             }
         elsif resource.activated?
             flash[:primary] = {
-                heading: "Welcome back, #{resource.name}!",
+                heading: "Welcome back, #{helpers.sanitize resource.name}!",
                 message: "You are now signed in."
             }
         else
@@ -70,9 +70,9 @@ class User::SessionsController < Devise::SessionsController
 
     # protected
 
-    # If you have extra params to permit, append them to the sanitizer.
+    # If you have extra params to permit, append them to the helpers.sanitizer.
     # def configure_sign_in_params
-    #     devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
+    #     devise_parameter_helpers.sanitizer.permit(:sign_in, keys: [:attribute])
     # end
 
     def auth_options

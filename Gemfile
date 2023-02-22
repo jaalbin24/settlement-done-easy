@@ -106,3 +106,6 @@ gem 'redis', '< 5'
 
 # Kristin converts PDFs to HTML documents
 gem 'kristin'
+
+# Rmagick for converting PDFs to images
+gem 'rmagick'

@@ -46,6 +46,7 @@ class Document < ApplicationRecord
 
     has_one_attached :pdf
     has_one_attached :html
+    has_many_attached :pages # Images of the PDFs pages
 
     has_many(
         :reviews,
@@ -153,7 +154,10 @@ class Document < ApplicationRecord
             # end
         end
         settlement.save
-        ConvertPdfToHtmlJob.perform_later self
+    end
+
+    after_create do
+        ConvertPdfToImageJob.perform_later self
     end
 
     def self.statuses

@@ -19,13 +19,21 @@
                     <%end%>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h3><%=@document.pdf.filename%></h3>
-                            <a class="btn btn-sm btn-primary" href="#">
-                                <%=image_tag 'download_file.svg', size: 25%>
-                                Download
-                            </a>
+                            <div>
+                                <h3><%=@document.pdf.filename%></h3>
+                                <p class="m-0">Added by <%=link_to @document.added_by.name, user_profile_show_path(@document.added_by.profile), class: "link-dark"%></p>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-sm btn-primary" data-dv-open="<%=@document.public_id%>">
+                                    <%= pen_icon(color: "#ffffff", size: 25)%>
+                                    Signature
+                                </button>
+                                <a class="btn btn-sm btn-secondary" href="<%=document_show_path(@document, format: :pdf)%>">
+                                    <%=download_icon(color: "#000000", size: 25)%>
+                                    Download
+                                </a>
+                            </div>
                         </div>
-                        <p class="m-0">Added by <%=link_to @document.added_by.name, user_profile_show_path(@document.added_by.profile), class: "link-dark"%></p>
                     </div>
                     <div class="list-group list-group-flush">
                         <%@document.reviews.each do |dr|%>
@@ -56,7 +64,19 @@
             </div>
         </div>
         <div class="col">
-            <%=Nokogiri::HTML(@document.html.download).to_html.html_safe%>
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <div class="overflow-auto gap-2 d-grid" style="max-height: 85vh;">
+                        <%@document.pages.each do |page|%>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <%= image_tag url_for(page), class: "card", style: "max-width: 100%; height: auto;" %>
+                            </div>
+                        <%end%>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
