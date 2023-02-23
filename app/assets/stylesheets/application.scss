@@ -70,10 +70,22 @@ tr.clickable:hover {
     cursor: pointer;
 }
 
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+}
 
+.hide {
+    opacity: 0 !important;
+}
 
+.fades {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
 
-div[data-page-no] .h6, .h5, .h4, .h3, .h2, .h1 {
-    margin-bottom: 0rem;
+.resizes {
+    overflow: hidden;
+    transition: width 0.5s, height 0.5s;
 }
   

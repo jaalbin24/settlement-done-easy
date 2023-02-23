@@ -1,0 +1,32 @@
+<div data-dv-id="<%=document.public_id%>" class="doc-viewer-background d-flex" style="opacity: 0; visibility: hidden;">
+    <div class="position-fixed" style="right: 3px; top: 3px;">
+        <button data-dv-close="<%=document.public_id%>" class="btn btn-lg" type="button"><%=x_icon(color: "#ffffff", size: 30)%></button>
+    </div>
+    <div class="container">
+        <div class="position-relative d-flex h-100">
+            <div class="overflow-auto gap-2 d-grid py-5" style="max-height: 100vh; -ms-overflow-style: none; scrollbar-width: none;">
+                <%document.pages.each do |page|%>
+                    <div class="d-flex justify-content-center align-items-center mt-4">
+                        <%= image_tag url_for(page), class: "rounded bg-light", style: "max-width: 100%;" %>
+                    </div>
+                <%end%>
+            </div>
+            <div class="card mt-auto bg-dark mx-auto mb-4 position-fixed" style="opacity: 0.95; bottom: 0;left: 50%; transform: translate(-50%);">
+                <div class="card-body p-2">
+                    <div data-dv-bar="<%=document.public_id%>" class="resizes d-flex flex-columns">
+                        <div data-dv-draw-bar="<%=document.public_id%>" class="d-grid my-auto fades hidden hide flex-grow-1">
+                            <h5 class="text-light text-center">Draw a rectangle where you want the signature to go.</h5>
+                            <button data-dv-leave-sig-mode="<%=document.public_id%>" class="btn btn-primary btn-lg mx-auto">Cancel</button>
+                        </div>
+                        <div data-dv-button-bar="<%=document.public_id%>" class="d-flex gap-2 justify-content-center fades">
+                            <button class="btn btn-success btn-lg text-nowrap">Approve</button>
+                            <button class="btn btn-danger btn-lg text-nowrap">Reject</button>
+                            <button data-dv-enter-sig-mode="<%=document.public_id%>" class="btn btn-primary btn-lg text-nowrap">Get signature</button>
+                            <button class="btn btn-secondary btn-lg text-nowrap">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

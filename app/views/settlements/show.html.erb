@@ -147,30 +147,7 @@
                                     </div>
                                     <%=chevron_icon(direction: :right)%>
                                 </button>
-                                <div data-dv-id="<%=d.public_id%>" class="doc-viewer-background d-flex" style="opacity: 0; visibility: hidden;">
-                                    <div class="position-fixed" style="right: 3px; top: 3px;">
-                                        <button data-dv-close="<%=d.public_id%>" class="btn btn-lg" type="button"><%=x_icon(color: "#ffffff", size: 30)%></button>
-                                    </div>
-                                    <div class="container">
-                                        <div class="position-relative d-flex h-100">
-                                            <div class="overflow-auto gap-2 d-grid py-5" style="max-height: 100vh;">
-                                                <%d.pages.each do |page|%>
-                                                    <div class="d-flex justify-content-center align-items-center mt-4">
-                                                        <%= image_tag url_for(page), class: "rounded bg-light", style: "max-width: 100%;" %>
-                                                    </div>
-                                                <%end%>
-                                            </div>
-                                            <div class="card mt-auto bg-dark mx-auto mb-4 position-fixed" style="opacity: 0.95; bottom: 0;left: 50%; transform: translate(-50%);">
-                                                <div class="card-body d-flex gap-2 p-2 justify-content-center">
-                                                    <button class="btn btn-success btn-lg">Approve</button>
-                                                    <button class="btn btn-danger btn-lg">Reject</button>
-                                                    <button class="btn btn-primary btn-lg">Get signature</button>
-                                                    <button class="btn btn-secondary btn-lg">Download</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <%=render partial: 'documents/show', locals: {document: d}%>
                             <%end%>
                         </div>
                     </div>
