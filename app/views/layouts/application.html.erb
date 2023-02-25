@@ -72,5 +72,24 @@
     <footer class="navbar d-flex align-items-center justify-content-center" id="footer">
       <p class="m-0 text-center">If you have any questions or comments, please email us at <a href=""><%=Rails.configuration.CUSTOMER_SUPPORT_EMAIL_ADDRESS%></a> or call <a href=""><%=Rails.configuration.CUSTOMER_SUPPORT_PHONE_NUMBER%></a>.</p>
     </footer>
+    <div id="doc-viewer">
+      <button data-dv-close="" class="btn btn-lg position-fixed" style="right: 3px; top: 3px;" type="button"><%=x_icon(color: "#ffffff", size: 30)%></button>
+      <div class="card mt-auto bg-dark mx-auto mb-4 position-fixed" style="opacity: 0.95; bottom: 0;left: 50%; transform: translate(-50%); z-index: 1;">
+        <div class="card-body p-2">
+          <div class="resizes d-flex flex-column">
+            <div class="m-auto d-flex flex-column fades hidden hide flex-grow-1">
+              <h5 class="mx-auto text-nowrap text-light text-center">Draw a rectangle where you want the signature to go.</h5>
+              <button class="btn btn-primary btn-lg mx-auto">Cancel</button>
+            </div>
+            <div class="m-auto d-flex gap-2 justify-content-center fades">
+              <button class="btn btn-success btn-lg text-nowrap">Approve</button>
+              <button class="btn btn-danger btn-lg text-nowrap">Reject</button>
+              <button class="btn btn-primary btn-lg text-nowrap">Get signature</button>
+              <button class="btn btn-secondary btn-lg text-nowrap">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

@@ -10,24 +10,10 @@ export default class Document {
     }
 
     hide() {
-        this.documentEl.classList.add('hide');
-        this.documentEl.addEventListener("transitionend", addHiddenClass.bind(this.documentEl))
+        this.documentEl.classList.add('hidden');
     }
 
     show() {
         this.documentEl.classList.remove('hidden')
-        setTimeout(removeHideClass.bind(this.documentEl), 10)
     }
-}
-
-
-function addHiddenClass(e) {
-    if (e.propertyName !== 'opacity') {
-        return;
-    }
-    this.classList.add('hidden');
-}
-
-function removeHideClass() {
-    this.classList.remove('hide');
 }
