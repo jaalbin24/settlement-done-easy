@@ -1,30 +1,21 @@
 import { instanceOf } from "prop-types";
 import Document from "packs/doc_viewer/document";
+import ButtonBar from "packs/doc_viewer/button_bar";
+import Canvas from "packs/doc_viewer/canvas";
 
 export default class DocViewer {
 
     // Create the DocViewer container
     constructor() {
         this.docViewerEl = document.getElementById('doc-viewer');
-        
-        document.createElement('div');
-        this.docViewerEl.setAttribute('id', 'doc-viewer');
-        this.docViewerEl.classList.add('hidden', 'hide');
-        document.body.append(this.docViewerEl);
-
-        let exitButton = document.createElement('button')
-        exitButton.classList.add('btn', 'btn-lg', 'position-fixed');
-        exitButton.style.right = '3px';
-        exitButton.style.right = '3px';
-
-        // <button class="btn btn-lg position-fixed" style="right: 3px; top: 3px;" type="button"><%=x_icon(color: "#ffffff", size: 30)%></button>
-
         this.documents = [];
+        this.buttonBar = new ButtonBar();
+        this.canvas = new Canvas();
         this.initEventListeners();
     }
 
     // Takes a document's public id (string) or a Document object as input
-    // Opens the Document Viewer showing the document whose public id is
+    // Opens the Document Viewer showing the document provided
     open(doc) {
         if (doc == null) {
             console.error("IT'S NULL");
@@ -92,6 +83,16 @@ export default class DocViewer {
                 // DocViewer.close(modeChanger.getAttribute("data-dv-close"));
             });
         }
+    }
+    /***********************
+        Types of modes:
+        - Default
+        - DrawSig
+        - SendSig
+    ***********************/
+    setMode(newMode) {
+        this.buttonBar.setMode(newMode);
+        this.canvas.setMode(newMode);
     }
 
     getDocument(doc_public_id) {
