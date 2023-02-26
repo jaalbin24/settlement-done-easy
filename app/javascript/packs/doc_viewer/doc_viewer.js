@@ -9,7 +9,7 @@ export default class DocViewer {
     constructor() {
         this.docViewerEl = document.getElementById('doc-viewer');
         this.documents = [];
-        this.buttonBar = new ButtonBar();
+        this.buttonBar = new ButtonBar(this);
         this.canvas = new Canvas();
         this.initEventListeners();
     }
@@ -80,7 +80,7 @@ export default class DocViewer {
         let modeChangers = document.querySelectorAll("[data-dv-change-mode]");
         for (const modeChanger of modeChangers) {
             modeChanger.addEventListener("click", () => {
-                // DocViewer.close(modeChanger.getAttribute("data-dv-close"));
+                this.setMode(modeChanger.getAttribute("data-dv-change-mode"));
             });
         }
     }
@@ -92,7 +92,7 @@ export default class DocViewer {
     ***********************/
     setMode(newMode) {
         this.buttonBar.setMode(newMode);
-        this.canvas.setMode(newMode);
+        // this.canvas.setMode(newMode);
     }
 
     getDocument(doc_public_id) {
@@ -109,7 +109,7 @@ function close() {
     console.log("close");
 }
 function addHiddenClass(e) {
-    console.log(e.propertyName);
+    console.log(`DocViewer: addHiddenClass(), propertyName = ${e.propertyName}`);
     if (e.propertyName !== 'opacity') {
         return;
     }

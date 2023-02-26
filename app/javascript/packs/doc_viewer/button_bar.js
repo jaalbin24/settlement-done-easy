@@ -1,6 +1,15 @@
 export default class ButtonBar {
-    constructor() {
+    constructor(docViewer) {
+        this.docViewer = docViewer;
         this.buttonBarEl = document.querySelector('#button-bar');
+
+        
+        docViewer.docViewerEl.classList.remove('hidden');
+        let rect = this.buttonBarEl.getBoundingClientRect();
+        this.buttonBarEl.style.width = rect.width + 'px';
+        this.buttonBarEl.style.height = rect.height + 'px';
+        docViewer.docViewerEl.classList.add('hidden');
+
 
         this.defaultEl = document.querySelector('#button-bar-default');
         this.drawSigEl = document.querySelector('#button-bar-draw-sig');
@@ -26,7 +35,6 @@ export default class ButtonBar {
                 break;
         }
         this.show(newEl);
-        this.currentEl = newEl;
     }
 
     hide(el) {
@@ -37,13 +45,19 @@ export default class ButtonBar {
 
     show(el) {
         console.log(`Showing: %O`, el);
+        if (this.currentEl == el) {
+            return;
+        }
         this.hide(this.currentEl);
         this.resizeToFit(el);
         el.classList.remove('hidden');
+        setTimeout(() => {
+            el.classList.remove('hide');
+        }, 500);
     }
 
     resizeToFit(el) {
-        console.log(`Resizing: %O}`, el);
+        console.log(`Resizing to fit: %O}`, el);
         el.classList.remove('hidden');
         let rect = el.getBoundingClientRect();
         let newWidth = rect.width + 'px';
@@ -60,17 +74,14 @@ export default class ButtonBar {
             if (e.propertyName !== 'width' && e.propertyName !== 'height') {
                 return;
             }
-            el.classList.remove('hidden');
-            setTimeout(() => {
-                el.classList.remove('hide');
-            }, 10);
             e.currentTarget.removeEventListener('transitionend', resize);
         });
-    }    
+    }
 }
 
 
-function addHiddenClass() {
+function addHiddenClass(e) {
+    console.log(`ButtonBar: addHiddenClass(), propertyName = ${e.propertyName}`);
     e.currentTarget.classList.add('hidden');
     e.currentTarget.removeEventListener('transitionend', addHiddenClass);
 }

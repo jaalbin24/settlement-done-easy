@@ -77,14 +77,14 @@
       <div class="card mt-auto bg-dark mx-auto mb-4 position-fixed" style="opacity: 0.95; bottom: 0;left: 50%; transform: translate(-50%); z-index: 1;">
         <div class="card-body p-2">
           <div id="button-bar" class="resizes d-flex flex-column">
-            <div class="m-auto d-flex flex-column fades hidden hide flex-grow-1">
+            <div id="button-bar-draw-sig" class="m-auto d-flex flex-column fades hidden hide flex-grow-1">
               <h5 class="mx-auto text-nowrap text-light text-center">Draw a rectangle where you want the signature to go.</h5>
-              <button class="btn btn-primary btn-lg mx-auto">Cancel</button>
+              <button class="btn btn-primary btn-lg mx-auto" data-dv-change-mode="default">Cancel</button>
             </div>
             <div id="button-bar-default" class="m-auto d-flex gap-2 justify-content-center fades">
               <button class="btn btn-success btn-lg text-nowrap">Approve</button>
               <button class="btn btn-danger btn-lg text-nowrap">Reject</button>
-              <button class="btn btn-primary btn-lg text-nowrap">Get signature</button>
+              <button class="btn btn-primary btn-lg text-nowrap" data-dv-change-mode="drawSig">Get signature</button>
               <button class="btn btn-secondary btn-lg text-nowrap">Download</button>
             </div>
           </div>
