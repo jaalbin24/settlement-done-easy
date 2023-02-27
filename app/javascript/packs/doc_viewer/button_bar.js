@@ -25,16 +25,15 @@ export default class ButtonBar {
         }
         switch(newMode) {
             case 'default':
-                var newEl = this.defaultEl;
+                this.show(this.defaultEl);
                 break;
             case 'drawSig':
-                var newEl = this.drawSigEl;
+                this.show(this.drawSigEl);
                 break;
             case 'sendSig':
-                var newEl = this.sendSigEl;
+                this.show(this.sendSigEl);
                 break;
         }
-        this.show(newEl);
     }
 
     hide(el) {
@@ -46,6 +45,7 @@ export default class ButtonBar {
     show(el) {
         console.log(`Showing: %O`, el);
         if (this.currentEl == el) {
+            console.log(`%O IS ALREADY THE CURRENT ELEMENT`, el);
             return;
         }
         this.hide(this.currentEl);
@@ -54,6 +54,7 @@ export default class ButtonBar {
         setTimeout(() => {
             el.classList.remove('hide');
         }, 500);
+        this.currentEl = el;
     }
 
     resizeToFit(el) {

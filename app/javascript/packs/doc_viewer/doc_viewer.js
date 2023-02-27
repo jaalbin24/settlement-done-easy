@@ -42,6 +42,7 @@ export default class DocViewer {
         console.log(`Added event listener to %O, this=%O`, this, this);
         this.docViewerEl.classList.add('hide');
         document.body.style.overflow = 'auto';
+        this.setMode('default');
     }
 
     // Takes a Document object as input.
@@ -86,9 +87,9 @@ export default class DocViewer {
     }
     /***********************
         Types of modes:
-        - Default
-        - DrawSig
-        - SendSig
+        - default
+        - drawSig
+        - sendSig
     ***********************/
     setMode(newMode) {
         this.buttonBar.setMode(newMode);
