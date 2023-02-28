@@ -4,7 +4,7 @@
             <div class="overflow-auto gap-2 d-grid py-5" style="max-height: 100vh; -ms-overflow-style: none; scrollbar-width: none;">
                 <%document.pages.each_with_index do |page, i|%>
                     <div class="d-flex justify-content-center align-items-center mt-4">
-                        <div name="page-wrapper" class="position-relative">
+                        <div id="<%="#{document.public_id}_page#{i+1}"%>" name="page-wrapper" class="position-relative">
                             <%= image_tag url_for(page), class: "rounded bg-light", style: "max-width: 100%;"%>
                         </div>
                     </div>

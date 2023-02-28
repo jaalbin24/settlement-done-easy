@@ -92,8 +92,9 @@ export default class DocViewer {
         - sendSig
     ***********************/
     setMode(newMode) {
+        console.log(`Setting new mode: ${newMode}`)
         this.buttonBar.setMode(newMode);
-        // this.canvas.setMode(newMode);
+        this.canvas.setMode(newMode);
     }
 
     getDocument(doc_public_id) {
