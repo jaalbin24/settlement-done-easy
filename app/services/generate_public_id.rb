@@ -29,6 +29,8 @@ module GeneratePublicId
             id_prefix = "sare"
         when "SettlementSettings"
             id_prefix = "sset"
+        when "Signature"
+            id_prefix = "sign"
         when "StripeAccountRequirement"
             id_prefix = "sreq"
         when "StripeAccount"

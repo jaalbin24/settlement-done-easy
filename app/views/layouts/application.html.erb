@@ -79,13 +79,37 @@
           <div id="button-bar" class="resizes d-flex flex-column">
             <div id="button-bar-draw-sig" class="m-auto d-flex flex-column fades hidden hide flex-grow-1">
               <h5 class="mx-auto text-nowrap text-light text-center">Draw a rectangle where you want the signature to go.</h5>
-              <button class="btn btn-primary btn-lg mx-auto" data-dv-change-mode="default">Cancel</button>
+              <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center">
+                  <button class="mx-1 btn btn-secondary btn-lg" data-dv-change-mode="default">Cancel</button>
+                  <div class="resizes" style="width: 0px;" id="sendSig-wrapper">
+                    <button class="btn btn-primary btn-lg mx-1" data-dv-change-mode="sendSig">Next</button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div id="button-bar-default" class="m-auto d-flex gap-2 justify-content-center fades">
               <button class="btn btn-success btn-lg text-nowrap">Approve</button>
               <button class="btn btn-danger btn-lg text-nowrap">Reject</button>
               <button class="btn btn-primary btn-lg text-nowrap" data-dv-change-mode="drawSig">Get signature</button>
               <button class="btn btn-secondary btn-lg text-nowrap">Download</button>
+            </div>
+            <div id="button-bar-send-sig" class="m-auto d-flex flex-column fades hidden hide">
+              <h5 class="text-white mx-auto text-center">Enter the signer's email.</h5>
+              <%=form_for Signature.new, url: signature_create_path do |f|%>
+                <input id="doc_public_id" type="hidden" name="doc_public_id">
+                <input type="hidden" name="continue_path" value="<%=request.path%>">
+                <%=f.hidden_field :corner1_x%>
+                <%=f.hidden_field :corner1_y%>
+                <%=f.hidden_field :corner2_x%>
+                <%=f.hidden_field :corner2_y%>
+                <div class="form-group">
+                  <div class="input-group input-group-lg">
+                    <%=f.email_field :signer_email, class: "form-control form-control-lg", placeholder: "Email", required: true%>
+                    <%=f.submit "Send now", class: "btn btn-primary"%>
+                  </div>
+                </div>
+              <%end%>
             </div>
           </div>
         </div>

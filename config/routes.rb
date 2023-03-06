@@ -23,9 +23,6 @@ Rails.application.routes.draw do
   post 'documents/:id/approve',                 to: 'document_reviews#approve',           as: 'document_approve'
   post 'documents/:id/reject',                  to: 'document_reviews#reject',            as: 'document_reject'
   post 'documents/:id/unreject',                to: 'document_reviews#unreject',          as: 'document_unreject'
-  get 'document/:id/get_e_signature',           to: 'documents#get_e_signature',          as: 'document_get_e_signature'
-  patch 'documents/:id/send_ds_signature_request',  to: 'documents#send_ds_signature_request', as: 'document_send_ds_signature_request'
-  get 'documents/:id/get_ds_envelope_status',   to: 'documents#get_ds_envelope_status',   as: 'document_get_ds_envelope_status'  
   get 'documents/:id',                          to: 'documents#show',                     as: 'document_show'
   get 'documents/html/:public_id',              to: 'documents#show_inline_html',         as: 'inline_document'
 
@@ -43,16 +40,13 @@ Rails.application.routes.draw do
   get 'settlements/need_index/:stage/:status',        to: 'settlements#need_index',             as: 'settlement_need_index'
   get 'settlements/:id',                              to: 'settlements#show',                   as: 'settlement_show'
   get 'settlements/:id/review_document',              to: 'settlements#review_document',        as: 'settlement_review_document'
-  get 'settlements/:id/review_signed_document',       to: 'settlements#review_signed_document', as: 'settlement_review_signed_document'
 
-  get 'settlements/:id/get_client_signature',         to: 'settlements#get_client_signature',   as: 'settlement_get_client_signature'
   get 'settlements/:id/start_stripe_session',         to: 'settlements#start_stripe_session',   as: 'settlement_start_stripe_session'
   get 'settlements/:id/payment_success',              to: 'settlements#payment_success',        as: 'settlement_payment_success'
   get 'settlements/:id/complete',                     to: 'settlements#complete',               as: 'settlement_complete'
   post 'settlements',                                 to: 'settlements#create',                 as: 'settlement_create'
   patch 'settlements/:id',                            to: 'settlements#update',                 as: 'settlement_update'
 
-  patch 'settlements/:id/send_ds_signature_request',  to: 'settlements#send_ds_signature_request', as: 'settlement_send_ds_signature_request'
   delete 'settlement/:id',                            to: 'settlements#destroy',                as: 'settlement_destroy'
 
   get 'stripe_onboard_account_link',                  to: 'stripe#onboard_account_link',        as: 'stripe_onboard_account_link'
@@ -110,5 +104,9 @@ Rails.application.routes.draw do
   get 'bank_account/new/secret',                      to: 'bank_accounts#secret',                     as: 'new_bank_account_secret'
   get 'bank_account/new/after',                       to: 'bank_accounts#after_create',               as: 'bank_account_after_create'
   delete 'bank_account/:public_id',                   to: 'bank_accounts#delete',                     as: 'bank_account_delete'
+
+
+
+  post 'signatures',                                  to: 'signatures#create',                        as: 'signature_create'
 
 end

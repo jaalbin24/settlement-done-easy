@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 201) do
+ActiveRecord::Schema.define(version: 2023_02_28_185141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,6 +232,20 @@ ActiveRecord::Schema.define(version: 201) do
     t.index ["started_by_id"], name: "index_settlements_on_started_by_id"
   end
 
+  create_table "signatures", force: :cascade do |t|
+    t.string "public_id"
+    t.float "corner1_x"
+    t.float "corner1_y"
+    t.float "corner2_x"
+    t.float "corner2_y"
+    t.string "signer_email"
+    t.string "status"
+    t.bigint "document_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["document_id"], name: "index_signatures_on_document_id"
+  end
+
   create_table "stripe_account_requirements", force: :cascade do |t|
     t.string "public_id"
     t.bigint "stripe_account_id"
@@ -402,6 +416,7 @@ ActiveRecord::Schema.define(version: 201) do
   add_foreign_key "settlements", "users", column: "adjuster_id"
   add_foreign_key "settlements", "users", column: "attorney_id"
   add_foreign_key "settlements", "users", column: "started_by_id"
+  add_foreign_key "signatures", "documents"
   add_foreign_key "stripe_account_requirements", "stripe_accounts"
   add_foreign_key "stripe_accounts", "users"
   add_foreign_key "stripe_setup_intents", "payment_methods"

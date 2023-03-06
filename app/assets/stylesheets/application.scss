@@ -88,4 +88,16 @@ tr.clickable:hover {
     overflow: hidden;
     transition: width 0.5s, height 0.5s;
 }
+
+.grow {
+    flex-grow: 1;
+}
+
+.sde-collapse {
+    flex-grow: 0.0001;
+}
+
+.collapses {
+    transition: flex-grow 0.5s, flex-shrink 0.5s;
+}
   

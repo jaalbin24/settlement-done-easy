@@ -12,6 +12,8 @@ export default class DocViewer {
         this.buttonBar = new ButtonBar(this);
         this.canvas = new Canvas();
         this.initEventListeners();
+        this.boundInitSigForm = this.initSigForm.bind(this);
+        this.boundSubmitSigForm = this.submitSigForm.bind(this);
     }
 
     // Takes a document's public id (string) or a Document object as input
@@ -95,11 +97,48 @@ export default class DocViewer {
         console.log(`Setting new mode: ${newMode}`)
         this.buttonBar.setMode(newMode);
         this.canvas.setMode(newMode);
+
+        let newSigForm = document.querySelector("form[id='new_signature']");
+        let newSigSubmitButton = newSigForm.querySelector("input[type='submit']");
+        if(newMode === 'sendSig') {
+            newSigSubmitButton.addEventListener('click', this.boundInitSigForm);
+        } else {
+            newSigSubmitButton.removeEventListener('click', this.boundInitSigForm);
+        }
     }
 
     getDocument(doc_public_id) {
         return this.documents.find(doc => doc.public_id === doc_public_id);
     }
+
+    initSigForm(e) {
+        let form = e.currentTarget.form;
+        // form.addEventListener('submit', this.boundSubmitSigForm);
+        form.querySelector("input[name='signature[corner1_x]']").setAttribute('value', this.canvas.sigCorner1[0]);
+        form.querySelector("input[name='signature[corner1_y]']").setAttribute('value', this.canvas.sigCorner1[1]);
+        form.querySelector("input[name='signature[corner2_x]']").setAttribute('value', this.canvas.sigCorner2[0]);
+        form.querySelector("input[name='signature[corner2_y]']").setAttribute('value', this.canvas.sigCorner2[1]);
+        form.querySelector("input[name='doc_public_id']").setAttribute('value', this.currentDocument.public_id);
+        form.submit();
+        e.currentTarget.removeEventListener('click', this.boundInitSigForm);
+    }
+
+    // async submitSigForm(e) {
+    //     e.preventDefault();
+    //     let form = e.currentTarget;
+    //     const formData = new FormData(form);
+    //     const response = await fetch(form.action, {
+    //         method: form.method,
+    //         body: formData,
+    //     });
+    //     const statusCode = response.status;
+    //     if (statusCode == 204) {
+
+    //     } else {
+    //         this.setMode('sigStatus');
+    //     }
+    //     console.log(statusCode);
+    // }
 }
 
 function open(e) {

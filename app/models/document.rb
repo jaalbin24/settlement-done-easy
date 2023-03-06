@@ -56,6 +56,14 @@ class Document < ApplicationRecord
         dependent: :destroy
     )
 
+    has_many(
+        :signatures,
+        class_name: "Signature",
+        foreign_key: :document_id,
+        inverse_of: :document,
+        dependent: :destroy
+    )
+
     belongs_to(
         :settlement,
         class_name: 'Settlement',

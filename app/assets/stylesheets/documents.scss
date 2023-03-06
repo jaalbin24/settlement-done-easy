@@ -17,3 +17,15 @@
 .dv-canvas {
     cursor: crosshair;
 }
+
+.sig-outline {
+    position: absolute;
+    background-color: rgba(52, 89, 230, 0.5);
+    border: 1px solid #3459e6;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
