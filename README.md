@@ -11,3 +11,20 @@ up to 7 business days to clear.) A settlement concluded through SDE on a Tuesday
 
 For Insurance Companies:
 SDE allows adjusters to resolve claims and transmit e-checks remotely, from any-where they have internet access. No more lost/delayed checks, FedEx overnight charges, or calls from angry lawyers looking for settlement checks. SDE does all this at a rate cheaper and faster than the carrier’s postage/FedEx budget.
+
+---
+
+This app requires postgresql, so you should already have it installed on your machine.
+
+Run the following commands in this order from the parent directory:
+
+<code>bundle install</code>
+
+<code>yarn install</code>
+
+<code>rails db:migrate:reset db:seed</code>
+
+Then, run SDE locally with foreman using the following command:
+<code>foreman start -f Procfile.dev</code>
+
+This will run the rails server, the redis server, and the SideKiq process simultaneously. You should be able to go to <code>localhost:3000</code> and find the app there.
