@@ -151,8 +151,6 @@ GEM
     jmespath (1.6.2)
     json (2.6.2)
     jwt (2.5.0)
-    kristin (0.4.1)
-      spoon
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -332,7 +330,6 @@ DEPENDENCIES
   httplog
   humanize
   jwt
-  kristin
   listen (~> 3.3)
   pg
   prawn

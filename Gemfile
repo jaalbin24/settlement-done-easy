@@ -39,7 +39,6 @@ group :development, :test do
   gem "rspec-rails"
   # Factory Bot for dynamic test fixture generation
   gem 'factory_bot_rails'
-
   # For starting Rails, Redis, and Sidekiq simultaneously and cohesively
   gem 'foreman'
 end
@@ -99,13 +98,9 @@ gem 'sidekiq'
 # For signature block detection. This will be added later.
 # gem 'rmagick'
 # gem 'rtesseract'
-# gem 'pdftoimage'
 
 # Redis for background job queueing
 gem 'redis', '< 5'
-
-# Kristin converts PDFs to HTML documents
-gem 'kristin'
 
 # Rmagick for converting PDFs to images
 gem 'rmagick'

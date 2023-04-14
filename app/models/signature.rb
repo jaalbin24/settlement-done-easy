@@ -3,10 +3,10 @@
 # Table name: signatures
 #
 #  id           :bigint           not null, primary key
-#  corner1_x    :float
-#  corner1_y    :float
-#  corner2_x    :float
-#  corner2_y    :float
+#  corner1_x    :integer
+#  corner1_y    :integer
+#  corner2_x    :integer
+#  corner2_y    :integer
 #  signer_email :string
 #  status       :string
 #  created_at   :datetime         not null

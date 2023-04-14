@@ -16,14 +16,6 @@ module SafetyError
 
     class BankAccountSafetyError < SafetyError
     end
-
-    module Settlements
-
-    end
-
-    module Documents
-        
-    end
     
     module Payments
         def self.raise_error_unless_safe_to_execute_inbound_transfer_on(payment)

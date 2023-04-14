@@ -234,10 +234,10 @@ ActiveRecord::Schema.define(version: 2023_02_28_185141) do
 
   create_table "signatures", force: :cascade do |t|
     t.string "public_id"
-    t.float "corner1_x"
-    t.float "corner1_y"
-    t.float "corner2_x"
-    t.float "corner2_y"
+    t.integer "corner1_x"
+    t.integer "corner1_y"
+    t.integer "corner2_x"
+    t.integer "corner2_y"
     t.string "signer_email"
     t.string "status"
     t.bigint "document_id"

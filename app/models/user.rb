@@ -401,10 +401,6 @@ class User < ApplicationRecord
         end
     end
 
-    def can_access?(accessed_item)
-        AccessControl.access_authorized_for?(self, accessed_item)
-    end
-
     def email_verified?
         return true
         # TODO: Add email verification mechanic
